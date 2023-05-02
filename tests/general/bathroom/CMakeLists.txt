@@ -7,6 +7,7 @@ set(test_basename bathroom)
 set(exec_modes scalar;vector;xpu)
 foreach(exec_mode ${exec_modes})
     set(test_name ${test_basename}_${exec_mode})
+    set(render_output_dir $<IF:$<BOOL:${RATS_GEN_CANONICALS}>,${RATS_CANONICAL_PATH},${CMAKE_CURRENT_BINARY_DIR}>)
 
     add_test(NAME ${test_name}_render
         WORKING_DIRECTORY /usr/pic1/jlanz/pbrt_scenes/bathroom/
@@ -16,7 +17,7 @@ foreach(exec_mode ${exec_modes})
             -in scene.rdlb
             -res ${RATS_RENDER_RES}
             -threads ${RATS_NUM_THREADS}
-            -out ${CMAKE_CURRENT_BINARY_DIR}/${test_name}.exr
+            -out ${render_output_dir}/${test_name}.exr
     )
     set_tests_properties(${test_name}_render PROPERTIES
         # RUN_SERIAL TRUE
@@ -30,7 +31,7 @@ foreach(exec_mode ${exec_modes})
     add_test(NAME ${test_name}_diff
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         # FIXME: I'm cheating
-        COMMAND oiiotool -i ${test_name}.exr --diff -i ${test_name}.exr
+        COMMAND oiiotool -i ${test_name}.exr --diff -i ${RATS_CANONICAL_PATH}/${test_name}.exr
     )
     set_tests_properties(${test_name}_diff PROPERTIES
         LABELS "rats"
