@@ -12,6 +12,19 @@ set(RATS_CANONICAL_PATH "" CACHE PATH "Path to canonical images")
 set(RATS_RENDER_RES "1" CACHE STRING "-res command-line argument")
 set(RATS_NUM_THREADS "2" CACHE STRING "Number of threads per-render")
 
+# find oiiotool
+find_package(OpenImageIO REQUIRED)
+find_program(OIIOTOOL
+    oiiotool
+    # FIXME: setting this HINT since without it our presets are causing it to find an
+    # older version of oiiotool (2.3.20.0.x.0.1.0.1) which is found in the CMAKE_PREFIX_PATH,
+    # and that version can't find the runtime libs it needs.
+    NO_CMAKE_PATH
+    HINTS /rel/rez/dwa/openimageio/2.4.8.0.x.1.0.0.0/cpp_std-17.0/boost-1.73.0.x.2/openexr-2.5.7.x.0/python-3.7/opencolorio-2.0.2.x.0/bin
+    REQUIRED
+)
+message("OIIOTOOL: ${OIIOTOOL}")
+
 include(RatsTest)
 
 # TODO: Make sure canonical path is set and valid,

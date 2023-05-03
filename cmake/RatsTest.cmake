@@ -45,7 +45,6 @@ function(add_rats_test test_basename)
             COMMAND moonray ${render_arg_list}
         )
         set_tests_properties(${test_name}_render PROPERTIES
-            FIXTURES_SETUP ${test_name}_render
             LABELS "rats"
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
@@ -53,12 +52,13 @@ function(add_rats_test test_basename)
         # add test to diff the result with the canonical via oiiotool
         add_test(NAME ${test_name}_diff
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            COMMAND oiiotool -i ${image_name} --diff -i ${RATS_CANONICAL_PATH}/${image_name}
+            COMMAND ${OIIOTOOL} -i ${image_name} --diff -i ${RATS_CANONICAL_PATH}/${image_name}
             COMMAND_EXPAND_LISTS
         )
         set_tests_properties(${test_name}_diff PROPERTIES
-            LABELS "rats"
-            FIXTURES_REQUIRED ${test_name}_render
+            LABELS "rats;diff"
+            DEPENDS ${test_name}_render
+            # ENVIRONMENT 
         )
     endforeach()
 endfunction()
