@@ -2,8 +2,30 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(bathroom
+    # DENOISE
     WORKING_DIRECTORY /usr/pic1/jlanz/pbrt_scenes/bathroom/
-    INPUTS scene.rdla scene.rdlb
-    EXEC_MODES scalar vector xpu
+    INPUTS
+        scene.rdla
+        scene.rdlb
+    EXEC_MODES
+        scalar
+        vector
+        xpu
+    # MOONRAY_ARGS
+        # -scene_var \"pixel_samples\" \"24\" -res 2
+    IDIFF_ARGS
+        # -fail 1e-06           # Failure absolute difference threshold (default: 1e-06)
+        # -failrelative 0       # Failure relative threshold (default: 0)
+        # -failpercent 0        # Allow this percentage of failures (default: 0)
+        # -hardfail inf         # Fail if any one pixel exceeds this error (default: inf)
+        # -allowfailures 0      # OK for this number of pixels to fail by any amount (default: 0)
+        # -warn 1e-06           # Warning absolute difference threshold (default: 1e-06)
+        # -warnrelative 0       # Warning relative threshold (default: 0)
+        # -warnpercent 0        # Allow this percentage of warnings (default: 0)
+        # -hardwarn inf         # Warn if any one pixel exceeds this error (default: inf)
+        # -scale 1              # Scale the output image by this factor (default: 1)
+        # -v                    # Verbose status messages
+        # -a                    # Compare all subimages/miplevels
+        # -p                    # Perform perceptual (rather than numeric) comparison
 )
 

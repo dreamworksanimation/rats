@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 function(add_rats_test test_basename)
-    set(options FOO)    # unused
-    set(oneValueArgs THREADS WORKING_DIRECTORY)
-    set(multiValueArgs EXEC_MODES INPUTS LABELS)
+    set(options DENOISE)    # unused
+    set(oneValueArgs WORKING_DIRECTORY)
+    set(multiValueArgs EXEC_MODES INPUTS MOONRAY_ARGS IDIFF_ARGS)
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     set(rdl2_dso_path ${CMAKE_BINARY_DIR}/rdl2dso/)
@@ -13,6 +13,7 @@ function(add_rats_test test_basename)
         set(test_name ${test_basename}_${exec_mode})
 
         set(image_name "${test_name}.exr")
+        set(diff_name "${test_name}_diff.exr")
 
         # create arg list
         set(arg_list "")
@@ -25,6 +26,8 @@ function(add_rats_test test_basename)
         list(APPEND arg_list -threads ${RATS_NUM_THREADS})
         list(APPEND arg_list -res ${RATS_RENDER_RES})
 
+        list(APPEND arg_list ${ARG_MOONRAY_ARGS})
+
         # add test to generate canonicals
         set(canonical_arg_list ${arg_list})
         list(APPEND canonical_arg_list -out ${RATS_CANONICAL_PATH}/${image_name})
@@ -36,8 +39,19 @@ function(add_rats_test test_basename)
             LABELS "canonicals"
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
+        # add test to denoise canonical?
+        if(ARG_DENOISE)
+            add_test(NAME ${test_name}_canonicals_denoise
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMAND denoise -mode oidn -in ${RATS_CANONICAL_PATH}/${image_name} -out ${RATS_CANONICAL_PATH}/${image_name}
+            )
+            set_tests_properties(${test_name}_canonicals_denoise PROPERTIES
+                LABELS "canonicals"
+                DEPENDS ${test_name}_canonicals
+            )
+        endif()
 
-        # add test to render results
+        # add test to render result
         set(render_arg_list ${arg_list})
         list(APPEND render_arg_list -out ${CMAKE_CURRENT_BINARY_DIR}/${image_name})
         add_test(NAME ${test_name}_render
@@ -48,17 +62,30 @@ function(add_rats_test test_basename)
             LABELS "rats"
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
+        # add test to denoise rendered result?
+        if(ARG_DENOISE)
+            add_test(NAME ${test_name}_render_denoise
+                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                COMMAND denoise -mode oidn -in ${image_name} -out ${image_name}
+            )
+            set_tests_properties(${test_name}_render_denoise PROPERTIES
+                LABELS "rats"
+                DEPENDS ${test_name}_render
+            )
+        endif()
 
         # add test to diff the result with the canonical via oiiotool
         add_test(NAME ${test_name}_diff
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            COMMAND ${OIIOTOOL} -i ${image_name} --diff -i ${RATS_CANONICAL_PATH}/${image_name}
-            COMMAND_EXPAND_LISTS
+            COMMAND ${IDIFF}
+                -o ${diff_name}
+                ${ARG_IDIFF_ARGS}
+                -abs
+                ${image_name} ${RATS_CANONICAL_PATH}/${image_name}
         )
         set_tests_properties(${test_name}_diff PROPERTIES
             LABELS "rats;diff"
             DEPENDS ${test_name}_render
-            # ENVIRONMENT 
         )
     endforeach()
 endfunction()
