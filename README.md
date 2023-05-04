@@ -48,8 +48,17 @@ ctest -j 16 -L canonicals --output-on-failure
 Canonicals for new tests can be generated from the current codebase, since the test is new.  Running a diff on a new test will probably only show if the results are deterministic or not.
 
 ## Running the tests
-example canonical generation command, run from the build directory of the current codebase:
+example run command, run from the build directory of the current codebase:
 ```
 ctest -j 16 -L rats --output-on-failure
 ```
+
+## Running the idiff tests only
+Assuming the canonicals are generated/updated and current images have already been generated, you can adjust the idiff test settings, build, and re-run just the idiff tests.
+
+example idiff-only command, run from the build directory of the current codebase:
+```
+ctest -j 16 -L diff --output-on-failure
+```
+
 
