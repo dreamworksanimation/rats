@@ -1,7 +1,7 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_rats_test(cornell_box
+add_rats_test(general_cornell_box
     # DENOISE
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     INPUTS
