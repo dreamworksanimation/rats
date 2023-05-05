@@ -52,7 +52,7 @@ function(add_rats_test test_basename)
                 COMMAND denoise -mode oidn -in ${RATS_CANONICAL_PATH}/${image_name} -out ${RATS_CANONICAL_PATH}/${image_name}
             )
             set_tests_properties(${canonical_denoise_test_name} PROPERTIES
-                LABELS "canonicals"
+                LABELS "canonical"
                 DEPENDS ${canonical_test_name}
             )
         endif()
@@ -65,7 +65,7 @@ function(add_rats_test test_basename)
             COMMAND moonray -rdla_set "rats_assets_dir" "\"${rats_assets_dir}\"" ${render_arg_list}
         )
         set_tests_properties(${render_test_name} PROPERTIES
-            LABELS "rats"
+            LABELS "rats;render"
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
         # add test to denoise rendered result?
@@ -75,7 +75,7 @@ function(add_rats_test test_basename)
                 COMMAND denoise -mode oidn -in ${image_name} -out ${image_name}
             )
             set_tests_properties(${render_denoise_test_name} PROPERTIES
-                LABELS "rats"
+                LABELS "rats;render"
                 DEPENDS ${render_test_name}
             )
         endif()

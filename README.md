@@ -19,6 +19,20 @@ Cons:
 * no standard machine class or variant, which means tests that barely pass on one machine/variant may fail on others
 * canonicals used by automated CI plans must be generated and maintained separately
 
+## Stages
+Each test has several stages, as follows:
+* canonical generation
+* result render
+* image diff
+
+## Test names and labels
+The tests are named with the convention `rats_<execmode>_<stage>_testname`.
+
+The tests are labeled according to their stage:
+* canonical
+* render
+* diff
+
 ## Building the test suite
 These instructions are temporary and subject to change as we continue to evolve our build system.  Building using `rez-build` is not yet supported, but hopefully can be in the future.
 
@@ -34,31 +48,90 @@ There are currently two configure/build-time CMake cache variables that control 
 |CMake cache variable|default|purpose|
 |--------------------|-------|-------|
 |RATS_CANONICAL_PATH | ""    |the path to store/fetch canonicals from|
-|RATS_RENDER_RES     | 1     |a global control that determines the "-res" argument to the moonray render command.  Be sure to match this with the same value used to generate the canonical images|
-|RATS_NUM_THREADS    | 2     |the number of threads used to run each of the tests.  Use this in combination with the `-j` jobs argument to control your cpu resources.  For example, if your machine has 64 cores you may want to set RATS_NUM_THREADS=2 and use `-j 32` when you run the tests|
+|RATS_RENDER_RES     | 1     |a global control that determines the "-res" argument to the moonray render commands|
+|RATS_NUM_THREADS    | 2     |the number of threads used to run each of the tests (see below)|
 
-## Generating canonical images
+There are two strategies for setting the RATS_NUM_THREADS:
+1) set to a small number (ie. 2) and use the `-j` arg with CTest to specify the number of jobs to run simultaneously.  For example, if your machine has 32 cores you might choose to set
+`RATS_NUM_THREADS=2` and pass the `-j 16` argument to the CTest command
+2) set to the available number of cores on your machine and use 1 job at a time.  For example, of you machine has 32 cores you might choose to set `RATS_NUM_THREADS=32` and do NOT pass
+the `-j` argument to the CTest command.
+
+In practice option 2 seems to run the fastest overall. Using option 1 might cause your system's memory to be a bottleneck.
+
+## Running the rats tests
+You must run the rats tests from the build directory, in the variant you wish to test.
+
+### Generating canonical images
 Canonicals should be generated/updated using a previously known good state of the codebase, eg. a recent release.
 
-example canonical generation command, run from the build directory of a previous codebase:
+example canonical generation commands:
 ```
-ctest -j 16 -L canonicals --output-on-failure
+# generate all canonicals
+ctest -L canonical --output-on-failure
+```
+```
+# generate only vector canonicals
+ctest -L canonical -R vector --output-on-failure
+```
+```
+# generate only vector canonicals for cornell_box test
+ctest -R vector_canonical_cornell_box --output-on-failure
 ```
 
 Canonicals for new tests can be generated from the current codebase, since the test is new.  Running a diff on a new test will probably only show if the results are deterministic or not.
 
-## Running the tests
-example run command, run from the build directory of the current codebase:
+### Running the render tests only
+
+example render commands:
 ```
-ctest -j 16 -L rats --output-on-failure
+# run all render tests
+ctest -L render --output-on-failure
+```
+```
+# run only scalar render tests
+ctest -L render -R scalar --output-on-failure
+```
+```
+# run only scalar render test for cornell_box test
+ctest -R scalar_render_cornell_box --output-on-failure
 ```
 
-## Running the idiff tests only
-Assuming the canonicals are generated/updated and current images have already been generated, you can adjust the idiff test settings, build, and re-run just the idiff tests.
+### Running the diff tests only
+Assuming the canonicals are generated/updated and current images have already been generated, you can adjust the diff test settings, build, and re-run just the diff tests.
 
-example idiff-only command, run from the build directory of the current codebase:
+example diff commands:
 ```
-ctest -j 16 -L diff --output-on-failure
+# run all diff tests
+ctest -L diff --output-on-failure
+```
+```
+# run only xpu diff tests
+ctest -L diff -R xpu --output-on-failure
 ```
 
+This one can be particularly handy for tweaking diff thresholds and quickly testing the result
+```
+# run only xpu diff test for cornell_box scene
+ctest -L diff -R xpu --output-on-failure
+```
 
+### Running the render and diff tests together
+The 'rats' label is applied to all render and diff tests.
+```
+# render and diff all tests
+ctest -L rats --output-on-failure
+```
+```
+# render and diff only xpu tests
+ctest -L rats -R xpu --output-on-failure
+```
+```
+# render and diff only xpu tests for cornell_box scene
+ctest -L rats -R xpu --output-on-failure
+```
+
+## Limitations, future work
+- [ ] Support multiple RenderOutputs.  Currently only a single output image is handled
+- [ ] Support the `hd_render` command for running moonray via the hydra delegate. This would enable us to render .usd scenes
+- [ ] Add a new profiling suite using this CTest framework
