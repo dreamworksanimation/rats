@@ -1,23 +1,17 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_rats_test(bathroom
+add_rats_test(cornell_box
     # DENOISE
-    WORKING_DIRECTORY /usr/pic1/jlanz/pbrt_scenes/bathroom/
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     INPUTS
         scene.rdla
-        scene.rdlb
     EXEC_MODES
         scalar
         vector
         xpu
-    MOONRAY_ARGS
-        # -scene_var \"pixel_samples\" \"24\"
-        -scene_var \"max_depth\" \"4\"
-        -scene_var \"max_diffuse_depth\" \"2\"
-        -scene_var \"max_glossy_depth\" \"4\"
-        -scene_var \"max_mirror_depth\" \"4\"
-        -res 4
+    # MOONRAY_ARGS
+        # -scene_var \"pixel_samples\" \"24\" -res 2
     IDIFF_ARGS
         -fail 0.05            # Failure absolute difference threshold (default: 1e-06)
         # -failrelative 0       # Failure relative threshold (default: 0)
@@ -33,4 +27,5 @@ add_rats_test(bathroom
         -a                    # Compare all subimages/miplevels
         -p                    # Perform perceptual (rather than numeric) comparison
 )
+
 

@@ -8,6 +8,7 @@ function(add_rats_test test_basename)
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     set(rdl2_dso_path ${CMAKE_BINARY_DIR}/rdl2dso/)
+    set(rats_assets_dir ${PROJECT_SOURCE_DIR}/assets/)
 
     foreach(exec_mode ${ARG_EXEC_MODES})
         set(test_name ${test_basename}_${exec_mode})
@@ -33,7 +34,7 @@ function(add_rats_test test_basename)
         list(APPEND canonical_arg_list -out ${RATS_CANONICAL_PATH}/${image_name})
         add_test(NAME ${test_name}_canonicals
             WORKING_DIRECTORY ${ARG_WORKING_DIRECTORY}
-            COMMAND moonray ${canonical_arg_list}
+            COMMAND moonray -rdla_set "rats_assets_dir" "\"${rats_assets_dir}\"" ${canonical_arg_list}
         )
         set_tests_properties(${test_name}_canonicals PROPERTIES
             LABELS "canonicals"
@@ -56,7 +57,7 @@ function(add_rats_test test_basename)
         list(APPEND render_arg_list -out ${CMAKE_CURRENT_BINARY_DIR}/${image_name})
         add_test(NAME ${test_name}_render
             WORKING_DIRECTORY ${ARG_WORKING_DIRECTORY}
-            COMMAND moonray ${render_arg_list}
+            COMMAND moonray -rdla_set "rats_assets_dir" "\"${rats_assets_dir}\"" ${render_arg_list}
         )
         set_tests_properties(${test_name}_render PROPERTIES
             LABELS "rats"

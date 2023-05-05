@@ -1,0 +1,89 @@
+SceneVariables {
+    ["image width"] = 256,
+    ["image height"] = 128,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node xform"] = Mat4(0.996454, -0.0446502, -0.0713123, 0, 0.00540735, 0.879804, -0.475306, 0, 0.0839633, 0.473235, 0.876925, 0, 3.51943, 18.4177, 33.7106, 1),
+    ["focal"] = 30,
+    ["film width aperture"] = 24,
+}
+
+-------------------------------------------------------
+
+sphere1 = SphereGeometry("/Scene/geometry/sphere1") {
+    ["node xform"] = rotate(120, 1, 0, 0) * rotate(10, 0, 0, 1) *translate(-6, 4, 6),
+    ["radius"] = 4,
+    ["zmin"] = -4,
+    ["zmax"] = 4,
+    ["phi max"] = 360,
+}
+
+sphere2 = SphereGeometry("/Scene/geometry/sphere2") {
+    ["node xform"] = rotate(70, 0, 1, 0) * rotate(170, 1, 0, 0) * rotate(20, 0, 0, 1) * translate(6, 4, 6),
+    ["radius"] = 4,
+    ["zmin"] = -2,
+    ["zmax"] = 3.8,
+    ["phi max"] = 180,
+}
+
+wall = RdlMeshGeometry("/Scene/geometry/wall") {
+    ["node xform"] = translate(0, 0, 0),
+    ["vertex list"] = {Vec3(-20,  20, -2), Vec3(-20,  0, -2), Vec3(-20,  0, 20),
+                       Vec3(20,  0, 20), Vec3(20,  0, -2), Vec3(20,  20, -2)},
+    ["vertices by index"] = {0, 1, 4, 5,
+                             1, 2, 3, 4},
+    ["face vertex count"] = {4, 4},
+    ["is subd"] = false,
+    ["smooth_normal"] = false,
+}
+
+GeometrySet("geometryset") {
+    sphere1,
+    sphere2,
+    wall
+}
+
+-------------------------------------------------------
+
+map1 = ImageMap("/Scene/surfacing/map1") {
+    ["texture"] = rats_assets_dir .. "/textures/Graphpaper.tx",
+}
+
+map2 = ImageMap("/Scene/surfacing/map2") {
+    ["texture"] = rats_assets_dir .. "/textures/Graphpaper.tx",
+    ["offset"] = Vec2(0, 0.5),
+}
+
+mtl1 = DwaSolidDielectricMaterial("/Scene/surfacing/mtl1") {
+    ["albedo"] = bind(map1),
+    ["roughness"] = 0.7,
+}
+
+mtl2 = DwaSolidDielectricMaterial("/Scene/surfacing/mtl2") {
+    ["albedo"] = bind(map2),
+    ["roughness"] = 0.7,
+    ["thin_geometry"] = true,
+}
+
+mtlWall = DwaSolidDielectricMaterial("/Scene/surfacing/wall") {
+    ["albedo"] = Rgb(0.5, 0.5, 0.6),
+    ["roughness"] = 0.7,
+}
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["node_xform"] = rotate(90, 0, 1, 0),
+    ["texture"] = rats_assets_dir .. "/hdri/studio_3_point.exr"
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {sphere1, "", mtl1, lightSet},
+    {sphere2, "", mtl2, lightSet},
+    {wall, "", mtlWall, lightSet}
+}
+

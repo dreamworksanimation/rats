@@ -1,0 +1,112 @@
+sceneVars = SceneVariables {
+    ["lights visible in camera"] = true,
+    ["sampling_mode"] = 2,
+    ["image width"] = 256,
+    ["image height"] = 256,
+}
+
+shotCam = Camera("/Scene/rendering/shot_cam") {
+    ["node xform"] = rotate(-180, 0, 1, 0) * translate(-1.524, 1.524, -5),
+    ["focal"] = 35,
+    ["film width aperture"] = 24,
+}
+
+geoms = {}
+assignments = {}
+
+RectLight("/Scene/lighting/rect") {
+    ["node xform"] = rotate(-90, 1, 0, 0) * translate(-1.524, 3.023616, 1.3716),
+    ["exposure"] = -7,
+    ["width"] = 0.8,
+    ["height"] = 0.8,
+}
+
+lightSet = LightSet("LightSetA") {
+    RectLight("/Scene/lighting/rect"),
+}
+
+local chromeMtl = DwaMetalMaterial("/Scene/surfacing/material/chrome") {
+    ["metallic_color"] = Rgb(0.6, 0.6, 0.6),
+    ["roughness"] = 0.05,
+}
+
+local whiteMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/white") {
+    ["albedo"] = Rgb(0.6, 0.55, 0.4),
+    ["roughness"] = 0.5,
+}
+
+local grayMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/gray") {
+    ["albedo"] = Rgb(0.22, 0.22, 0.22),
+    ["roughness"] = 0.95,
+}
+local leftMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/left") {
+    ["albedo"] = Rgb(0.7, 0.1, 0.08),
+    ["roughness"] = 0.5,
+    ["specular"] = 0.2,
+}
+local rightMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/right") {
+    ["albedo"] = Rgb(0.2, 0.4, 0.7),
+    ["roughness"] = 0.5,
+    ["specular"] = 0.2,
+}
+
+function make_plane_xz(name, xform)
+    return RdlMeshGeometry(name) {
+       ["node_xform"] = xform,
+       ["vertex_list"] = {Vec3(-0.5, 0.0, -0.5), Vec3(0.5, 0.0, -0.5), Vec3(0.5, 0.0, 0.5), Vec3(-0.5, 0.0, 0.5)},
+       ["vertices_by_index"] = {0, 1, 2, 3},
+       ["face_vertex_count"] = {4},
+       ["is_subd"] = false
+    }
+end
+
+local planeBack = make_plane_xz("/Scene/geometry/back", rotate(-90, 0, 0, 1) * rotate(90, 0, 1, 0) * scale(3.048, 3.048, 1) * translate(-1.524, 1.524, 3.048))
+table.insert(geoms, planeBack)
+
+local planeBottom = make_plane_xz("/Scene/geometry/bottom", scale(3.048, 3.048, 3.048) * translate(-1.524, 0, 1.524))
+table.insert(geoms, planeBottom)
+
+local planeTop = make_plane_xz("/Scene/geometry/top", rotate(-180, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(-1.524, 3.048, 1.524))
+table.insert(geoms, planeTop)
+
+local planeLeft = make_plane_xz("/Scene/geometry/left", rotate(90, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(0, 1.524, 1.524))
+table.insert(geoms, planeLeft)
+
+local planeRight = make_plane_xz("/Scene/geometry/right", rotate(-90, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(-3.048, 1.524, 1.524))
+table.insert(geoms, planeRight)
+
+local cube1 = BoxGeometry("/Scene/geometry/cube1") {
+    ["node xform"] = rotate(70, 0, 1, 0) * scale(1.0, 2.5, 1.0) * translate(-1.0, 0.5, 1.9),
+}
+table.insert(geoms, cube1)
+
+local cube2 = BoxGeometry("/Scene/geometry/cube2") {
+    ["node xform"] = rotate(10, 0, 1, 0) * scale(1, 1, 1) * translate(-2.15, 0.5, 0.9),
+}
+table.insert(geoms, cube2)
+
+local sphere = SphereGeometry("/Scene/geometry/sphere") {
+    ["node xform"] = scale(0.27, 0.27, 0.27) * translate(-1.0, 1.97, 2),
+}
+table.insert(geoms, sphere)
+
+local widget = UsdGeometry("/Scene/geometry/widget") {
+    ["node xform"] = rotate(190, 0, 1, 0) * scale(0.06, 0.06, 0.06) * translate(-2.15, 0.99, 1),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+table.insert(geoms, widget)
+
+table.insert(assignments, {sphere, "", chromeMtl, lightSet})
+table.insert(assignments, {planeBack, "", whiteMtl, lightSet})
+table.insert(assignments, {planeBottom, "", whiteMtl, lightSet})
+table.insert(assignments, {planeTop, "", whiteMtl, lightSet})
+table.insert(assignments, {planeLeft, "", leftMtl, lightSet})
+table.insert(assignments, {planeRight, "", rightMtl, lightSet})
+table.insert(assignments, {cube1, "", whiteMtl, lightSet})
+table.insert(assignments, {cube2, "", whiteMtl, lightSet})
+table.insert(assignments, {widget, "", grayMtl, lightSet})
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("Scene/layer")(assignments)
+
