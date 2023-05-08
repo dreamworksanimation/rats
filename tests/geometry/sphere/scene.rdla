@@ -47,11 +47,11 @@ GeometrySet("geometryset") {
 -------------------------------------------------------
 
 map1 = ImageMap("/Scene/surfacing/map1") {
-    ["texture"] = rats_assets_dir .. "/textures/Graphpaper.tx",
+    ["texture"] = rats_assets_dir.."/textures/Graphpaper.tx",
 }
 
 map2 = ImageMap("/Scene/surfacing/map2") {
-    ["texture"] = rats_assets_dir .. "/textures/Graphpaper.tx",
+    ["texture"] = rats_assets_dir.."/textures/Graphpaper.tx",
     ["offset"] = Vec2(0, 0.5),
 }
 
@@ -74,7 +74,7 @@ mtlWall = DwaSolidDielectricMaterial("/Scene/surfacing/wall") {
 
 env = EnvLight("/Scene/lighting/env") {
     ["node_xform"] = rotate(90, 0, 1, 0),
-    ["texture"] = rats_assets_dir .. "/hdri/studio_3_point.exr"
+    ["texture"] = rats_assets_dir.."/hdri/studio_3_point.exr"
 }
 
 lightSet = LightSet("/Scene/lighting/lightSet") {
@@ -87,3 +87,35 @@ Layer("/Scene/rendering/organizer/perPartitionAssignments") {
     {wall, "", mtlWall, lightSet}
 }
 
+RenderOutput("/output/beauty") {
+    ["result"] = "beauty",
+    ["file_name"] = "result.exr"
+}
+RenderOutput("/output/alpha") {
+    ["result"] = "alpha",
+    ["file_name"] = "result.exr"
+}
+RenderOutput("/output/depth") {
+    ["result"] = "depth",
+    ["file_name"] = "result.exr"
+}
+RenderOutput("/output/material_albedo") {
+    ["result"] = "material aov",
+    ["file_name"] = "material.exr",
+    ["material_aov"] = "DSS.albedo",
+}
+RenderOutput("/output/material_normal") {
+    ["result"] = "material aov",
+    ["file_name"] = "material.exr",
+    ["material_aov"] = "DSS.normal",
+}
+RenderOutput("/output/state_N") {
+    ["result"] = "state variable",
+    ["file_name"] = "state.exr",
+    ["state_variable"] = "N",
+}
+RenderOutput("/output/state_P") {
+    ["result"] = "state variable",
+    ["file_name"] = "state.exr",
+    ["state_variable"] = "P",
+}

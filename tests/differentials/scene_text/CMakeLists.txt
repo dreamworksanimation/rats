@@ -3,7 +3,7 @@
 
 add_rats_test(differentials_scene_text
     # DENOISE
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    SCENE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
     INPUTS
         scene.rdla
     EXEC_MODES
@@ -12,6 +12,8 @@ add_rats_test(differentials_scene_text
         xpu
     # MOONRAY_ARGS
         # -scene_var \"pixel_samples\" \"24\" -res 2
+    OUTPUTS
+        scene.exr
     IDIFF_ARGS
         -fail 0.05            # Failure absolute difference threshold (default: 1e-06)
         # -failrelative 0       # Failure relative threshold (default: 0)

@@ -15,7 +15,7 @@ Camera("/Scene/rendering/camera") {
 }
 
 ImageMap("/Scene/surfacing/text") {
-    ["texture"] = rats_assets_dir .. "/textures/text-ure.tx",
+    ["texture"] = rats_assets_dir.."/textures/text-ure.tx",
     ["wrap_around"] = false,
 }
 

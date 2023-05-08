@@ -92,7 +92,7 @@ table.insert(geoms, sphere)
 
 local widget = UsdGeometry("/Scene/geometry/widget") {
     ["node xform"] = rotate(190, 0, 1, 0) * scale(0.06, 0.06, 0.06) * translate(-2.15, 0.99, 1),
-    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
 }
 table.insert(geoms, widget)

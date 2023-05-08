@@ -120,15 +120,15 @@ ctest -L diff -R xpu --output-on-failure
 The 'rats' label is applied to all render and diff tests.
 ```
 # render and diff all tests
-ctest -L rats --output-on-failure
+ctest -L "render|diff" --output-on-failure
 ```
 ```
 # render and diff only xpu tests
-ctest -L rats -R xpu --output-on-failure
+ctest -L "render|diff" -R xpu --output-on-failure
 ```
 ```
 # render and diff only xpu tests for cornell_box scene
-ctest -L rats -R xpu --output-on-failure
+ctest -L "render|diff" -R xpu --output-on-failure
 ```
 
 ## Limitations, future work
