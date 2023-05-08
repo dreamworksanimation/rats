@@ -84,9 +84,9 @@ function(add_rats_test test_basename)
 
         # add test to diff the result with the canonical via oiiotool
         foreach(output ${ARG_OUTPUTS})
-            set(diff_test_name "rats_${exec_mode}_diff_${test_basename}_${output}")
             cmake_path(GET output STEM stem)
             cmake_path(GET output EXTENSION extension)
+            set(diff_test_name "rats_${exec_mode}_diff_${test_basename}_${stem}")
             set(diff_name "${stem}_diff${extension}")
 
             add_test(NAME ${diff_test_name}
