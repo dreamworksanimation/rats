@@ -3,11 +3,11 @@
 
 # -------------------------------------------------------------------------------------
 # This script expects to be run with the following variables defined:
-#   MOONRAY_CMD     : fully qualified moonray commnd line as a list, eg:
-#                       /path/to/moonray;-in;scene.rdla;-exec_mode;scalar
 #   CANONCAL_PATH   : directory to store the caonicals. It will be created if necessary.
 #   OUTPUTS         : list of output images to be stored as canonicals, eg.
 #                       scene.exr;aovs.exr;more_aovs.exr
+#   RENDER_CMD      : fully qualified render commnd line as a list, eg:
+#                       /path/to/moonray;-in;scene.rdla;-exec_mode;scalar
 # -------------------------------------------------------------------------------------
 
 macro(exec_and_check)
@@ -28,7 +28,7 @@ endmacro()
 
 
 # run moonray
-exec_and_check(${MOONRAY_CMD})
+exec_and_check(${RENDER_CMD})
 
 # make the directory for the canonicals
 set(mkdir_cmd ${CMAKE_COMMAND} -E make_directory ${CANONICAL_PATH})
