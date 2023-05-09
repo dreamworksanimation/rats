@@ -58,24 +58,11 @@ function(add_rats_test test_basename)
     )
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    # # handle idiff args
-    # if (ARG_IDIFF_ARGS_SCALAR)
-        # set(idiff_args_scalar ${ARG_IDIFF_ARGS_SCALAR})
-    # else()
-        # set(idiff_args_scalar ${rats_default_idiff_args_scalar})
-    # endif()
-
-    # if (ARG_IDIFF_ARGS_VECTOR)
-        # set(idiff_args_vector ${ARG_IDIFF_ARGS_VECTOR})
-    # else()
-        # set(idiff_args_vector ${rats_default_idiff_args_vector})
-    # endif()
-
-    # if (ARG_IDIFF_ARGS_XPU)
-        # set(idiff_args_xpu ${ARG_IDIFF_ARGS_XPU})
-    # else()
-        # set(idiff_args_xpu ${rats_default_idiff_args_xpu})
-    # endif()
+    if (ARG_SCENE_DIR)
+        set(scene_dir ${ARG_SCENE_DIR})
+    else()
+        set(scene_dir ${CMAKE_CURRENT_SOURCE_DIR})
+    endif()
 
     set(rdl2_dso_path ${CMAKE_BINARY_DIR}/rdl2dso/)
     set(rats_assets_dir ${PROJECT_SOURCE_DIR}/assets/)
@@ -91,13 +78,16 @@ function(add_rats_test test_basename)
         set(canonical_test_name "rats_${exec_mode}_canonical_${test_basename}")
         set(render_test_name "rats_${exec_mode}_render_${test_basename}")
 
-        # build moonray command. We need the fully qualified path to the moonray executable if
-        # we are going to be running it using the ${CMAKE_COMMAND} -P <script.cmake> method
+        # Build moonray command. We need the fully qualified path to the moonray executable if
+        # we are going to be running it using the ${CMAKE_COMMAND} -P <script.cmake> method.
+        # NOTE: $<TARGET_FILE:moonray> isn't expanded until _build_ time.
         set(render_cmd $<TARGET_FILE:moonray>)
+
         foreach(rdl_input ${ARG_INPUTS})
-            list(APPEND render_cmd -in ${ARG_SCENE_DIR}/${rdl_input})
+            list(APPEND render_cmd -in ${scene_dir}/${rdl_input})
         endforeach()
         list(APPEND render_cmd -exec_mode ${exec_mode})
+        list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
 
         if (${exec_mode} STREQUAL scalar)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_SCALAR})
@@ -106,12 +96,9 @@ function(add_rats_test test_basename)
         elseif (${exec_mode} STREQUAL xpu)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_XPU})
         endif()
-        message("---- ${render_cmd}")
+        message(VERBOSE "${render_cmd}")
 
-        # leveraging Lua string literal in [[double brackets]] to avoid escaping problems
-        list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
-
-        # add test to generate canonicals
+        # Add test to generate canonicals
         add_test(NAME ${canonical_test_name}
             WORKING_DIRECTORY ${render_dir}
             COMMAND ${CMAKE_COMMAND}
@@ -125,7 +112,7 @@ function(add_rats_test test_basename)
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
-        # add test to render result
+        # Add test to render result
         add_test(NAME ${render_test_name}
             WORKING_DIRECTORY ${render_dir}
             COMMAND ${render_cmd}
@@ -135,7 +122,7 @@ function(add_rats_test test_basename)
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
-        # add test to diff the result with the canonical via oiiotool
+        # Add test to diff the result with the canonical via oiiotool
         foreach(output ${ARG_OUTPUTS})
             cmake_path(GET output STEM stem)
             cmake_path(GET output EXTENSION extension)
@@ -153,7 +140,7 @@ function(add_rats_test test_basename)
                 list(APPEND diff_args ${rats_default_idiff_args_xpu})
                 list(APPEND diff_args ${ARG_IDIFF_ARGS_XPU})
             endif()
-            message("---- ${diff_args}")
+            message(VERBOSE "${diff_args}")
 
             add_test(NAME ${diff_test_name}
                 WORKING_DIRECTORY ${render_dir}

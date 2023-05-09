@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(geometry_sphere
-    SCENE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
     INPUTS
         scene.rdla
     OUTPUTS
@@ -12,5 +11,4 @@ add_rats_test(geometry_sphere
     IDIFF_ARGS_VECTOR -hardfail 0.035
     IDIFF_ARGS_XPU    -hardfail 0.035
 )
-
 
