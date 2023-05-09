@@ -1,6 +1,5 @@
 sceneVars = SceneVariables {
     ["lights visible in camera"] = true,
-    ["sampling_mode"] = 2,
     ["image width"] = 256,
     ["image height"] = 256,
 }

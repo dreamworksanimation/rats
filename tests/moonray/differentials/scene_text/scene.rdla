@@ -5,7 +5,6 @@ SceneVariables {
     ["max mirror depth"] = 4,
     ["image width"] = 256,
     ["image height"] = 144,
-    ["sampling_mode"] = 2,
 }
 
 Camera("/Scene/rendering/camera") {

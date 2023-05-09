@@ -1,7 +1,6 @@
 SceneVariables {
     ["image width"] = 256,
     ["image height"] = 128,
-    ["sampling_mode"] = 2,
 }
 
 Camera("/Scene/rendering/camera") {

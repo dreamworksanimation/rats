@@ -1,11 +1,81 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
+set(rats_default_idiff_args_scalar
+    -fail 0.004           # Failure absolute difference threshold (default: 1e-06)
+    # -failrelative 0       # Failure relative threshold (default: 0)
+    -failpercent 0.01     # Allow this percentage of failures (default: 0)
+    -hardfail 0.02        # Fail if any one pixel exceeds this error (default: inf)
+    # -allowfailures 1e-06  # OK for this number of pixels to fail by any amount (default: 0)
+    -warn 0.004           # Warning absolute difference threshold (default: 1e-06)
+    # -warnrelative 0       # Warning relative threshold (default: 0)
+    -warnpercent 0.01        # Allow this percentage of warnings (default: 0)
+    # -hardwarn inf         # Warn if any one pixel exceeds this error (default: inf)
+    # -scale 1              # Scale the output image by this factor (default: 1)
+    # -p                    # Perform perceptual (rather than numeric) comparison
+)
+
+set(rats_default_idiff_args_vector
+    -fail 0.004           # Failure absolute difference threshold (default: 1e-06)
+    # -failrelative 0       # Failure relative threshold (default: 0)
+    -failpercent 0.2      # Allow this percentage of failures (default: 0)
+    -hardfail 0.02        # Fail if any one pixel exceeds this error (default: inf)
+    # -allowfailures 1e-06  # OK for this number of pixels to fail by any amount (default: 0)
+    -warn 0.004           # Warning absolute difference threshold (default: 1e-06)
+    # -warnrelative 0       # Warning relative threshold (default: 0)
+    -warnpercent 0.2         # Allow this percentage of warnings (default: 0)
+    # -hardwarn inf         # Warn if any one pixel exceeds this error (default: inf)
+    # -scale 1              # Scale the output image by this factor (default: 1)
+    # -p                    # Perform perceptual (rather than numeric) comparison
+)
+
+set(rats_default_idiff_args_xpu
+    -fail 0.004           # Failure absolute difference threshold (default: 1e-06)
+    # -failrelative 0       # Failure relative threshold (default: 0)
+    -failpercent 0.2      # Allow this percentage of failures (default: 0)
+    -hardfail 0.02        # Fail if any one pixel exceeds this error (default: inf)
+    # -allowfailures 1e-06  # OK for this number of pixels to fail by any amount (default: 0)
+    -warn 0.004           # Warning absolute difference threshold (default: 1e-06)
+    # -warnrelative 0       # Warning relative threshold (default: 0)
+    -warnpercent 0.2         # Allow this percentage of warnings (default: 0)
+    # -hardwarn inf         # Warn if any one pixel exceeds this error (default: inf)
+    # -scale 1              # Scale the output image by this factor (default: 1)
+    # -p                    # Perform perceptual (rather than numeric) comparison
+)
+
 function(add_rats_test test_basename)
     set(options "") # unused
     set(oneValueArgs SCENE_DIR)
-    set(multiValueArgs EXEC_MODES IDIFF_ARGS INPUTS MOONRAY_ARGS OUTPUTS)
+    set(multiValueArgs
+            INPUTS
+            OUTPUTS
+            IDIFF_ARGS_SCALAR
+            IDIFF_ARGS_VECTOR
+            IDIFF_ARGS_XPU
+            RENDER_ARGS_SCALAR
+            RENDER_ARGS_VECTOR
+            RENDER_ARGS_XPU
+    )
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    # # handle idiff args
+    # if (ARG_IDIFF_ARGS_SCALAR)
+        # set(idiff_args_scalar ${ARG_IDIFF_ARGS_SCALAR})
+    # else()
+        # set(idiff_args_scalar ${rats_default_idiff_args_scalar})
+    # endif()
+
+    # if (ARG_IDIFF_ARGS_VECTOR)
+        # set(idiff_args_vector ${ARG_IDIFF_ARGS_VECTOR})
+    # else()
+        # set(idiff_args_vector ${rats_default_idiff_args_vector})
+    # endif()
+
+    # if (ARG_IDIFF_ARGS_XPU)
+        # set(idiff_args_xpu ${ARG_IDIFF_ARGS_XPU})
+    # else()
+        # set(idiff_args_xpu ${rats_default_idiff_args_xpu})
+    # endif()
 
     set(rdl2_dso_path ${CMAKE_BINARY_DIR}/rdl2dso/)
     set(rats_assets_dir ${PROJECT_SOURCE_DIR}/assets/)
@@ -13,7 +83,7 @@ function(add_rats_test test_basename)
     file(RELATIVE_PATH test_rel_path ${PROJECT_SOURCE_DIR}/tests/ ${CMAKE_CURRENT_SOURCE_DIR})
     set(root_canonical_path ${RATS_CANONICAL_PATH}/${test_rel_path})
 
-    foreach(exec_mode ${ARG_EXEC_MODES})
+    foreach(exec_mode scalar;vector;xpu)
         set(canonical_dir ${root_canonical_path}/${exec_mode})
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         file(MAKE_DIRECTORY ${render_dir})
@@ -28,7 +98,16 @@ function(add_rats_test test_basename)
             list(APPEND render_cmd -in ${ARG_SCENE_DIR}/${rdl_input})
         endforeach()
         list(APPEND render_cmd -exec_mode ${exec_mode})
-        list(APPEND render_cmd ${ARG_MOONRAY_ARGS})
+
+        if (${exec_mode} STREQUAL scalar)
+            list(APPEND render_cmd ${ARG_RENDER_ARGS_SCALAR})
+        elseif (${exec_mode} STREQUAL vector)
+            list(APPEND render_cmd ${ARG_RENDER_ARGS_VECTOR})
+        elseif (${exec_mode} STREQUAL xpu)
+            list(APPEND render_cmd ${ARG_RENDER_ARGS_XPU})
+        endif()
+        message("---- ${render_cmd}")
+
         # leveraging Lua string literal in [[double brackets]] to avoid escaping problems
         list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
 
@@ -63,12 +142,24 @@ function(add_rats_test test_basename)
             set(diff_test_name "rats_${exec_mode}_diff_${test_basename}_${stem}")
             set(diff_name "${stem}_diff${extension}")
 
+            set(diff_args -o ${diff_name})
+            if (${exec_mode} STREQUAL scalar)
+                list(APPEND diff_args ${rats_default_idiff_args_scalar})
+                list(APPEND diff_args ${ARG_IDIFF_ARGS_SCALAR})
+            elseif (${exec_mode} STREQUAL vector)
+                list(APPEND diff_args ${rats_default_idiff_args_vector})
+                list(APPEND diff_args ${ARG_IDIFF_ARGS_VECTOR})
+            elseif (${exec_mode} STREQUAL xpu)
+                list(APPEND diff_args ${rats_default_idiff_args_xpu})
+                list(APPEND diff_args ${ARG_IDIFF_ARGS_XPU})
+            endif()
+            message("---- ${diff_args}")
+
             add_test(NAME ${diff_test_name}
                 WORKING_DIRECTORY ${render_dir}
                 COMMAND ${IDIFF}
-                    -o ${diff_name}
-                    ${ARG_IDIFF_ARGS}
-                    -abs
+                    -v -a -abs
+                    ${diff_args}
                     ${output} ${canonical_dir}/${output}
             )
             set_tests_properties(${diff_test_name} PROPERTIES
