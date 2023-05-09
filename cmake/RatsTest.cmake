@@ -30,8 +30,6 @@ function(add_rats_test test_basename)
             list(APPEND moonray_cmd -in ${ARG_SCENE_DIR}/${rdl_input})
         endforeach()
         list(APPEND moonray_cmd -exec_mode ${exec_mode})
-        list(APPEND moonray_cmd -threads ${RATS_NUM_THREADS})
-        list(APPEND moonray_cmd -res ${RATS_RENDER_RES})
         list(APPEND moonray_cmd ${ARG_MOONRAY_ARGS})
         # leveraging Lua string literal in [[double brackets]] to avoid escaping problems
         list(APPEND moonray_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
