@@ -2,6 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory(differentials)
-add_subdirectory(general)
 add_subdirectory(geometry)
+add_subdirectory(misc)
 add_subdirectory(sampling)
