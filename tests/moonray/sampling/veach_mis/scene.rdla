@@ -1,0 +1,166 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 192,
+    ["lights_visible_in_camera"] = true,
+}
+
+RdlInstancerGeometry("/scene/objects/<root>") {
+    ["references"] = { RdlMeshGeometry("/scene/objects/<root>_mesh_4_1"), RdlMeshGeometry("/scene/objects/<root>_mesh_0_1"), RdlMeshGeometry("/scene/objects/<root>_mesh_1_1"), RdlMeshGeometry("/scene/objects/<root>_mesh_2_1"), RdlMeshGeometry("/scene/objects/<root>_mesh_3_1")},
+    ["method"] = "xform list",
+    ["xform_list"] = { Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)},
+    ["ref_indices"] = { 0, 1, 2, 3, 4},
+}
+
+RdlMeshGeometry("/scene/objects/<root>_mesh_0_1") {
+    ["vertices_by_index"] = { 0, 1, 2, 2, 3, 0},
+    ["vertex_list_0"] = { Vec3(4, -2.70651007, 0.256089985), Vec3(4, -2.08375001, -0.52632302), Vec3(-4, -2.08375001, -0.52632302), Vec3(-4, -2.70651007, 0.256089985)},
+    ["face_vertex_count"] = { 3, 3},
+    ["part_list"] = { "tri_shape_0"},
+    ["part_face_count_list"] = { 2},
+    ["part_face_indices"] = { 0, 1},
+    ["is_subd"] = false,
+}
+
+RdlMeshGeometry("/scene/objects/<root>_mesh_1_1") {
+    ["vertices_by_index"] = { 0, 1, 2, 2, 3, 0},
+    ["vertex_list_0"] = { Vec3(4, -3.28824997, 1.36971998), Vec3(4, -2.8385601, 0.476536006), Vec3(-4, -2.8385601, 0.476536006), Vec3(-4, -3.28824997, 1.36971998)},
+    ["face_vertex_count"] = { 3, 3},
+    ["part_list"] = { "tri_shape_0"},
+    ["part_face_count_list"] = { 2},
+    ["part_face_indices"] = { 0, 1},
+    ["is_subd"] = false,
+}
+
+RdlMeshGeometry("/scene/objects/<root>_mesh_2_1") {
+    ["vertices_by_index"] = { 0, 1, 2, 2, 3, 0},
+    ["vertex_list_0"] = { Vec3(4, -3.73095989, 2.70045996), Vec3(4, -3.43377995, 1.74564004), Vec3(-4, -3.43377995, 1.74564004), Vec3(-4, -3.73095989, 2.70045996)},
+    ["face_vertex_count"] = { 3, 3},
+    ["part_list"] = { "tri_shape_0"},
+    ["part_face_count_list"] = { 2},
+    ["part_face_indices"] = { 0, 1},
+    ["is_subd"] = false,
+}
+
+RdlMeshGeometry("/scene/objects/<root>_mesh_3_1") {
+    ["vertices_by_index"] = { 0, 1, 2, 2, 3, 0},
+    ["vertex_list_0"] = { Vec3(4, -3.99615002, 4.06669998), Vec3(4, -3.82068992, 3.08221006), Vec3(-4, -3.82068992, 3.08221006), Vec3(-4, -3.99615002, 4.06669998)},
+    ["face_vertex_count"] = { 3, 3},
+    ["part_list"] = { "tri_shape_0"},
+    ["part_face_count_list"] = { 2},
+    ["part_face_indices"] = { 0, 1},
+    ["is_subd"] = false,
+}
+
+RdlMeshGeometry("/scene/objects/<root>_mesh_4_1") {
+    ["vertices_by_index"] = { 0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4},
+    ["vertex_list_0"] = { Vec3(-10, -4.14615011, -10), Vec3(-10, -4.14615011, 10), Vec3(10, -4.14615011, 10), Vec3(10, -4.14615011, -10), Vec3(-10, -10, -2), Vec3(10, -10, -2), Vec3(10, 10, -2), Vec3(-10, 10, -2)},
+    ["face_vertex_count"] = { 3, 3, 3, 3},
+    ["part_list"] = { "tri_shape_0"},
+    ["part_face_count_list"] = { 4},
+    ["part_face_indices"] = { 0, 1, 2, 3},
+    ["is_subd"] = false,
+}
+
+GeometrySet("/scene/geometrysets/GeometrySet1") {
+    RdlInstancerGeometry("/scene/objects/<root>"),
+    RdlMeshGeometry("/scene/objects/<root>_mesh_0_1"),
+    RdlMeshGeometry("/scene/objects/<root>_mesh_1_1"),
+    RdlMeshGeometry("/scene/objects/<root>_mesh_2_1"),
+    RdlMeshGeometry("/scene/objects/<root>_mesh_3_1"),
+    RdlMeshGeometry("/scene/objects/<root>_mesh_4_1"),
+}
+
+Layer("/scene/layers/Layer1") {
+    {RdlInstancerGeometry("/scene/objects/<root>"), "", LightSet("/scene/lightsets/LightSet1")},
+    {RdlMeshGeometry("/scene/objects/<root>_mesh_0_1"), "", DwaMetalMaterial("/scene/materials//0xc0bf10"), LightSet("/scene/lightsets/LightSet1")},
+    {RdlMeshGeometry("/scene/objects/<root>_mesh_1_1"), "", DwaMetalMaterial("/scene/materials//0xc11ff0"), LightSet("/scene/lightsets/LightSet1")},
+    {RdlMeshGeometry("/scene/objects/<root>_mesh_2_1"), "", DwaMetalMaterial("/scene/materials//0xc12220"), LightSet("/scene/lightsets/LightSet1")},
+    {RdlMeshGeometry("/scene/objects/<root>_mesh_3_1"), "", DwaMetalMaterial("/scene/materials//0xc124a0"), LightSet("/scene/lightsets/LightSet1")},
+    {RdlMeshGeometry("/scene/objects/<root>_mesh_4_1"), "", DwaSolidDielectricMaterial("/scene/materials//0xc127e0"), LightSet("/scene/lightsets/LightSet1")},
+}
+
+DwaMetalMaterial("/scene/materials//0xc0bf10") {
+    ["roughness"] = 0.0707106739,
+    ["thin_geometry"] = true,
+    ["casts_caustics"] = true,
+}
+
+DwaMetalMaterial("/scene/materials//0xc11ff0") {
+    ["roughness"] = 0.141421348,
+    ["thin_geometry"] = true,
+    ["casts_caustics"] = true,
+}
+
+DwaMetalMaterial("/scene/materials//0xc12220") {
+    ["roughness"] = 0.223606795,
+    ["thin_geometry"] = true,
+    ["casts_caustics"] = true,
+}
+
+DwaMetalMaterial("/scene/materials//0xc124a0") {
+    ["roughness"] = 0.316227764,
+    ["thin_geometry"] = true,
+    ["casts_caustics"] = true,
+}
+
+DwaSolidDielectricMaterial("/scene/materials//0xc127e0") {
+    ["show_specular"] = false,
+    ["albedo"] = Rgb(0.400000006, 0.400000006, 0.400000006),
+    ["thin_geometry"] = true,
+}
+
+SphereLight("/scene/arealights/<root>_1") {
+    ["node_xform"] = blur(Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 10, 4, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 10, 10, 4, 1)),
+    ["color"] = Rgb(800, 800, 800),
+    ["normalized"] = false,
+    ["apply_scene_scale"] = false,
+    ["radius"] = 0.5,
+}
+
+SphereLight("/scene/arealights/<root>_2") {
+    ["node_xform"] = blur(Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -1.25, 0, 0, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -1.25, 0, 0, 1)),
+    ["color"] = Rgb(100, 100, 100),
+    ["normalized"] = false,
+    ["apply_scene_scale"] = false,
+    ["radius"] = 0.100000001,
+}
+
+SphereLight("/scene/arealights/<root>_3") {
+    ["node_xform"] = blur(Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -3.75, 0, 0, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, -3.75, 0, 0, 1)),
+    ["color"] = Rgb(901.802979, 901.802979, 901.802979),
+    ["normalized"] = false,
+    ["apply_scene_scale"] = false,
+    ["radius"] = 0.0333300009,
+}
+
+SphereLight("/scene/arealights/<root>_4") {
+    ["node_xform"] = blur(Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.25, 0, 0, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1.25, 0, 0, 1)),
+    ["color"] = Rgb(11.1111002, 11.1111002, 11.1111002),
+    ["normalized"] = false,
+    ["apply_scene_scale"] = false,
+    ["radius"] = 0.300000012,
+}
+
+SphereLight("/scene/arealights/<root>_5") {
+    ["node_xform"] = blur(Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3.75, 0, 0, 1), Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3.75, 0, 0, 1)),
+    ["color"] = Rgb(1.23457003, 1.23457003, 1.23457003),
+    ["normalized"] = false,
+    ["apply_scene_scale"] = false,
+    ["radius"] = 0.899999976,
+}
+
+LightSet("/scene/lightsets/LightSet1") {
+    SphereLight("/scene/arealights/<root>_1"),
+    SphereLight("/scene/arealights/<root>_2"),
+    SphereLight("/scene/arealights/<root>_3"),
+    SphereLight("/scene/arealights/<root>_4"),
+    SphereLight("/scene/arealights/<root>_5"),
+}
+
+local t =  rotate(180, 0, 1, 0) * Mat4(-1, 0, 0, 0, 0, 0.95241779088973999, -0.30479565262794495, 0, -0, -0.30479565262794495, -0.95241779088973999, 0, -0, 2.0000004768371582, 15.000001907348633, 1)
+PerspectiveCamera("/scene/cameras/PerspectiveCamera_1") {
+    ["node_xform"] = t,
+    ["near"] = 0.00100000005,
+    ["far"] = 99999.8984,
+    ["focal"] = blur(36.0969887, 36.0969887),
+}

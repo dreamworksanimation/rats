@@ -4,3 +4,4 @@
 add_subdirectory(differentials)
 add_subdirectory(general)
 add_subdirectory(geometry)
+add_subdirectory(sampling)
