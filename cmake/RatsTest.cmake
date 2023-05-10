@@ -5,7 +5,7 @@
 # Default args are defined within this function for each execution mode,
 # and are overriden by any matching additional arguments passed.
 # The 'out' variable will contain the final list of arguments.
-function(get_idiff_args out)
+function(_get_idiff_args out)
     set(options -p -q -a -abs)
     set(oneValueArgs EXEC_MODE -fail -failrelative -failpercent -hardfail -allowfailures -warn -warnrelative -warnpercent -hardwarn -scale)
     set(multiValueArgs "")
@@ -78,22 +78,51 @@ function(get_idiff_args out)
     set(${out} ${args} PARENT_SCOPE)
 endfunction()
 
-function(add_rats_test test_basename)
-    set(options "") # unused
-    set(oneValueArgs SCENE_DIR)
+# Add a new RaTS test.  Each RaTS test will produce a series of CTests, as follows:
+# 'canonical' label CTests will:
+#       * Render the scene to produce canonical images for each execution mode and
+#         copy the outputs= images to the directory specified by the ${RATS_CANONICAL_PATH}
+#         cache variable.  The folder structure will be created matching the relative
+#         path to the ${CMAKE_CURRENT_SOURCE_DIR} from the ${PROJECT_SOURCE_DIR}.
+# 'render' label CTests will:
+#       * Render the scene to produce images for each execution mode into the
+#         ${CMAKE_CURRENT_BINARY_DIR}.
+# 'diff' label CTests will:
+#       *  Execute the 'idiff' command on each of the output images comparing it
+#          with  the previously rendered canonical image of the same name.
+function(add_rats_test test_basename)   # basename of tests including relative folder structure, example: geometry_spheres
+    # KEYWORD arguments:
+    set(options "") # currently unused
+
+    set(oneValueArgs
+            # optional directory containing input files, defaults to ${CMAKE_CURRENT_SOURCE_DIR}
+            # example: SCENE_DIR /some/path/to/input_files/
+            SCENE_DIR)
+
     set(multiValueArgs
+            # list of input files the test requires
+            # example: INPUTS scene.rdla scene.rdlb
             INPUTS
+
+            # list of output files the test produces
+            # example: OUTPUTS scene.exr aovs.exr more_aovs.exr
             OUTPUTS
+
+            # optional list of idiff args to set/override
+            # example: IDIFF_ARGS_VECTOR -failpercent 0.025 -hardfail 0.035
             IDIFF_ARGS_SCALAR
             IDIFF_ARGS_VECTOR
             IDIFF_ARGS_XPU
+
+            # optional list of renderer args to set/override
+            # example: RENDER_ARGS_XPU -scene_var \"pixel_samples\" \"1\" -texture_cache_size 8192
             RENDER_ARGS_SCALAR
             RENDER_ARGS_VECTOR
             RENDER_ARGS_XPU
     )
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if(ARG_SCENE_DIR)
+    if(DEFINED ARG_SCENE_DIR)
         set(scene_dir ${ARG_SCENE_DIR})
     else()
         set(scene_dir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -132,7 +161,10 @@ function(add_rats_test test_basename)
         elseif (${exec_mode} STREQUAL xpu)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_XPU})
         endif()
-        message(VERBOSE "${render_cmd}")
+
+        # output the list of renderer cmd arguments for each test when
+        #cmake is invoked with --log-level=verbose
+        message(VERBOSE "${test_basename} renderer args (${exec_mode_upper}): ${render_cmd}")
 
         # Add test to generate canonicals
         add_test(NAME ${canonical_test_name}
@@ -158,7 +190,7 @@ function(add_rats_test test_basename)
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
-        # Add test to diff the result with the canonical via oiiotool
+        # Add test to diff the result with the canonical via idiff
         foreach(output ${ARG_OUTPUTS})
             cmake_path(GET output STEM stem)
             cmake_path(GET output EXTENSION extension)
@@ -166,10 +198,12 @@ function(add_rats_test test_basename)
             set(diff_name "${stem}_diff${extension}")
 
             set(diff_args -o ${diff_name})
-            get_idiff_args(more_args EXEC_MODE ${exec_mode} ${ARG_IDIFF_ARGS_${exec_mode_upper}})
+            _get_idiff_args(more_args EXEC_MODE ${exec_mode} ${ARG_IDIFF_ARGS_${exec_mode_upper}})
             list(APPEND diff_args ${more_args})
 
-            message(VERBOSE "${exec_mode_upper}: ${diff_args}")
+            # output the list of idiff cmd arguments for each test when
+            #cmake is invoked with --log-level=verbose
+            message(VERBOSE "${test_basename} idiff args (${exec_mode_upper}): ${diff_args}")
 
             add_test(NAME ${diff_test_name}
                 WORKING_DIRECTORY ${render_dir}
