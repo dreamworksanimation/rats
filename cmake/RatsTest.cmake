@@ -1,47 +1,82 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-set(rats_default_idiff_args_scalar
-    -fail 0.004           # Failure absolute difference threshold (default: 1e-06)
-    # -failrelative 0       # Failure relative threshold (default: 0)
-    -failpercent 0.01     # Allow this percentage of failures (default: 0)
-    -hardfail 0.02        # Fail if any one pixel exceeds this error (default: inf)
-    # -allowfailures 1e-06  # OK for this number of pixels to fail by any amount (default: 0)
-    -warn 0.004           # Warning absolute difference threshold (default: 1e-06)
-    # -warnrelative 0       # Warning relative threshold (default: 0)
-    -warnpercent 0.01        # Allow this percentage of warnings (default: 0)
-    # -hardwarn inf         # Warn if any one pixel exceeds this error (default: inf)
-    # -scale 1              # Scale the output image by this factor (default: 1)
-    # -p                    # Perform perceptual (rather than numeric) comparison
-)
+# Get list of arguments for the idiff cmd for the given EXEC_MODE.
+# Default args are defined within this function for each execution mode,
+# and are overriden by any matching additional arguments passed.
+# The 'out' variable will contain the final list of arguments.
+function(get_idiff_args out)
+    set(options -p -q -a -abs)
+    set(oneValueArgs EXEC_MODE -fail -failrelative -failpercent -hardfail -allowfailures -warn -warnrelative -warnpercent -hardwarn -scale)
+    set(multiValueArgs "")
+    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-set(rats_default_idiff_args_vector
-    -fail 0.004           # Failure absolute difference threshold (default: 1e-06)
-    # -failrelative 0       # Failure relative threshold (default: 0)
-    -failpercent 0.2      # Allow this percentage of failures (default: 0)
-    -hardfail 0.02        # Fail if any one pixel exceeds this error (default: inf)
-    # -allowfailures 1e-06  # OK for this number of pixels to fail by any amount (default: 0)
-    -warn 0.004           # Warning absolute difference threshold (default: 1e-06)
-    # -warnrelative 0       # Warning relative threshold (default: 0)
-    -warnpercent 0.2         # Allow this percentage of warnings (default: 0)
-    # -hardwarn inf         # Warn if any one pixel exceeds this error (default: inf)
-    # -scale 1              # Scale the output image by this factor (default: 1)
-    # -p                    # Perform perceptual (rather than numeric) comparison
-)
+    if(NOT DEFINED ARG_EXEC_MODE)
+        message(FATAL_ERROR "You must specify EXEC_MODE.")
+    endif()
 
-set(rats_default_idiff_args_xpu
-    -fail 0.004           # Failure absolute difference threshold (default: 1e-06)
-    # -failrelative 0       # Failure relative threshold (default: 0)
-    -failpercent 0.2      # Allow this percentage of failures (default: 0)
-    -hardfail 0.02        # Fail if any one pixel exceeds this error (default: inf)
-    # -allowfailures 1e-06  # OK for this number of pixels to fail by any amount (default: 0)
-    -warn 0.004           # Warning absolute difference threshold (default: 1e-06)
-    # -warnrelative 0       # Warning relative threshold (default: 0)
-    -warnpercent 0.2         # Allow this percentage of warnings (default: 0)
-    # -hardwarn inf         # Warn if any one pixel exceeds this error (default: inf)
-    # -scale 1              # Scale the output image by this factor (default: 1)
-    # -p                    # Perform perceptual (rather than numeric) comparison
-)
+    # Commented default arguments are not returned by this function
+    # unless overridden but are left in place for future use.
+    if(${ARG_EXEC_MODE} STREQUAL "scalar")
+        set(default_fail            0.004)
+        # set(default_failrelative    0)
+        set(default_failpercent     0.01)
+        set(default_hardfail        0.02)
+        # set(default_allowfailures   0)
+        set(default_warn            0.004)
+        # set(default_warnrelative    0)
+        set(default_warnpercent     0.01)
+        # set(default_hardwarn        inf)
+        # set(default_scale           1)
+        # set(default_p               FALSE)
+        # set(default_q               FALSE)
+        set(default_a               TRUE)
+        set(default_abs             TRUE)
+    elseif(${ARG_EXEC_MODE} STREQUAL "vector" OR ${ARG_EXEC_MODE} STREQUAL "xpu")
+        set(default_fail            0.004)
+        # set(default_failrelative    0)
+        set(default_failpercent     0.2)
+        set(default_hardfail        0.02)
+        # set(default_allowfailures   0)
+        set(default_warn            0.004)
+        # set(default_warnrelative    0)
+        set(default_warnpercent     0.2)
+        # set(default_hardwarn        inf)
+        # set(default_scale           1)
+        # set(default_p               FALSE)
+        # set(default_q               FALSE)
+        set(default_a               TRUE)
+        set(default_abs             TRUE)
+    else()
+        message(FATAL_ERROR "Unrecognized EXEC_MODE: ${ARG_EXEC_MODE}")
+    endif()
+
+    set(args "")
+
+    # append any single-value options
+    foreach(arg fail;failrelative;failpercent;hardfail;allowfailures;warn;warnrelative;warnpercent;hardwarn;scale)
+        set(override ARG_-${arg})
+        set(default default_${arg})
+        if(DEFINED ${override})
+            list(APPEND args -${arg} ${${override}})
+        elseif(DEFINED ${default})
+            list(APPEND args -${arg} ${${default}})
+        endif()
+    endforeach()
+
+    # append any flags
+    foreach(arg p;q;a;abs)
+        set(override ARG_-${arg})
+        set(default default_${arg})
+        if(${override})
+            list(APPEND args -${arg})
+        elseif(${default})
+            list(APPEND args -${arg})
+        endif()
+    endforeach()
+
+    set(${out} ${args} PARENT_SCOPE)
+endfunction()
 
 function(add_rats_test test_basename)
     set(options "") # unused
@@ -58,7 +93,7 @@ function(add_rats_test test_basename)
     )
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (ARG_SCENE_DIR)
+    if(ARG_SCENE_DIR)
         set(scene_dir ${ARG_SCENE_DIR})
     else()
         set(scene_dir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -71,6 +106,7 @@ function(add_rats_test test_basename)
     set(root_canonical_path ${RATS_CANONICAL_PATH}/${test_rel_path})
 
     foreach(exec_mode scalar;vector;xpu)
+        string(TOUPPER ${exec_mode} exec_mode_upper)
         set(canonical_dir ${root_canonical_path}/${exec_mode})
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         file(MAKE_DIRECTORY ${render_dir})
@@ -89,7 +125,7 @@ function(add_rats_test test_basename)
         list(APPEND render_cmd -exec_mode ${exec_mode})
         list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
 
-        if (${exec_mode} STREQUAL scalar)
+        if(${exec_mode} STREQUAL scalar)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_SCALAR})
         elseif (${exec_mode} STREQUAL vector)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_VECTOR})
@@ -130,17 +166,10 @@ function(add_rats_test test_basename)
             set(diff_name "${stem}_diff${extension}")
 
             set(diff_args -o ${diff_name})
-            if (${exec_mode} STREQUAL scalar)
-                list(APPEND diff_args ${rats_default_idiff_args_scalar})
-                list(APPEND diff_args ${ARG_IDIFF_ARGS_SCALAR})
-            elseif (${exec_mode} STREQUAL vector)
-                list(APPEND diff_args ${rats_default_idiff_args_vector})
-                list(APPEND diff_args ${ARG_IDIFF_ARGS_VECTOR})
-            elseif (${exec_mode} STREQUAL xpu)
-                list(APPEND diff_args ${rats_default_idiff_args_xpu})
-                list(APPEND diff_args ${ARG_IDIFF_ARGS_XPU})
-            endif()
-            message(VERBOSE "${diff_args}")
+            get_idiff_args(more_args EXEC_MODE ${exec_mode} ${ARG_IDIFF_ARGS_${exec_mode_upper}})
+            list(APPEND diff_args ${more_args})
+
+            message(VERBOSE "${exec_mode_upper}: ${diff_args}")
 
             add_test(NAME ${diff_test_name}
                 WORKING_DIRECTORY ${render_dir}
