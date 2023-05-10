@@ -4,11 +4,11 @@
 # Get list of arguments for the idiff cmd for the given EXEC_MODE.
 # Default args are defined within this function for each execution mode,
 # and are overriden by any matching additional arguments passed.
-# The 'out' variable will contain the final list of arguments.
-function(_get_idiff_args out)
+# The 'out_var' variable will contain the final list of arguments.
+function(_get_idiff_args out_var)
     set(options -p -q -a -abs)
     set(oneValueArgs EXEC_MODE -fail -failrelative -failpercent -hardfail -allowfailures -warn -warnrelative -warnpercent -hardwarn -scale)
-    set(multiValueArgs "")
+    set(multiValueArgs "") # currently unused
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(NOT DEFINED ARG_EXEC_MODE)
@@ -75,7 +75,7 @@ function(_get_idiff_args out)
         endif()
     endforeach()
 
-    set(${out} ${args} PARENT_SCOPE)
+    set(${out_var} ${args} PARENT_SCOPE)
 endfunction()
 
 # Add a new RaTS test.  Each RaTS test will produce a series of CTests, as follows:
@@ -162,11 +162,11 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             list(APPEND render_cmd ${ARG_RENDER_ARGS_XPU})
         endif()
 
-        # output the list of renderer cmd arguments for each test when
-        #cmake is invoked with --log-level=verbose
+        # Output the list of renderer cmd arguments for each test when
+        # cmake is invoked with --log-level=verbose
         message(VERBOSE "${test_basename} renderer args (${exec_mode_upper}): ${render_cmd}")
 
-        # Add test to generate canonicals
+        # Add CTest to generate canonicals
         add_test(NAME ${canonical_test_name}
             WORKING_DIRECTORY ${render_dir}
             COMMAND ${CMAKE_COMMAND}
@@ -180,7 +180,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
-        # Add test to render result
+        # Add CTest to render result
         add_test(NAME ${render_test_name}
             WORKING_DIRECTORY ${render_dir}
             COMMAND ${render_cmd}
@@ -190,7 +190,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
-        # Add test to diff the result with the canonical via idiff
+        # Add CTest to diff the result with the canonical via idiff
         foreach(output ${ARG_OUTPUTS})
             cmake_path(GET output STEM stem)
             cmake_path(GET output EXTENSION extension)
@@ -201,8 +201,8 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             _get_idiff_args(more_args EXEC_MODE ${exec_mode} ${ARG_IDIFF_ARGS_${exec_mode_upper}})
             list(APPEND diff_args ${more_args})
 
-            # output the list of idiff cmd arguments for each test when
-            #cmake is invoked with --log-level=verbose
+            # Output the list of idiff cmd arguments for each test when
+            # cmake is invoked with --log-level=verbose
             message(VERBOSE "${test_basename} idiff args (${exec_mode_upper}): ${diff_args}")
 
             add_test(NAME ${diff_test_name}
