@@ -85,8 +85,8 @@ DwaMetalMaterial("/Scene/surfacing/wall") {
 }
 
 EnvLight("/Scene/lighting/env") {
-    ["intensity"] = 0.8,
-    ["texture"] = "/work/gshad/moonshine_test/rats_data/differentials/scene_text/env_maps/green_house-med.exr",
+    ["exposure"] = -1.5,
+    ["texture"] = rats_assets_dir.."/hdri/gld_neutral_GI_HS5000_PF_hdr.exr",
 }
 
 LightSet("LS_15193349465605712651") {

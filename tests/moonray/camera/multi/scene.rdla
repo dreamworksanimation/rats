@@ -1,0 +1,151 @@
+SceneVariables {
+    ["image width"] = 256,
+    ["image height"] = 142,
+}
+
+Camera("/Scene/rendering/cameraLFT") {
+    ["node xform"] = translate(0, 0.0, 50)
+                   * rotate(-10, 1, 0, 0)
+                   * rotate(90, 0, 1, 0),
+    ["focal"] = 50,
+    ["film width aperture"] = 24,
+    ["near"] = 1,
+    ["far"] = 10000,
+    ["mb shutter open"] = -0.25,
+    ["mb shutter close"] = 0.25,
+    ["stereo view"] = 1,
+    ["stereo interocular distance"] = 6.3,
+    ["stereo convergence distance"] = 50,
+}
+
+Camera("/Scene/rendering/cameraRGT") {
+    ["node xform"] = translate(0, 0.0, 50)
+                   * rotate(-10, 1, 0, 0)
+                   * rotate(90, 0, 1, 0),
+    ["focal"] = 50,
+    ["film width aperture"] = 24,
+    ["near"] = 1,
+    ["far"] = 10000,
+    ["mb shutter open"] = -0.25,
+    ["mb shutter close"] = 0.25,
+    ["stereo view"] = 2,
+    ["stereo interocular distance"] = 6.3,
+    ["stereo convergence distance"] = 50,
+}
+
+RenderOutput("/scene/AOV/BeautyLFT") {
+    ["channel format"] = 1,
+    ["compression"] = 9,
+    ["result"] = 0,  -- beauty
+    ["exr header attributes"] = Metadata("/Scene/exrheader"),
+    ["file name"] = "beautyLFT.exr",
+    ["camera"] = Camera("/Scene/rendering/cameraLFT"),
+}
+
+RenderOutput("/scene/AOV/BeautyRGT") {
+    ["channel format"] = 1,
+    ["compression"] = 9,
+    ["result"] = 0,  -- beauty
+    ["exr header attributes"] = Metadata("/Scene/exrheader"),
+    ["file name"] = "beautyRGT.exr",
+    ["camera"] = Camera("/Scene/rendering/cameraRGT"),
+}
+
+RenderOutput("/scene/AOV/aovLFT") {
+    ["channel format"] = 1,
+    ["compression"] = 9,
+    ["result"] = 8, -- light aov
+    ["light aov"] = "CDL",
+    ["exr header attributes"] = Metadata("/Scene/exrheader"),
+    ["file name"] = "aovLFT.exr",
+    ["camera"] = Camera("/Scene/rendering/cameraLFT"),
+}
+
+RenderOutput("/scene/AOV/aovRGT") {
+    ["channel format"] = 1,
+    ["compression"] = 9,
+    ["result"] = 8, -- light aov
+    ["light aov"] = "CDL",
+    ["exr header attributes"] = Metadata("/Scene/exrheader"),
+    ["file name"] = "aovRGT.exr",
+    ["camera"] = Camera("/Scene/rendering/cameraRGT"),
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["exposure"] = -1,
+    ["texture"] = rats_assets_dir.."/hdri/gld_neutral_GI_HS5000_PF_hdr.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+local posMin = -20
+local posMax = 20
+
+local posZMin = 10
+local posZMax = -10
+
+local roughnessMin = 0.0
+local roughnessMax = 0.8
+
+local numCol = 11
+for col = 1, numCol do
+    local ratio = (col - 1) / (numCol - 1)
+
+    local posX = posMin + (posMax - posMin) * ratio
+    local posZ = posZMin + (posZMax - posZMin) * ratio
+
+    local roughness = 0.1
+
+    -- Linear wedge of roughness
+    roughness = roughnessMin + (roughnessMax - roughnessMin) * ratio
+
+    local geom = SphereGeometry("/Scene/geometry/geom" .. col) {
+        ["node xform"] = rotate(180, 0, 1, 0)
+                       * translate(posX, 1, posZ),
+    }
+    table.insert(geoms, geom)
+
+    local mtl = DwaMetalMaterial("/Scene/surfacing/mtl" .. col) {
+        ["roughness"] = roughness,
+        ["metallic_color"] = Rgb(0.6, 0.6, 0.6),
+    }
+    table.insert(assignments, {geom, "", mtl, lightSet})
+end
+
+-------------------------------------------------------
+
+local planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
+    ["node xform"] = scale(50, 1, 24) * translate(0, 0, 0),
+    ["vertex_list"] = {Vec3(-0.5, 0.0, 0.5), Vec3(0.5, 0.0, 0.5), Vec3(0.5, 0.0, -0.5), Vec3(-0.5, 0.0, -0.5)},
+    ["vertices_by_index"] = {0, 1, 2, 3},
+    ["face_vertex_count"] = {4},
+    ["is_subd"] = false
+}
+table.insert(geoms, planeGeom)
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/Graphpaper.tx",
+    ["scale"] = Vec2(7, 4),
+    ["wrap around"] = true,
+}
+
+local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap),
+    ["show_specular"] = false,
+}
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+

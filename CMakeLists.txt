@@ -10,7 +10,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(RATS_CANONICAL_PATH "" CACHE PATH "Path to canonical images")
 
-# find oiiotool
+# find idiff
 find_package(OpenImageIO REQUIRED)
 find_program(IDIFF
     idiff
