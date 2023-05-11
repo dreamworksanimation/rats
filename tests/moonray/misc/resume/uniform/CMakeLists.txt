@@ -1,7 +1,7 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_rats_test(misc_cornell_box
+add_rats_test(misc_resume_uniform
     INPUTS
         scene.rdla
     OUTPUTS

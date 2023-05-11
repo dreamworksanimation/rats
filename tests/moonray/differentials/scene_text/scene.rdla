@@ -44,7 +44,7 @@ BoxGeometry("/Scene/geometry/box_mirror") {
 
 RdlMeshGeometry("/Scene/geometry/wall_back") {
     ["node xform"] = Mat4(30, 0, 0, 0, 0, 6.12323e-17, 1, 0, 0, -20, 1.22465e-15, 0, 0, 10, -10, 1),
-    ["vertex_list"] = {Vec3(-0.5, 0.0, -0.5), Vec3(0.5, 0.0, -0.5), Vec3(0.5, 0.0, 0.5), Vec3(-0.5, 0.0, 0.5)},
+    ["vertex_list"] = {Vec3(-0.5, 0.0, 0.5), Vec3(0.5, 0.0, 0.5), Vec3(0.5, 0.0, -0.5), Vec3(-0.5, 0.0, -0.5)},
     ["vertices_by_index"] = {0, 1, 2, 3},
     ["face_vertex_count"] = {4},
     ["is_subd"] = false
@@ -85,8 +85,8 @@ DwaMetalMaterial("/Scene/surfacing/wall") {
 }
 
 EnvLight("/Scene/lighting/env") {
-    ["exposure"] = -1.5,
-    ["texture"] = rats_assets_dir.."/hdri/gld_neutral_GI_HS5000_PF_hdr.exr",
+    ["exposure"] = -1,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
 }
 
 LightSet("LS_15193349465605712651") {

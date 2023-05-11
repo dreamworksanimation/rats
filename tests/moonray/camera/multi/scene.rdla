@@ -75,7 +75,7 @@ RenderOutput("/scene/AOV/aovRGT") {
 
 env = EnvLight("/Scene/lighting/env") {
     ["exposure"] = -1,
-    ["texture"] = rats_assets_dir.."/hdri/gld_neutral_GI_HS5000_PF_hdr.exr",
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
 }
 
 lightSet = LightSet("/Scene/lighting/lightSet") {

@@ -1,0 +1,137 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 213,
+    ["resumable output"] = true,
+    ["checkpoint active"] = true,
+    ["checkpoint interval"] = 0.1,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 4.5) *
+                     rotate(-29, 1, 0, 0) * rotate(0, 0, 1, 0) *
+                     translate(0, 1.0, 0),
+    ["focal"] = 35,
+    ["film_width_aperture"] = 24,
+}
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["node_xform"] = rotate(-90, 0, 1, 0),
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+    ["exposure"] = -0.5,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+local planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(20, 1, 20),
+    ["vertex_list"] = {Vec3(-0.5, 0.0, 0.5), Vec3(0.5, 0.0, 0.5), Vec3(0.5, 0.0, -0.5), Vec3(-0.5, 0.0, -0.5)},
+    ["vertices_by_index"] = {0, 1, 2, 3},
+    ["face_vertex_count"] = {4},
+    ["is_subd"] = false
+}
+table.insert(geoms, planeGeom)
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/Graphpaper.tx",
+    ["scale"] = Vec2(5, 5),
+    ["wrap_around"] = true,
+}
+
+local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap),
+    ["roughness"] = 0.1,
+}
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+
+-------------------------------------------------------
+
+local geom = SphereGeometry("/Scene/geometry/geom") {
+    ["node_xform"] = translate(0, 1, 0),
+}
+table.insert(geoms, geom)
+
+local mtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl") {
+    ["albedo"] = Rgb(0.319, 0.06, 0.0),
+    ["roughness"] = 0.2,
+}
+table.insert(assignments, {geom, "", mtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
+-------------------------------------------------------
+
+-- alpha
+RenderOutput("/output/alpha") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 1, -- alpha
+   ["channel_name"] = "alpha",
+   ["checkpoint_file_name"] = "checkpoint0.exr",
+   ["resume_file_name"] = "resume0.exr",
+}
+
+-- beauty
+RenderOutput("/output/beauty") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 0, -- beauty
+   ["channel_name"] = "beauty",
+   ["checkpoint_file_name"] = "checkpoint0.exr",
+   ["compression"] = "zip",
+   ["channel_format"] = "float"
+}
+
+-- weight
+RenderOutput("/output/weight") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 11, -- weight
+   ["channel_name"] = "weight",
+   ["checkpoint_file_name"] = "checkpoint0.exr",
+   ["compression"] = "zip",
+   ["channel_format"] = "float"
+}
+
+-- beauty aux
+RenderOutput("/output/beautyaux") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 12, -- beauty aux
+   ["channel_name"] = "beauty aux",
+   ["checkpoint_file_name"] = "checkpoint0.exr",
+   ["compression"] = "zip",
+   ["channel_format"] = "float"
+}
+
+-- alpha aux
+RenderOutput("/output/alphaAux") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 14, -- alpha aux
+   ["channel_name"] = "alpha aux",
+   ["checkpoint_file_name"] = "checkpoint0.exr",
+   ["compression"] = "zip",
+   ["channel_format"] = "float"
+}
+
+-- display filter
+ColorCorrectDisplayFilter("/display/exposure") {
+    ["input"] = RenderOutput("/output/beauty"),
+    ["exposure"] = 2,
+}
+
+RenderOutput("/output/exposure") {
+    ["file_name"] = "result0.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = ColorCorrectDisplayFilter("/display/exposure"),
+    ["channel_name"] = "exposure",
+    ["checkpoint_file_name"] = "checkpoint0.exr",
+}

@@ -73,8 +73,8 @@ mtlWall = DwaSolidDielectricMaterial("/Scene/surfacing/wall") {
 -------------------------------------------------------
 
 env = EnvLight("/Scene/lighting/env") {
-    ["node_xform"] = rotate(90, 0, 1, 0),
-    ["texture"] = rats_assets_dir.."/hdri/studio_3_point.exr"
+    ["exposure"] = -1,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr"
 }
 
 lightSet = LightSet("/Scene/lighting/lightSet") {

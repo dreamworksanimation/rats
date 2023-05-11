@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory(camera)
+add_subdirectory(deep)
 add_subdirectory(differentials)
 add_subdirectory(geometry)
 add_subdirectory(misc)
