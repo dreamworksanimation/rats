@@ -30,12 +30,13 @@ endmacro()
 # run moonray
 exec_and_check(${RENDER_CMD})
 
-# make the directory for the canonicals
-set(mkdir_cmd ${CMAKE_COMMAND} -E make_directory ${CANONICAL_PATH})
-exec_and_check(${mkdir_cmd})
+if(OUTPUTS)
+    # make the directory for the canonicals
+    set(mkdir_cmd ${CMAKE_COMMAND} -E make_directory ${CANONICAL_PATH})
+    exec_and_check(${mkdir_cmd})
 
-# copy the outputs to the canonicals dir
-set(copy_cmd ${CMAKE_COMMAND} -E copy ${OUTPUTS} ${CANONICAL_PATH})
-exec_and_check(${copy_cmd})
-
+    # copy the outputs to the canonicals dir
+    set(copy_cmd ${CMAKE_COMMAND} -E copy ${OUTPUTS} ${CANONICAL_PATH})
+    exec_and_check(${copy_cmd})
+endif()
 

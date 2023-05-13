@@ -1,9 +1,6 @@
 SceneVariables {
     ["image_width"] = 256,
     ["image_height"] = 213,
-    ["resumable output"] = true,
-    ["checkpoint active"] = true,
-    ["checkpoint interval"] = 0.1,
 }
 
 Camera("/Scene/rendering/camera") {
@@ -48,7 +45,7 @@ local planeMap = ImageMap("/Scene/surfacing/planeMap") {
 
 local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
     ["albedo"] = bind(planeMap),
-    ["roughness"] = 0.1,
+    ["roughness"] = 0.4,
 }
 table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
 
@@ -75,49 +72,43 @@ Layer("/Scene/layer")(assignments)
 
 -- alpha
 RenderOutput("/output/alpha") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "result.exr",
    ["result"] = 1, -- alpha
    ["channel_name"] = "alpha",
-   ["checkpoint_file_name"] = "checkpoint0.exr",
-   ["resume_file_name"] = "resume0.exr",
 }
 
 -- beauty
 RenderOutput("/output/beauty") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "result.exr",
    ["result"] = 0, -- beauty
    ["channel_name"] = "beauty",
-   ["checkpoint_file_name"] = "checkpoint0.exr",
    ["compression"] = "zip",
    ["channel_format"] = "float"
 }
 
 -- weight
 RenderOutput("/output/weight") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "result.exr",
    ["result"] = 11, -- weight
    ["channel_name"] = "weight",
-   ["checkpoint_file_name"] = "checkpoint0.exr",
    ["compression"] = "zip",
    ["channel_format"] = "float"
 }
 
 -- beauty aux
 RenderOutput("/output/beautyaux") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "result.exr",
    ["result"] = 12, -- beauty aux
    ["channel_name"] = "beauty aux",
-   ["checkpoint_file_name"] = "checkpoint0.exr",
    ["compression"] = "zip",
    ["channel_format"] = "float"
 }
 
 -- alpha aux
 RenderOutput("/output/alphaAux") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "result.exr",
    ["result"] = 14, -- alpha aux
    ["channel_name"] = "alpha aux",
-   ["checkpoint_file_name"] = "checkpoint0.exr",
    ["compression"] = "zip",
    ["channel_format"] = "float"
 }
@@ -129,9 +120,8 @@ ColorCorrectDisplayFilter("/display/exposure") {
 }
 
 RenderOutput("/output/exposure") {
-    ["file_name"] = "result0.exr",
+    ["file_name"] = "result.exr",
     ["result"] = "display filter",
     ["display_filter"] = ColorCorrectDisplayFilter("/display/exposure"),
     ["channel_name"] = "exposure",
-    ["checkpoint_file_name"] = "checkpoint0.exr",
 }

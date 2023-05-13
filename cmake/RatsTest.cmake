@@ -9,8 +9,15 @@ function(_get_idiff_args out_var)
     set(options -p -q -a -abs)
     set(oneValueArgs EXEC_MODE -fail -failrelative -failpercent -hardfail -allowfailures -warn -warnrelative -warnpercent -hardwarn -scale)
     set(multiValueArgs "") # currently unused
-    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+    # parse and validate arguments
+    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+    if(DEFINED ARG_KEYWORDS_MISSING_VALUES)
+        message(FATAL_ERROR "Keywords missing values: ${ARG_KEYWORDS_MISSING_VALUES}")
+    endif()
+    if(DEFINED ARG_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Unrecognized arguments: ${ARG_UNPARSED_ARGUMENTS}")
+    endif()
     if(NOT DEFINED ARG_EXEC_MODE)
         message(FATAL_ERROR "You must specify EXEC_MODE.")
     endif()
@@ -92,21 +99,18 @@ endfunction()
 #          with  the previously rendered canonical image of the same name.
 function(add_rats_test test_basename)   # basename of tests including relative folder structure, example: geometry_spheres
     # KEYWORD arguments:
-    set(options "") # currently unused
+    set(options
+            # NO_SCALAR
+            # NO_VECTOR
+            # NO_XPU
+    )
 
-    set(oneValueArgs
-            # optional directory containing input files, defaults to ${CMAKE_CURRENT_SOURCE_DIR}
-            # example: SCENE_DIR /some/path/to/input_files/
-            SCENE_DIR)
+    set(oneValueArgs "") # unused
 
     set(multiValueArgs
-            # list of input files the test requires
-            # example: INPUTS scene.rdla scene.rdlb
-            INPUTS
-
-            # list of output files the test produces
-            # example: OUTPUTS scene.exr aovs.exr more_aovs.exr
-            OUTPUTS
+            # optional list of tests that should be ran before this test
+            # in multiple job CTest runs (-j N, where N > 0)
+            DEPENDS
 
             # optional list of idiff args to set/override
             # example: IDIFF_ARGS_VECTOR -failpercent 0.025 -hardfail 0.035
@@ -114,18 +118,31 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             IDIFF_ARGS_VECTOR
             IDIFF_ARGS_XPU
 
+            # list of input files the test requires
+            # example: INPUTS scene.rdla scene.rdlb
+            INPUTS
+
+            # list of output files the test produces.
+            # if empty, no canonical/diff CTests are created for this test
+            # example: OUTPUTS scene.exr aovs.exr more_aovs.exr
+            OUTPUTS
+
             # optional list of renderer args to set/override
             # example: RENDER_ARGS_XPU -scene_var \"pixel_samples\" \"1\" -texture_cache_size 8192
             RENDER_ARGS_SCALAR
             RENDER_ARGS_VECTOR
             RENDER_ARGS_XPU
     )
+    # parse and validate arguments
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-    if(DEFINED ARG_SCENE_DIR)
-        set(scene_dir ${ARG_SCENE_DIR})
-    else()
-        set(scene_dir ${CMAKE_CURRENT_SOURCE_DIR})
+    if(DEFINED ARG_KEYWORDS_MISSING_VALUES)
+        message(FATAL_ERROR "Keywords missing values: ${ARG_KEYWORDS_MISSING_VALUES}")
+    endif()
+    if(DEFINED ARG_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR "Unrecognized arguments: ${ARG_UNPARSED_ARGUMENTS}")
+    endif()
+    if(NOT DEFINED ARG_INPUTS)
+        message(FATAL_ERROR "You must specify INPUTS")
     endif()
 
     set(rdl2_dso_path ${CMAKE_BINARY_DIR}/rdl2dso/)
@@ -142,14 +159,31 @@ function(add_rats_test test_basename)   # basename of tests including relative f
 
         set(canonical_test_name "rats_${exec_mode}_canonical_${test_basename}")
         set(render_test_name "rats_${exec_mode}_render_${test_basename}")
+        set(checkpoint_test_name "rats_${exec_mode}_checkpoint_${test_basename}")
+
+        if(ARG_DEPENDS)
+            # compute full name of dependency tests with prefix
+            list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode}_canonical_" OUTPUT_VARIABLE canonical_dependencies)
+            list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode}_render_"    OUTPUT_VARIABLE render_dependencies)
+            # join them into one big list and verify they exist
+            string(JOIN % dependencies ${canonical_dependencies})
+            string(JOIN % dependencies ${render_dependencies})
+            foreach(test ${dependencies})
+                if(NOT TEST ${test})
+                    message(FATAL_ERROR "No test named ${test} exists to add as a dependency")
+                endif()
+            endforeach()
+        endif()
 
         # Build moonray command. We need the fully qualified path to the moonray executable if
         # we are going to be running it using the ${CMAKE_COMMAND} -P <script.cmake> method.
         # NOTE: $<TARGET_FILE:moonray> isn't expanded until _build_ time.
-        set(render_cmd $<TARGET_FILE:moonray>)
+        set(moonray_cmd $<TARGET_FILE:moonray>)
+        list(APPEND render_cmd -threads 2)
 
+        set(render_cmd ${moonray_cmd})
         foreach(rdl_input ${ARG_INPUTS})
-            list(APPEND render_cmd -in ${scene_dir}/${rdl_input})
+            list(APPEND render_cmd -in ${CMAKE_CURRENT_SOURCE_DIR}/${rdl_input})
         endforeach()
         list(APPEND render_cmd -exec_mode ${exec_mode})
         list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
@@ -164,7 +198,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
 
         # Output the list of renderer cmd arguments for each test when
         # cmake is invoked with --log-level=verbose
-        message(VERBOSE "${test_basename} renderer args (${exec_mode_upper}): ${render_cmd}")
+        # message(VERBOSE "${test_basename} renderer args (${exec_mode_upper}): ${render_cmd}")
 
         # Add CTest to generate canonicals
         add_test(NAME ${canonical_test_name}
@@ -177,6 +211,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         )
         set_tests_properties(${canonical_test_name} PROPERTIES
             LABELS "canonical"
+            DEPENDS "${canonical_dependencies}"
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
@@ -187,6 +222,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         )
         set_tests_properties(${render_test_name} PROPERTIES
             LABELS "render"
+            DEPENDS "${render_dependencies}"
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 

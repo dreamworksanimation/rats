@@ -1,0 +1,36 @@
+SceneVariables {
+    ["resumable_output"] = true,
+    ["checkpoint_active"] = true,
+    ["checkpoint_interval"] = 0.1,
+    ["checkpoint_sample_cap"] = 8,
+}
+
+-- alpha
+RenderOutput("/output/alpha") {
+   ["checkpoint_file_name"] = "checkpoint.exr",
+}
+
+-- beauty
+RenderOutput("/output/beauty") {
+   ["checkpoint_file_name"] = "checkpoint.exr",
+}
+
+-- weight
+RenderOutput("/output/weight") {
+   ["checkpoint_file_name"] = "checkpoint.exr",
+}
+
+-- beauty aux
+RenderOutput("/output/beautyaux") {
+   ["checkpoint_file_name"] = "checkpoint.exr",
+}
+
+-- alpha aux
+RenderOutput("/output/alphaAux") {
+   ["checkpoint_file_name"] = "checkpoint.exr",
+}
+
+RenderOutput("/output/exposure") {
+   ["checkpoint_file_name"] = "checkpoint.exr",
+}
+
