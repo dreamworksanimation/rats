@@ -1,0 +1,55 @@
+SceneVariables {
+    ["image width"] = 256,
+    ["image height"] = 256,
+}
+
+local cam = PerspectiveCamera("cam") {
+    ["node xform"] = rotate(-10, 0, 1, 0) * translate(0, 0, 10) * rotate(30, 0, 1, 0) * rotate(200, 1, 0, 0);
+    ["mb shutter open"] = -1,
+    ["mb shutter close"] = 0,
+}
+
+local cube = RdlMeshGeometry("cube") {
+    ["vertex_list_0"]  = { Vec3(-1,-1,-1), Vec3( 1,-1,-1), Vec3(-1, 1,-1), Vec3( 1, 1,-1), Vec3(-1,-1, 1), Vec3( 1,-1, 1), Vec3(-1, 1, 1), Vec3( 1, 1, 1) },
+    ["vertex_list_1"]  = { Vec3( 3,-1,-1), Vec3( 5,-1,-1), Vec3( 3, 1,-1), Vec3( 5, 1,-1), Vec3( 3,-1, 1), Vec3( 5,-1, 1), Vec3( 3, 1, 1), Vec3( 5, 1, 1) },
+    ["velocity_list_0"] = { Vec3(0, 100, 0), Vec3(0, 100, 0), Vec3(0, 100, 0), Vec3(0, 100, 0), Vec3(0, 100, 0), Vec3(0, 100, 0), Vec3(0, 100, 0), Vec3(0, 100, 0) },
+    ["velocity_list_1"] = { Vec3(100, 100, 0), Vec3(100, 100, 0), Vec3(100, 100, 0), Vec3(100, 100, 0), Vec3(100, 100, 0), Vec3(100, 100, 0), Vec3(100, 100, 0), Vec3(100, 100, 0) },
+    ["vertices by index"] = { 0,1,3,2,  4,5,7,6,  0,1,5,4,  3,2,6,7,  0,2,6,4,  1,3,7,5 },
+    ["face vertex count"] = {4, 4, 4, 4, 4, 4},
+    ["part list"] = {"faceR", "faceC", "faceG", "faceM", "faceB", "faceY"},
+    ["part face count list"] = {1, 1, 1, 1, 1, 1},
+    ["part face indices"] = {0, 1, 2, 3, 4, 5},
+    ["is subd"] = false,
+    ["motion_blur_type"] = "hermite",
+    ["curved_motion_blur_sample_count"] = 10,
+}
+
+local wall = RdlMeshGeometry("wall") {
+    ["vertex_list_0"]  = { Vec3(-20,-20,10), Vec3(20,-20,10), Vec3(-20,20,10), Vec3(20,20,10) },
+    ["vertices by index"] = { 0,1,3,2 },
+    ["face vertex count"] = { 4 },
+    ["is subd"] = false,
+}
+
+GeometrySet("geom") { cube, wall }
+
+local mtlR = DwaEmissiveMaterial("mtlR") { ["emission"] = Rgb(1, 0, 0) }
+local mtlC = DwaEmissiveMaterial("mtlC") { ["emission"] = Rgb(0, 1, 1) }
+local mtlG = DwaEmissiveMaterial("mtlG") { ["emission"] = Rgb(0, 1, 0) }
+local mtlM = DwaEmissiveMaterial("mtlM") { ["emission"] = Rgb(1, 0, 1) }
+local mtlB = DwaEmissiveMaterial("mtlB") { ["emission"] = Rgb(0, 0, 1) }
+local mtlY = DwaEmissiveMaterial("mtlY") { ["emission"] = Rgb(1, 1, 0) }
+local mtlK = DwaSolidDielectricMaterial("mtlK") { ["albedo"] = Rgb(0, 0, 0), ["show_specular"] = false }
+
+local lgts = LightSet("lgts") { }
+
+Layer("defaultLayer") {
+    { cube, "faceR", mtlR, lgts },
+    { cube, "faceC", mtlC, lgts },
+    { cube, "faceG", mtlG, lgts },
+    { cube, "faceM", mtlM, lgts },
+    { cube, "faceB", mtlB, lgts },
+    { cube, "faceY", mtlY, lgts },
+    { wall, ""     , mtlK, lgts },
+}
+

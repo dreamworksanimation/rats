@@ -72,15 +72,15 @@ Layer("/Scene/layer")(assignments)
 
 -- alpha
 RenderOutput("/output/alpha") {
-   ["file_name"] = "result.exr",
-   ["result"] = 1, -- alpha
+   ["file_name"] = "render.exr",
+   ["result"] = "alpha",
    ["channel_name"] = "alpha",
 }
 
 -- beauty
 RenderOutput("/output/beauty") {
-   ["file_name"] = "result.exr",
-   ["result"] = 0, -- beauty
+   ["file_name"] = "render.exr",
+   ["result"] = "beauty",
    ["channel_name"] = "beauty",
    ["compression"] = "zip",
    ["channel_format"] = "float"
@@ -88,8 +88,8 @@ RenderOutput("/output/beauty") {
 
 -- weight
 RenderOutput("/output/weight") {
-   ["file_name"] = "result.exr",
-   ["result"] = 11, -- weight
+   ["file_name"] = "render.exr",
+   ["result"] = "weight",
    ["channel_name"] = "weight",
    ["compression"] = "zip",
    ["channel_format"] = "float"
@@ -97,8 +97,8 @@ RenderOutput("/output/weight") {
 
 -- beauty aux
 RenderOutput("/output/beautyaux") {
-   ["file_name"] = "result.exr",
-   ["result"] = 12, -- beauty aux
+   ["file_name"] = "render.exr",
+   ["result"] = "beauty aux",
    ["channel_name"] = "beauty aux",
    ["compression"] = "zip",
    ["channel_format"] = "float"
@@ -106,8 +106,8 @@ RenderOutput("/output/beautyaux") {
 
 -- alpha aux
 RenderOutput("/output/alphaAux") {
-   ["file_name"] = "result.exr",
-   ["result"] = 14, -- alpha aux
+   ["file_name"] = "render.exr",
+   ["result"] = "alpha aux",
    ["channel_name"] = "alpha aux",
    ["compression"] = "zip",
    ["channel_format"] = "float"
@@ -116,11 +116,11 @@ RenderOutput("/output/alphaAux") {
 -- display filter
 ColorCorrectDisplayFilter("/display/exposure") {
     ["input"] = RenderOutput("/output/beauty"),
-    ["exposure"] = 2,
+    ["exposure"] = -1,
 }
 
 RenderOutput("/output/exposure") {
-    ["file_name"] = "result.exr",
+    ["file_name"] = "render.exr",
     ["result"] = "display filter",
     ["display_filter"] = ColorCorrectDisplayFilter("/display/exposure"),
     ["channel_name"] = "exposure",
