@@ -47,11 +47,11 @@ GeometrySet("geometryset") {
 -------------------------------------------------------
 
 map1 = ImageMap("/Scene/surfacing/map1") {
-    ["texture"] = rats_assets_dir.."/textures/Graphpaper.tx",
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
 }
 
 map2 = ImageMap("/Scene/surfacing/map2") {
-    ["texture"] = rats_assets_dir.."/textures/Graphpaper.tx",
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
     ["offset"] = Vec2(0, 0.5),
 }
 

@@ -1,0 +1,233 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["deep_id_attribute_names"] = {"id0"},
+}
+
+local id0 = UserData("id0") {
+    ["float key"] = "id0",
+    ["float values"] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6},
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 20) *
+                     rotate(-23, 1, 0, 0) * rotate(25, 0, 1, 0) *
+                     translate(-0.8, 2, 0),
+    ["focal"] = 35,
+    ["film_width_aperture"] = 24,
+}
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["node_xform"] = rotate(-90, 0, 1, 0),
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+    ["exposure"] = -1.0,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+local planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(1000, 1, 1000),
+    ["vertex_list"] = {Vec3(-0.5, 0.0, 0.5), Vec3(0.5, 0.0, 0.5), Vec3(0.5, 0.0, -0.5), Vec3(-0.5, 0.0, -0.5)},
+    ["vertices_by_index"] = {0, 1, 2, 3},
+    ["face_vertex_count"] = {4},
+    ["is_subd"] = false
+}
+table.insert(geoms, planeGeom)
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/graphpaper.tx",
+    ["scale"] = Vec2(500, 500),
+    ["offset"] = Vec2(0.5, 0.5),
+    ["wrap_around"] = true,
+}
+
+local graphpaper = RemapMap("Scene/surfacing/graphpaper") {
+    ["input"] = bind(planeMap),
+    ["output_min"] = 0.06,
+    ["output_max"] = 0.78,
+}
+
+local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(graphpaper),
+    ["roughness"] = 0.8,
+    ["refractive_index"] = 1.4,
+}
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+
+-------------------------------------------------------
+
+local geom = UsdGeometry("/Scene/geometry/geom") {
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usda",
+    ["prim_path"] = "/widget",
+    ["part_list"] = { "base", "stand", "shell_front", "shell_back", "collar", "core" },
+    ["primitive attributes"] = {id0},
+}
+table.insert(geoms, geom)
+
+local color_grid = ImageMap("/Scene/surfacing/color_grid") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+    ["scale"] = Vec2(8, 8),
+    ["wrap_around"] = true,
+}
+
+local color_layer = LayerMap("/Scene/surfacing/color_layer") {
+    ["input_A"] = bind(color_grid),
+    ["input_B"] = Rgb(0.5, 0.02, 0.02),
+    ["mode"] = 13,
+}
+
+local base_mtl = DwaSolidDielectricMaterial("/Scene/surfacing/base_mtl") {
+    ["albedo"] = bind(color_layer),
+    ["roughness"] = 0.2,
+}
+
+local core_mtl = DwaMetalMaterial("/Scene/surfacing/core_mtl") {
+    ["metallic_color"] = Rgb(0.7, 0.7, 0.7),
+    ["roughness"] = 0.02,
+}
+local stand_mtl = DwaSolidDielectricMaterial("/Scene/surfacing/stand_mtl") {
+    ["albedo"] = Rgb(0.22, 0.22, 0.22),
+    ["show_specular"] = false,
+}
+
+table.insert(assignments, {geom, "base",        base_mtl, lightSet})
+table.insert(assignments, {geom, "stand",       stand_mtl, lightSet})
+table.insert(assignments, {geom, "shell_front", base_mtl, lightSet})
+table.insert(assignments, {geom, "shell_back",  base_mtl, lightSet})
+table.insert(assignments, {geom, "collar",      base_mtl, lightSet})
+table.insert(assignments, {geom, "core",        core_mtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
+-------------------------------------------------------
+-- 0   “beauty” (default)
+-- 1   “alpha”
+-- 2   “depth”
+-- 3   “state variable”
+-- 4   “primitive attribute”
+-- 5   “time per pixel”
+-- 6   “wireframe”
+-- 7   “material aov”
+-- 8   “light aov”
+-- 9   “visibility aov”
+-- 10  “variance aov”
+-- 11  “weight”
+-- 12  “beauty aux”
+-- 13  “cryptomatte”
+-- 14  “alpha aux”
+-- 15  “display filter”
+
+-- beauty
+RenderOutput("/output/beauty") {
+    ["file_name"] = "beauty.exr",
+    ["result"] = "beauty",
+}
+
+-- alpha
+RenderOutput("/output/alpha") {
+    ["file_name"] = "alpha.exr",
+    ["result"] = "alpha",
+}
+
+-- depth
+RenderOutput("/output/depth") {
+    ["file_name"] = "depth.exr",
+    ["result"] = "depth",
+}
+
+-- state
+RenderOutput("/output/state") {
+    ["file_name"] = "state.exr",
+    ["result"] = "state variable",
+    ["state_variable"] = "St",
+}
+
+-- -- primitive
+-- RenderOutput("/output/primitive") {
+    -- ["file_name"] = "primitive.exr",
+    -- ["result"] = "primitive attribute",
+    -- ["primitive_attribute"] = "",
+-- }
+
+-- time
+RenderOutput("/output/time") {
+    ["file_name"] = "time.exr",
+    ["result"] = "time per pixel",
+}
+
+-- wireframe
+RenderOutput("/output/wireframe") {
+    ["file_name"] = "wireframe.exr",
+    ["result"] = "wireframe",
+}
+
+-- material
+RenderOutput("/output/material") {
+    ["file_name"] = "material.exr",
+    ["result"] = "material aov",
+    ["material_aov"] = "D.color",
+}
+
+-- light
+RenderOutput("/output/light") {
+    ["file_name"] = "light.exr",
+    ["result"] = "light aov",
+    ["light_aov"] = "CG[<L.>O]",
+}
+
+-- visibility
+RenderOutput("/output/visibility") {
+    ["file_name"] = "visibility.exr",
+    ["result"] = "visibility aov",
+}
+
+-- -- variance
+-- RenderOutput("/output/variance") {
+    -- ["file_name"] = "variance.exr",
+    -- ["result"] = "variance aov",
+-- }
+
+-- weight
+RenderOutput("/output/weight") {
+    ["file_name"] = "weight.exr",
+    ["result"] = "weight",
+}
+
+-- beauty aux
+RenderOutput("/output/beauty_aux") {
+    ["file_name"] = "beauty_aux.exr",
+    ["result"] = "beauty aux",
+    ["channel_format"] = "float",
+}
+
+-- cryptomatte
+RenderOutput("/output/cryptomatte") {
+    ["file_name"] = "cryptomatte.exr",
+    ["result"] = "cryptomatte",
+}
+
+-- alpha aux
+RenderOutput("/output/alpha_aux") {
+    ["file_name"] = "alpha_aux.exr",
+    ["result"] = "alpha aux",
+    ["channel_format"] = "float",
+}
+
+-- -- displayfilter
+-- RenderOutput("/output/displayfilter") {
+    -- ["file_name"] = "displayfilter.exr",
+    -- ["result"] = "display filter",
+-- }

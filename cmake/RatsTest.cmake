@@ -157,14 +157,15 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         file(MAKE_DIRECTORY ${render_dir})
 
-        set(canonical_test_name "rats_${exec_mode}_canonical_${test_basename}")
-        set(render_test_name "rats_${exec_mode}_render_${test_basename}")
-        set(checkpoint_test_name "rats_${exec_mode}_checkpoint_${test_basename}")
+        string(SUBSTRING ${exec_mode} 0 3 exec_mode_short)
+        set(canonical_test_name "rats_${exec_mode_short}_canonical_${test_basename}")
+        set(render_test_name "rats_${exec_mode_short}_render_${test_basename}")
+        set(checkpoint_test_name "rats_${exec_mode_short}_checkpoint_${test_basename}")
 
         if(ARG_DEPENDS)
             # compute full name of dependency tests with prefix
-            list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode}_canonical_" OUTPUT_VARIABLE canonical_dependencies)
-            list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode}_render_"    OUTPUT_VARIABLE render_dependencies)
+            list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode_short}_canonical_" OUTPUT_VARIABLE canonical_dependencies)
+            list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode_short}_render_"    OUTPUT_VARIABLE render_dependencies)
             # join them into one big list and verify they exist
             string(JOIN % dependencies ${canonical_dependencies})
             string(JOIN % dependencies ${render_dependencies})
@@ -179,7 +180,6 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         # we are going to be running it using the ${CMAKE_COMMAND} -P <script.cmake> method.
         # NOTE: $<TARGET_FILE:moonray> isn't expanded until _build_ time.
         set(moonray_cmd $<TARGET_FILE:moonray>)
-        list(APPEND render_cmd -threads 2)
 
         set(render_cmd ${moonray_cmd})
         foreach(rdl_input ${ARG_INPUTS})
@@ -230,7 +230,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         foreach(output ${ARG_OUTPUTS})
             cmake_path(GET output STEM stem)
             cmake_path(GET output EXTENSION extension)
-            set(diff_test_name "rats_${exec_mode}_diff_${test_basename}_${stem}")
+            set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}")
             set(diff_name "${stem}_diff${extension}")
 
             set(diff_args -o ${diff_name})

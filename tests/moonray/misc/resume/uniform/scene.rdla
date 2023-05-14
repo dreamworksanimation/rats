@@ -38,7 +38,7 @@ local planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
 table.insert(geoms, planeGeom)
 
 local planeMap = ImageMap("/Scene/surfacing/planeMap") {
-    ["texture"] = rats_assets_dir.."/textures/Graphpaper.tx",
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
     ["scale"] = Vec2(5, 5),
     ["wrap_around"] = true,
 }

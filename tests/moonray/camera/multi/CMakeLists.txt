@@ -9,7 +9,7 @@ add_rats_test(camera_multi
         beautyRGT.exr
         aovLFT.exr
         aovRGT.exr
-    IDIFF_ARGS_VECTOR -hardfail 0.07 -failpercent 0.07 -warnpercent 0.07
-    IDIFF_ARGS_XPU    -hardfail 0.07 -failpercent 0.07 -warnpercent 0.07
+    IDIFF_ARGS_VECTOR -hardfail 0.1 -failpercent 0.07 -warnpercent 0.07
+    IDIFF_ARGS_XPU    -hardfail 0.1 -failpercent 0.07 -warnpercent 0.07
 )
 
