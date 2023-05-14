@@ -94,6 +94,7 @@ local widget = UsdGeometry("/Scene/geometry/widget") {
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
 }
+table.insert(geoms, widget)
 -- Materials --
 
 table.insert(assignments, {sphere, "", chromeMtl, lightSet})

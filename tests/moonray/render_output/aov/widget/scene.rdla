@@ -76,18 +76,17 @@ table.insert(geoms, geom)
 
 local color_grid = ImageMap("/Scene/surfacing/color_grid") {
     ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
-    ["scale"] = Vec2(8, 8),
+    ["scale"] = Vec2(2, 2),
     ["wrap_around"] = true,
 }
 
-local color_layer = LayerMap("/Scene/surfacing/color_layer") {
-    ["input_A"] = bind(color_grid),
-    ["input_B"] = Rgb(0.5, 0.02, 0.02),
-    ["mode"] = 13,
-}
-
 local base_mtl = DwaSolidDielectricMaterial("/Scene/surfacing/base_mtl") {
-    ["albedo"] = bind(color_layer),
+    ["albedo"] = bind(color_grid),
+    ["show_clearcoat"] = true,
+    ["clearcoat"] = 1,
+    ["clearcoat_thickness"] = 0.04,
+    ["clearcoat_roughness"] = 0.01,
+    ["clearcoat_attenuation_color"] = Rgb(0.1, 0.1, 0.1),
     ["roughness"] = 0.2,
 }
 
