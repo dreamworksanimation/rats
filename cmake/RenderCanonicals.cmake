@@ -16,13 +16,13 @@ macro(exec_and_check)
 
     execute_process(
         COMMAND ${cmd} ${args}
-        RESULT_VARIABLE CMD_RESULT
+        RESULT_VARIABLE result
         COMMAND_ECHO STDOUT
         ECHO_OUTPUT_VARIABLE
         ECHO_ERROR_VARIABLE
     )
-    if(CMD_RESULT)
-        message(FATAL_ERROR "${CMD_RESULT}")
+    if(result)
+        message(FATAL_ERROR "${result}")
     endif()
 endmacro()
 

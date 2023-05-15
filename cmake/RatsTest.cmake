@@ -100,6 +100,10 @@ endfunction()
 function(add_rats_test test_basename)   # basename of tests including relative folder structure, example: geometry_spheres
     # KEYWORD arguments:
     set(options
+            # adds a separate CTest with the 'header' label to compare the
+            # output of the 'exrheader' command against the canonical image
+            DIFF_EXRHEADERS
+
             # NO_SCALAR
             # NO_VECTOR
             # NO_XPU
@@ -226,10 +230,28 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
-        # Add CTest to diff the result with the canonical via idiff
+        # Add CTest to diff against the canonical images
         foreach(output ${ARG_OUTPUTS})
             cmake_path(GET output STEM stem)
             cmake_path(GET output EXTENSION extension)
+
+            if(${ARG_DIFF_EXRHEADERS} AND DEFINED EXRHEADER)
+                set(header_test_name "rats_${exec_mode_short}_header_${test_basename}_${stem}")
+
+                add_test(NAME ${header_test_name}
+                    WORKING_DIRECTORY ${render_dir}
+                    COMMAND ${CMAKE_COMMAND}
+                            "-DEXRHEADER=${EXRHEADER}"
+                            "-DCANONICAL_EXR=${canonical_dir}/${output}"
+                            "-DRESULT_EXR=${output}"
+                            -P ${PROJECT_SOURCE_DIR}/cmake/CompareExrHeaders.cmake
+                )
+                set_tests_properties(${header_test_name} PROPERTIES
+                    LABELS "header"
+                    DEPENDS "${render_test_name}"
+                )
+            endif()
+
             set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}")
             set(diff_name "${stem}_diff${extension}")
 

@@ -23,6 +23,11 @@ find_program(IDIFF
 )
 message("IDIFF: ${IDIFF}")
 
+find_program(EXRHEADER
+    exrheader
+)
+message("EXRHEADER: ${EXRHEADER}")
+
 include(RatsTest)
 
 # TODO: Make sure canonical path is set and valid,
