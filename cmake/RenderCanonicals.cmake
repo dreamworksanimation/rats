@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # -------------------------------------------------------------------------------------
-# This script expects to be run with the following variables defined:
+# This script is during execution of the rats tests and is responsible for rendering
+# a canonical image, creating a dir for the image and copying the image to that dir.
+# It expects to be run with the following variables defined:
 #   CANONCAL_PATH   : directory to store the caonicals. It will be created if necessary.
 #   OUTPUTS         : list of output images to be stored as canonicals, eg.
 #                       scene.exr;aovs.exr;more_aovs.exr

@@ -85,7 +85,8 @@ function(_get_idiff_args out_var)
     set(${out_var} ${args} PARENT_SCOPE)
 endfunction()
 
-# Add a new RaTS test.  Each RaTS test will produce a series of CTests, as follows:
+# Adds a new RaTS test.
+# Each RaTS test will produce a series of CTests, as follows:
 # 'canonical' label CTests will:
 #       * Render the scene to produce canonical images for each execution mode and
 #         copy the outputs= images to the directory specified by the ${RATS_CANONICAL_PATH}
@@ -95,8 +96,10 @@ endfunction()
 #       * Render the scene to produce images for each execution mode into the
 #         ${CMAKE_CURRENT_BINARY_DIR}.
 # 'diff' label CTests will:
-#       *  Execute the 'idiff' command on each of the output images comparing it
-#          with  the previously rendered canonical image of the same name.
+#       * Execute the 'idiff' command on each of the output images comparing it
+#         with  the previously rendered canonical image of the same name.
+#       * Compare the headers of .exr output images with the previously rendered
+#         canonical image of the same name, ignoring timestamps
 function(add_rats_test test_basename)   # basename of tests including relative folder structure, example: geometry_spheres
     # KEYWORD arguments:
     set(options
@@ -137,6 +140,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             RENDER_ARGS_VECTOR
             RENDER_ARGS_XPU
     )
+
     # parse and validate arguments
     cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
     if(DEFINED ARG_KEYWORDS_MISSING_VALUES)
@@ -156,15 +160,14 @@ function(add_rats_test test_basename)   # basename of tests including relative f
     set(root_canonical_path ${RATS_CANONICAL_PATH}/${test_rel_path})
 
     foreach(exec_mode scalar;vector;xpu)
-        string(TOUPPER ${exec_mode} exec_mode_upper)
         set(canonical_dir ${root_canonical_path}/${exec_mode})
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         file(MAKE_DIRECTORY ${render_dir})
 
+        string(TOUPPER ${exec_mode} exec_mode_upper)
         string(SUBSTRING ${exec_mode} 0 3 exec_mode_short)
         set(canonical_test_name "rats_${exec_mode_short}_canonical_${test_basename}")
         set(render_test_name "rats_${exec_mode_short}_render_${test_basename}")
-        set(checkpoint_test_name "rats_${exec_mode_short}_checkpoint_${test_basename}")
 
         if(ARG_DEPENDS)
             # compute full name of dependency tests with prefix
@@ -202,7 +205,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
 
         # Output the list of renderer cmd arguments for each test when
         # cmake is invoked with --log-level=verbose
-        # message(VERBOSE "${test_basename} renderer args (${exec_mode_upper}): ${render_cmd}")
+        # message(VERBOSE "${test_basename} renderer args (${exec_mode_short}): ${render_cmd}")
 
         # Add CTest to generate canonicals
         add_test(NAME ${canonical_test_name}
@@ -235,8 +238,9 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             cmake_path(GET output STEM stem)
             cmake_path(GET output EXTENSION extension)
 
-            if(${ARG_DIFF_EXRHEADERS} AND DEFINED EXRHEADER)
-                set(header_test_name "rats_${exec_mode_short}_header_${test_basename}_${stem}")
+            # diff exr header?
+            if(${ARG_DIFF_EXRHEADERS} AND DEFINED EXRHEADER AND ${extension} STREQUAL ".exr")
+                set(header_test_name "rats_${exec_mode_short}_exrheader_${test_basename}_${stem}")
 
                 add_test(NAME ${header_test_name}
                     WORKING_DIRECTORY ${render_dir}
@@ -247,7 +251,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
                             -P ${PROJECT_SOURCE_DIR}/cmake/CompareExrHeaders.cmake
                 )
                 set_tests_properties(${header_test_name} PROPERTIES
-                    LABELS "header"
+                    LABELS "diff"
                     DEPENDS "${render_test_name}"
                 )
             endif()
@@ -255,13 +259,14 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}")
             set(diff_name "${stem}_diff${extension}")
 
-            set(diff_args -o ${diff_name})
+            set(diff_args "")
             _get_idiff_args(more_args EXEC_MODE ${exec_mode} ${ARG_IDIFF_ARGS_${exec_mode_upper}})
             list(APPEND diff_args ${more_args})
+            list(APPEND diff_args -o ${diff_name})
 
             # Output the list of idiff cmd arguments for each test when
             # cmake is invoked with --log-level=verbose
-            message(VERBOSE "${test_basename} idiff args (${exec_mode_upper}): ${diff_args}")
+            message(VERBOSE "${test_basename} idiff args (${exec_mode_short}): ${diff_args}")
 
             add_test(NAME ${diff_test_name}
                 WORKING_DIRECTORY ${render_dir}

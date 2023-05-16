@@ -1,7 +1,16 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-macro(get_header exr_file output_var)
+# -------------------------------------------------------------------------------------
+# This script is during execution of the rats tests and is responsible for comparing
+# the headers of the canonical and rendered .exr images.
+# It expects to be run with the following variables defined:
+#   CANONCAL_EXR    : the fully qualified path to the canonical .exr
+#   RESULT_EXR      : the relative path to the result .exr
+# -------------------------------------------------------------------------------------
+
+# Run 'exrheader' and retrieve the output
+macro(_get_header exr_file output_var)
     execute_process(
         COMMAND ${EXRHEADER} ${exr_file}
         RESULT_VARIABLE result
@@ -14,22 +23,30 @@ macro(get_header exr_file output_var)
     endif()
 endmacro()
 
-macro(split_header header_in header_out json_out)
+# Split the output of exrheader into two parts:
+#   json_out        : the contents of the "resumeHistory" key in JSON format, otherwise undefined
+#   header_out      : the remainder of the header with the "resumeHistory"
+#                     key/value stripped out
+macro(_split_header header_in header_out json_out)
     set(resume_history_pattern "(resumeHistory \\(type string\\): \"{)(.*)(}\")")
 
     # find it and store it in the json var
     string(REGEX MATCH ${resume_history_pattern} resume_history ${header_in})
 
-    if(DEFINED resume_history)
+    if(resume_history)
         # capture the JSON stored in the resumeHistory field
         string(REGEX REPLACE "(resumeHistory \\(type string\\): \")(.*)(\"$)" "\\2" ${json_out} ${resume_history})
 
         # strip the resumeHistory field from the canonical header
         string(REGEX REPLACE "(.*)(${resume_history_pattern})(.*)" "\\1\\6" ${header_out} ${header_in})
+    else()
+        set(${header_out} ${header_in})
     endif()
 endmacro()
 
-macro(filter_header header_in header_out)
+# Filter the contents of the exrheader output to remove anything that
+# isn't suitable for comparison (image name, timestamps, etc.)
+macro(_filter_header header_in header_out)
     # turn the header into a list so we can filter line by line
     string(REPLACE "\n" ";" header_lines ${header_in})
 
@@ -54,8 +71,8 @@ macro(filter_header header_in header_out)
     endforeach()
 endmacro()
 
-# Remove all of the timing information from the 'resumeHistory' JSON field
-function(filter_json json_in json_out)
+# Remove all of the timing/timestamp info from the 'resumeHistory' JSON value
+function(_filter_json json_in json_out)
     set(out ${json_in})
     string(JSON out REMOVE ${out} "history" 0 "execEnv")
     string(JSON out REMOVE ${out} "history" 0 "timingSummary")
@@ -74,22 +91,27 @@ function(filter_json json_in json_out)
 
 endfunction()
 
+# Execute the exrheader comparison
 if(EXISTS ${CANONICAL_EXR} AND EXISTS ${RESULT_EXR})
-    get_header(${CANONICAL_EXR} canonical_header)
-    get_header(${RESULT_EXR} result_header)
+    _get_header(${CANONICAL_EXR} canonical_header)
+    _split_header(${canonical_header} canonical_header canonical_json)
+    _filter_header(${canonical_header} canonical_header_filtered)
+    if(canonical_json)
+        _filter_json("${canonical_json}" canonical_json)
+    endif()
 
-    split_header(${canonical_header} canonical_header canonical_json)
-    split_header(${result_header} result_header result_json)
+    _get_header(${RESULT_EXR} result_header)
+    _split_header(${result_header} result_header result_json)
+    _filter_header(${result_header} result_header_filtered)
+    if(result_json)
+        _filter_json("${result_json}" result_json)
+    endif()
 
-    filter_header(${canonical_header} canonical_header_filtered)
-    filter_header(${result_header} result_header_filtered)
-
-    filter_json("${canonical_json}" canonical_json)
-    filter_json("${result_json}" result_json)
-
-    string(JSON same EQUAL ${canonical_json} ${result_json})
-    if(NOT same)
-        message(FATAL_ERROR "exr headers have different \"resumeHistory\" metadata")
+    if(canonical_json OR result_json)
+        string(JSON same EQUAL ${canonical_json} ${result_json})
+        if(NOT same)
+            message(FATAL_ERROR "exr headers have different \"resumeHistory\" metadata")
+        endif()
     endif()
 
     if(NOT ${canonical_header_filtered} STREQUAL ${result_header_filtered})
