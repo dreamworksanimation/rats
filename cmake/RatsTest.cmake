@@ -6,7 +6,7 @@
 # and are overriden by any matching additional arguments passed.
 # The 'out_var' variable will contain the final list of arguments.
 function(_get_idiff_args out_var)
-    set(options -p -q -a -abs)
+    set(options -p -q -a -abs -v)
     set(oneValueArgs EXEC_MODE -fail -failrelative -failpercent -hardfail -allowfailures -warn -warnrelative -warnpercent -hardwarn -scale)
     set(multiValueArgs "") # currently unused
 
@@ -22,8 +22,8 @@ function(_get_idiff_args out_var)
         message(FATAL_ERROR "You must specify EXEC_MODE.")
     endif()
 
-    # Commented default arguments are not returned by this function
-    # unless overridden but are left in place for future use.
+    # Commented default arguments below are not set by this function
+    # unless overridden by user but are left in place for future use.
     if(${ARG_EXEC_MODE} STREQUAL "scalar")
         set(default_fail            0.004)
         # set(default_failrelative    0)
@@ -37,8 +37,9 @@ function(_get_idiff_args out_var)
         # set(default_scale           1)
         # set(default_p               FALSE)
         # set(default_q               FALSE)
-        set(default_a               TRUE)
-        set(default_abs             TRUE)
+        set(default_a               TRUE)   # always set
+        set(default_abs             TRUE)   # always set
+        set(default_v               TRUE)   # always set
     elseif(${ARG_EXEC_MODE} STREQUAL "vector" OR ${ARG_EXEC_MODE} STREQUAL "xpu")
         set(default_fail            0.007)
         # set(default_failrelative    0)
@@ -52,8 +53,9 @@ function(_get_idiff_args out_var)
         # set(default_scale           1)
         # set(default_p               FALSE)
         # set(default_q               FALSE)
-        set(default_a               TRUE)
-        set(default_abs             TRUE)
+        set(default_a               TRUE)   # always set
+        set(default_abs             TRUE)   # always set
+        set(default_v               TRUE)   # always set
     else()
         message(FATAL_ERROR "Unrecognized EXEC_MODE: ${ARG_EXEC_MODE}")
     endif()
@@ -72,7 +74,7 @@ function(_get_idiff_args out_var)
     endforeach()
 
     # append any flags
-    foreach(arg p;q;a;abs)
+    foreach(arg p;q;a;abs;v)
         set(override ARG_-${arg})
         set(default default_${arg})
         if(${override})
@@ -86,7 +88,7 @@ function(_get_idiff_args out_var)
 endfunction()
 
 # Adds a new RaTS test.
-# Each RaTS test will produce a series of CTests, as follows:
+# Each RaTS test will produce a series of CTests for each execution mode, as follows:
 # 'canonical' label CTests will:
 #       * Render the scene to produce canonical images for each execution mode and
 #         copy the outputs= images to the directory specified by the ${RATS_CANONICAL_PATH}
@@ -103,20 +105,23 @@ endfunction()
 function(add_rats_test test_basename)   # basename of tests including relative folder structure, example: geometry_spheres
     # KEYWORD arguments:
     set(options
-            # adds a separate CTest with the 'header' label to compare the
+            # adds a separate CTest with the 'diff' label to compare the
             # output of the 'exrheader' command against the canonical image
             DIFF_EXRHEADERS
 
-            # NO_SCALAR
-            # NO_VECTOR
-            # NO_XPU
+            # optional execution modes to skip for this test. For example, pathguiding is
+            # currently only supported in scalar mode, so tests using it may want to pass
+            # NO_VECTOR NO_XPU.
+            NO_SCALAR
+            NO_VECTOR
+            NO_XPU
     )
 
     set(oneValueArgs "") # unused
 
     set(multiValueArgs
             # optional list of tests that should be ran before this test
-            # in multiple job CTest runs (-j N, where N > 0)
+            # in multiple job CTest runs (-j N, where N > 0). When specifying
             DEPENDS
 
             # optional list of idiff args to set/override
@@ -159,7 +164,20 @@ function(add_rats_test test_basename)   # basename of tests including relative f
     file(RELATIVE_PATH test_rel_path ${PROJECT_SOURCE_DIR}/tests/ ${CMAKE_CURRENT_SOURCE_DIR})
     set(root_canonical_path ${RATS_CANONICAL_PATH}/${test_rel_path})
 
-    foreach(exec_mode scalar;vector;xpu)
+    set(exec_modes "")
+    if(NOT ARG_NO_SCALAR)
+        list(APPEND exec_modes scalar)
+    endif()
+    if(NOT ARG_NO_VECTOR)
+        list(APPEND exec_modes vector)
+    endif()
+    if(NOT ARG_NO_XPU)
+        list(APPEND exec_modes xpu)
+    endif()
+
+    # FIXME: turn ARG_DEPENDS into a list using separate_arguments() in case multiple tests are passed?
+
+    foreach(exec_mode ${exec_modes})
         set(canonical_dir ${root_canonical_path}/${exec_mode})
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         file(MAKE_DIRECTORY ${render_dir})
@@ -239,7 +257,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             cmake_path(GET output EXTENSION extension)
 
             # diff exr header?
-            if(${ARG_DIFF_EXRHEADERS} AND DEFINED EXRHEADER AND ${extension} STREQUAL ".exr")
+            if(ARG_DIFF_EXRHEADERS AND DEFINED EXRHEADER AND ${extension} STREQUAL ".exr")
                 set(header_test_name "rats_${exec_mode_short}_exrheader_${test_basename}_${stem}")
 
                 add_test(NAME ${header_test_name}
@@ -257,12 +275,12 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             endif()
 
             set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}")
-            set(diff_name "${stem}_diff${extension}")
+            set(diff_image_name "${stem}_diff${extension}")
 
             set(diff_args "")
             _get_idiff_args(more_args EXEC_MODE ${exec_mode} ${ARG_IDIFF_ARGS_${exec_mode_upper}})
             list(APPEND diff_args ${more_args})
-            list(APPEND diff_args -o ${diff_name})
+            list(APPEND diff_args -o ${diff_image_name})
 
             # Output the list of idiff cmd arguments for each test when
             # cmake is invoked with --log-level=verbose

@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(render_output_aov_widget
+    DIFF_EXRHEADERS
     INPUTS
         scene.rdla
     OUTPUTS

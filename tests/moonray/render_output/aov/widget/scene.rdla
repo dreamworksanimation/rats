@@ -67,7 +67,7 @@ table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
 -------------------------------------------------------
 
 local geom = UsdGeometry("/Scene/geometry/geom") {
-    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usda",
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
     ["part_list"] = { "base", "stand", "shell_front", "shell_back", "collar", "core" },
     ["primitive attributes"] = {id0},
