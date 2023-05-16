@@ -1,16 +1,12 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-# CANONICAL_EXR
-# RESULT_EXR
-
-macro(run_exrheader exr_file output_var)
+macro(get_header exr_file output_var)
     execute_process(
         COMMAND ${EXRHEADER} ${exr_file}
         RESULT_VARIABLE result
         OUTPUT_VARIABLE ${output_var}
         COMMAND_ECHO STDOUT
-        # ECHO_OUTPUT_VARIABLE
         ECHO_ERROR_VARIABLE
     )
     if(result)
@@ -18,7 +14,7 @@ macro(run_exrheader exr_file output_var)
     endif()
 endmacro()
 
-macro(split_resume_history header_in header_out json_out)
+macro(split_header header_in header_out json_out)
     set(resume_history_pattern "(resumeHistory \\(type string\\): \"{)(.*)(}\")")
 
     # find it and store it in the json var
@@ -58,22 +54,48 @@ macro(filter_header header_in header_out)
     endforeach()
 endmacro()
 
-if(EXISTS ${CANONICAL_EXR} AND EXISTS ${RESULT_EXR})
-    run_exrheader(${CANONICAL_EXR} canonical_header)
-    run_exrheader(${RESULT_EXR} result_header)
+# Remove all of the timing information from the 'resumeHistory' JSON field
+function(filter_json json_in json_out)
+    set(out ${json_in})
+    string(JSON out REMOVE ${out} "history" 0 "execEnv")
+    string(JSON out REMOVE ${out} "history" 0 "timingSummary")
+    string(JSON out REMOVE ${out} "history" 0 "timingDetail" "procStartTime")
+    string(JSON out REMOVE ${out} "history" 0 "timingDetail" "frameStartTime")
 
-    split_resume_history(${canonical_header} canonical_header canonical_json)
-    split_resume_history(${result_header} result_header result_json)
+    string(JSON mcrt_length LENGTH ${json_in} "history" 0 "timingDetail" "MCRT")
+    # oof, CMake, really?
+    math(EXPR mcrt_length_last_index ${mcrt_length}-1)
+    foreach(i RANGE 0 ${mcrt_length_last_index})
+        string(JSON out REMOVE ${out} "history" 0 "timingDetail" "MCRT" ${i} "MCRTStartTime")
+        string(JSON out REMOVE ${out} "history" 0 "timingDetail" "MCRT" ${i} "MCRTEndTime")
+    endforeach()
+
+    set(${json_out} ${out} PARENT_SCOPE)
+
+endfunction()
+
+if(EXISTS ${CANONICAL_EXR} AND EXISTS ${RESULT_EXR})
+    get_header(${CANONICAL_EXR} canonical_header)
+    get_header(${RESULT_EXR} result_header)
+
+    split_header(${canonical_header} canonical_header canonical_json)
+    split_header(${result_header} result_header result_json)
 
     filter_header(${canonical_header} canonical_header_filtered)
     filter_header(${result_header} result_header_filtered)
 
-    message("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n")
-    message("${canonical_json}")
-    message("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
-    message("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n")
-    message("${canonical_header_filtered}")
-    message("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n")
+    filter_json("${canonical_json}" canonical_json)
+    filter_json("${result_json}" result_json)
+
+    string(JSON same EQUAL ${canonical_json} ${result_json})
+    if(NOT same)
+        message(FATAL_ERROR "exr headers have different \"resumeHistory\" metadata")
+    endif()
+
+    if(NOT ${canonical_header_filtered} STREQUAL ${result_header_filtered})
+        message(FATAL_ERROR "exr headers are different")
+    endif()
 else()
     message(FATAL_ERROR "canonical or result not found")
 endif()
+
