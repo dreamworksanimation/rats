@@ -91,7 +91,7 @@ endfunction()
 # Each RaTS test will produce a series of CTests for each execution mode, as follows:
 # 'canonical' label CTests will:
 #       * Render the scene to produce canonical images for each execution mode and
-#         copy the outputs= images to the directory specified by the ${RATS_CANONICAL_PATH}
+#         copy the outputs= images to the directory specified by the ${RATS_CANONICAL_DIR}
 #         cache variable.  The folder structure will be created matching the relative
 #         path to the ${CMAKE_CURRENT_SOURCE_DIR} from the ${PROJECT_SOURCE_DIR}.
 # 'render' label CTests will:
@@ -105,8 +105,8 @@ endfunction()
 function(add_rats_test test_basename)   # basename of tests including relative folder structure, example: geometry_spheres
     # KEYWORD arguments:
     set(options
-            # adds a separate CTest with the 'diff' label to compare the
-            # output of the 'exrheader' command against the canonical image
+            # adds a separate CTest with the 'diff' label to compare the canonical
+            # and result image's exr headers
             DIFF_EXRHEADERS
 
             # disables this test
@@ -165,7 +165,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
     set(rats_assets_dir ${PROJECT_SOURCE_DIR}/assets/)
 
     file(RELATIVE_PATH test_rel_path ${PROJECT_SOURCE_DIR}/tests/ ${CMAKE_CURRENT_SOURCE_DIR})
-    set(root_canonical_path ${RATS_CANONICAL_PATH}/${test_rel_path})
+    set(root_canonical_path ${RATS_CANONICAL_DIR}/${test_rel_path})
 
     set(exec_modes "")
     if(NOT ARG_NO_SCALAR)
@@ -205,9 +205,12 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         # Build moonray command. We need the fully qualified path to the moonray executable if
         # we are going to be running it using the ${CMAKE_COMMAND} -P <script.cmake> method.
         # NOTE: $<TARGET_FILE:moonray> isn't expanded until _build_ time.
-        set(moonray_cmd $<TARGET_FILE:moonray>)
+        set(render_cmd $<TARGET_FILE:moonray>)
 
-        set(render_cmd ${moonray_cmd})
+        if(NOT "$CACHE{RATS_RENDER_THREADS}" STREQUAL "")
+            list(APPEND render_cmd -threads $CACHE{RATS_RENDER_THREADS})
+        endif()
+
         foreach(rdl_input ${ARG_INPUTS})
             list(APPEND render_cmd -in ${CMAKE_CURRENT_SOURCE_DIR}/${rdl_input})
         endforeach()
@@ -260,13 +263,13 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             cmake_path(GET output EXTENSION extension)
 
             # diff exr header?
-            if(ARG_DIFF_EXRHEADERS AND DEFINED EXRHEADER AND ${extension} STREQUAL ".exr")
+            if(ARG_DIFF_EXRHEADERS AND ${extension} STREQUAL ".exr")
                 set(header_test_name "rats_${exec_mode_short}_exrheader_${test_basename}_${stem}")
 
                 add_test(NAME ${header_test_name}
                     WORKING_DIRECTORY ${render_dir}
                     COMMAND ${CMAKE_COMMAND}
-                            "-DEXRHEADER=${EXRHEADER}"
+                            "-DOIIOTOOL=${OIIOTOOL}"
                             "-DCANONICAL_EXR=${canonical_dir}/${output}"
                             "-DRESULT_EXR=${output}"
                             -P ${PROJECT_SOURCE_DIR}/cmake/CompareExrHeaders.cmake
