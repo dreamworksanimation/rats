@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(camera_multi
-    INPUTS
-        scene.rdla
+    INPUTS scene.rdla
     OUTPUTS
         beautyLFT.exr
         beautyRGT.exr

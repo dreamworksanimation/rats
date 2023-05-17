@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(geometry_sphere
-    INPUTS
-        scene.rdla
+    INPUTS scene.rdla
     OUTPUTS
         result.exr
         material.exr

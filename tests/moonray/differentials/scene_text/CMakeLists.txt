@@ -2,9 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(differentials_scene_text
-    INPUTS
-        scene.rdla
-    OUTPUTS
-        scene.exr
+    INPUTS scene.rdla
+    OUTPUTS scene.exr
 )
 

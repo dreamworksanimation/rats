@@ -3,8 +3,7 @@
 
 add_rats_test(render_output_aov_widget
     DIFF_EXRHEADERS
-    INPUTS
-        scene.rdla
+    INPUTS scene.rdla
     OUTPUTS
         beauty.exr
         alpha.exr

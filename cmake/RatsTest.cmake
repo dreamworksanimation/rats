@@ -109,6 +109,9 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             # output of the 'exrheader' command against the canonical image
             DIFF_EXRHEADERS
 
+            # disables this test
+            DISABLED
+
             # optional execution modes to skip for this test. For example, pathguiding is
             # currently only supported in scalar mode, so tests using it may want to pass
             # NO_VECTOR NO_XPU.
@@ -175,8 +178,6 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         list(APPEND exec_modes xpu)
     endif()
 
-    # FIXME: turn ARG_DEPENDS into a list using separate_arguments() in case multiple tests are passed?
-
     foreach(exec_mode ${exec_modes})
         set(canonical_dir ${root_canonical_path}/${exec_mode})
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
@@ -237,6 +238,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         set_tests_properties(${canonical_test_name} PROPERTIES
             LABELS "canonical"
             DEPENDS "${canonical_dependencies}"
+            DISABLED ${ARG_DISABLED}
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
@@ -248,6 +250,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         set_tests_properties(${render_test_name} PROPERTIES
             LABELS "render"
             DEPENDS "${render_dependencies}"
+            DISABLED ${ARG_DISABLED}
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
         )
 
@@ -271,6 +274,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
                 set_tests_properties(${header_test_name} PROPERTIES
                     LABELS "diff"
                     DEPENDS "${render_test_name}"
+                    DISABLED ${ARG_DISABLED}
                 )
             endif()
 
@@ -296,6 +300,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             set_tests_properties(${diff_test_name} PROPERTIES
                 LABELS "diff"
                 DEPENDS ${render_test_name}
+                DISABLED ${ARG_DISABLED}
             )
         endforeach()
     endforeach()
