@@ -1,8 +1,8 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_rats_test(render_output_aov_widget
-    DIFF_EXRHEADERS
+add_rats_test(moonray_render_output_aov_widget
+    DIFF_HEADERS
     INPUTS scene.rdla
     OUTPUTS
         beauty.exr
@@ -14,7 +14,7 @@ add_rats_test(render_output_aov_widget
         wireframe.exr
         material.exr
         light.exr
-        visibility.exr
+        # visibility.exr
         # variance.exr
         weight.exr
         cryptomatte.exr

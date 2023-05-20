@@ -1,91 +1,6 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-# Get list of arguments for the idiff cmd for the given EXEC_MODE.
-# Default args are defined within this function for each execution mode,
-# and are overriden by any matching additional arguments passed.
-# The 'out_var' variable will contain the final list of arguments.
-function(_get_idiff_args out_var)
-    set(options -p -q -a -abs -v)
-    set(oneValueArgs EXEC_MODE -fail -failrelative -failpercent -hardfail -allowfailures -warn -warnrelative -warnpercent -hardwarn -scale)
-    set(multiValueArgs "") # currently unused
-
-    # parse and validate arguments
-    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-    if(DEFINED ARG_KEYWORDS_MISSING_VALUES)
-        message(FATAL_ERROR "Keywords missing values: ${ARG_KEYWORDS_MISSING_VALUES}")
-    endif()
-    if(DEFINED ARG_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR "Unrecognized arguments: ${ARG_UNPARSED_ARGUMENTS}")
-    endif()
-    if(NOT DEFINED ARG_EXEC_MODE)
-        message(FATAL_ERROR "You must specify EXEC_MODE.")
-    endif()
-
-    # Commented default arguments below are not set by this function
-    # unless overridden by user but are left in place for future use.
-    if(${ARG_EXEC_MODE} STREQUAL "scalar")
-        set(default_fail            0.004)
-        # set(default_failrelative    0)
-        set(default_failpercent     0.01)
-        set(default_hardfail        0.02)
-        # set(default_allowfailures   0)
-        set(default_warn            0.004)
-        # set(default_warnrelative    0)
-        set(default_warnpercent     0.01)
-        # set(default_hardwarn        inf)
-        # set(default_scale           1)
-        # set(default_p               FALSE)
-        # set(default_q               FALSE)
-        set(default_a               TRUE)   # always set
-        set(default_abs             TRUE)   # always set
-        set(default_v               TRUE)   # always set
-    elseif(${ARG_EXEC_MODE} STREQUAL "vector" OR ${ARG_EXEC_MODE} STREQUAL "xpu")
-        set(default_fail            0.007)
-        # set(default_failrelative    0)
-        set(default_failpercent     0.02)
-        set(default_hardfail        0.02)
-        # set(default_allowfailures   0)
-        set(default_warn            0.007)
-        # set(default_warnrelative    0)
-        set(default_warnpercent     0.02)
-        # set(default_hardwarn        inf)
-        # set(default_scale           1)
-        # set(default_p               FALSE)
-        # set(default_q               FALSE)
-        set(default_a               TRUE)   # always set
-        set(default_abs             TRUE)   # always set
-        set(default_v               TRUE)   # always set
-    else()
-        message(FATAL_ERROR "Unrecognized EXEC_MODE: ${ARG_EXEC_MODE}")
-    endif()
-
-    set(args "")
-
-    # append any single-value options
-    foreach(arg fail;failrelative;failpercent;hardfail;allowfailures;warn;warnrelative;warnpercent;hardwarn;scale)
-        set(override ARG_-${arg})
-        set(default default_${arg})
-        if(DEFINED ${override})
-            list(APPEND args -${arg} ${${override}})
-        elseif(DEFINED ${default})
-            list(APPEND args -${arg} ${${default}})
-        endif()
-    endforeach()
-
-    # append any flags
-    foreach(arg p;q;a;abs;v)
-        set(override ARG_-${arg})
-        set(default default_${arg})
-        if(${override})
-            list(APPEND args -${arg})
-        elseif(${default})
-            list(APPEND args -${arg})
-        endif()
-    endforeach()
-
-    set(${out_var} ${args} PARENT_SCOPE)
-endfunction()
 
 # Adds a new RaTS test.
 # Each RaTS test will produce a series of CTests for each execution mode, as follows:
@@ -107,7 +22,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
     set(options
             # adds a separate CTest with the 'diff' label to compare the canonical
             # and result image's exr headers
-            DIFF_EXRHEADERS
+            DIFF_HEADERS
 
             # disables this test
             DISABLED
@@ -225,10 +140,6 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             list(APPEND render_cmd ${ARG_RENDER_ARGS_XPU})
         endif()
 
-        # Output the list of renderer cmd arguments for each test when
-        # cmake is invoked with --log-level=verbose
-        # message(VERBOSE "${test_basename} renderer args (${exec_mode_short}): ${render_cmd}")
-
         # Add CTest to generate canonicals
         add_test(NAME ${canonical_test_name}
             WORKING_DIRECTORY ${render_dir}
@@ -263,16 +174,16 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             cmake_path(GET output EXTENSION extension)
 
             # diff exr header?
-            if(ARG_DIFF_EXRHEADERS AND ${extension} STREQUAL ".exr")
-                set(header_test_name "rats_${exec_mode_short}_exrheader_${test_basename}_${stem}")
+            if(ARG_DIFF_HEADERS)
+                set(header_test_name "rats_${exec_mode_short}_header_${test_basename}_${stem}${extension}")
 
                 add_test(NAME ${header_test_name}
                     WORKING_DIRECTORY ${render_dir}
                     COMMAND ${CMAKE_COMMAND}
                             "-DOIIOTOOL=${OIIOTOOL}"
-                            "-DCANONICAL_EXR=${canonical_dir}/${output}"
-                            "-DRESULT_EXR=${output}"
-                            -P ${PROJECT_SOURCE_DIR}/cmake/CompareExrHeaders.cmake
+                            "-DCANONICAL=${canonical_dir}/${output}"
+                            "-DRESULT=${output}"
+                            -P ${PROJECT_SOURCE_DIR}/cmake/CompareImageHeaders.cmake
                 )
                 set_tests_properties(${header_test_name} PROPERTIES
                     LABELS "diff"
@@ -281,24 +192,18 @@ function(add_rats_test test_basename)   # basename of tests including relative f
                 )
             endif()
 
-            set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}")
-            set(diff_image_name "${stem}_diff${extension}")
-
-            set(diff_args "")
-            _get_idiff_args(more_args EXEC_MODE ${exec_mode} ${ARG_IDIFF_ARGS_${exec_mode_upper}})
-            list(APPEND diff_args ${more_args})
-            list(APPEND diff_args -o ${diff_image_name})
-
-            # Output the list of idiff cmd arguments for each test when
-            # cmake is invoked with --log-level=verbose
-            message(VERBOSE "${test_basename} idiff args (${exec_mode_short}): ${diff_args}")
+            set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}${extension}")
 
             add_test(NAME ${diff_test_name}
                 WORKING_DIRECTORY ${render_dir}
-                COMMAND ${IDIFF}
-                    -v -a -abs
-                    ${diff_args}
-                    ${output} ${canonical_dir}/${output}
+                COMMAND ${CMAKE_COMMAND}
+                        "-DEXEC_MODE=${exec_mode}"
+                        "-DCANONICAL=${canonical_dir}/${output}"
+                        "-DRESULT=${output}"
+                        "-DDIFF_IMAGE=${diff_image_name}"
+                        "-DIDIFF=${IDIFF}"
+                        "-DIDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
+                        -P ${PROJECT_SOURCE_DIR}/cmake/CompareImages.cmake
             )
             set_tests_properties(${diff_test_name} PROPERTIES
                 LABELS "diff"

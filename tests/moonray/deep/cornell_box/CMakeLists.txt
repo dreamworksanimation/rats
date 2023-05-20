@@ -1,7 +1,7 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_rats_test(deep_cornell_box
+add_rats_test(moonray_deep_cornell_box
     INPUTS scene.rdla
     OUTPUTS beauty_flat.exr
     # super high -hardfail required, presumably due to bright visible light
