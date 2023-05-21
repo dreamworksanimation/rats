@@ -2,65 +2,81 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-# Adds a new RaTS test.
-# Each RaTS test will produce a series of CTests for each execution mode, as follows:
-# 'canonical' label CTests will:
-#       * Render the scene to produce canonical images for each execution mode and
-#         copy the outputs= images to the directory specified by the ${RATS_CANONICAL_DIR}
-#         cache variable.  The folder structure will be created matching the relative
-#         path to the ${CMAKE_CURRENT_SOURCE_DIR} from the ${PROJECT_SOURCE_DIR}.
-# 'render' label CTests will:
-#       * Render the scene to produce images for each execution mode into the
-#         ${CMAKE_CURRENT_BINARY_DIR}.
-# 'diff' label CTests will:
-#       * Execute the 'idiff' command on each of the output images comparing it
-#         with  the previously rendered canonical image of the same name.
-#       * Compare the headers of .exr output images with the previously rendered
-#         canonical image of the same name, ignoring timestamps
-function(add_rats_test test_basename)   # basename of tests including relative folder structure, example: geometry_spheres
-    # KEYWORD arguments:
+# Add a new RaTS test.
+# ---------------------
+#
+# Each call to this function will produce a series of labeled CTests for each of MoonRay's execution modes.
+# A typical RaTS test will comprise of 9 or more individual CTests, see below.
+#
+# ---------------------
+#
+# TEST NAMES:
+# Each test will be named according to the following convention:
+#   rats_<exec_mode>_<task>_<test_basename>[_output]
+#
+#   * the <exec_mode> token will be one of sca|vec|xpu
+#   * the <task> token will be canonical|render|diff|header
+#   * the [_output] token appears on diff/header tasks and will be the name of the image, eg. _scene.exr
+#
+# ---------------------
+#
+# LABELS:
+# See https://cmake.org/cmake/help/latest/prop_test/LABELS.html
+# Each test will have its LABELS property set according to the CTest's task, with the following convention:
+# 'canonical' labeled CTests will:
+#       * Render the scene to produce canonical images and copy each output image to the directory
+#         specified by the ${RATS_CANONICAL_DIR} cache variable.  The canonicals folder structure
+#         will be created matching the relative path to the ${CMAKE_CURRENT_SOURCE_DIR} from the
+#         ${PROJECT_SOURCE_DIR} and will include the execution mode.
+#
+# 'render' labeled CTests will:
+#       * Render the scene to produce images into the build directory under the <execution_mode>/ dir.
+#
+# 'diff' labeled CTests will:
+#       * Execute the 'idiff' command an output image comparing it with previously rendered canonical image of the same name.
+#       * Or... compare the header of an output image with previously rendered canonical image of the same name.
+#
+# ---------------------
+function(add_rats_test test_basename)
+    # basename:                 basename of tests. By convention includes relative folder structure, example: moonray_geometry_spheres
+
+    # The following KEYWORD arguments are supported:
     set(options
-            # adds a separate CTest with the 'diff' label to compare the canonical
-            # and result image's exr headers
-            DIFF_HEADERS
+            DIFF_HEADERS        # (optional) adds an extra CTest with the 'diff' label to compare the canonical
+                                # and result image headers.
 
-            # disables this test
-            DISABLED
+            DISABLED            # (optional) disables this test, for whatever reason.
 
-            # optional execution modes to skip for this test. For example, pathguiding is
-            # currently only supported in scalar mode, so tests using it may want to pass
-            # NO_VECTOR NO_XPU.
-            NO_SCALAR
-            NO_VECTOR
-            NO_XPU
+            NO_SCALAR           # | (optional) execution modes to skip for this test. For example, path guiding is
+            NO_VECTOR           # | currently only supported in scalar mode, so tests using path guiding may want
+            NO_XPU              # | to pass: NO_VECTOR NO_XPU.
     )
 
-    set(oneValueArgs "") # unused
+    set(oneValueArgs "")        # currently unused
 
     set(multiValueArgs
-            # optional list of tests that should be ran before this test
-            # in multiple job CTest runs (-j N, where N > 0). When specifying
-            DEPENDS
+            DEPENDS             # (optional) list of tests that should be ran before this test (for canonical and
+                                # render tasks) when running ctest with multiple jobs (eg. -j N). For example,
+                                # for a test that uses checkpoint/resume rendering the resume test should run _after_
+                                # the checkpoint test, and should therefore specify the checkpoint test's basename
+                                # in its DEPENDS list.
+                                # (Note that CTests are alway rans in the order they are added when -j is omitted,
+                                # but specifying an explicit dependency here allows such tests to run in the correct
+                                # order when multiple jobs are used via the -J option to the ctest command).
 
-            # optional list of idiff args to set/override
-            # example: IDIFF_ARGS_VECTOR -failpercent 0.025 -hardfail 0.035
-            IDIFF_ARGS_SCALAR
-            IDIFF_ARGS_VECTOR
+            IDIFF_ARGS_SCALAR   # | (optional) list of idiff args to set/override for a particular execution mode.
+            IDIFF_ARGS_VECTOR   # | example: IDIFF_ARGS_VECTOR -failpercent 0.025 -hardfail 0.035
             IDIFF_ARGS_XPU
 
-            # list of input files the test requires
-            # example: INPUTS scene.rdla scene.rdlb
-            INPUTS
+            INPUTS              # (required) ordered list of input files the test requires.
+                                # example: INPUTS scene.rdla scene.rdlb
 
-            # list of output files the test produces.
-            # if empty, no canonical/diff CTests are created for this test
-            # example: OUTPUTS scene.exr aovs.exr more_aovs.exr
-            OUTPUTS
+            OUTPUTS             # (optional) list of output files the test produces (aka. results/canonicals).
+                                # if empty, no canonical/diff/header CTests are created for this test.
+                                # example: OUTPUTS scene.exr aovs.exr more_aovs.exr
 
-            # optional list of renderer args to set/override
-            # example: RENDER_ARGS_XPU -scene_var \"pixel_samples\" \"1\" -texture_cache_size 8192
-            RENDER_ARGS_SCALAR
-            RENDER_ARGS_VECTOR
+            RENDER_ARGS_SCALAR  # | (optional) list of renderer args to set/override.
+            RENDER_ARGS_VECTOR  # | example: RENDER_ARGS_XPU -scene_var \"pixel_samples\" \"1\" -texture_cache_size 8192
             RENDER_ARGS_XPU
     )
 
@@ -76,12 +92,13 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         message(FATAL_ERROR "You must specify INPUTS")
     endif()
 
+    # configure some paths
     set(rdl2_dso_path ${CMAKE_BINARY_DIR}/rdl2dso/)
     set(rats_assets_dir ${PROJECT_SOURCE_DIR}/assets/)
-
     file(RELATIVE_PATH test_rel_path ${PROJECT_SOURCE_DIR}/tests/ ${CMAKE_CURRENT_SOURCE_DIR})
     set(root_canonical_path ${RATS_CANONICAL_DIR}/${test_rel_path})
 
+    # determine which execution modes are needed
     set(exec_modes "")
     if(NOT ARG_NO_SCALAR)
         list(APPEND exec_modes scalar)
@@ -93,21 +110,21 @@ function(add_rats_test test_basename)   # basename of tests including relative f
         list(APPEND exec_modes xpu)
     endif()
 
+    # add CTests
     foreach(exec_mode ${exec_modes})
         set(canonical_dir ${root_canonical_path}/${exec_mode})
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
-        file(MAKE_DIRECTORY ${render_dir})
-
         string(TOUPPER ${exec_mode} exec_mode_upper)
         string(SUBSTRING ${exec_mode} 0 3 exec_mode_short)
         set(canonical_test_name "rats_${exec_mode_short}_canonical_${test_basename}")
         set(render_test_name "rats_${exec_mode_short}_render_${test_basename}")
+        file(MAKE_DIRECTORY ${render_dir})
 
         if(ARG_DEPENDS)
             # compute full name of dependency tests with prefix
             list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode_short}_canonical_" OUTPUT_VARIABLE canonical_dependencies)
             list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode_short}_render_"    OUTPUT_VARIABLE render_dependencies)
-            # join them into one big list and verify they exist
+            # join them into one big list and verify that each CTest exists
             string(JOIN % dependencies ${canonical_dependencies})
             string(JOIN % dependencies ${render_dependencies})
             foreach(test ${dependencies})
@@ -173,7 +190,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
             cmake_path(GET output STEM stem)
             cmake_path(GET output EXTENSION extension)
 
-            # diff exr header?
+            # diff image header?
             if(ARG_DIFF_HEADERS)
                 set(header_test_name "rats_${exec_mode_short}_header_${test_basename}_${stem}${extension}")
 
@@ -192,8 +209,8 @@ function(add_rats_test test_basename)   # basename of tests including relative f
                 )
             endif()
 
+            # diff output images
             set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}${extension}")
-
             add_test(NAME ${diff_test_name}
                 WORKING_DIRECTORY ${render_dir}
                 COMMAND ${CMAKE_COMMAND}
@@ -210,7 +227,7 @@ function(add_rats_test test_basename)   # basename of tests including relative f
                 DEPENDS ${render_test_name}
                 DISABLED ${ARG_DISABLED}
             )
-        endforeach()
-    endforeach()
+        endforeach() # output
+    endforeach() # exec mode
 endfunction()
 
