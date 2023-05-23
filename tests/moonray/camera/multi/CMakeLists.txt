@@ -3,7 +3,7 @@
 
 add_rats_test(moonray_camera_multi
     INPUTS scene.rdla
-    OUTPUTS
+    CANONICALS
         beautyLFT.exr
         beautyRGT.exr
         aovLFT.exr

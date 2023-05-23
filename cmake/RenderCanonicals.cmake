@@ -5,8 +5,8 @@
 # This script is during execution of the rats tests and is responsible for rendering
 # a canonical image, creating a dir for the image and copying the image to that dir.
 # It expects to be run with the following variables defined:
-#   CANONCAL_PATH   : directory to store the caonicals. It will be created if necessary.
-#   OUTPUTS         : list of output images to be stored as canonicals, eg.
+#   CANONCAL_PATH   : directory to store the canonicals. It will be created if necessary.
+#   CANONICALS      : list of output images to be stored as canonicals, eg.
 #                       scene.exr;aovs.exr;more_aovs.exr
 #   RENDER_CMD      : fully qualified render commnd line as a list, eg:
 #                       /path/to/moonray;-in;scene.rdla;-exec_mode;scalar
@@ -32,13 +32,13 @@ endmacro()
 # run moonray
 exec_and_check(${RENDER_CMD})
 
-if(OUTPUTS)
+if(CANONICALS)
     # make the directory for the canonicals
     set(mkdir_cmd ${CMAKE_COMMAND} -E make_directory ${CANONICAL_PATH})
     exec_and_check(${mkdir_cmd})
 
     # copy the outputs to the canonicals dir
-    set(copy_cmd ${CMAKE_COMMAND} -E copy ${OUTPUTS} ${CANONICAL_PATH})
+    set(copy_cmd ${CMAKE_COMMAND} -E copy ${CANONICALS} ${CANONICAL_PATH})
     exec_and_check(${copy_cmd})
 endif()
 

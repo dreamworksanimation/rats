@@ -3,6 +3,6 @@
 
 add_rats_test(moonray_motion_blur_curved_hermite
     INPUTS scene.rdla
-    OUTPUTS scene.exr
+    CANONICALS scene.exr
 )
 

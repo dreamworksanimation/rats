@@ -3,6 +3,6 @@
 
 add_rats_test(moonray_sampling_veach_mis
     INPUTS scene.rdla
-    OUTPUTS scene.exr
+    CANONICALS scene.exr
 )
 

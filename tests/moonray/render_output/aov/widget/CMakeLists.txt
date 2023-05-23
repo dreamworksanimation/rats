@@ -4,7 +4,7 @@
 add_rats_test(moonray_render_output_aov_widget
     DIFF_HEADERS
     INPUTS scene.rdla
-    OUTPUTS
+    CANONICALS
         beauty.exr
         alpha.exr
         depth.exr

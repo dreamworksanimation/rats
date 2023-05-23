@@ -3,7 +3,7 @@
 
 add_rats_test(moonray_geometry_sphere
     INPUTS scene.rdla
-    OUTPUTS
+    CANONICALS
         result.exr
         material.exr
         state.exr

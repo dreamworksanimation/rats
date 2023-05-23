@@ -6,7 +6,7 @@
 # ---------------------
 #
 # Each call to this function will produce a series of labeled CTests for each of MoonRay's execution modes.
-# A typical RaTS test will comprise of 9 or more individual CTests, see below.
+# A typical RaTS test will comprise of 9 or more individual CTests, which can later be ran in stages, see below.
 #
 # ---------------------
 #
@@ -52,7 +52,9 @@ function(add_rats_test test_basename)
             NO_XPU              # | to pass: NO_VECTOR NO_XPU.
     )
 
-    set(oneValueArgs "")        # currently unused
+    set(oneValueArgs
+            RENDERER            # moonray|hd_render (defaults to moonray)
+    )
 
     set(multiValueArgs
             DEPENDS             # (optional) list of tests that should be ran before this test (for canonical and
@@ -71,9 +73,9 @@ function(add_rats_test test_basename)
             INPUTS              # (required) ordered list of input files the test requires.
                                 # example: INPUTS scene.rdla scene.rdlb
 
-            OUTPUTS             # (optional) list of output files the test produces (aka. results/canonicals).
+            CANONICALS          # (optional) list of output files the test produces (aka. results/canonicals).
                                 # if empty, no canonical/diff/header CTests are created for this test.
-                                # example: OUTPUTS scene.exr aovs.exr more_aovs.exr
+                                # example: CANONICALS scene.exr aovs.exr more_aovs.exr
 
             RENDER_ARGS_SCALAR  # | (optional) list of renderer args to set/override.
             RENDER_ARGS_VECTOR  # | example: RENDER_ARGS_XPU -scene_var \"pixel_samples\" \"1\" -texture_cache_size 8192
@@ -163,7 +165,7 @@ function(add_rats_test test_basename)
             COMMAND ${CMAKE_COMMAND}
                     "-DRENDER_CMD=${render_cmd}"
                     "-DCANONICAL_PATH=${canonical_dir}"
-                    "-DOUTPUTS=${ARG_OUTPUTS}"
+                    "-DCANONICALS=${ARG_CANONICALS}"
                     -P ${PROJECT_SOURCE_DIR}/cmake/RenderCanonicals.cmake
         )
         set_tests_properties(${canonical_test_name} PROPERTIES
@@ -186,9 +188,9 @@ function(add_rats_test test_basename)
         )
 
         # Add CTest to diff against the canonical images
-        foreach(output ${ARG_OUTPUTS})
-            cmake_path(GET output STEM stem)
-            cmake_path(GET output EXTENSION extension)
+        foreach(canonical ${ARG_CANONICALS})
+            cmake_path(GET canonical STEM stem)
+            cmake_path(GET canonical EXTENSION extension)
 
             # diff image header?
             if(ARG_DIFF_HEADERS)
@@ -198,8 +200,8 @@ function(add_rats_test test_basename)
                     WORKING_DIRECTORY ${render_dir}
                     COMMAND ${CMAKE_COMMAND}
                             "-DOIIOTOOL=${OIIOTOOL}"
-                            "-DCANONICAL=${canonical_dir}/${output}"
-                            "-DRESULT=${output}"
+                            "-DCANONICAL=${canonical_dir}/${canonical}"
+                            "-DRESULT=${canonical}"
                             -P ${PROJECT_SOURCE_DIR}/cmake/CompareImageHeaders.cmake
                 )
                 set_tests_properties(${header_test_name} PROPERTIES
@@ -209,14 +211,14 @@ function(add_rats_test test_basename)
                 )
             endif()
 
-            # diff output images
+            # diff canonical images
             set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}${extension}")
             add_test(NAME ${diff_test_name}
                 WORKING_DIRECTORY ${render_dir}
                 COMMAND ${CMAKE_COMMAND}
                         "-DEXEC_MODE=${exec_mode}"
-                        "-DCANONICAL=${canonical_dir}/${output}"
-                        "-DRESULT=${output}"
+                        "-DCANONICAL=${canonical_dir}/${canonical}"
+                        "-DRESULT=${canonical}"
                         "-DDIFF_IMAGE=${diff_image_name}"
                         "-DIDIFF=${IDIFF}"
                         "-DIDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
@@ -227,7 +229,7 @@ function(add_rats_test test_basename)
                 DEPENDS ${render_test_name}
                 DISABLED ${ARG_DISABLED}
             )
-        endforeach() # output
+        endforeach() # canonical
     endforeach() # exec mode
 endfunction()
 

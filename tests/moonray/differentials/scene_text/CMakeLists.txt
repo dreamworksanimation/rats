@@ -3,6 +3,6 @@
 
 add_rats_test(moonray_differentials_scene_text
     INPUTS scene.rdla
-    OUTPUTS scene.exr
+    CANONICALS scene.exr
 )
 
