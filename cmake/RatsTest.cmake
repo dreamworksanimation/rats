@@ -1,6 +1,7 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
+set(supported_renderers moonray hd_render)
 
 # Add a new RaTS test.
 # ---------------------
@@ -53,10 +54,15 @@ function(add_rats_test test_basename)
     )
 
     set(oneValueArgs
+            OUTPUT              # (optional) name of output image file, will be added to render args as -out <OUTPUT>
             RENDERER            # moonray|hd_render (defaults to moonray)
     )
 
     set(multiValueArgs
+            CANONICALS          # (optional) list of output files the test produces (aka. results/canonicals).
+                                # if empty, no canonical/diff/header CTests are created for this test.
+                                # example: CANONICALS scene.exr aovs.exr more_aovs.exr
+
             DEPENDS             # (optional) list of tests that should be ran before this test (for canonical and
                                 # render tasks) when running ctest with multiple jobs (eg. -j N). For example,
                                 # for a test that uses checkpoint/resume rendering the resume test should run _after_
@@ -73,11 +79,8 @@ function(add_rats_test test_basename)
             INPUTS              # (required) ordered list of input files the test requires.
                                 # example: INPUTS scene.rdla scene.rdlb
 
-            CANONICALS          # (optional) list of output files the test produces (aka. results/canonicals).
-                                # if empty, no canonical/diff/header CTests are created for this test.
-                                # example: CANONICALS scene.exr aovs.exr more_aovs.exr
-
-            RENDER_ARGS_SCALAR  # | (optional) list of renderer args to set/override.
+            RENDER_ARGS         # (optional) list of renderer args to set/override.
+            RENDER_ARGS_SCALAR  # | (optional) list of renderer args to set/override per execution mode
             RENDER_ARGS_VECTOR  # | example: RENDER_ARGS_XPU -scene_var \"pixel_samples\" \"1\" -texture_cache_size 8192
             RENDER_ARGS_XPU
     )
@@ -94,6 +97,22 @@ function(add_rats_test test_basename)
         message(FATAL_ERROR "You must specify INPUTS")
     endif()
 
+    if(NOT DEFINED ARG_RENDERER)
+        set(renderer "moonray") # default renderer
+    else()
+        set(renderer ${ARG_RENDERER})
+    endif()
+    if(NOT ${renderer} IN_LIST supported_renderers)
+        message(FATAL_ERROR "Unsupported renderer: ${renderer}")
+    endif()
+
+    # Build render command
+    if(${renderer} STREQUAL "moonray")
+        set(render_cmd $<TARGET_FILE:moonray>)
+    elseif(${renderer} STREQUAL "hd_render")
+        set(render_cmd $<TARGET_FILE:hd_render>)
+    endif()
+
     # configure some paths
     set(rdl2_dso_path ${CMAKE_BINARY_DIR}/rdl2dso/)
     set(rats_assets_dir ${PROJECT_SOURCE_DIR}/assets/)
@@ -101,15 +120,19 @@ function(add_rats_test test_basename)
     set(root_canonical_path ${RATS_CANONICAL_DIR}/${test_rel_path})
 
     # determine which execution modes are needed
-    set(exec_modes "")
-    if(NOT ARG_NO_SCALAR)
-        list(APPEND exec_modes scalar)
-    endif()
-    if(NOT ARG_NO_VECTOR)
-        list(APPEND exec_modes vector)
-    endif()
-    if(NOT ARG_NO_XPU)
-        list(APPEND exec_modes xpu)
+    if(${renderer} STREQUAL "moonray")
+        if(NOT ARG_NO_SCALAR)
+            list(APPEND exec_modes scalar)
+        endif()
+        if(NOT ARG_NO_VECTOR)
+            list(APPEND exec_modes vector)
+        endif()
+        if(NOT ARG_NO_XPU)
+            list(APPEND exec_modes xpu)
+        endif()
+    else()
+        # hd_render does not yet allow for specifying exec mode
+        list(APPEND exec_modes default)
     endif()
 
     # add CTests
@@ -136,21 +159,21 @@ function(add_rats_test test_basename)
             endforeach()
         endif()
 
-        # Build moonray command. We need the fully qualified path to the moonray executable if
-        # we are going to be running it using the ${CMAKE_COMMAND} -P <script.cmake> method.
-        # NOTE: $<TARGET_FILE:moonray> isn't expanded until _build_ time.
-        set(render_cmd $<TARGET_FILE:moonray>)
-
-        if(NOT "$CACHE{RATS_RENDER_THREADS}" STREQUAL "")
-            list(APPEND render_cmd -threads $CACHE{RATS_RENDER_THREADS})
-        endif()
-
         foreach(rdl_input ${ARG_INPUTS})
             list(APPEND render_cmd -in ${CMAKE_CURRENT_SOURCE_DIR}/${rdl_input})
         endforeach()
-        list(APPEND render_cmd -exec_mode ${exec_mode})
-        list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
+        if(${renderer} STREQUAL "moonray")
+            list(APPEND render_cmd -exec_mode ${exec_mode})
+            list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
+            if(NOT "$CACHE{RATS_RENDER_THREADS}" STREQUAL "")
+                list(APPEND render_cmd -threads $CACHE{RATS_RENDER_THREADS})
+            endif()
+        endif()
+        if(DEFINED ARG_OUTPUT)
+            list(APPEND render_cmd -out ${ARG_OUTPUT})
+        endif()
 
+        list(APPEND render_cmd ${ARG_RENDER_ARGS})
         if(${exec_mode} STREQUAL scalar)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_SCALAR})
         elseif (${exec_mode} STREQUAL vector)

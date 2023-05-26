@@ -2,13 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(hd_render_geometry_skel
-    DISABLED
-    RENDERER hd_moonray
+    RENDERER hd_render
     INPUTS skel.usd
-    CANONCALS
-        scene.
-    RENDER_ARGS
-        # -in ${shot_dir}/skel.usd -out ${result} ${args} -res ${res} -size 1920 1440 -refine-level 3 -set doubleSided 0
+    OUTPUT  scene.exr
+    CANONICALS scene.exr
+    RENDER_ARGS -size 256 192 -refine-level 3 -set doubleSided 0
 )
 
 

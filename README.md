@@ -34,14 +34,7 @@ The tests are labeled according to their stage:
 * diff
 
 ## Building the test suite
-These instructions are temporary and subject to change as we continue to evolve our build system.  Building using `rez-build` is not yet supported, but hopefully can be in the future.
-
-```bash
-rez2
-rez-env cmake gcc-9
-cmake --preset dwa-relwithdebinfo --log-context -DRATS_CANONICAL_PATH=/usr/pic1/jlanz/rats2_canonicals -DRATS_RENDER_RES=2 -DRATS_NUM_THREADS=64
-cmake --build --preset dwa-relwithdebinfo -- -j <NUM_CPUS> -O
-```
+Building using `rez-build` as usual, and the RaTS tests will be built as well. Arguments passed after the ' -- ' are appended to the cmake build command.
 
 There are currently two configure/build-time CMake cache variables that control behavior of the tests:
 
@@ -59,8 +52,23 @@ the `-j` argument to the CTest command.
 
 In practice option 2 seems to run the fastest overall. Using option 1 might cause your system's memory to be a bottleneck.
 
+For example:
+```bash
+rez2
+rez-build -i -p /path/to/install --variants 0 -- --log-context -DRATS_CANONICAL_PATH=/path/to/canonicals -DRATS_NUM_THREADS=16
+```
+
 ## Running the rats tests
 You must run the rats tests from the build directory, in the variant you wish to test.
+You'll need to prepred your REZ_PACKAGES_PATH with your openmoonray package install dir.
+
+For example, from the source dir:
+```bash
+REZ_PACKAGES_PATH=/path/to/install:$REZ_PACKAGES_PATH
+rez-env cmake-3.23 openmoonray os-CentOS-7 opt_level-optdebug refplat-vfx2020.3 gcc-6.3.x.2 amorphous-8 openvdb-8 usd_core-0.20.8.x.2
+cd build/os-CentOS-7/opt_level-optdebug/refplat-vfx2020.3/gcc-6.3.x.2/amorphous-8/openvdb-8/usd_core-0.20.8.x.2
+ctest -L 'render|diff' -j 4
+```
 
 ### Generating canonical images
 Canonicals should be generated/updated using a previously known good state of the codebase, eg. a recent release.

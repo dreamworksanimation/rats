@@ -84,6 +84,22 @@ function(override_idiff_args out_var)
         set(default_a               TRUE)   # always set
         set(default_abs             TRUE)   # always set
         set(default_v               TRUE)   # always set
+    elseif(${ARG_EXEC_MODE} STREQUAL "default")
+        set(default_fail            0.007)
+        # set(default_failrelative    0)
+        set(default_failpercent     0.02)
+        set(default_hardfail        0.02)
+        # set(default_allowfailures   0)
+        set(default_warn            0.007)
+        # set(default_warnrelative    0)
+        set(default_warnpercent     0.02)
+        # set(default_hardwarn        inf)
+        # set(default_scale           1)
+        # set(default_p               FALSE)
+        # set(default_q               FALSE)
+        set(default_a               TRUE)   # always set
+        set(default_abs             TRUE)   # always set
+        set(default_v               TRUE)   # always set
     else()
         message(FATAL_ERROR "Unrecognized EXEC_MODE: ${ARG_EXEC_MODE}")
     endif()
