@@ -87,7 +87,7 @@ ctest -R '^rats_vec_' -L 'canonical'
 ctest -L 'render|diff' -R 'moonray_geometry'
 
 # render and diff all vector and xpu mode tests that have "moonray_geometry" in the name
-ctest -E '^rats_sca_|^rats__def_' -L 'render|diff' -R 'moonray_geometry'
+ctest -E '^rats_sca_|^rats_def_' -L 'render|diff' -R 'moonray_geometry'
 ```
 
 CTest has several other ways to choose which tests are run, such as by individual test numbers.  See CTest documentation for more info.
