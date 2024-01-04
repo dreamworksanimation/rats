@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # -------------------------------------------------------------------------------------
-# This script is during execution of the rats tests and is responsible for rendering
+# This script is run during execution of the rats tests and is responsible for rendering
 # a canonical image, creating a dir for the image and copying the image to that dir.
 # It expects to be run with the following variables defined:
 #   CANONCAL_PATH   : directory to store the canonicals. It will be created if necessary.

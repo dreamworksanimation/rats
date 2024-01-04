@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # =====================================================================================
-# This script is ran during execution of the rats tests via
+# This script is run during execution of the rats tests via
 #     ${CMAKE_COMMAND} -P <thisscript>.cmake -DEXAMPLE_DEF1=... -DEXAMPLE_DEF2=...
 #
 # It is responsible for diff'ing a pair of [canonical,result] images

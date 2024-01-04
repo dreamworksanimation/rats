@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # =====================================================================================
-# This script is ran during execution of the rats tests via
+# This script is run during execution of the rats tests via
 #     ${CMAKE_COMMAND} -P <thisscript>.cmake -DEXAMPLE_DEF1=... -DEXAMPLE_DEF2=...
 #
 # It is responsible for diff'ing the headers of a pair of [canonical,result] images
 # -------------------------------------------------------------------------------------
 #
 # Required definitions:
-#   CANONCAL            : full path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
+#   CANONICAL           : full path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
 #   RESULT              : name of the result image, eg. beauty.exr
 #   OIIOTOOL            : full path to the openimageio 'oiitool' cmd
 # -------------------------------------------------------------------------------------
