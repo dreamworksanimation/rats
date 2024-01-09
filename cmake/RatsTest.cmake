@@ -187,7 +187,7 @@ function(add_rats_test test_basename)
             WORKING_DIRECTORY ${render_dir}
             COMMAND ${CMAKE_COMMAND}
                     "-DRENDER_CMD=${render_cmd}"
-                    "-DCANONICAL_PATH=${canonical_dir}"
+                    "-DCANONICALS_DIR=${canonical_dir}"
                     "-DCANONICALS=${ARG_CANONICALS}"
                     -P ${PROJECT_SOURCE_DIR}/cmake/RenderCanonicals.cmake
         )

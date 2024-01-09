@@ -10,8 +10,8 @@
 #
 # Required definitions:
 #   EXEC_MODE           : used to determine which defaults to use (scalar|vector|xpu)
-#   CANONCAL            : full path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
-#   RESULT              : name of the result image, eg. beauty.exr
+#   CANONICAL           : full path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
+#   RESULT              : name of the image to be compared with the canonical image, eg. beauty.exr
 #   IDIFF               : full path to the openimageio 'idiff' cmd
 #
 # Optional definitions:
