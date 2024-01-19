@@ -1,0 +1,70 @@
+SceneVariables {
+    ["lights_visible_in_camera"] = true,
+    ["image_width" ] = 256,
+    ["image_height"] = 256,
+}
+
+Camera("/scene/camera") {
+    ["node_xform"] = rotate(-2, 1, 0, 0) * translate(0.5, 4, 20, 1),
+    ["focal"] = 45,
+}
+
+-------------------------------------------------------
+
+widget = UsdGeometry("/scene/geometry/widget") {
+    ["node_xform"] = scale(0.6, 0.6, 0.6) * translate(0, 0, 1),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+
+floor = UsdGeometry("/scene/geometry/floor") {
+    ["node_xform"] = scale(20, 20, 20),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+wall = UsdGeometry("/scene/geometry/wall") {
+    ["node_xform"] = scale(20, 1, 10) * rotate(90, 1, 0, 0) * translate(0, 5, -2.2),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("/scene/geometryset") {
+    widget,
+    floor,
+    wall,
+}
+
+-------------------------------------------------------
+
+floor_material = DwaSolidDielectricMaterial("scene/materials/floor") {
+    ["albedo"] = Rgb(1.5, 0.8, 0.2),
+    ["show_specular"] = false,
+}
+
+widget_material = DwaSolidDielectricMaterial("scene/materials/widget") {
+    ["albedo"] = Rgb(0.8, 0.4, 0.3),
+    ["roughness"] = 0.25,
+}
+
+-------------------------------------------------------
+
+spherelight = SphereLight("scene/lights/spherelight") {
+    ["node_xform"] = translate(3, 5, 5),
+    ["radius"] = 1.0,
+    ["intensity"] = 0.1,
+}
+
+lightset = LightSet("scene/lightset") {
+    spherelight,
+}
+
+-------------------------------------------------------
+
+Layer("/scene/rendering/organizer/perPartitionAssignments") {
+    {widget, "", widget_material, lightset},
+    {floor,  "", floor_material,  lightset},
+    {wall,   "", floor_material,  lightset},
+}
+

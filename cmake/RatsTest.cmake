@@ -7,23 +7,23 @@ set(supported_renderers moonray hd_render)
 # ---------------------
 #
 # Each call to this function will produce a series of labeled CTests for each of MoonRay's execution modes.
-# A typical RaTS test will comprise of 9 or more individual CTests, which can later be ran in stages, see below.
+# A typical RaTS test will comprise 9 or more individual CTests, which can later be run in stages; see below.
 #
 # ---------------------
 #
 # TEST NAMES:
 # Each test will be named according to the following convention:
-#   rats_<exec_mode>_<task>_<test_basename>[_output]
+#   rats_<exec_mode>_<stage>_<test_basename>[_output]
 #
 #   * the <exec_mode> token will be one of sca|vec|xpu
-#   * the <task> token will be canonical|render|diff|header
-#   * the [_output] token appears on diff/header tasks and will be the name of the image, eg. _scene.exr
+#   * the <stage> token will be canonical|render|diff|header
+#   * the [_output] token appears on diff & header stages and will be the name of the image, eg. _scene.exr
 #
 # ---------------------
 #
 # LABELS:
 # See https://cmake.org/cmake/help/latest/prop_test/LABELS.html
-# Each test will have its LABELS property set according to the CTest's task, with the following convention:
+# Each test will have its LABELS property set according to the CTest's stage, with the following convention:
 # 'canonical' labeled CTests will:
 #       * Render the scene to produce canonical images and copy each output image to the directory
 #         specified by the ${RATS_CANONICAL_DIR} cache variable.  The canonicals folder structure
@@ -63,12 +63,12 @@ function(add_rats_test test_basename)
                                 # if empty, no canonical/diff/header CTests are created for this test.
                                 # example: CANONICALS scene.exr aovs.exr more_aovs.exr
 
-            DEPENDS             # (optional) list of tests that should be ran before this test (for canonical and
-                                # render tasks) when running ctest with multiple jobs (eg. -j N). For example,
+            DEPENDS             # (optional) list of tests that should be run before this test (for canonical and
+                                # render stages) when running ctest with multiple jobs (eg. -j N). For example,
                                 # for a test that uses checkpoint/resume rendering the resume test should run _after_
                                 # the checkpoint test, and should therefore specify the checkpoint test's basename
                                 # in its DEPENDS list.
-                                # (Note that CTests are alway rans in the order they are added when -j is omitted,
+                                # (Note that CTests are always run in the order they are added when -j is omitted,
                                 # but specifying an explicit dependency here allows such tests to run in the correct
                                 # order when multiple jobs are used via the -J option to the ctest command).
 
