@@ -3,4 +3,4 @@
 
 add_subdirectory(combined)
 add_subdirectory(sphere)
-
+add_subdirectory(textured_combined)
