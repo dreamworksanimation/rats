@@ -1,0 +1,143 @@
+SceneVariables {
+    ["lights_visible_in_camera"] = true,
+    ["image_width" ] = 256,
+    ["image_height"] = 128,
+}
+
+Camera("/scene/camera") {
+    ["node_xform"] = rotate(-5, 1, 0, 0) * translate(0.0, 5, 22, 1),
+    ["focal"] = 27,
+}
+
+-------------------------------------------------------
+
+sphere_center = UsdGeometry("/scene/geometry/sphere_center") {
+    ["node_xform"] = translate(0, 2.5, 5),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+sphere_left = UsdGeometry("/scene/geometry/sphere_left") {
+    ["node_xform"] = translate(-5, 2.5, 1),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+sphere_right = UsdGeometry("/scene/geometry/sphere_right") {
+    ["node_xform"] = translate(5, 2.5, 1),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+
+floor = UsdGeometry("/scene/geometry/floor") {
+    ["node_xform"] = scale(20, 20, 20),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+ceil = UsdGeometry("/scene/geometry/ceil") {
+    ["node_xform"] = scale(20, 20, 20) * translate(0, 10, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+back_wall = UsdGeometry("/scene/geometry/back_wall") {
+    ["node_xform"] = scale(20, 1, 10) * rotate(90, 1, 0, 0) * translate(0, 5, -7.2),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+left_wall = UsdGeometry("/scene/geometry/left_wall") {
+    ["node_xform"] = scale(20, 1, 20) * rotate(90, 0, 0, 1) * translate(-10, 5, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+right_wall = UsdGeometry("/scene/geometry/right_wall") {
+    ["node_xform"] = scale(20, 1, 20) * rotate(90, 0, 0, 1) * translate(10, 5, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("/scene/geometryset") {
+    sphere_left,
+    sphere_center,
+    sphere_right,
+    floor,
+    ceil,
+    back_wall,
+    left_wall,
+    right_wall
+}
+
+-------------------------------------------------------
+
+floor_material = DwaSolidDielectricMaterial("scene/materials/floor") {
+    ["show_specular"] = false,
+}
+
+widget_material = DwaSolidDielectricMaterial("scene/materials/widget") {
+    ["albedo"] = Rgb(0.5, 0.5, 0.5),
+    ["roughness"] = 0.25,
+}
+
+-------------------------------------------------------
+
+local tx = 7    -- common x-translation performed before rotations
+local ty = 3    -- common y-translation performed after rotations
+local tz = 8    -- common z-translation performed after rotations
+local ry = -5   -- small y-rotation to bring lights slightly in front of widget
+local rz = -145    -- z-rotation of first light
+local dr = 27.5 -- incremental z-rotation stepping from one light to the next
+
+
+redlight = SpotLight("scene/lights/redlight") {
+    ["node_xform"] = scale(0.01, 0.01, 0.01) * rotate(45, 0, 1, 0) * translate(tx-4, ty, tz),
+    ["color"] = Rgb(1, 0, 0),
+    ["intensity"] = 0.07,
+    ["inner_cone_angle"] = 40,
+    ["outer_cone_angle"] = 40,
+    ["clear_radius"] = 6.4
+}
+
+yellowlight = SpotLight("scene/lights/yellowlight") {
+    ["node_xform"] = scale(0.01, 0.01, 0.01) * translate(tx-7, ty, tz),
+    ["color"] = Rgb(1, 1, 0),
+    ["intensity"] = 0.06,
+    ["inner_cone_angle"] = 50,
+    ["outer_cone_angle"] = 50,
+    ["max_shadow_distance"] = 12.0,
+    ["min_shadow_distance"] = 11.5,
+}
+
+greenlight = SpotLight("scene/lights/greenlight") {
+    ["node_xform"] = scale(0.01, 0.01, 0.01) * rotate(-45, 0, 1, 0) * translate(tx-10, ty, tz),
+    ["color"] = Rgb(0, 1, 0),
+    ["intensity"] = 0.06,
+    ["inner_cone_angle"] = 40,
+    ["outer_cone_angle"] = 40,
+}
+
+lightset = LightSet("scene/lightset") {
+    redlight,
+    yellowlight,
+    greenlight,
+}
+
+shadowSet = ShadowSet("shadowSet") {
+    greenlight
+}
+
+-------------------------------------------------------
+
+Layer("/scene/rendering/organizer/perPartitionAssignments") {
+    {sphere_left, "", widget_material, lightset},
+    {sphere_center, "", widget_material, lightset, shadowSet},
+    {sphere_right, "", widget_material, lightset},
+    {floor,  "", floor_material,  lightset},
+    {ceil,  "", floor_material,  lightset},
+    {back_wall,   "", floor_material,  lightset},
+    {left_wall,   "", floor_material,  lightset},
+    {right_wall,   "", floor_material,  lightset},
+}
