@@ -1,0 +1,63 @@
+SceneVariables {
+    ["lights_visible_in_camera"] = true,
+    ["image_width" ] = 256,
+    ["image_height"] = 256,
+}
+
+Camera("/scene/camera") {
+    ["node_xform"] = rotate(7, 1, 0, 0) * rotate(29, 0, 1, 0) * translate(8, 0.5, 15, 1),
+    ["focal"] = 45,
+}
+
+-------------------------------------------------------
+
+widget = UsdGeometry("/scene/geometry/widget") {
+    ["node_xform"] = scale(0.6, 0.6, 0.6),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+GeometrySet("/scene/geometryset") {
+    widget,
+}
+
+-------------------------------------------------------
+
+widget_material = DwaSolidDielectricMaterial("scene/materials/widget") {
+    ["albedo"] = Rgb(0.5, 0.5, 0.5),
+    ["roughness"] = 0.25,
+}
+
+-------------------------------------------------------
+
+envlight_plain = EnvLight("scene/lights/envlight_plain") {
+    ["node_xform"] = rotate(180, 1, 0, 0),
+    ["sample_upper_hemisphere_only"] = true,
+    ["color"] = Rgb(0.3, 1.0, 0.2),
+    ["intensity"] = 0.2,
+}
+
+envlight_textured = EnvLight("scene/lights/envlight_textured") {
+    ["node_xform"] = rotate(185, 0, 1, 0),
+    ["sample_upper_hemisphere_only"] = true,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+    ["intensity"] = 0.25,
+}
+
+distant_light = DistantLight("scene/lights/distantlight") {
+    ["node_xform"] = rotate(-45, 0, 1, 0) * rotate(-60, 1, 0, 0),
+    ["color"] = Rgb(1, 0.4, 0.0),
+}
+
+lightset = LightSet("scene/lightset") {
+    envlight_plain,
+    envlight_textured,
+    distant_light,
+}
+
+-------------------------------------------------------
+
+Layer("/scene/rendering/organizer/perPartitionAssignments") {
+    {widget, "", widget_material, lightset},
+}
+

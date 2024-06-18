@@ -17,7 +17,6 @@ widget = UsdGeometry("/scene/geometry/widget") {
     ["prim_path"] = "/widget",
 }
 
-
 floor = UsdGeometry("/scene/geometry/floor") {
     ["node_xform"] = scale(20, 20, 20),
     ["stage"] = rats_assets_dir.."/models/plane.usdc",
@@ -30,10 +29,17 @@ wall = UsdGeometry("/scene/geometry/wall") {
     ["prim_path"] = "/plane",
 }
 
+torus = UsdGeometry("/scene/geometry/torus") {
+    ["node_xform"] = scale(0.5, 0.5, 0.5) * rotate(90, 0, 0, 1),
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+}
+
 GeometrySet("/scene/geometryset") {
     widget,
     floor,
     wall,
+    torus,
 }
 
 -------------------------------------------------------
@@ -68,7 +74,7 @@ spherelight = SphereLight("scene/lights/spherelight") {
     ["node_xform"] = translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+1*dr, 0, 0, 1) * translate(0, ty, tz),
     ["radius"] = 0.5,
     ["color"] = Rgb(1, 1, 0),
-    ["intensity"] = 0.03,
+    ["intensity"] = 0.02,
 }
 
 disklight = DiskLight("scene/lights/disklight") {
@@ -81,17 +87,24 @@ disklight = DiskLight("scene/lights/disklight") {
 
 rectlight = RectLight("scene/lights/rectlight") {
     ["node_xform"] = rotate(90, 0, 1, 0) * translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+3*dr, 0, 0, 1) * translate(0, ty, tz),
-    ["color"] = Rgb(0, 0.001, 1),
-    ["intensity"] = 0.04,
+    ["color"] = Rgb(0, 1, 1),
+    ["intensity"] = 0.02,
     ["sidedness"] = 2,
 }
 
 spotlight = SpotLight("scene/lights/spotlight") {
     ["node_xform"] = rotate(90, 0, 1, 0) * translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+4*dr, 0, 0, 1) * translate(0, ty, tz),
-    ["color"] = Rgb(1, 0, 1),
-    ["intensity"] = 0.007,
+    ["color"] = Rgb(0, 0.001, 1),
+    ["intensity"] = 0.02,
     ["black_level"] = 0.1,
     ["lens_radius"] = 0.5,
+}
+
+meshlight = MeshLight("scene/lights/meshlight") {
+    ["node_xform"] = rotate(90, 0, 1, 0) * translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+5*dr, 0, 0, 1) * translate(0, ty, tz),
+    ["geometry"] = torus,
+    ["color"] = Rgb(1, 0, 1),
+    ["intensity"] = 0.02,
 }
 
 lightset = LightSet("scene/lightset") {
@@ -100,6 +113,7 @@ lightset = LightSet("scene/lightset") {
     disklight,
     rectlight,
     spotlight,
+    meshlight,
 }
 
 -------------------------------------------------------
