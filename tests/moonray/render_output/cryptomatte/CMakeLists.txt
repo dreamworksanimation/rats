@@ -1,6 +1,6 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_subdirectory(aov)
-add_subdirectory(cryptomatte)
+add_subdirectory(presence)
+add_subdirectory(multipresence)
 
