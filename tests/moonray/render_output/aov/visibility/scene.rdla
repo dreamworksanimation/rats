@@ -1,0 +1,245 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 4,
+    ["max_depth"] = 1,
+    ["max_diffuse_depth"] = 1,
+    ["max_glossy_depth"] = 1,
+    ["max_mirror_depth"] = 1,
+    ["russian_roulette_threshold"] = 0.0001,
+    ["sample_clamping_value"] = 0,
+    ["roughness_clamping_factor"] = 0,
+    ["lights_visible_in_camera"] = false,
+    ["frame"] = 101,
+    ["enable_presence_shadows"] = true,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = Mat4(1, 0, -0, 0, -0, 0.87462, -0.484809, 0, 0, 0.484809, 0.87462, 0, 0, 6.45637, 9.84354, 1) * translate(0.5, 0, 0, 1),
+    ["focal"] = 35,
+    ["film_width_aperture"] = 24,
+    ["near"] = 1,
+    ["far"] = 10000,
+    ["mb_shutter_open"] = -0.25,
+    ["mb_shutter_close"] = 0.25,
+    ["dof"] = false,
+    ["dof_aperture"] = 8,
+    ["dof_focus_distance"] = 10,
+}
+
+geoms = {}
+assignments = {}
+
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["node_xform"] = rotate(0, 0, 1, 0),
+    ["on"] = true,
+    ["intensity"] = 0.2,
+    ["exposure"] = 0.0,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+}
+
+key01 = RectLight("/Scene/lighting/key01") {
+    ["node xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["on"] = true,
+    ["width"] = 8,
+    ["height"] = 8,
+    ["intensity"] = 8,
+    ["exposure"] = 0.0,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["label"] = "key01",
+}
+
+key02 = RectLight("/Scene/lighting/key02") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(60, 0, 1, 0),
+    ["on"] = true,
+    ["intensity"] = 8,
+    ["exposure"] = 0.0,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["label"] = "key02",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key01,
+    key02,
+}
+
+
+-------------------------------------------------------
+
+local plane_width = 20
+local plane_depth = 20
+local checker_size = 2.0
+local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale( plane_width, 1, plane_depth) * translate(0, 0.1, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+table.insert(geoms, planeGeom)
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+    ["scale"] = Vec2(plane_width / checker_size, plane_depth / checker_size),
+    ["offset"] = Vec2(-0.5 * plane_width / checker_size,
+                      -0.5 * plane_depth / checker_size),
+    ["wrap_around"] = true,
+}
+
+local planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap),
+    ["show_specular"] = false,
+}
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+
+-------------------------------------------------------
+
+worleyNoiseMap = NoiseWorleyMap_v2("/Scene/surfacing/worleyNoiseMap") {
+    ["invert"] = true,
+    ["point_size"] = 0.3,
+    ["bias"] = 0.8,
+    ["F2"] = 1.0,
+    ["F1"] = -1.0
+}
+
+worleyDisp = NormalDisplacement("/Scene/surfacing/worleyDisp") {
+    ["height"] = bind(worleyNoiseMap, 0.6),
+}
+
+local sphereGeom = UsdGeometry("/Scene/geometry/sphereGeom") {
+    ["node_xform"] = scale(0.8, 0.8, 0.8) * translate(0, 1, 0),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["mesh_resolution"] = 2.0,
+}
+table.insert(geoms, sphereGeom)
+
+local mtlBase = DwaBaseMaterial("/Scene/surfacing/mtlBase") {
+    ["presence"] = 0.5,
+    ["specular_model"] = 0,
+}
+
+table.insert(assignments, {sphereGeom, "", mtlBase, lightSet, worleyDisp, undef()})
+
+-------------------------------------------------------
+
+-------------------------------------------------------
+
+local ccGeom = UsdGeometry("/Scene/geometry/ccGeom") {
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node xform"] = scale(0.3, 0.3, 0.3) * translate(-2.5,0,0) * rotate(-35, 0, 1, 0),
+    ["mesh_resolution"] = 3.0,
+}
+table.insert(geoms, ccGeom)
+
+local mtlCCA = DwaSolidDielectricMaterial("/Scene/surfacing/mtlCCA") {
+    ["albedo"] = Rgb(0.5, 0.02, 0.02),
+    ["refractive index"] = 1.3,
+    ["roughness"] = 0.4,
+    ["specular_model"] = 0,
+    ["show_clearcoat"] = true,
+    ["clearcoat"] = 1.0,
+    ["clearcoat refractive index"] = 1.7,
+    ["clearcoat roughness"] = 0.0,
+    ["clearcoat_model"] = 0,
+}
+local mtlCCB = DwaSolidDielectricMaterial("/Scene/surfacing/mtlCCB") {
+    ["albedo"] = Rgb(0.5, 0.02, 0.02),
+    ["refractive index"] = 1.3,
+    ["roughness"] = 0.4,
+    ["specular_model"] = 0,
+    ["show_clearcoat"] = true,
+    ["clearcoat"] = 1.0,
+    ["clearcoat refractive index"] = 2.3,
+    ["clearcoat roughness"] = 0.3,
+    ["clearcoat_model"] = 0,
+}
+local mask = ImageMap("/Scene/surfacing/mask") {
+    ["texture"] = rats_assets_dir.."/textures/splat.tx",
+    ["scale"] = Vec2(2, 1),
+}
+
+local mtlCC = DwaLayerMaterial("/Scene/surfacing/layerCC") {
+    ["material_A"] = mtlCCA,
+    ["material_B"] = mtlCCB,
+    ["mask"] = bind(mask, 1.0),
+}
+
+table.insert(assignments, {ccGeom, "", mtlCC, lightSet})
+
+-------------------------------------------------------
+
+-------------------------------------------------------
+
+local difGeom = UsdGeometry("/Scene/geometry/difGeom") {
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(2.5,0,0) * rotate(-35, 0, 1, 0),
+    ["mesh_resolution"] = 3.0,
+}
+table.insert(geoms, difGeom)
+
+local mtlDifA = DwaSolidDielectricMaterial("/Scene/surfacing/mtlDifA") {
+    ["albedo"] = Rgb(0.25, 0.25, 0.25),
+    ["show_specular"] = false,
+}
+local mtlDifB = DwaSolidDielectricMaterial("/Scene/surfacing/mtlDifB") {
+    ["albedo"] = Rgb(0.6, 0.6, 0.6),
+    ["scattering_color"] = Rgb(1.0, 0.04, 0.04),
+    ["scattering_radius"] = 1.0,
+    ["specular_model"] = 0,
+}
+local mask = ImageMap("/Scene/surfacing/mask") {
+    ["texture"] = rats_assets_dir.."/textures/splat.tx",
+    ["scale"] = Vec2(2, 1),
+}
+
+local mtlDif = DwaLayerMaterial("/Scene/surfacing/layerDif") {
+    ["material_A"] = mtlDifA,
+    ["material_B"] = mtlDifB,
+    ["mask"] = bind(mask, 1.0),
+    ["fallback_specular_model"] = 0,
+}
+
+table.insert(assignments, {difGeom, "", mtlDif, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
+-- default LPE:
+-- C[<T.><RS>]*[<R[DG]><TD>][L0]
+RenderOutput("/output/default") {
+   ["file_name"] = "default.exr",
+   ["result"] = "visibility aov",
+   ["channel_format"] = 0,
+   ["channel_name"] = "default_shadow",
+}
+
+-- C[DGS]L
+RenderOutput("/output/direct") {
+   ["file_name"] = "direct.exr",
+   ["result"] = "visibility aov",
+   ["visibility_aov"] = "C[DGS]L",
+   ["channel_format"] = 0,
+   ["channel_name"] = "direct",
+}
+
+-- ['key01']
+RenderOutput("/output/light_label") {
+   ["file_name"] = "light_label.exr",
+   ["result"] = "visibility aov",
+   ["visibility_aov"] = "C[<T.><RS>]*[<R[DG]><TD>]'key01'", 
+   ["channel_format"] = 0,
+   ["channel_name"] = "key01"
+}
+
