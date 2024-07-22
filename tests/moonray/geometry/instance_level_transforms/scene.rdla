@@ -1,0 +1,193 @@
+SceneVariables {
+    ["image_width"]  = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 4,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(1.0, 0.5, 22.0),
+    ["focal"] = 35,
+}
+
+ltSet = LightSet("ltSet") {
+}
+
+geom0 = UsdGeometry("geom0") {
+    ["node_xform"] = scale(0.1, 0.1, 0.1),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = scale(0.1, 0.1, 0.1),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = scale(0.1, 0.1, 0.1),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+t01 = rotate(0, 0, 1, 0) * translate(0, 0, 0)
+t02 = rotate(-90, 1, 0, 0) * translate(0, 1.5, 0)
+t03 = rotate(90, 0, 1, 0) * translate(0, 2.2, 0)
+t11 = rotate(0, 0, 0, 1) * translate(1.5, 0, 0)
+t12 = rotate(45, 0, 0, 1) * translate(0, 0, 0)
+t13 = rotate(90, 0, 0, 1) * translate(-2, 0, 0)
+
+instancer00 = RdlInstancerGeometry("instancer00") {
+    ["references"] = { geom0 },
+    ["use_reference_xforms"] = true,
+    ["method"] = 2,
+    ["refIndices"] = {0, 0, 0},
+    ["xform_list"] = {t01, t02, t03},
+    ["instance_level"] = "instance level 0",
+}
+
+instancer10 = RdlInstancerGeometry("instancer10") {
+    ["references"] = { instancer00 },
+    ["method"] = 2,
+    ["xform_list"] = {t11, t12, t13},
+    ["refIndices"] = {0, 0, 0},
+    ["velocities"] = {},
+    ["instance_level"] = "instance level 1",
+}
+
+instancer20 = RdlInstancerGeometry("instancer20") {
+    ["references"] = {instancer10},
+    ["method"] = 2,
+    ["refIndices"] = {0},
+    ["xform_list"] = { translate(1.0, -5.0, 0.0) * rotate(45.0, 0, 0, 1) },
+    ["instance_level"] = "instance level 2",
+}
+
+
+
+
+instancer01 = RdlInstancerGeometry("instancer01") {
+    ["references"] = { geom1 },
+    ["use_reference_xforms"] = true,
+    ["method"] = 2,
+    ["refIndices"] = {0, 0, 0},
+    ["xform_list"] = {t01, t02, t03},
+    ["instance_level"] = "instance level 0",
+}
+
+instancer11 = RdlInstancerGeometry("instancer11") {
+    ["references"] = { instancer01 },
+    ["method"] = 2,
+    ["xform_list"] = {t11, t12, t13},
+    ["refIndices"] = {0, 0, 0},
+    ["velocities"] = {},
+    ["instance_level"] = "instance level 1",
+}
+
+instancer21 = RdlInstancerGeometry("instancer21") {
+    ["references"] = {instancer11},
+    ["method"] = 2,
+    ["refIndices"] = {0},
+    ["xform_list"] = { translate(0.0, 0.0, 0.0) * rotate(0.0, 0, 0, 1) },
+    ["instance_level"] = "instance level 2",
+}
+
+
+
+instancer02 = RdlInstancerGeometry("instancer02") {
+    ["references"] = { geom2 },
+    ["use_reference_xforms"] = true,
+    ["method"] = 2,
+    ["refIndices"] = {0, 0, 0},
+    ["xform_list"] = {t01, t02, t03},
+    ["instance_level"] = "instance level 0",
+}
+
+instancer12 = RdlInstancerGeometry("instancer12") {
+    ["references"] = { instancer02 },
+    ["method"] = 2,
+    ["xform_list"] = {t11, t12, t13},
+    ["refIndices"] = {0, 0, 0},
+    ["velocities"] = {},
+    ["instance_level"] = "instance level 1",
+}
+
+instancer22 = RdlInstancerGeometry("instancer22") {
+    ["references"] = {instancer12},
+    ["method"] = 2,
+    ["refIndices"] = {0},
+    ["xform_list"] = { translate(0.0, 5.0, 0.0) * rotate(-45.0, 0, 0, 1) },
+    ["instance_level"] = "instance level 2",
+}
+
+GeometrySet("geometryset") {
+    geom0,
+    instancer00,
+    instancer10,
+    instancer20,
+
+    geom1,
+    instancer01,
+    instancer11,
+    instancer21,
+
+    geom2,
+    instancer02,
+    instancer12,
+    instancer22,
+}
+
+
+attrMapP = AttributeMap("attrMapP") {
+    ["map_type"] = "position",
+}
+
+tsP0Map = TransformSpaceMap("tsP0Map") {
+    ["input"] = bind(attrMapP),
+    ["input_type"] = "point",
+    ["from_space"] = "render",
+    ["to_space"] = "instance level 0",
+}
+
+emitter0 = DwaEmissiveMaterial("emitter0") {
+    ["emission"] = bind(tsP0Map),
+}
+
+tsP1Map = TransformSpaceMap("tsP1Map") {
+    ["input"] = bind(attrMapP),
+    ["input_type"] = "point",
+    ["from_space"] = "render",
+    ["to_space"] = "instance level 1",
+}
+
+emitter1 = DwaEmissiveMaterial("emitter1") {
+    ["emission"] = bind(tsP1Map),
+}
+
+tsP2Map = TransformSpaceMap("tsP2Map") {
+    ["input"] = bind(attrMapP),
+    ["input_type"] = "point",
+    ["from_space"] = "render",
+    ["to_space"] = "instance level 2",
+}
+
+emitter2 = DwaEmissiveMaterial("emitter2") {
+    ["emission"] = bind(tsP2Map),
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {geom0, "", emitter0, ltSet},
+    {instancer00, ""},
+    {instancer10, ""},
+    {instancer20, ""},
+
+    {geom1, "", emitter1, ltSet},
+    {instancer01, ""},
+    {instancer11, ""},
+    {instancer21, ""},
+
+    {geom2, "", emitter2, ltSet},
+    {instancer02, ""},
+    {instancer12, ""},
+    {instancer22, ""},
+}
