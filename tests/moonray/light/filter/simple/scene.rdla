@@ -1,0 +1,252 @@
+-- Tests the 'simple' light filters: combine, decay, intensity, and ramp
+
+SceneVariables {
+    ["lights visible in camera"] = true,
+    ["pixel samples"] = 2,
+    ["max depth"] = 0,
+    ["image_width"] = 1024,
+    ["image_height"] = 256,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node xform"] = Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 3.5, 45.0, 1),
+}
+
+-- Geometry --
+
+UsdGeometry("/Scene/geometry/widget_combine") {
+    ["node_xform"] = scale(0.4, 0.4, 0.4) * translate(-15, 0, -7),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor_combine") {
+    ["node_xform"] = scale(10, 10, 10) * translate(-15, 0, -5),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/wall_combine") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(10, 10, 10) * translate(-15, 5, -10),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/widget_decay") {
+    ["node_xform"] = scale(0.4, 0.4, 0.4) * translate(-5, 0, -7),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor_decay") {
+    ["node_xform"] = scale(10, 10, 10) * translate(-5, 0, -5),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/wall_decay") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(10, 10, 10) * translate(-5, 5, -10),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/widget_intensity") {
+    ["node_xform"] = scale(0.4, 0.4, 0.4) * translate(5, 0, -7),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor_intensity") {
+    ["node_xform"] = scale(10, 10, 10) * translate(5, 0, -5),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/wall_intensity") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(10, 10, 10) * translate(5, 5, -10),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/widget_ramp") {
+    ["node_xform"] = scale(0.4, 0.4, 0.4) * translate(15, 0, -7),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor_ramp") {
+    ["node_xform"] = scale(10, 10, 10) * translate(15, 0, -5),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/wall_ramp") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(10, 10, 10) * translate(15, 5, -10),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+
+GeometrySet("geometryset") {
+    UsdGeometry("/Scene/geometry/floor_combine"),
+    UsdGeometry("/Scene/geometry/widget_combine"),
+    UsdGeometry("/Scene/geometry/wall_combine"),
+    UsdGeometry("/Scene/geometry/floor_decay"),
+    UsdGeometry("/Scene/geometry/widget_decay"),
+    UsdGeometry("/Scene/geometry/wall_decay"),
+    UsdGeometry("/Scene/geometry/floor_intensity"),
+    UsdGeometry("/Scene/geometry/widget_intensity"),
+    UsdGeometry("/Scene/geometry/wall_intensity"),
+    UsdGeometry("/Scene/geometry/floor_ramp"),
+    UsdGeometry("/Scene/geometry/widget_ramp"),
+    UsdGeometry("/Scene/geometry/wall_ramp")
+}
+
+
+-- Materials --
+
+DwaSolidDielectricMaterial("/Scene/surfacing/floor") {
+}
+
+DwaSolidDielectricMaterial("/Scene/surfacing/widget") {
+}
+
+
+-- Lights --
+
+IntensityLightFilter("/Scene/lighting/combine_intensity1") {
+    ["color"] = Rgb(0.0, 0.0, 0.5),
+}
+
+IntensityLightFilter("/Scene/lighting/combine_intensity2") {
+    ["color"] = Rgb(1.0, 0.0, 0.0),
+}
+
+IntensityLightFilter("/Scene/lighting/combine_intensity3") {
+    ["color"] = Rgb(0.0, 0.5, 0.0),
+}
+
+CombineLightFilter("/Scene/lighting/combine") {
+    ["light_filters"] = {IntensityLightFilter("/Scene/lighting/combine_intensity2"), IntensityLightFilter("/Scene/lighting/combine_intensity3")},
+    ["mode"] = "max",
+}
+
+CombineLightFilter("/Scene/lighting/combine_top") {
+    ["light_filters"] = {IntensityLightFilter("/Scene/lighting/combine_intensity1"), CombineLightFilter("/Scene/lighting/combine")},
+    ["mode"] = "add",
+}
+
+SpotLight("/Scene/lighting/spot_combine") {
+    ["node xform"] = Mat4(0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, -15, 9, -8, 1),
+    ["color"] = Rgb(1.0, 1.0, 1.0),
+    ["intensity"] = 0.1,
+    ["lens radius"] = 1.4,
+    ["inner cone angle"] = 0,
+    ["outer cone angle"] = 60,
+    ["angle falloff type"] = "linear",
+    ["light filters"] = {CombineLightFilter("/Scene/lighting/combine_top")},
+}
+
+
+DecayLightFilter("/Scene/lighting/decay") {
+    ["falloff near"] = true,
+    ["falloff far"] = true,
+    ["near start"] = 4.0,
+    ["near end"] = 5.0,
+    ["far start"] = 7.0,
+    ["far end"] = 8.0,
+}
+
+SpotLight("/Scene/lighting/spot_decay") {
+    ["node xform"] = Mat4(0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, -5, 9, -8, 1),
+    ["color"] = Rgb(1.0, 1.0, 1.0),
+    ["intensity"] = 0.1,
+    ["lens radius"] = 1.4,
+    ["inner cone angle"] = 0,
+    ["outer cone angle"] = 60,
+    ["angle falloff type"] = "linear",
+    ["light filters"] = {DecayLightFilter("/Scene/lighting/decay")},
+}
+
+
+filter1 = IntensityLightFilter("/Scene/lighting/intensity1") {
+    ["exposure"] = 2,
+    ["color"] = Rgb(1,0,0),
+}
+
+filter2 = IntensityLightFilter("/Scene/lighting/intensity2") {
+    ["intensity"] = 0.2,
+    ["invert"] = true,
+}
+
+filter3 = IntensityLightFilter("/Scene/lighting/intensity3") {
+    ["color"] = Rgb(0.4,1,0),
+}
+
+LightFilterSet("IntensityLightFilterSetA") {
+    filter1,
+}
+
+LightFilterSet("IntensityLightFilterSetB") {
+    filter2,
+    filter3,
+}
+
+LightFilterSet("IntensityLightFilterSetC") {
+}
+
+SpotLight("/Scene/lighting/spot_intensity") {
+    ["node xform"] = Mat4(0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 5, 9, -8, 1),
+    ["color"] = Rgb(1.0, 1.0, 1.0),
+    ["intensity"] = 0.1,
+    ["lens radius"] = 1.4,
+    ["inner cone angle"] = 0,
+    ["outer cone angle"] = 60,
+    ["angle falloff type"] = "linear",
+    ["light filters"] = {filter1, filter2, filter3},
+}
+
+
+ColorRampLightFilter("/Scene/lighting/colorRamp") {
+    ["begin_distance"] = 2.0,
+    ["end_distance"] = 8.0,
+    ["colors"] = { Rgb(1, 0, 1), Rgb(1, 0, 0), Rgb(0, 1, 0), Rgb(0, 1, 1), Rgb(0, 0, 1)},
+    ["distances"] = {0.2, 0.25, 0.5, 0.75, 1.0},
+    ["interpolation_types"] = {0, 0, 1, 1, 2},
+    ["mode"] = "directional",
+    ["wrap_mode"] = "mirror",
+}
+
+SpotLight("/Scene/lighting/spot_ramp") {
+    ["node xform"] = Mat4(0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 15, 9, -8, 1),
+    ["color"] = Rgb(1.0, 1.0, 1.0),
+    ["intensity"] = 0.1,
+    ["lens radius"] = 1.4,
+    ["inner cone angle"] = 0,
+    ["outer cone angle"] = 60,
+    ["angle falloff type"] = "linear",
+    ["light filters"] = {ColorRampLightFilter("/Scene/lighting/colorRamp")},
+}
+
+LightSet("LightSetA") {
+    SpotLight("/Scene/lighting/spot_combine"),
+    SpotLight("/Scene/lighting/spot_decay"),
+    SpotLight("/Scene/lighting/spot_intensity"),
+    SpotLight("/Scene/lighting/spot_ramp"),
+}
+
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {UsdGeometry("/Scene/geometry/widget_combine"), "", DwaSolidDielectricMaterial("/Scene/surfacing/widget"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/floor_combine"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/wall_combine"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/widget_decay"), "", DwaSolidDielectricMaterial("/Scene/surfacing/widget"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/floor_decay"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/wall_decay"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/widget_intensity"), "", DwaSolidDielectricMaterial("/Scene/surfacing/widget"), LightSet("LightSetA"), LightFilterSet("IntensityLightFilterSetC")},
+    {UsdGeometry("/Scene/geometry/floor_intensity"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA"), LightFilterSet("IntensityLightFilterSetB")},
+    {UsdGeometry("/Scene/geometry/wall_intensity"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA"), LightFilterSet("IntensityLightFilterSetA")},
+    {UsdGeometry("/Scene/geometry/widget_ramp"), "", DwaSolidDielectricMaterial("/Scene/surfacing/widget"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/floor_ramp"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/wall_ramp"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+}

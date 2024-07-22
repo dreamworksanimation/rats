@@ -2,4 +2,5 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory(vdb)
+add_subdirectory(simple)
 
