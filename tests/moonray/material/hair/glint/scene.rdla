@@ -1,0 +1,48 @@
+SceneVariables {
+    ["image width"] = 256,
+    ["image height"] = 256,
+}
+
+Camera("camera") {
+    ["node xform"] = Mat4(0.568882, 0,        -0.822419, 0,
+                         -0.408342, 0.868029, -0.282457, 0,
+                          0.713881, 0.496511,  0.493804, 0,
+                         15.7872,  12.1717,   10.3742,   1),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.2,
+}
+
+distant = DistantLight("distant") {
+    ["node_xform"] = rotate(-60, 1, 0, 0),
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+    distant,
+}
+
+hairGeom = UsdGeometry("hairGeom") {
+    ["stage"] = rats_assets_dir.."/models/curves.usdc",
+    ["prim_path"] = "/curve_0",
+}
+
+GeometrySet("geoms") {
+    hairGeom
+}
+
+hairMtl = HairMaterial_v3("hairMtl") {
+    ["primary_specular_roughness"] = 0.5,
+    ["hair color"] = Rgb(0.39, 0.3, 0.11),
+    ["show_hair_glint"] = true,
+    ["glint_roughness"] = 0.3,
+    ["glint_eccentricity"] = 0.95,
+    ["glint_saturation"] = 0.5,
+    ["glint_min_twists"] = 1.5,
+    ["glint_max_twists"] = 2.5,
+}
+
+layer = Layer("all") {
+    {hairGeom, "", hairMtl, lightSet},
+}
