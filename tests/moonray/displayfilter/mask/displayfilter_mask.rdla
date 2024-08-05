@@ -1,0 +1,273 @@
+
+SceneVariables {
+    ["pixel samples"] = 2,
+    ["light samples"] = 1,
+    ["bsdf samples"] = 1,
+    ["image width"] = 400,
+    ["image height"] = 400,
+    ["max_depth"] = 1,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node xform"] = translate(0, 2.75, 24) * rotate(-20, 1, 0, 0) * rotate(-100, 0, 1, 0),
+    ["focal"] = 50,
+    ["film width aperture"] = 24,
+    ["near"] = 1,
+    ["far"] = 10000,
+}
+
+---------------- Lights ----------------------------
+
+local keyExposure = 2
+local keyColor = Rgb(0.855, 0.77, 0.535)
+local keyXform = translate(0, 0, 50) * rotate(-50, 1, 0, 0) * rotate(-150, 0, 1, 0)
+key_diffuse = RectLight("/Scene/lighting/key_diffuse") {
+    ["node xform"] = keyXform,
+    ["exposure"] = keyExposure,
+    ["color"] = keyColor,
+    ["width"] = 10,
+    ["height"] = 10,
+    ["visible_glossy_reflection"] = false,
+}
+key_glossy = RectLight("/Scene/lighting/key_glossy") {
+    ["node xform"] = keyXform,
+    ["exposure"] = keyExposure * 2,
+    ["color"] = keyColor,
+    ["width"] = 100,
+    ["height"] = 100,
+    ["visible_diffuse_reflection"] = false,
+}
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key_diffuse,
+    key_glossy,
+}
+
+------------------ Materials -----------------------
+
+local blueMtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/blue") {
+    ["albedo"] = Rgb(0.1, 0.1, 0.6),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+local grayMtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/gray") {
+    ["albedo"] = Rgb(0.217, 0.217, 0.217),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+local toonMtl = DwaSolidDielectricMaterial("toon")
+{
+    ["albedo"] = Rgb(0.75, 0.015, 0.015),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/graphpaper.tx",
+    ["scale"] = Vec2(40, 40),
+    ["offset"] = Vec2(0, .25),
+    ["wrap around"] = true,
+}
+
+local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap, Rgb(0.75, 0.75, 0.75)),
+    ["show specular"] = false,
+}
+
+------------------- Geometry ------------------------
+
+geoms = {}
+assignments = {}
+
+local geom = UsdGeometry("/Scene/geometry/geom/widget_DWA") {
+    ["node xform"] = translate(0, -0.23, 0) * rotate(-130, 0, 1, 0),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["mesh_resolution"] = 6,
+    ["label"] = "red",
+}
+table.insert(geoms, geom)
+
+table.insert(assignments, {geom, "shell_front", toonMtl, lightSet})
+table.insert(assignments, {geom, "shell_back", toonMtl, lightSet})
+table.insert(assignments, {geom, "collar", toonMtl, lightSet})
+table.insert(assignments, {geom, "stand", grayMtl, lightSet})
+table.insert(assignments, {geom, "core", blueMtl, lightSet})
+
+local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node xform"] = scale(200, 1, 200) * translate(0, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+table.insert(geoms, planeGeom)
+
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
+--------------------------------------
+-- AOV RENDER OUTPUTS
+--------------------------------------
+
+local ro = RenderOutput("/output/beauty") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "beauty",
+}
+
+local albedoRO = RenderOutput("/output/albedo") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "material aov",
+    ["material_aov"] = "DSS.color"
+}
+
+local glossyRO = RenderOutput("/output/glossy") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "light aov",
+    ["light_aov"] = "glossy"
+}
+
+local albedoRedRO = RenderOutput("/output/albedoRed") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "material aov",
+    ["material_aov"] = "'red'...DSS.color"
+}
+
+local mask1 = RgbToFloatDisplayFilter("/display/mask1") {
+    ["input"] = albedoRedRO,
+    ["mode"] = "r",
+}
+
+local mask2 = ColorCorrectDisplayFilter("/display/mask2") {
+    ["input"] = mask1,
+    ["multiply"] = Rgb(2, 2, 2),
+}
+
+local mask = ClampDisplayFilter("/display/mask") {
+    ["input"] = mask2,
+}
+
+maskRO = RenderOutput("/output/mask") {
+    ["file_name"] = "mask.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = mask,
+    ["channel_name"] = "mask",
+}
+
+--------------------------------------
+-- Mask only
+--------------------------------------
+
+local cc = ColorCorrectDisplayFilter("/display/cc") {
+    ["input"] = ro,
+    ["multiply"] = Rgb(0.1, 0.8, 0.9),
+    ["mask"] = mask,
+}
+
+RenderOutput("/output/multiply_cc") {
+    ["file_name"] = "multiply_cc.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = cc,
+    ["channel_name"] = "cc"
+}
+
+--------------------------------------
+-- Mask only with window
+--------------------------------------
+
+local convolve = ConvolutionDisplayFilter("/display/convolve") {
+    ["input"] = ro,
+    ["kernel_type"] = "custom",
+    ["custom_kernel"] = {
+        -1.0, -1.0, -1.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0, -1.0, -1.0,
+        -1.0, -1.0, 24.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0, -1.0, -1.0},
+    ["mask"] = mask,
+}
+
+RenderOutput("/output/convolve") {
+    ["file_name"] = "convolve.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = convolve,
+    ["channel_name"] = "convolve"
+}
+
+--------------------------------------
+-- Mix and Mask
+--------------------------------------
+
+local halftone = HalftoneDisplayFilter("/display/halftone") {
+    ["input"] = ro,
+    ["size"] = 4,
+    ["filter_width"] = 1,
+    ["invert"] = false,
+    ["grayscale"] = true,
+    ["mask"] = mask,
+    ["mix"] = 0.7
+}
+
+RenderOutput("/output/halftone") {
+    ["file_name"] = "halftone.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = halftone,
+    ["channel_name"] = "halftone"
+}
+
+--------------------------------------
+-- Mask and invert
+--------------------------------------
+
+local op = OpDisplayFilter("/display/op") {
+    ["input1"] = ro,
+    ["input2"] = albedoRO,
+    ["operation"] = "divide",
+    ["mask"] = mask,
+    ["invert_mask"] = true,
+}
+
+RenderOutput("/output/op") {
+    ["file_name"] = "op.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = op,
+    ["channel_name"] = "op"
+}
+
+--------------------------------------
+-- OverDisplayFilter
+--------------------------------------
+
+local over = OverDisplayFilter("/display/over") {
+    ["input_top"] = glossyRO,
+    ["input_bottom"] = ro,
+    ["alpha"] = mask,
+    ["mix"] = 0.5,
+}
+
+RenderOutput("/output/over") {
+    ["file_name"] = "over.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = over,
+    ["channel_name"] = "over"
+}
+
+--------------------------------------
+-- Mix only
+--------------------------------------
+
+local r = RgbToFloatDisplayFilter("/display/r") {
+    ["input"] = ro,
+    ["mode"] = "r",
+    ["mix"] = 0.3
+}
+
+RenderOutput("/output/r") {
+    ["file_name"] = "r.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = r,
+    ["channel_name"] = "r"
+}

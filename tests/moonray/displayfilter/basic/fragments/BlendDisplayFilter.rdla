@@ -1,0 +1,34 @@
+local ro = RenderOutput("/output/beauty") {}
+local albedoRO = RenderOutput("/output/albedo") {}
+
+--------------------------------------
+-- BlendDisplayFilter
+--------------------------------------
+
+local blend_linear = BlendDisplayFilter("/display/blend_linear") {
+    ["input1"] = albedoRO,
+    ["input2"] = ro,
+    ["blendAmt"] = "0.6",
+    ["blendType"] = "linear" 
+}
+
+RenderOutput("/output/blend_linear") {
+    ["file_name"] = "blend_linear.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = blend_linear,
+    ["channel_name"] = "blend_linear"
+}
+
+local blend_cubic = BlendDisplayFilter("/display/blend_cubic") {
+    ["input1"] = albedoRO,
+    ["input2"] = ro,
+    ["blendAmt"] = "0.6",
+    ["blendType"] = "cubic" 
+}
+
+RenderOutput("/output/blend_cubic") {
+    ["file_name"] = "blend_cubic.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = blend_cubic,
+    ["channel_name"] = "blend_cubic"
+}

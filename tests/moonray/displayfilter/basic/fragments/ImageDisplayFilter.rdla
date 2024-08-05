@@ -1,0 +1,83 @@
+local ro = RenderOutput("/output/beauty") {}
+
+--------------------------------------
+-- ImageDisplayFilter
+--------------------------------------
+
+local image_no_scale = ImageDisplayFilter("/display/image_no_scale") {
+    ["input"] = ro,
+    ["display_type"] = "no_scale",
+    ["image_path"] = rats_assets_dir.."/images/grid.exr"
+}
+
+RenderOutput("/output/image_no_scale") {
+    ["file_name"] = "image_no_scale.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = image_no_scale,
+    ["channel_name"] = "image_no_scale"
+}
+
+local image_stretch = ImageDisplayFilter("/display/image_stretch") {
+    ["input"] = ro,
+    ["display_type"] = "stretch",
+    ["image_path"] = rats_assets_dir.."/images/grid.exr"
+}
+
+RenderOutput("/output/image_stretch") {
+    ["file_name"] = "image_stretch.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = image_stretch,
+    ["channel_name"] = "image_stretch"
+}
+
+local image_horizontal_fit = ImageDisplayFilter("/display/image_horizontal_fit") {
+    ["input"] = ro,
+    ["display_type"] = "fit_horizontal",
+    ["image_path"] = rats_assets_dir.."/images/grid.exr"
+}
+
+RenderOutput("/output/image_horizontal_fit") {
+    ["file_name"] = "image_horizontal_fit.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = image_horizontal_fit,
+    ["channel_name"] = "image_horizontal_fit"
+}
+
+local image_vertical_fit = ImageDisplayFilter("/display/image_vertical_fit") {
+    ["input"] = ro,
+    ["display_type"] = "fit_vertical",
+    ["image_path"] = rats_assets_dir.."/images/grid.exr"
+}
+
+RenderOutput("/output/image_vertical_fit") {
+    ["file_name"] = "image_vertical_fit.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = image_vertical_fit,
+    ["channel_name"] = "image_vertical_fit"
+}
+
+local image_fit_by_largest_dim = ImageDisplayFilter("/display/image_fit_by_largest_dim") {
+    ["input"] = ro,
+    ["display_type"] = "fit_by_largest_dimension",
+    ["image_path"] = rats_assets_dir.."/images/grid.exr"
+}
+
+RenderOutput("/output/image_fit_by_largest_dim") {
+    ["file_name"] = "image_fit_by_largest_dim.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = image_fit_by_largest_dim,
+    ["channel_name"] = "image_fit_by_largest_dim"
+}
+
+local image_fit_by_smallest_dim = ImageDisplayFilter("/display/image_fit_by_smallest_dim") {
+    ["input"] = ro,
+    ["display_type"] = "fit_by_smallest_dimension",
+    ["image_path"] = rats_assets_dir.."/images/grid.exr"
+}
+
+RenderOutput("/output/image_fit_by_smallest_dim") {
+    ["file_name"] = "image_fit_by_smallest_dim.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = image_fit_by_smallest_dim,
+    ["channel_name"] = "image_fit_by_smallest_dim"
+}

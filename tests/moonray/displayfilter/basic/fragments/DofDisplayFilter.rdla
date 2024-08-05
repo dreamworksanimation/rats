@@ -1,0 +1,18 @@
+local ro = RenderOutput("/output/beauty") {}
+local depthRO = RenderOutput("/output/depth") {}
+
+--------------------------------------
+-- DofDisplayFilter
+--------------------------------------
+
+local dofFilter = DofDisplayFilter("/Filter/dof") {
+    ["input"] = ro,
+    ["depth"] = depthRO,
+}
+
+RenderOutput("/Output/dof") {
+    ["file_name"] = "dof.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = dofFilter,
+    ["channel_name"] = "dof"
+}

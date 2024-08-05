@@ -1,0 +1,20 @@
+local ro = RenderOutput("/output/beauty") {}
+local glossyRO = RenderOutput("/output/glossy") {}
+local alpha = RenderOutput("/output/alpha") {}
+
+--------------------------------------
+-- OverDisplayFilter
+--------------------------------------
+
+local over = OverDisplayFilter("/display/over") {
+    ["input_top"] = glossyRO,
+    ["input_bottom"] = ro,
+    ["alpha"] = alpha,
+}
+
+RenderOutput("/output/over") {
+    ["file_name"] = "over.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = over,
+    ["channel_name"] = "over"
+}

@@ -1,0 +1,64 @@
+local ro = RenderOutput("/output/beauty") {}
+
+--------------------------------------
+-- ConvolutionDisplayFilter
+--------------------------------------
+
+local gaussian_filter = ConvolutionDisplayFilter("/display/gaussian") {
+    ["input"] = ro,
+    ["kernel_type"] = "gaussian",
+}
+
+local box_filter = ConvolutionDisplayFilter("/display/box") {
+    ["input"] = ro,
+    ["kernel_type"] = "box",
+    ["kernel_size"] = 7,
+}
+
+local laplacian_filter = ConvolutionDisplayFilter("/display/laplacian") {
+    ["input"] = ro,
+    ["kernel_type"] = "custom",
+    ["custom_kernel"] = {
+        -1.0, -1.0, -1.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0, -1.0, -1.0,
+        -1.0, -1.0, 24.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0, -1.0, -1.0}
+}
+
+local sharpen_filter = ConvolutionDisplayFilter("/display/sharpen") {
+    ["input"] = ro,
+    ["kernel_type"] = "custom",
+    ["custom_kernel"] = {
+         0.0,  -1.0,  0.0,
+         -1.0,  5.0,  -1.0,
+         0.0, -1.0, 0.0}
+}
+
+RenderOutput("/output/guassian") {
+    ["file_name"] = "guassian.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = gaussian_filter,
+    ["channel_name"] = "gaussian"
+}
+
+RenderOutput("/output/box") {
+    ["file_name"] = "box.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = box_filter,
+    ["channel_name"] = "box"
+}
+
+RenderOutput("/output/laplacian") {
+    ["file_name"] = "laplacian.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = laplacian_filter,
+    ["channel_name"] = "laplacian"
+}
+
+RenderOutput("/output/sharpen") {
+    ["file_name"] = "sharpen.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = sharpen_filter,
+    ["channel_name"] = "sharpen"
+}

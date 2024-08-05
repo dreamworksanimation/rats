@@ -1,0 +1,20 @@
+local ro = RenderOutput("/output/beauty") {}
+
+--------------------------------------
+-- HalftoneDisplayFilter
+--------------------------------------
+
+local halftoneDF = HalftoneDisplayFilter("/display/halftone") {
+    ["input"] = ro,
+    ["size"] = 4,
+    ["filter_width"] = 1,
+    ["invert"] = false,
+    ["grayscale"] = true,
+}
+
+RenderOutput("/output/halftone") {
+    ["file_name"] = "halftone.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = halftoneDF,
+    ["channel_name"] = "halftone"
+}

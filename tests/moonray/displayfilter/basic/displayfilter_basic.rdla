@@ -1,0 +1,154 @@
+SceneVariables {
+    ["pixel samples"] = 2,
+    ["light samples"] = 1,
+    ["bsdf samples"] = 1,
+    ["image width"] = 400,
+    ["image height"] = 400,
+    ["max_depth"] = 1,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node xform"] = translate(0, 2.75, 24) * rotate(-20, 1, 0, 0) * rotate(-100, 0, 1, 0),
+    ["focal"] = 50,
+    ["film width aperture"] = 24,
+    ["near"] = 1,
+    ["far"] = 10000,
+}
+
+---------------- Lights ----------------------------
+
+local keyExposure = 2
+local keyColor = Rgb(0.855, 0.77, 0.535)
+local keyXform = translate(0, 0, 50) * rotate(-50, 1, 0, 0) * rotate(-150, 0, 1, 0)
+key_diffuse = RectLight("/Scene/lighting/key_diffuse") {
+    ["node xform"] = keyXform,
+    ["exposure"] = keyExposure,
+    ["color"] = keyColor,
+    ["width"] = 10,
+    ["height"] = 10,
+    ["visible_glossy_reflection"] = false,
+}
+key_glossy = RectLight("/Scene/lighting/key_glossy") {
+    ["node xform"] = keyXform,
+    ["exposure"] = keyExposure * 2,
+    ["color"] = keyColor,
+    ["width"] = 100,
+    ["height"] = 100,
+    ["visible_diffuse_reflection"] = false,
+}
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key_diffuse,
+    key_glossy,
+}
+
+------------------ Materials -----------------------
+
+local blueMtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/blue") {
+    ["albedo"] = Rgb(0.1, 0.1, 0.6),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+local grayMtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/gray") {
+    ["albedo"] = Rgb(0.217, 0.217, 0.217),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+local toonMtl = DwaSolidDielectricMaterial("toon")
+{
+    ["albedo"] = Rgb(0.75, 0.015, 0.015),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/graphpaper.tx",
+    ["scale"] = Vec2(40, 40),
+    ["offset"] = Vec2(0, .25),
+    ["wrap around"] = true,
+}
+
+local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap, Rgb(0.75, 0.75, 0.75)),
+    ["show specular"] = false,
+    ["presence"] = 0.5
+}
+
+------------------- Geometry ------------------------
+
+geoms = {}
+assignments = {}
+
+local geom = UsdGeometry("/Scene/geometry/geom/widget_DWA") {
+    ["node xform"] = translate(0, -0.23, 0) * rotate(-130, 0, 1, 0),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget"
+}
+table.insert(geoms, geom)
+
+table.insert(assignments, {geom, "shell_front", toonMtl, lightSet})
+table.insert(assignments, {geom, "shell_back", toonMtl, lightSet})
+table.insert(assignments, {geom, "collar", toonMtl, lightSet})
+table.insert(assignments, {geom, "stand", grayMtl, lightSet})
+table.insert(assignments, {geom, "core", blueMtl, lightSet})
+
+
+local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node xform"] = scale(200, 1, 200) * translate(0, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+table.insert(geoms, planeGeom)
+
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
+--------------------------------------
+-- AOV RENDER OUTPUTS
+--------------------------------------
+
+local ro = RenderOutput("/output/beauty") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "beauty",
+}
+
+local alpha = RenderOutput("/output/alpha") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "alpha",
+    ["channel name"] = "Alpha",
+}
+
+local depthRO = RenderOutput("/output/depth") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "depth",
+    ["math_filter"] = "min",
+}
+
+local normalRO = RenderOutput("/output/normal") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "material aov",
+    ["material_aov"] = "DSS.normal"
+}
+
+local albedoRO = RenderOutput("/output/albedo") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "material aov",
+    ["material_aov"] = "DSS.color"
+}
+
+local glossyRO = RenderOutput("/output/glossy") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "light aov",
+    ["light_aov"] = "glossy"
+}
+
+local diffuseRO = RenderOutput("/output/diffuse") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "light aov",
+    ["light_aov"] = "diffuse"
+}

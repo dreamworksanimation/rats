@@ -1,0 +1,110 @@
+local ro = RenderOutput("/output/beauty") {}
+
+--------------------------------------
+-- RampDisplayFilter
+--------------------------------------
+
+local u_ramp = RampDisplayFilter("/display/u_ramp") {
+    ["positions"] = {0.0, 0.15, 0.3, 0.5, 1.0},
+    ["colors"] = {Rgb(0.0, 0.8, 0.8), Rgb(0.0, 1.0, 0.0), Rgb(0.2, 0.2, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(0.2, 0.0, 1.0)},
+    ["ramp_type"] = "u_ramp",
+    ["interpolations"] = {4, 4, 4, 4, 4},
+    ["input"] = ro
+}
+
+RenderOutput("/output/u_ramp") {
+    ["file_name"] = "u_ramp.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = u_ramp,
+    ["channel_name"] = "u_ramp"
+}
+
+local v_ramp = RampDisplayFilter("/display/v_ramp") {
+    ["positions"] = {0.0, 0.15, 0.3, 0.5, 1.0},
+    ["colors"] = {Rgb(0.0, 0.8, 0.8), Rgb(0.0, 1.0, 0.0), Rgb(0.2, 0.2, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(0.2, 0.0, 1.0)},
+    ["ramp_type"] = "v_ramp",
+    ["interpolations"] = {4, 4, 4, 4, 4},
+    ["input"] = ro
+}
+
+RenderOutput("/output/v_ramp") {
+    ["file_name"] = "v_ramp.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = v_ramp,
+    ["channel_name"] = "v_ramp"
+}
+
+local diagonal_ramp = RampDisplayFilter("/display/diagonal_ramp") {
+    ["positions"] = {0.0, 0.15, 0.3, 0.5, 1.0},
+    ["colors"] = {Rgb(0.0, 0.8, 0.8), Rgb(0.0, 1.0, 0.0), Rgb(0.2, 0.2, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(0.2, 0.0, 1.0)},
+    ["ramp_type"] = "diagonal_ramp",
+    ["interpolations"] = {4, 4, 4, 4, 4},
+    ["input"] = ro
+}
+
+RenderOutput("/output/diagonal_ramp") {
+    ["file_name"] = "diagonal_ramp.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = diagonal_ramp,
+    ["channel_name"] = "diagonal_ramp"
+}
+
+local radial_ramp = RampDisplayFilter("/display/radial_ramp") {
+    ["positions"] = {0.0, 0.15, 0.3, 0.5, 1.0},
+    ["colors"] = {Rgb(0.0, 0.8, 0.8), Rgb(0.0, 1.0, 0.0), Rgb(0.2, 0.2, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(0.2, 0.0, 1.0)},
+    ["ramp_type"] = "radial_ramp",
+    ["interpolations"] = {4, 4, 4, 4, 4},
+    ["input"] = ro
+}
+
+RenderOutput("/output/radial_ramp") {
+    ["file_name"] = "radial_ramp.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = radial_ramp,
+    ["channel_name"] = "radial_ramp"
+}
+
+local circular_ramp = RampDisplayFilter("/display/circular_ramp") {
+    ["positions"] = {0.0, 0.15, 0.3, 0.5, 1.0},
+    ["colors"] = {Rgb(0.0, 0.8, 0.8), Rgb(0.0, 1.0, 0.0), Rgb(0.2, 0.2, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(0.2, 0.0, 1.0)},
+    ["ramp_type"] = "circular_ramp",
+    ["interpolations"] = {4, 4, 4, 4, 4},
+    ["input"] = ro
+}
+
+RenderOutput("/output/circular_ramp") {
+    ["file_name"] = "circular_ramp.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = circular_ramp,
+    ["channel_name"] = "circular_ramp"
+}
+
+local box_ramp = RampDisplayFilter("/display/box_ramp") {
+    ["positions"] = {0.0, 0.15, 0.3, 0.5, 1.0},
+    ["colors"] = {Rgb(0.0, 0.8, 0.8), Rgb(0.0, 1.0, 0.0), Rgb(0.2, 0.2, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(0.2, 0.0, 1.0)},
+    ["ramp_type"] = "box_ramp",
+    ["interpolations"] = {1, 1, 1, 1, 1},
+    ["input"] = ro
+}
+
+RenderOutput("/output/box_ramp") {
+    ["file_name"] = "box_ramp.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = box_ramp,
+    ["channel_name"] = "box_ramp"
+}
+
+local input_ramp = RampDisplayFilter("/display/input_ramp") {
+    ["positions"] = {0.0, 0.15, 0.3, 0.5, 1.0},
+    ["colors"] = {Rgb(0.0, 0.8, 0.8), Rgb(0.0, 1.0, 0.0), Rgb(0.2, 0.2, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(0.2, 0.0, 1.0)},
+    ["ramp_type"] = "input_ramp",
+    ["interpolations"] = {4, 4, 4, 4, 4},
+    ["input"] = ro
+}
+
+RenderOutput("/output/input_ramp") {
+    ["file_name"] = "input_ramp.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = input_ramp,
+    ["channel_name"] = "input_ramp"
+}

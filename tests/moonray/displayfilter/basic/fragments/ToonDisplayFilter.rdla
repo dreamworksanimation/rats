@@ -1,0 +1,30 @@
+local glossyRO = RenderOutput("/output/glossy") {}
+local diffuseRO = RenderOutput("/output/diffuse") {}
+local depthRO = RenderOutput("/output/depth") {}
+local albedoRO = RenderOutput("/output/albedo") {}
+local normalRO = RenderOutput("/output/normal") {}
+
+--------------------------------------
+-- ToonDisplayFilter
+--------------------------------------
+
+local toonDF = ToonDisplayFilter("/display/toon") {
+    ["input_glossy"] = glossyRO,
+    ["input_diffuse"] = diffuseRO,
+    ["input_albedo"] = albedoRO,
+    ["input_depth"] = depthRO,
+    ["input_normal"] = normalRO,
+    ["num_cels"] = 2,
+    ["ambient"] = Rgb(0.1, 0.05, 0.2),
+    ["ink_depth_threshold"] = 0.01,
+    ["ink_normal_threshold"] = 0.0,
+    ["ink_normal_scale"] = 1.0,
+    ["edge_detector"] = "Sobel",
+}
+
+RenderOutput("/output/toon") {
+    ["file_name"] = "toon.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = toonDF,
+    ["channel_name"] = "toon"
+}

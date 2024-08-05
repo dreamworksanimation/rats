@@ -1,0 +1,77 @@
+local ro = RenderOutput("/output/beauty") {}
+
+--------------------------------------
+-- ColorCorrectDisplayFilter
+--------------------------------------
+
+local exposure = ColorCorrectDisplayFilter("/display/exposure") {
+    ["input"] = ro,
+    ["exposure"] = 2,
+}
+
+local saturation = ColorCorrectDisplayFilter("/display/saturation") {
+    ["input"] = ro,
+    ["saturation"] = 2.0,
+}
+
+local contrast = ColorCorrectDisplayFilter("/display/contrast") {
+    ["input"] = ro,
+    ["contrast"] = -0.9,
+}
+
+local gamma = ColorCorrectDisplayFilter("/display/gamma") {
+    ["input"] = ro,
+    ["gamma"] = 0.4,
+}
+
+local offset = ColorCorrectDisplayFilter("/display/offset") {
+    ["input"] = ro,
+    ["offset"] = Rgb(0., -0.3, 0.1)
+}
+
+local multiply_cc = ColorCorrectDisplayFilter("/display/cc_multiply") {
+    ["input"] = ro,
+    ["multiply"] = Rgb(0.1, 0.8, 0.9)
+}
+
+RenderOutput("/output/exposure") {
+    ["file_name"] = "exposure.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = exposure,
+    ["channel_name"] = "exposure"
+}
+
+RenderOutput("/output/saturation") {
+    ["file_name"] = "saturation.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = saturation,
+    ["channel_name"] = "saturation"
+}
+
+RenderOutput("/output/contrast") {
+    ["file_name"] = "contrast.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = contrast,
+    ["channel_name"] = "contrast"
+}
+
+RenderOutput("/output/gamma") {
+    ["file_name"] = "gamma.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = gamma,
+    ["channel_name"] = "gamma"
+}
+
+RenderOutput("/output/offset") {
+    ["file_name"] = "offset.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = offset,
+    ["channel_name"] = "offset"
+}
+
+RenderOutput("/output/multiply_cc") {
+    ["file_name"] = "multiply_cc.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = multiply_cc,
+    ["channel_name"] = "multiply_cc"
+}

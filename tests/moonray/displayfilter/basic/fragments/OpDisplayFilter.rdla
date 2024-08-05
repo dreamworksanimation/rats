@@ -1,0 +1,388 @@
+local ro = RenderOutput("/output/beauty") {}
+local diffuseRO = RenderOutput("/output/diffuse") {}
+local glossyRO = RenderOutput("/output/glossy") {}
+local albedoRO = RenderOutput("/output/albedo") {}
+local normalRO = RenderOutput("/output/normal") {}
+
+--------------------------------------
+-- OpDisplayFilter
+--------------------------------------
+
+local add = OpDisplayFilter("/display/add") {
+    ["input1"] = diffuseRO,
+    ["input2"] = glossyRO,
+    ["operation"] = "add",
+}
+
+local subtract = OpDisplayFilter("/display/subtract") {
+    ["input1"] = ro,
+    ["input2"] = glossyRO,
+    ["operation"] = "subtract",
+}
+
+local multiply = OpDisplayFilter("/display/multiply") {
+    ["input1"] = glossyRO,
+    ["input2"] = albedoRO,
+    ["operation"] = "multiply"
+}
+
+local divide = OpDisplayFilter("/display/divide") {
+    ["input1"] = ro,
+    ["input2"] = albedoRO,
+    ["operation"] = "divide"
+}
+
+local min = OpDisplayFilter("/display/min") {
+    ["input1"] = ro,
+    ["input2"] = albedoRO,
+    ["operation"] = "min"
+}
+
+local max = OpDisplayFilter("/display/max") {
+    ["input1"] = ro,
+    ["input2"] = albedoRO,
+    ["operation"] = "max"
+}
+
+local power = OpDisplayFilter("/display/power") {
+    ["input1"] = ro,
+    ["input2"] = glossyRO,
+    ["operation"] = "power"
+}
+
+local cross = OpDisplayFilter("/display/cross") {
+    ["input1"] = ro,
+    ["input2"] = ro,
+    ["operation"] = "cross"
+}
+
+local dot = OpDisplayFilter("/display/dot") {
+    ["input1"] = normalRO,
+    ["input2"] = albedoRO,
+    ["operation"] = "dot"
+}
+
+local invert = OpDisplayFilter("/display/invert") {
+    ["input1"] = ro,
+    ["operation"] = "invert"
+}
+
+local normalize = OpDisplayFilter("/display/normalize") {
+    ["input1"] = ro,
+    ["operation"] = "normalize"
+}
+
+local abs = OpDisplayFilter("/display/abs") {
+    ["input1"] = ro,
+    ["operation"] = "abs"
+}
+
+local ceil = OpDisplayFilter("/display/ceil") {
+    ["input1"] = ro,
+    ["operation"] = "ceil"
+}
+
+local floor = OpDisplayFilter("/display/floor") {
+    ["input1"] = ro,
+    ["operation"] = "floor"
+}
+
+local modulo = OpDisplayFilter("/display/modulo") {
+    ["input1"] = ro,
+    ["input2"] = ro,
+    ["operation"] = "modulo"
+}
+
+local length = OpDisplayFilter("/display/length") {
+    ["input1"] = ro,
+    ["operation"] = "length"
+}
+
+local sine = OpDisplayFilter("/display/sine") {
+    ["input1"] = ro,
+    ["operation"] = "sine"
+}
+
+local cosine = OpDisplayFilter("/display/cosine") {
+    ["input1"] = ro,
+    ["operation"] = "cosine"
+}
+
+local round = OpDisplayFilter("/display/round") {
+    ["input1"] = ro,
+    ["operation"] = "round"
+}
+
+local acos = OpDisplayFilter("/display/acos") {
+    ["input1"] = ro,
+    ["operation"] = "acos"
+}
+
+local greater_than = OpDisplayFilter("/display/greater_than") {
+    ["input1"] = ro,
+    ["input2"] = albedoRO,
+    ["operation"] = "greater_than"
+}
+
+local greater_than_or_equal = OpDisplayFilter("/display/greater_than_or_equal") {
+    ["input1"] = ro,
+    ["input2"] = albedoRO,
+    ["operation"] = "greater_than_or_equal"
+}
+
+local less_than = OpDisplayFilter("/display/less_than") {
+    ["input1"] = ro,
+    ["input2"] = albedoRO,
+    ["operation"] = "less_than"
+}
+
+local less_than_or_equal = OpDisplayFilter("/display/less_than_or_equal") {
+    ["input1"] = ro,
+    ["input2"] = albedoRO,
+    ["operation"] = "less_than_or_equal"
+}
+
+local equal = OpDisplayFilter("/display/equal") {
+    ["input1"] = ro,
+    ["input2"] = ro,
+    ["operation"] = "equal"
+}
+
+local not_equal = OpDisplayFilter("/display/not_equal") {
+    ["input1"] = ro,
+    ["input2"] = ro,
+    ["operation"] = "not_equal"
+}
+
+local logic_and = OpDisplayFilter("/display/logic_and") {
+    ["input1"] = ro,
+    ["input2"] = glossyRO,
+    ["operation"] = "and"
+}
+
+local logic_or = OpDisplayFilter("/display/logic_or") {
+    ["input1"] = ro,
+    ["input2"] = glossyRO,
+    ["operation"] = "or"
+}
+
+local logic_not = OpDisplayFilter("/display/logic_not") {
+    ["input1"] = ro,
+    ["operation"] = "not"
+}
+
+local xor = OpDisplayFilter("/display/xor") {
+    ["input1"] = ro,
+    ["input2"] = glossyRO,
+    ["operation"] = "xor"
+}
+
+RenderOutput("/output/add") {
+    ["file_name"] = "add.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = add,
+    ["channel_name"] = "add"
+}
+
+RenderOutput("/output/subtract") {
+    ["file_name"] = "subtract.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = subtract,
+    ["channel_name"] = "subtract"
+}
+
+RenderOutput("/output/multiply") {
+    ["file_name"] = "multiply.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = multiply,
+    ["channel_name"] = "multiply",
+}
+
+RenderOutput("/output/divide") {
+    ["file_name"] = "divide.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = divide,
+    ["channel_name"] = "divide"
+}
+
+RenderOutput("/output/min") {
+    ["file_name"] = "min.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = min,
+    ["channel_name"] = "min"
+}
+
+RenderOutput("/output/max") {
+    ["file_name"] = "max.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = max,
+    ["channel_name"] = "max"
+}
+
+RenderOutput("/output/power") {
+    ["file_name"] = "power.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = power,
+    ["channel_name"] = "power"
+}
+
+RenderOutput("/output/cross") {
+    ["file_name"] = "cross.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = cross,
+    ["channel_name"] = "cross"
+}
+
+RenderOutput("/output/dot") {
+    ["file_name"] = "dot.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = dot,
+    ["channel_name"] = "dot"
+}
+
+RenderOutput("/output/invert") {
+    ["file_name"] = "invert.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = invert,
+    ["channel_name"] = "invert"
+}
+
+RenderOutput("/output/normalize") {
+    ["file_name"] = "normalize.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = normalize,
+    ["channel_name"] = "normalize"
+}
+
+RenderOutput("/output/abs") {
+    ["file_name"] = "abs.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = abs,
+    ["channel_name"] = "abs"
+}
+
+RenderOutput("/output/ceil") {
+    ["file_name"] = "ceil.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = ceil,
+    ["channel_name"] = "ceil"
+}
+
+RenderOutput("/output/floor") {
+    ["file_name"] = "floor.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = floor,
+    ["channel_name"] = "floor"
+}
+
+RenderOutput("/output/modulo") {
+    ["file_name"] = "modulo.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = modulo,
+    ["channel_name"] = "modulo"
+}
+
+RenderOutput("/output/length") {
+    ["file_name"] = "length.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = length,
+    ["channel_name"] = "length"
+}
+
+RenderOutput("/output/sine") {
+    ["file_name"] = "sine.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = sine,
+    ["channel_name"] = "sine"
+}
+
+RenderOutput("/output/cosine") {
+    ["file_name"] = "cosine.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = cosine,
+    ["channel_name"] = "cosine"
+}
+
+RenderOutput("/output/round") {
+    ["file_name"] = "round.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = round,
+    ["channel_name"] = "round"
+}
+
+RenderOutput("/output/acos") {
+    ["file_name"] = "acos.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = acos,
+    ["channel_name"] = "acos"
+}
+
+RenderOutput("/output/greater_than") {
+    ["file_name"] = "greater_than.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = greater_than,
+    ["channel_name"] = "greater_than"
+}
+
+RenderOutput("/output/greater_than_or_equal") {
+    ["file_name"] = "greater_than_or_equal.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = greater_than_or_equal,
+    ["channel_name"] = "greater_than_or_equal"
+}
+
+RenderOutput("/output/less_than") {
+    ["file_name"] = "less_than.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = less_than,
+    ["channel_name"] = "less_than"
+}
+
+RenderOutput("/output/less_than_or_equal") {
+    ["file_name"] = "less_than_or_equal.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = less_than_or_equal,
+    ["channel_name"] = "less_than_or_equal"
+}
+
+RenderOutput("/output/equal") {
+    ["file_name"] = "equal.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = equal,
+    ["channel_name"] = "equal"
+}
+
+RenderOutput("/output/not_equal") {
+    ["file_name"] = "not_equal.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = not_equal,
+    ["channel_name"] = "not_equal"
+}
+
+RenderOutput("/output/logic_and") {
+    ["file_name"] = "logic_and.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = logic_and,
+    ["channel_name"] = "logic_and"
+}
+
+RenderOutput("/output/logic_or") {
+    ["file_name"] = "logic_or.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = logic_or,
+    ["channel_name"] = "logic_or"
+}
+
+RenderOutput("/output/logic_not") {
+    ["file_name"] = "logic_not.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = logic_not,
+    ["channel_name"] = "logic_not"
+}
+
+RenderOutput("/output/xor") {
+    ["file_name"] = "xor.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = xor,
+    ["channel_name"] = "xor"
+}

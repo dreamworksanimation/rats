@@ -1,0 +1,101 @@
+local ro = RenderOutput("/output/beauty") {}
+
+--------------------------------------
+-- RgbToFloatDisplayFilter
+--------------------------------------
+
+local r = RgbToFloatDisplayFilter("/display/r") {
+    ["input"] = ro,
+    ["mode"] = "r",
+}
+
+local g = RgbToFloatDisplayFilter("/display/g") {
+    ["input"] = ro,
+    ["mode"] = "g",
+}
+
+local b = RgbToFloatDisplayFilter("/display/b") {
+    ["input"] = ro,
+    ["mode"] = "b",
+}
+
+local rgb_min = RgbToFloatDisplayFilter("/display/rgb_min") {
+    ["input"] = ro,
+    ["mode"] = "min",
+}
+
+local rgb_max = RgbToFloatDisplayFilter("/display/rgb_max") {
+    ["input"] = ro,
+    ["mode"] = "max",
+}
+
+local average = RgbToFloatDisplayFilter("/display/average") {
+    ["input"] = ro,
+    ["mode"] = "average",
+}
+
+local sum = RgbToFloatDisplayFilter("/display/sum") {
+    ["input"] = ro,
+    ["mode"] = "sum",
+}
+
+local luminance = RgbToFloatDisplayFilter("/display/luminance") {
+    ["input"] = ro,
+    ["mode"] = "luminance",
+}
+
+RenderOutput("/output/r") {
+    ["file_name"] = "r.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = r,
+    ["channel_name"] = "r"
+}
+
+RenderOutput("/output/g") {
+    ["file_name"] = "g.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = g,
+    ["channel_name"] = "g"
+}
+
+RenderOutput("/output/b") {
+    ["file_name"] = "b.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = b,
+    ["channel_name"] = "b",
+}
+
+RenderOutput("/output/rgb_min") {
+    ["file_name"] = "rgb_min.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = rgb_min,
+    ["channel_name"] = "rgb_min"
+}
+
+RenderOutput("/output/rgb_max") {
+    ["file_name"] = "rgb_max.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = rgb_max,
+    ["channel_name"] = "rgb_max"
+}
+
+RenderOutput("/output/average") {
+    ["file_name"] = "average.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = average,
+    ["channel_name"] = "average"
+}
+
+RenderOutput("/output/sum") {
+    ["file_name"] = "sum.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = sum,
+    ["channel_name"] = "sum"
+}
+
+RenderOutput("/output/luminance") {
+    ["file_name"] = "luminance.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = luminance,
+    ["channel_name"] = "luminance"
+}

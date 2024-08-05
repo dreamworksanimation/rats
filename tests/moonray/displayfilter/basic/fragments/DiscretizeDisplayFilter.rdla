@@ -1,0 +1,18 @@
+local ro = RenderOutput("/output/beauty") {}
+
+--------------------------------------
+-- DiscretizeDisplayFilter
+--------------------------------------
+
+local discretize = DiscretizeDisplayFilter("/display/discretize") {
+    ["input"] = ro,
+    ["num_bins"] = 3,
+}
+
+RenderOutput("/output/discretize") {
+    ["file_name"] = "discretize.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = discretize,
+    ["channel_name"] = "discretize"
+}
+

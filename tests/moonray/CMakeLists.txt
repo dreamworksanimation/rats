@@ -4,6 +4,7 @@
 add_subdirectory(camera)
 add_subdirectory(deep)
 add_subdirectory(differentials)
+add_subdirectory(displayfilter)
 add_subdirectory(geometry)
 add_subdirectory(light)
 add_subdirectory(misc)

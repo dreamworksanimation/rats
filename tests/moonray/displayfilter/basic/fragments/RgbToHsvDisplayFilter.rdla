@@ -1,0 +1,29 @@
+local ro = RenderOutput("/output/beauty") {}
+
+--------------------------------------
+-- RGBtoHSVDisplayFilter
+--------------------------------------
+
+local rgbToHsv = RgbToHsvDisplayFilter("/display/rgbToHsv") {
+    ["input"] = ro,
+    ["mode"] = "rgb_to_hsv"
+}
+
+local hsvToRgb = RgbToHsvDisplayFilter("/display/hsvToRgb") {
+    ["input"] = rgbToHsv,
+    ["mode"] = "hsv_to_rgb"
+}
+
+RenderOutput("/output/rgb_to_hsv") {
+    ["file_name"] = "rgb_to_hsv.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = rgbToHsv,
+    ["channel_name"] = "rgb_to_hsv"
+}
+
+RenderOutput("/output/hsv_to_rgb") {
+    ["file_name"] = "hsv_to_rgb.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = hsvToRgb,
+    ["channel_name"] = "hsv_to_rgb"
+}

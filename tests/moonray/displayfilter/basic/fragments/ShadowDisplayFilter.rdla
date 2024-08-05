@@ -1,0 +1,29 @@
+--------------------------------------
+-- ShadowDisplayFilter
+--------------------------------------
+
+local occluded = RenderOutput("/output/occluded") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "light aov",
+    ["light_aov"] = "C[RT]L",
+}
+
+local unoccluded = RenderOutput("/output/unoccluded") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "light aov",
+    ["light_aov"] = "unoccluded;C[RT]L",
+}
+
+local shadow = ShadowDisplayFilter("/display/shadow") {
+    ["occluded"] = occluded,
+    ["unoccluded"] = unoccluded,
+    ["shadow_color"] = Rgb(0,1,0),
+    ["density"] = 0.8
+}
+
+RenderOutput("/output/shadow") {
+    ["file_name"] = "shadow.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = shadow,
+    ["channel_name"] = "shadow"
+}
