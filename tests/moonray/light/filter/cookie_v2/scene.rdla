@@ -1,0 +1,102 @@
+-- Tests the 'cookie_v2' light filter.
+
+SceneVariables {
+    ["lights visible in camera"] = true,
+    ["pixel samples"] = 2,
+    ["max depth"] = 0,
+    ["image width"] = 480,
+    ["image height"] = 270,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node xform"] = Mat4(1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 1, 0,
+                          0, 2, 5, 1),
+}
+
+-- Geometry --
+
+UsdGeometry("/Scene/geometry/widget") {
+    ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(0, 0, -7),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = scale(10, 10, 10) * translate(0, 0, -5),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/wall") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(10, 10, 10) * translate(0, 5, -10),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometryset") {
+    UsdGeometry("/Scene/geometry/widget"),
+    UsdGeometry("/Scene/geometry/floor"),
+    UsdGeometry("/Scene/geometry/wall"),
+}
+
+-- Materials --
+
+DwaSolidDielectricMaterial("/Scene/surfacing/floor") {
+}
+
+DwaSolidDielectricMaterial("/Scene/surfacing/widget") {
+}
+
+CheckerboardMap("/Scene/surfacing/checkerMap1") {
+}
+
+-- Lights --
+
+filter = CookieLightFilter_v2("/Scene/lighting/cookie") {
+    ["node_xform"] = Mat4(1, 0, 0, 0,
+                          0, 0, 1, 0,
+                          0, 1, 0, 0,
+                          0, 9, -8, 1) * rotate(30, 0, 0, 1),
+    ["projector_film_width_aperture"] = 20,
+    ["projector_focal"] = 30,
+    ["projector_type"] = "perspective",
+    ["blur_near_distance"] = 0.0,
+    ["blur_midpoint"] = 7.0,
+    ["blur_far_distance"] = 10.0,
+    ["blur_near_value"] = 0.1,
+    ["blur_mid_value"] = 0.0,
+    ["blur_far_value"] = 0.05,
+    ["blur_type"] = "circular",
+    ["outside_projection"] = "white",
+    ["invert"] = false,
+    ["density"] = 0.7,
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx"
+}
+
+SpotLight("/Scene/lighting/spot") {
+    ["node xform"] = Mat4(-0.0291956, 0, 0.999573, 0,
+                           0.999573, 0, 0.0291956, 0,
+                           0, 1, 0, 0,
+                           0, 9, -8, 1),
+    ["color"] = Rgb(1, 1, 1),
+    ["intensity"] = 0.1,
+    ["lens radius"] = 1.4,
+    ["inner cone angle"] = 0,
+    ["outer cone angle"] = 60,
+    ["angle falloff type"] = "linear",
+    ["light filters"] = {CookieLightFilter_v2("/Scene/lighting/cookie")},
+}
+
+LightSet("LightSetA") {
+    SpotLight("/Scene/lighting/spot"),
+}
+
+
+Layer("/Scene/rendering/layer") {
+    {UsdGeometry("/Scene/geometry/widget"), "", DwaSolidDielectricMaterial("/Scene/surfacing/widget"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/floor"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/wall"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+}
+
