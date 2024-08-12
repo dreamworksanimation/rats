@@ -1,0 +1,291 @@
+SceneVariables {
+    ["pixel samples"] = 3,
+    ["max depth"] = 1,
+    ["motion_steps"] = {0, 1},
+    ["region_window"] = {-25, 415, 1430, 665},
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node xform"] = rotate(-90, 1, 0, 0)*translate(0.1,10,-4),
+    ["mb_shutter_open"] = 0,
+    ["mb_shutter_close"] = 1,
+}
+
+-- Geometry --
+
+UsdGeometry("/Scene/geometry/widget0") {
+    ["node_xform"] = scale(0.07,0.07,0.07)*translate(-2.5, 0.2, -3.8),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+UsdGeometry("/Scene/geometry/widget1") {
+    ["node_xform"] = scale(0.07,0.07,0.07)*translate(-1.5, 0.2, -3.8),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+UsdGeometry("/Scene/geometry/widget2") {
+    ["node_xform"] = scale(0.07,0.07,0.07)*translate(-0.5, 0.2, -3.8),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+UsdGeometry("/Scene/geometry/widget3") {
+    ["node_xform"] = scale(0.07,0.07,0.07)*translate(0.5, 0.2, -3.8),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+UsdGeometry("/Scene/geometry/widget4") {
+    ["node_xform"] = scale(0.07,0.07,0.07)*translate(1.5, 0.2, -3.8),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+UsdGeometry("/Scene/geometry/mbfiltgeom") {
+    ["node_xform"] = blur(scale(   1/1.5,0.001,0.05/1.5)*rotate( 0,0,1,0)*translate(-3.75, 0, -4.33),
+                          scale(0.25/1.5,0.001,0.05/1.5)*rotate(90,0,1,0)*translate(-3.75, 0, -4)),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["use_rotation_motion_blur"] = true,
+}
+widget = UsdGeometry("/Scene/geometry/widget") {
+    ["node_xform"] = translate(0, -34.7476, 2.46324)*scale(0.005,0.005,0.005),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = scale(10, 10, 10) * translate(0, 0, -5),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometryset") {
+    UsdGeometry("/Scene/geometry/widget0"),
+    UsdGeometry("/Scene/geometry/widget1"),
+    UsdGeometry("/Scene/geometry/widget2"),
+    UsdGeometry("/Scene/geometry/widget3"),
+    UsdGeometry("/Scene/geometry/widget4"),
+    UsdGeometry("/Scene/geometry/mbfiltgeom"),
+    UsdGeometry("/Scene/geometry/widget"),
+    UsdGeometry("/Scene/geometry/floor"),
+}
+
+-- Materials --
+
+DwaSolidDielectricMaterial("/Scene/surfacing/grey") {
+}
+
+DwaSolidDielectricMaterial("/Scene/surfacing/mbfiltgeom") {
+    ["albedo"] = Rgb(0,0,0),
+}
+
+-- Lights --
+
+filterMB = RodLightFilter("/Scene/lighting/rodMB") {
+    ["node_xform"] = blur(scale(   1/1.5,2,0.05/1.5)*rotate( 0,0,1,0)*translate(-3.25, 0, -4.33),
+                          scale(0.25/1.5,2,0.05/1.5)*rotate(90,0,1,0)*translate(-3.25, 0, -4)),
+    ["width"] = 1,
+    ["height"] = 1,
+    ["depth"] = 1,
+    ["radius"] = 0,
+    ["edge"] = 0,
+}
+
+filterStat = RodLightFilter("/Scene/lighting/rodStat") {
+    ["node_xform"] = scale(0.5,2,0.03333333)*rotate(45,0,1,0)*translate(-3.25, 0, -3.75),
+    ["width"] = 1,
+    ["height"] = 1,
+    ["depth"] = 1,
+    ["radius"] = 0,
+    ["edge"] = 0,
+}
+
+filterRadius = RodLightFilter("/Scene/lighting/rodRadius") {
+    ["node_xform"] = translate(-2.5, 0, -4),
+    ["radius"] = 0.375,
+    ["width"] = 0.25,
+    ["height"] = 0.25,
+    ["depth"] = 0.25,
+}
+
+filterEdge = RodLightFilter("/Scene/lighting/rodEdge") {
+    ["node_xform"] = translate(-1.5, 0, -4),
+    ["edge"] = 0.375,
+    ["width"] = 0.25,
+    ["height"] = 0.25,
+    ["depth"] = 0.25,
+}
+
+-- top color filter
+
+-- rounded cylinder 1.5 length, .25 width
+filterColor = RodLightFilter("/Scene/lighting/rodColor") {
+    ["node_xform"] = translate(-0.5, 0, -4.15),
+    ["color"] = Rgb(0.25, 0.5, 0.75),
+    ["width"] = 1.25,
+    ["height"] = 0,
+    ["depth"] = 0,
+    ["edge"] = 0.125,
+}
+
+-- bottom color filter
+
+filterColor2 = RodLightFilter("/Scene/lighting/rodColor2") {
+    ["node_xform"] = translate(-0.5, 0, -3.85),
+    ["color"] = Rgb(0.25, 0.5, 0.75),
+    ["width"] = 1.5,
+    ["height"] = 0.5,
+    ["depth"] = 0.25,
+    ["on"] = true,
+}
+
+filterInvert = RodLightFilter("/Scene/lighting/rodInvert") {
+    ["node_xform"] = translate(0.5, 0, -4),
+    ["invert"] = true,
+    ["width"] = 0.5,
+    ["height"] = 0.5,
+    ["depth"] = 0.5,
+    ["edge"] = 0.125,
+    ["radius"] = 0.125,
+}
+
+filterOff = RodLightFilter("/Scene/lighting/rodOff") {
+    ["node_xform"] = translate(-1, 0, -4),
+    ["color"] = Rgb(1, 0, 0),
+    ["width"] = 0,
+    ["height"] = 0,
+    ["depth"] = 0,
+    ["edge"] = 0.1,
+    ["radius"] = 0.4,
+    ["on"] = false,
+}
+
+filterList = { filterMB, filterStat, filterRadius, filterEdge, filterColor, filterColor2, filterOff }
+
+first=0
+last=5
+lastp1=last+1
+lastm=last/2
+
+-- append density and intensity filters
+for x=first, last, 1 do
+    for z=first, last, 1 do
+        local filter = RodLightFilter("/Scene/lighting/difilter"..x.."."..z) {
+            ["node_xform"] = translate(0.5,0,0.5)*scale(1/lastp1,100,1/lastp1)*
+                             translate(1+x/lastp1, 0, -4.5+z/lastp1),
+            ["color"] = Rgb(1,1,1),
+            ["intensity"] = (1-x/last)*2,
+            ["density"] = z/last,
+        }
+        table.insert(filterList, filter)
+    end
+end
+
+lightY = 4
+cylLight = CylinderLight("/Scene/Lighting/cyl") {
+    ["node xform"] = scale(1,1,1)*rotate(90,0,0,1)*translate(-2.5, lightY, -5),
+    ["intensity"] = 0.02,
+    ["radius"] = 0.05,
+    ["color"] = Rgb(0,0,1),
+    ["light filters"] = filterList,
+}
+
+diskLight = DiskLight("/Scene/Lighting/disk") {
+    ["node xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(-1.5, lightY, -5),
+    ["intensity"] = 0.005,
+    ["radius"] = 0.5,
+    ["color"] = Rgb(0,1,0),
+    ["light filters"] = filterList,
+}
+
+distantLight = DistantLight("/Scene/Lighting/distant") {
+    ["node xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(0, lightY, -5),
+    ["intensity"] = 0.02,
+    ["color"] = Rgb(0,1,1),
+    ["light filters"] = filterList,
+}
+
+envLight = EnvLight("/Scene/lighting/env") {
+    ["light filters"] = filterList,
+    ["intensity"] = 0.02,
+    ["color"] = Rgb(1,0,0),
+}
+
+meshLight = MeshLight("/Scene/lighting/mesh") {
+    ["node xform"] = translate(-0.5, lightY, -5),
+    ["color"] = Rgb(1,0,0),
+    ["intensity"] = 0.01,
+    ["geometry"] = widget,
+    ["light filters"] = filterList,
+}
+
+rectLight = RectLight("/Scene/lighting/rect") {
+    ["node xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(0.5, lightY, -5),
+    ["color"] = Rgb(1,0,1),
+    ["intensity"] = 0.005,
+    ["light filters"] = filterList,
+}
+
+sphereLight = SphereLight("/Scene/lighting/sphere") {
+    ["node xform"] = scale(1,1,1)*rotate(90,0,0,1)*translate(1.5, lightY, -5),
+    ["color"] = Rgb(1,1,0),
+    ["intensity"] = 0.01,
+    ["radius"] = 0.5,
+    ["light filters"] = filterList,
+}
+
+spotLight1 = SpotLight("/Scene/lighting/spot1") {
+    ["node xform"] = rotate(-90,1,0,0)*translate(-3.5, lightY, -5),
+    ["on"] = true,
+    ["color"] = Rgb(1, 1, 1),
+    ["intensity"] = 0.005,
+    ["lens radius"] = 0.5,
+    ["inner cone angle"] = 0,
+    ["outer cone angle"] = 60,
+    ["angle falloff type"] = "linear",
+    ["light filters"] = filterList,
+}
+
+spotLight2 = SpotLight("/Scene/lighting/spot2") {
+    ["node xform"] = rotate(-90,1,0,0)*translate(2.5, lightY, -5),
+    ["on"] = true,
+    ["color"] = Rgb(1, 1, 1),
+    ["intensity"] = 0.005,
+    ["lens radius"] = 0.5,
+    ["inner cone angle"] = 0,
+    ["outer cone angle"] = 60,
+    ["angle falloff type"] = "linear",
+    ["light filters"] = filterList,
+}
+
+spotLightInvert = SpotLight("/Scene/lighting/spotInvert") {
+    ["node xform"] = rotate(-90,1,0,0)*translate(0.5, lightY, -4),
+    ["on"] = true,
+    ["color"] = Rgb(0, 1, 0),
+    ["intensity"] = 0.005,
+    ["lens radius"] = 0.5,
+    ["inner cone angle"] = 0,
+    ["outer cone angle"] = 30,
+    ["angle falloff type"] = "linear",
+    ["light filters"] = { filterInvert },
+}
+
+LightSet("LightSetA") {
+    spotLight1,
+    cylLight,
+    diskLight,
+    distantLight,
+    envLight,
+    meshLight,
+    rectLight,
+    sphereLight,
+    spotLight2,
+    spotLightInvert,
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {UsdGeometry("/Scene/geometry/widget0"), "", DwaSolidDielectricMaterial("/Scene/surfacing/grey"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/widget1"), "", DwaSolidDielectricMaterial("/Scene/surfacing/grey"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/widget2"), "", DwaSolidDielectricMaterial("/Scene/surfacing/grey"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/widget3"), "", DwaSolidDielectricMaterial("/Scene/surfacing/grey"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/widget4"), "", DwaSolidDielectricMaterial("/Scene/surfacing/grey"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/mbfiltgeom"), "", DwaSolidDielectricMaterial("/Scene/surfacing/mbfiltgeom"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/floor"), "", DwaSolidDielectricMaterial("/Scene/surfacing/grey"), LightSet("LightSetA")},
+}

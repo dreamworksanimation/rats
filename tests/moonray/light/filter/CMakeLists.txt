@@ -3,6 +3,7 @@
 
 add_subdirectory(cookie)
 add_subdirectory(cookie_v2)
+add_subdirectory(rod)
 add_subdirectory(simple)
 add_subdirectory(vdb)
 
