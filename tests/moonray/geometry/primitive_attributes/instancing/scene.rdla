@@ -1,0 +1,158 @@
+SceneVariables {
+    ["image width"]  = 400,
+    ["image height"] = 300,
+    ["pixel samples"] = 4,
+}
+
+Camera("camera") {
+    ["node xform"] = translate(8.0, 3.0, 60.0),
+    ["focal"] = 60,
+}
+
+lightSet = LightSet("lightSet") {}
+
+box = BoxGeometry("box") {}
+
+sphere = SphereGeometry("sphere") {}
+
+colors1 = UserData("colors1") {
+    ["color_key"] = "colors1",
+    ["color_values"] = {
+        Rgb(1.0, 0.0, 0.0),
+        Rgb(0.0, 1.0, 0.0),
+        Rgb(0.0, 0.0, 1.0),
+        Rgb(1.0, 1.0, 1.0),
+    },
+}
+
+instancer1 = RdlInstancerGeometry("instancer1") {
+    ["primitive attributes"] = { colors1 },
+    ["method"] = "xform attributes",    
+    ["references"] = { sphere, box },
+    ["positions"] = {
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(0.0, 1.5, 0.0),
+        Vec3(0.0, 3.3, 0.0),
+        Vec3(0.0, 5.5, 0.0)
+    },
+    ["refIndices"] = { 1, 1, 0, 0 },
+}
+
+colors2 = UserData("colors2") {
+    ["color_key"] = "colors2",
+    ["color_values"] = {
+        Rgb(1.0, 1.0, 1.0),
+        Rgb(1.0, 0.0, 0.0),
+        Rgb(0.0, 1.0, 0.0),
+        Rgb(0.0, 0.0, 1.0),
+    },
+}
+
+instancer2 = RdlInstancerGeometry("instancer2") {
+    ["primitive attributes"] = { colors2 },
+    ["method"] = "xform attributes",    
+    ["references"] = { instancer1 },
+    ["positions"] = {
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(1.5, 0.0, 0.0),
+        Vec3(3.0, 0.0, 0.0),
+        Vec3(4.5, 0.0, 0.0),
+    },
+    ["refIndices"] = { 0, 0, 0, 0 },
+}
+
+colors3 = UserData("colors3") {
+    ["color_key"] = "colors3",
+    ["color_values"] = {
+        Rgb(1.0, 1.0, 1.0),
+        Rgb(1.0, 0.5, 1.0),
+        Rgb(0.5, 1.0, 1.0),
+    },
+}
+
+t1 = rotate(15, 0, 0, 1)
+t2 = scale(0.75, 1.0, 1.0) * translate(6, 0, 0)
+t3 = translate(12, 0, 0)
+
+instancer3 = RdlInstancerGeometry("instancer3") {
+    ["primitive attributes"] = { colors3 },
+    ["references"] = { instancer2 },
+    ["refIndices"] = { 0, 0, 0 },
+    ["method"] = "xform list",
+    ["xform_list"] = { t1, t2, t3 },
+}
+
+colors4 = UserData("colors4") {
+    ["color_key"] = "colors4",
+    ["color_values"] = {
+        Rgb(1.0, 1.0, 1.0),
+        Rgb(1.0, 0.0, 1.0),
+    },
+}
+
+instancer4 = RdlInstancerGeometry("instancer4") {
+    ["primitive attributes"] = { colors4 },
+    ["references"] = { instancer3 },
+    ["method"] = "xform attributes",    
+    ["positions"] = {
+        Vec3(0.0, 4.0, 0.0),
+        Vec3(0.0, -4.0, 0.0)
+    },
+    ["refIndices"] = { 0, 0 },
+}
+
+GeometrySet("geometryset") {
+    sphere,
+    box,
+    instancer1,
+    instancer2,
+    instancer3,
+    instancer4,
+}
+
+attr1 = AttributeMap("attr1") {
+   ["primitive attribute name"] = "colors1",
+}
+
+attr2 = AttributeMap("attr2") {
+   ["primitive attribute name"] = "colors2",
+}
+
+attr3 = AttributeMap("attr3") {
+   ["primitive attribute name"] = "colors3",
+}
+
+attr4 = AttributeMap("attr4") {
+   ["primitive attribute name"] = "colors4",
+}
+
+mult1 = OpMap("mult1") {
+   ["operation"] = "multiply",
+   ["op1"] = bind(attr1),
+   ["op2"] = bind(attr2),
+}
+
+mult2 = OpMap("mult2") {
+   ["operation"] = "multiply",
+   ["op1"] = bind(mult1),
+   ["op2"] = bind(attr3),
+}
+
+mult3 = OpMap("mult3") {
+   ["operation"] = "multiply",
+   ["op1"] = bind(mult2),
+   ["op2"] = bind(attr4),
+}
+
+emitMtl = DwaEmissiveMaterial("emitMtl") {
+    ["emission_color"] = bind(mult3),
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    { sphere,     "", emitMtl, lightSet },
+    { box,        "", emitMtl, lightSet },
+    { instancer1, "",          lightSet },
+    { instancer2, "",          lightSet },
+    { instancer3, "",          lightSet },
+    { instancer4, "",          lightSet },
+}

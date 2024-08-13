@@ -1,0 +1,197 @@
+SceneVariables {
+    ["image_width"] = 128,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(1, -4.5, 20) * rotate(35, 0, 1, 0),
+    ["focal"] = 80,
+}
+
+envlight = EnvLight("envlight") {}
+
+lightSet = LightSet("lightset") {
+    envlight,
+}
+
+cubeVerts = {
+    Vec3( 1.0,  1.0,  1.0),    -- 0
+    Vec3(-1.0,  1.0,  1.0),    -- 1
+    Vec3(-1.0, -1.0,  1.0),    -- 2
+    Vec3( 1.0, -1.0,  1.0),    -- 3
+    Vec3(-1.0, -1.0, -1.0),    -- 4
+    Vec3(-1.0,  1.0, -1.0),    -- 5
+    Vec3( 1.0,  1.0, -1.0),    -- 6
+    Vec3( 1.0, -1.0, -1.0),    -- 7
+}
+
+cubeIndices = { 0, 1, 2, 3, 4, 5, 6, 7, 0, 6, 5, 1,
+                4, 7, 3, 2, 0, 3, 7, 6, 4, 2, 1, 5 }
+
+cubeCounts = { 4, 4, 4, 4, 4, 4 }
+
+faceVaryingColorData = UserData("faceVaryingColorData") {
+    ["color_key"] = "displayColor",
+    ["color_values_0"] = {
+        Rgb(1.0, 1.0, 1.0),    -- 0
+        Rgb(0.0, 1.0, 1.0),    -- 1
+        Rgb(0.0, 0.0, 1.0),    -- 2
+        Rgb(1.0, 0.0, 1.0),    -- 3
+        Rgb(0.0, 0.0, 0.0),    -- 4
+        Rgb(0.0, 1.0, 0.0),    -- 5
+        Rgb(1.0, 1.0, 0.0),    -- 6
+        Rgb(1.0, 0.0, 0.0),    -- 7
+        Rgb(1.0, 1.0, 1.0),    -- 8
+        Rgb(1.0, 1.0, 0.0),    -- 9
+        Rgb(0.0, 1.0, 0.0),    -- 10
+        Rgb(0.0, 1.0, 1.0),    -- 11
+        Rgb(0.0, 0.0, 0.0),    -- 12
+        Rgb(1.0, 0.0, 0.0),    -- 13
+        Rgb(1.0, 0.0, 1.0),    -- 14
+        Rgb(0.0, 0.0, 1.0),    -- 15
+        Rgb(1.0, 1.0, 1.0),    -- 16
+        Rgb(1.0, 0.0, 1.0),    -- 17
+        Rgb(1.0, 0.0, 0.0),    -- 18
+        Rgb(1.0, 1.0, 0.0),    -- 19
+        Rgb(0.0, 0.0, 0.0),    -- 20
+        Rgb(0.0, 0.0, 1.0),    -- 21
+        Rgb(0.0, 1.0, 1.0),    -- 22
+        Rgb(0.0, 1.0, 0.0),    -- 23
+    },
+}
+
+cubeFaceVaryingPoly = RdlMeshGeometry("cubeFaceVaryingPoly") {
+    ["primitive_attributes"] = { faceVaryingColorData },
+    ["node_xform"] = translate(0.0, 0.0, 0.0),
+    ["is_subd"] = false,
+    ["vertices_by_index"] = cubeIndices,
+    ["vertex_list_0"] = cubeVerts,
+    ["face_vertex_count"] = cubeCounts,
+}
+
+cubeFaceVaryingSubd = RdlMeshGeometry("cubeFaceVaryingSubd") {
+    ["primitive_attributes"] = { faceVaryingColorData },
+    ["node_xform"] = translate(3.0, 0.0, 0.0),
+    ["mesh_resolution"] = 4.0,
+    ["vertices_by_index"] = cubeIndices,
+    ["vertex_list_0"] = cubeVerts,
+    ["face_vertex_count"] = cubeCounts,
+}
+
+vertexColorData = UserData("vertexColorData") {
+    ["color_key"] = "displayColor",
+    ["color_values_0"] = {
+        Rgb(1.0, 1.0, 1.0),    -- 0
+        Rgb(0.0, 1.0, 1.0),    -- 1
+        Rgb(0.0, 0.0, 1.0),    -- 2
+        Rgb(1.0, 0.0, 1.0),    -- 3
+        Rgb(0.0, 0.0, 0.0),    -- 4
+        Rgb(0.0, 1.0, 0.0),    -- 5
+        Rgb(1.0, 1.0, 0.0),    -- 6
+        Rgb(1.0, 0.0, 0.0),    -- 7
+
+    },
+}
+
+cubeVertexPoly = RdlMeshGeometry("cubeVertexPoly") {
+    ["primitive_attributes"] = { vertexColorData },
+    ["node_xform"] = translate(0.0, -3.0, 0.0),
+    ["is_subd"] = false,
+    ["vertices_by_index"] = cubeIndices,
+    ["vertex_list_0"] = cubeVerts,
+    ["face_vertex_count"] = cubeCounts,
+}
+
+cubeVertexSubd = RdlMeshGeometry("cubeVertexSubd") {
+    ["primitive_attributes"] = { vertexColorData },
+    ["node_xform"] = translate(3.0, -3.0, 0.0),
+    ["mesh_resolution"] = 4.0,
+    ["vertices_by_index"] = cubeIndices,
+    ["vertex_list_0"] = cubeVerts,
+    ["face_vertex_count"] = cubeCounts,
+}
+
+uniformColorData = UserData("uniformColorData") {
+    ["color_key"] = "displayColor",
+    ["color_values_0"] = {
+        Rgb(1.0, 1.0, 1.0),    -- 0
+        Rgb(0.0, 1.0, 1.0),    -- 1
+        Rgb(0.0, 0.0, 1.0),    -- 2
+        Rgb(1.0, 0.0, 1.0),    -- 3
+        Rgb(0.0, 0.0, 0.0),    -- 4
+        Rgb(0.0, 1.0, 0.0),    -- 5
+
+    },
+}
+
+cubeUniformPoly = RdlMeshGeometry("cubeUniformPoly") {
+    ["primitive_attributes"] = { uniformColorData },
+    ["node_xform"] = translate(0.0, -6.0, 0.0),
+    ["is_subd"] = false,
+    ["vertices_by_index"] = cubeIndices,
+    ["vertex_list_0"] = cubeVerts,
+    ["face_vertex_count"] = cubeCounts,
+}
+
+cubeUniformSubd = RdlMeshGeometry("cubeUniformSubd") {
+    ["primitive_attributes"] = { uniformColorData },
+    ["node_xform"] = translate(3.0, -6.0, 0.0),
+    ["mesh_resolution"] = 4.0,
+    ["vertices_by_index"] = cubeIndices,
+    ["vertex_list_0"] = cubeVerts,
+    ["face_vertex_count"] = cubeCounts,
+}
+
+constColorData = UserData("constColorData") {
+    ["color_key"] = "displayColor",
+    ["color_values_0"] = { Rgb( 0.0,  1.0,  1.0) },
+}
+
+cubeConstantPoly = RdlMeshGeometry("cubeConstantPoly") {
+    ["primitive_attributes"] = { constColorData },
+    ["node_xform"] = translate(0.0, -9.0, 0.0),
+    ["is_subd"] = false,
+    ["vertices_by_index"] = cubeIndices,
+    ["vertex_list_0"] = cubeVerts,
+    ["face_vertex_count"] = cubeCounts,
+}
+
+cubeConstantSubd = RdlMeshGeometry("cubeConstantSubd") {
+    ["primitive_attributes"] = { constColorData },
+    ["node_xform"] = translate(3.0, -9.0, 0.0),
+    ["mesh_resolution"] = 4.0,
+    ["vertices_by_index"] = cubeIndices,
+    ["vertex_list_0"] = cubeVerts,
+    ["face_vertex_count"] = cubeCounts,
+}
+
+GeometrySet("/Scene/geoset") {
+    cubeFaceVaryingPoly,
+    cubeFaceVaryingSubd,
+    cubeVertexPoly,
+    cubeVertexSubd,
+    cubeUniformPoly,
+    cubeUniformSubd,
+    cubeConstantPoly,
+    cubeConstantSubd,
+}
+
+displayColor = AttributeMap("displayColor") {
+    ["primitive_attribute_name"] = "displayColor",
+}
+
+emitMtl = DwaEmissiveMaterial("dwaemissivematerial") {
+    ["emission_color"] = bind(displayColor),
+}
+
+Layer("defaultLayer") {
+    { cubeFaceVaryingPoly, "", emitMtl, lightSet },
+    { cubeFaceVaryingSubd, "", emitMtl, lightSet },
+    { cubeVertexPoly,      "", emitMtl, lightSet },
+    { cubeVertexSubd,      "", emitMtl, lightSet },
+    { cubeUniformPoly,     "", emitMtl, lightSet },
+    { cubeUniformSubd,     "", emitMtl, lightSet },
+    { cubeConstantPoly,    "", emitMtl, lightSet },
+    { cubeConstantSubd,    "", emitMtl, lightSet },
+}
