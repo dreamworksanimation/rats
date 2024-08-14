@@ -1,0 +1,11 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This test exercises the sidedness property for RectLight, DiskLight, SphereLight and CylinderLight.
+
+add_rats_test(moonray_light_sidedness
+    INPUTS sidedness.rdla
+    CANONICALS
+        scene.exr
+)
+
