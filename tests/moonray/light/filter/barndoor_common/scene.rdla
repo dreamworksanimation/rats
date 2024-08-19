@@ -1,0 +1,201 @@
+-- Tests (left to right) Cylinder, Disk, Mesh, Distant+Env, Rect, Sphere, and Spot lights
+-- Distant and Env filters overlap because those lights are always at render origin and therefore
+--  locked to the camera center.
+
+SceneVariables {
+    ["pixel_samples"] = 3,
+    ["max_depth"] = 0,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["image_width"] = 1024,
+    ["image_height"] = 128,
+}
+
+OrthographicCamera("/Scene/rendering/orthocamera") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.05, 10, -3.9),
+    ["film_width_aperture"] = 8.25,
+}
+
+-- Geometry --
+
+-- Widget geometry for the mesh light
+
+UsdGeometry("/Scene/geometry/widget") {
+    ["node_xform"] = translate(0, -34, 2) * rotate(90, 1, 0, 0) * scale(0.005, 0.005, 0.005),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = scale(20, 20, 20),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometryset") {
+    UsdGeometry("/Scene/geometry/widget"),
+    UsdGeometry("/Scene/geometry/floor"),
+}
+
+-- Materials --
+
+DwaBaseMaterial("/Scene/surfacing/floor") {
+}
+
+-- LightFilters --
+
+local barnY = 4
+local barnProjType = "perspective"
+local barnFocal = 4
+local barnWidth = 0.41 / 4
+local barnHeight = barnWidth
+local barnEdgeScaleTop = 0.5
+local barnEdgeScaleBottom = 1.5
+local barnEdgeScaleLeft = 1
+local barnEdgeScaleRight = 2
+local barnDensity = 1
+local barnInvert = false
+local barnRadius = 0.5
+local barnEdge = 0.5
+local barnMode = "physical"
+local barnSizeTop = 0.02 / 4
+local barnSizeBottom = -0.06 / 4
+local barnSizeLeft = -0.05 / 4
+local barnSizeRight = 0.125 / 4
+local barnUseLightXform = true
+local barnRotation = 15
+local barnColor = Rgb(0.9, 0.4, 0.35)
+
+local barnDefaults = {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-3.5, barnY, -4),
+    ["projector_type"] = barnProjType,
+    ["projector_focal_distance"] = barnFocal,
+    ["projector_width"] = barnWidth,
+    ["projector_height"] = barnHeight,
+    ["edge_scale_top"] = barnEdgeScaleTop,
+    ["edge_scale_bottom"] = barnEdgeScaleBottom,
+    ["edge_scale_left"] = barnEdgeScaleLeft,
+    ["edge_scale_right"] = barnEdgeScaleRight,
+    ["density"] = barnDensity,
+    ["invert"] = barnInvert,
+    ["radius"] = barnRadius,
+    ["edge"] = barnEdge,
+    ["mode"] = barnMode,
+    ["size_top"] = barnSizeTop,
+    ["size_bottom"] = barnSizeBottom,
+    ["size_left"] = barnSizeLeft,
+    ["size_right"] = barnSizeRight,
+    ["use_light_xform"] = barnUseLightXform,
+    ["rotation"] = barnRotation,
+    ["color"] = barnColor,
+}
+
+barnFilter1 = BarnDoorLightFilter("/Scene/lighting/barnFilter1") (barnDefaults)
+barnFilter2 = BarnDoorLightFilter("/Scene/lighting/barnFilter2") (barnDefaults)
+barnFilter3 = BarnDoorLightFilter("/Scene/lighting/barnFilter3") (barnDefaults)
+barnFilter4 = BarnDoorLightFilter("/Scene/lighting/barnFilter4") (barnDefaults)
+
+local envScl = 0.47619
+barnFilter5 = BarnDoorLightFilter("/Scene/lighting/barnFilter5") (barnDefaults)
+barnFilter5["projector_focal_distance"] = barnFocal + 6
+barnFilter5["projector_width"] = barnWidth * envScl
+barnFilter5["projector_height"] = barnHeight * envScl
+barnFilter5["size_top"] = barnSizeTop * envScl
+barnFilter5["size_bottom"] = barnSizeBottom * envScl
+barnFilter5["size_left"] = barnSizeLeft * envScl
+barnFilter5["size_right"] = barnSizeRight * envScl
+
+barnFilter6 = BarnDoorLightFilter("/Scene/lighting/barnFilter6") (barnDefaults)
+barnFilter7 = BarnDoorLightFilter("/Scene/lighting/barnFilter7") (barnDefaults)
+
+-- Spotlight's filter
+barnFilter8 = BarnDoorLightFilter("/Scene/lighting/barnFilter8") (barnDefaults)
+barnFilter8["density"] = barnDensity * 0.97
+barnFilter8["invert"] = not barnInvert
+
+-- Lights --
+
+lightY = 4
+lightScale = 4
+
+cylLight = CylinderLight("/Scene/Lighting/cyl") {
+    ["node_xform"] = rotate(180, 1, 0, 0) * rotate(-90, 1, 0, 0) *
+                     translate(-3.5, lightY, -4),
+    ["intensity"] = 0.015 * lightScale,
+    ["radius"] = 0.05,
+    ["color"] = Rgb(1, 0, 0),
+    ["light_filters"] = { barnFilter1 },
+}
+
+diskLight = DiskLight("/Scene/Lighting/disk") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-2.5, lightY, -4),
+    ["intensity"] = 0.005 * lightScale,
+    ["radius"] = 0.5,
+    ["color"] = Rgb(0, 1, 0),
+    ["light_filters"] = { barnFilter2 },
+}
+
+meshLight = MeshLight("/Scene/lighting/mesh") {
+    ["node_xform"] = rotate(180, 1, 0, 0) * rotate(-90, 1, 0, 0) * 
+                     translate(-1.5, lightY, -4),
+    ["color"] = Rgb(0, 0, 1),
+    ["intensity"] = 0.02 * lightScale,
+    ["geometry"] = UsdGeometry("/Scene/geometry/widget"),
+    ["light_filters"] = { barnFilter3 },
+}
+
+distantLight = DistantLight("/Scene/Lighting/distant") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-0.5, lightY, -4),
+    ["angular_extent"] = 0.01,
+    ["intensity"] = 0.4 * lightScale,
+    ["color"] = Rgb(1, 1, 0),
+    ["light_filters"] = { barnFilter4 },
+}
+
+envLight = EnvLight("/Scene/lighting/env") {
+    ["node_xform"] =
+        rotate(-90, 0, 1, 0) *
+        rotate(180, 1, 0, 0) * scale(100, 1, 1) * translate(0.5, lightY, -4),
+    ["intensity"] = 0.2 * lightScale,
+    ["color"] = Rgb(1, 0, 1),
+    ["light_filters"] = { barnFilter5 },
+}
+
+rectLight = RectLight("/Scene/lighting/rect") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.5, lightY, -4),
+    ["color"] = Rgb(0, 1, 1),
+    ["intensity"] = 0.005 * lightScale,
+    ["light_filters"] = { barnFilter6 },
+}
+
+sphereLight = SphereLight("/Scene/lighting/sphere") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(2.5, lightY, -4),
+    ["intensity"] = 0.01 * lightScale,
+    ["radius"] = 0.5,
+    ["light_filters"] = { barnFilter7 },
+}
+
+spotLight = SpotLight("/Scene/lighting/spot") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(3.5, lightY, -4),
+    ["intensity"] = 0.0003 * lightScale,
+    ["lens_radius"] = 0.4,
+    ["inner_cone_angle"] = 3,
+    ["outer_cone_angle"] = 8,
+    ["focal_plane_distance"] = lightY,
+    ["light_filters"] = { barnFilter8 },
+}
+
+lightSet = LightSet("LightSetA") {
+    cylLight,          --1   Red
+    diskLight,         --2   Green
+    meshLight,         --3   Blue
+    distantLight,      --4   Yellow
+    envLight,          --5   Magenta
+    rectLight,         --6   Cyan
+    sphereLight,       --7   White
+    spotLight,         --8   Black (inverted white)
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {UsdGeometry("/Scene/geometry/floor"), "", DwaBaseMaterial("/Scene/surfacing/floor"), lightSet},
+}

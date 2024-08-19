@@ -1,0 +1,122 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 0,
+    ["image_width"] = 300,
+    ["image_height"] = 300,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 4, 9)
+}
+
+-- Geometry --
+
+UsdGeometry("/Scene/geometry/widget") {
+    ["node_xform"] = scale(0.4, 0.4, 0.4) * translate(0, 0, -7),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = scale(20, 20, 20),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/sphere") {
+    ["node_xform"] = scale(200, 200, 200),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+BaseVolume("/Scene/surfacing/baseVol10") {
+    ["anisotropy"] = 0,
+    ["attenuation color"] = Rgb(0.01, 0.01, 0.01),
+    ["diffuse color"] = Rgb(1.0, 1.0, 1.0),
+}
+
+GeometrySet("geometryset") {
+    UsdGeometry("/Scene/geometry/widget"),
+    UsdGeometry("/Scene/geometry/floor"),
+    UsdGeometry("/Scene/geometry/sphere"),
+}
+
+-- Materials --
+
+DwaBaseMaterial("/Scene/surfacing/floor") {
+}
+
+DwaSolidDielectricMaterial("/Scene/surfacing/widget") {
+    ["albedo"] = Rgb(0.6, 0.4, 0.4),
+    ["diffuse_roughness"] = 0,
+    ["roughness"] = 0.1414,
+}
+
+-- Lights --
+
+local barnDefaults = {
+    ["projector_width"] = 0.5,
+    ["projector_height"] = 0.5,
+    ["projector_type"] = "perspective",
+    ["pre_barn_mode"] = "black",
+    ["pre_barn_distance"] = 0.5,
+    ["color"] = Rgb(1, 0, 0),
+    ["mode"] = "analytical",
+    ["radius"] = 0.2,
+    ["edge"] = 0.2,
+    ["use_light_xform"] = true,
+    ["edge_scale_top"] = 1.0,
+    ["edge_scale_bottom"] = 0.11,
+    ["edge_scale_left"] = 0.5,
+    ["edge_scale_right"] = 10,
+    ["rotation"] = 35,
+}
+
+barn1 = BarnDoorLightFilter("/Scene/lighting/barndoor1") (barnDefaults)
+barn1["node_xform"] = Mat4(0, 0, 1, 0, 
+                           1, 0, 0, 0, 
+                           0, 1, 0, 0, 
+                           0, 9,-7, 1)
+barn1["use_light_xform"] = false
+
+barn2 = BarnDoorLightFilter("/Scene/lighting/barndoor2") (barnDefaults)
+barn2["projector_focal_distance"] = 4.5
+barn2["color"] = Rgb(0, 1, 0)
+barn2["mode"] = "physical"
+
+barn3 = BarnDoorLightFilter("/Scene/lighting/barndoor3") (barnDefaults)
+barn3["projector_width"] = 2.25
+barn3["projector_height"] = 2.25
+barn3["projector_type"] = "orthographic"
+barn3["projector_focal_distance"] = 4.5
+barn3["color"] = Rgb(0, 0, 1)
+barn3["mode"] = "physical"
+
+combineFilter = CombineLightFilter("/Scene/lighting/combine") {
+    ["light_filters"] = { barn1, barn2, barn3 },
+    ["mode"] = 2,
+}
+
+spot = SpotLight("/Scene/lighting/spot") {
+    ["node_xform"] = Mat4(0, 0, 1, 0, 
+                          1, 0, 0, 0, 
+                          0, 1, 0, 0, 
+                          0, 9,-7, 1),
+    ["intensity"] = 0.1,
+    ["lens_radius"] = 1.4,
+    ["inner_cone_angle"] = 0,
+    ["outer_cone_angle"] = 60,
+    ["angle_falloff_type"] = "linear",
+    ["light_filters"] = { combineFilter },
+}
+
+lights = LightSet("LightSetA") {
+    spot,
+}
+
+Layer("/Scene/rendering/layer") {
+    {UsdGeometry("/Scene/geometry/widget"), "", DwaSolidDielectricMaterial("/Scene/surfacing/widget"), lights},
+    {UsdGeometry("/Scene/geometry/floor"), "", DwaBaseMaterial("/Scene/surfacing/floor"), lights},
+    {UsdGeometry("/Scene/geometry/sphere"), "", "", lights, BaseVolume("/Scene/surfacing/baseVol10")},
+}
+
