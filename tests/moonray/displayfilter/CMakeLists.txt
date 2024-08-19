@@ -4,3 +4,4 @@
 add_subdirectory(basic)
 add_subdirectory(chained)
 add_subdirectory(mask)
+add_subdirectory(tangentspace)

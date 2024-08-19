@@ -1,0 +1,98 @@
+
+SceneVariables {
+    ["image width"] = 400,
+    ["image height"] = 400,
+}
+
+-------------------------------------------------------
+
+local key = EnvLight("/Scene/lighting/key") {
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+    ["visible in camera"] = 1
+}
+
+local lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+-------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+local normalMap = ImageMap("/normalMap") {
+   ["texture"] = rats_assets_dir.."/textures/metal_anti_slip.tx",
+   ["wrap around"] = true
+}
+
+local sphereMtl = BaseMaterial("/Scene/surfacing/sphereMtl") {
+   ["specular roughness"] = 0,
+   ["diffuse factor"] = 0,
+   ["input normal"] = bind(ImageMap("/normalMap")),
+   ["input normal dial"] = 1.0
+}
+
+-------------------------------------------------------
+
+local sphereGeom = UsdGeometry("/Scene/geometry/sphere") {
+   ["node xform"] = translate(0, .75, 0),
+   ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+   ["prim_path"] = "/sphere",
+}
+
+table.insert(geoms, sphereGeom)
+table.insert(assignments, {sphereGeom, "", sphereMtl, lightSet})
+
+-------------------------------------------------------
+
+BakeCamera("/Scene/rendering/camera") {
+   ["node xform"] = translate(0, .75, 3),
+   ["geometry"] = sphereGeom,
+   ["mode"] = 3, -- -N
+   ["bias"] = .001,
+   ["near"] = .0001,
+   ["far"] = 1,
+}
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
+
+--------------------------------------
+-- Tangent Space Display Filter
+--------------------------------------
+
+local NMapBuf = RenderOutput("/NormalMapped") {
+    ["file name"] = "render_tmp.exr",
+    ["result"] = 7, -- material aov
+    ["material aov"] = "normal"
+}
+
+local NBuf = RenderOutput("/NormalsBase") {
+    ["file name"] = "render_tmp.exr",
+    ["result"] = 7, -- material aov
+    ["material aov"] = "N"
+}
+
+local dPdsBuf = RenderOutput("/dPds") {
+    ["file name"] = "render_tmp.exr",
+    ["result"] = 7, -- material aov
+    ["material aov"] = "dPds"
+}
+
+local tangents = TangentSpaceDisplayFilter("/display/tangents") {
+    ["normal_map_output"] = true, -- want a [0,1] encoding (default true)    
+    ["input"] = NMapBuf,          -- transforming this 
+    ["N"] = NBuf,                 -- using a basis constructed from this
+    ["dPds"] = dPdsBuf,           -- and this 
+}
+
+RenderOutput("/output/tangents") {
+    ["file name"] = "tangents.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = tangents,
+    ["channel_name"] = "Nt"
+}
+
