@@ -1,0 +1,166 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["max_depth"] = 0,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0.0, 0.0, 10.0),
+}
+
+envLight = EnvLight("envLight") {
+    ["intensity"] = 0.1,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+}
+
+rectLight = RectLight("rectLight") {
+    ["intensity"] = 0.1,
+    ["node_xform"] = translate(0.0, 0.0, 10.0) * rotate(-45, 1, 0, 0) * rotate(45, 0, 1, 0),
+}
+
+ltSet = LightSet("ltSet") {
+    envLight,
+    rectLight,
+}
+
+colorData = UserData("colorData") {
+    ["color_key"] = "Cd",
+    ["color_values_0"] = {
+        Rgb(0.5, 0.0, 0.0),
+        Rgb(0.0, 0.5, 0.0),
+        Rgb(0.0, 0.0, 0.5),
+    }
+}
+
+normalData = UserData("normalData") {
+    ["vec3f_key"] = "normal",
+    ["vec3f_values_0"] = {
+        Vec3(-0.5, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.5, 1.0),
+    }
+}
+
+dPdsData = UserData("dpdsData") {
+    ["vec3f_key"] = "dPds",
+    ["vec3f_values_0"] = {
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+    }
+}
+
+dPdtData = UserData("dpdtData") {
+    ["vec3f_key"] = "dPdt",
+    ["vec3f_values_0"] = {
+        Vec3(0.0, 1.0, 0.0),
+        Vec3(0.0, 1.0, 0.0),
+        Vec3(0.0, 1.0, 0.0),
+    }
+}
+
+pointsGeom = RdlPointGeometry("pointsGeom") {
+    ["node_xform"] = translate(0.0, 2.5, 0.0),
+    ["vertex_list_0"] = { 
+        Vec3(-2.5, 0.0, 0.0),
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(2.5, 0.0, 0.0),
+    },
+    ["radius_list"] = { 1.0, 1.0, 1.0 },
+    ["primitive_attributes"] = {
+        colorData,
+    },
+}
+
+explicitPointsGeom = RdlPointGeometry("explicitPointsGeom") {
+    ["node_xform"] = translate(0.0, 0.0, 0.0),
+    ["vertex_list_0"] = { 
+        Vec3(-2.5, 0.0, 0.0),
+        Vec3(0.0, 0.0, 0.0),
+        Vec3(2.5, 0.0, 0.0),
+    },
+    ["radius_list"] = { 1.0, 1.0, 1.0 },
+    ["primitive_attributes"] = {
+        colorData,
+        normalData,
+        dPdsData,
+        dPdtData,
+    },
+    ["use_explicit_shading_attributes"] = true,
+}
+
+colorData2 = UserData("colorData2") {
+    ["color_key"] = "Cd",
+    ["color_values_0"] = {
+        Rgb(0.5, 0.0, 0.5),
+    }
+}
+
+mbPointsGeom = RdlPointGeometry("mbPointsGeom") {
+    ["node_xform"] = translate(-2.5, -2.5, 0.0),
+    ["vertex_list_0"] = { 
+        Vec3(-1.0, 0.0, 0.0),
+    },
+    ["vertex_list_1"] = { 
+        Vec3(1.0, 0.0, 0.0),
+    },
+    ["radius_list"] = { 1.0, },
+    ["primitive_attributes"] = {
+        colorData2,
+    },
+}
+
+uvData = UserData("uvData") {
+    ["vec2f_key"] = "uv",
+    ["vec2f_values_0"] = {
+        Vec2(0.1, 0.9),
+        Vec2(0.9, 0.9),
+        Vec2(0.1, 0.1),
+        Vec2(0.9, 0.1),
+    }
+}
+
+txPointsGeom = RdlPointGeometry("txPointsGeom") {
+    ["node_xform"] = translate(2.0, -2.5, 0.0),
+    ["vertex_list_0"] = { 
+        Vec3(-0.6, 0.6, 0.0),
+        Vec3(0.6, 0.6, 0.0),
+        Vec3(-0.6, -0.6, 0.0),
+        Vec3(0.6, -0.6, 0.0),
+    },
+    ["radius_list"] = { 0.5 },
+    ["primitive_attributes"] = {
+        uvData,
+    },
+}
+
+GeometrySet("/Scene/geoset") {
+    pointsGeom,
+    explicitPointsGeom,
+    mbPointsGeom,
+    txPointsGeom,
+}
+
+colorAttrMap = AttributeMap("colorAttrMap") {
+}
+
+mtl1 = DwaSolidDielectricMaterial("mtl1") {
+    ["albedo"] = bind(colorAttrMap),
+    ["roughness"] = 0.1,
+}
+
+imageMap = ImageMap("imageMap") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+mtl2 = DwaSolidDielectricMaterial("mtl2") {
+    ["albedo"] = bind(imageMap),
+    ["roughness"] = 0.1,
+}
+
+Layer("/Scene/layer") {
+    {pointsGeom, {""}, mtl1, ltSet },
+    {explicitPointsGeom, {""}, mtl1, ltSet },
+    {mbPointsGeom, {""}, mtl1, ltSet },
+    {txPointsGeom, {""}, mtl2, ltSet },
+}
