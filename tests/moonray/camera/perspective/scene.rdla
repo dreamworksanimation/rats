@@ -1,0 +1,101 @@
+SceneVariables {
+    ["image_width" ] = 256,
+    ["image_height"] = 256,
+    ["lights_visible_in_camera"] = true,
+}
+
+PerspectiveCamera("/scene/camera") {
+    ["node_xform"] = translate(0, 0, 2.5) * rotate(-10, 1, 0, 0),
+    ["near"] = 1.7,
+    ["far"] = 3,
+    ["dof"] = true,
+    ["dof_aperture"] = 10,
+    ["dof_focus_distance"] = 2.5,
+}
+
+-------------------------------------------------------
+
+dx = 0.5
+dz = 0.5
+s = 10
+
+floor = UsdGeometry("/scene/geometry/floor") {
+    ["node_xform"] = scale(s, s, s) * translate(0, -0.7, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+square_0 = UsdGeometry("/scene/geometry/square_0") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(45, 0, 0, 1) * rotate(45, 0, 1, 0) * translate(-dx, 0, -dz),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+square_1 = UsdGeometry("/scene/geometry/square_1") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(45, 0, 0, 1) * rotate(45, 0, 1, 0)  * translate(0, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+square_2 = UsdGeometry("/scene/geometry/square_2") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(45, 0, 0, 1) * rotate(45, 0, 1, 0)  * translate(dx, 0, dz),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("/scene/geometryset") {
+    floor,
+    square_0,
+    square_1,
+    square_2,
+}
+
+-------------------------------------------------------
+
+floor_map = ImageMap("/Scene/surfacing/floor_map") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+    ["scale"] = Vec2(s,s),
+}
+
+square_map = ImageMap("/Scene/surfacing/square_map") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+floor_material = DwaSolidDielectricMaterial("scene/materials/floor") {
+    ["albedo"] = bind(floor_map, Rgb(1, 1, 1)),
+    ["show_specular"] = false,
+}
+
+square_material = DwaSolidDielectricMaterial("scene/materials/square") {
+    ["albedo"] = bind(square_map, Rgb(1, 1, 1)),
+    ["show_specular"] = false,
+}
+
+-------------------------------------------------------
+
+envlight = EnvLight("scene/lights/env") {
+    ["sample_upper_hemisphere_only"] = true,
+    ["color"] = Rgb(0.1, 0.5, 1.0),
+    ["intensity"] = 0.3,
+}
+
+distantlight = DistantLight("scene/lights/distant") {
+    ["node_xform"] = rotate(10, 0, 0, 1),
+    ["color"] = Rgb(1.0, 0.6, 0.2),
+    ["intensity"] = 1,
+}
+
+lightset = LightSet("scene/lightset") {
+    envlight,
+    distantlight,
+}
+
+-------------------------------------------------------
+
+Layer("layer") {
+    {floor,    "", floor_material,  lightset},
+    {square_0, "", square_material, lightset},
+    {square_1, "", square_material, lightset},
+    {square_2, "", square_material, lightset},
+}
+
