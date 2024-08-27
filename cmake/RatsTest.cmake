@@ -81,7 +81,7 @@ function(add_rats_test test_basename)
 
             RENDER_ARGS         # (optional) list of renderer args to set/override.
             RENDER_ARGS_SCALAR  # | (optional) list of renderer args to set/override per execution mode
-            RENDER_ARGS_VECTOR  # | example: RENDER_ARGS_XPU -scene_var \"pixel_samples\" \"1\" -texture_cache_size 8192
+            RENDER_ARGS_VECTOR  # | example: RENDER_ARGS_XPU -scene_var pixel_samples 1 -texture_cache_size 8192
             RENDER_ARGS_XPU
     )
 
