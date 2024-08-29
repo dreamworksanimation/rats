@@ -1,0 +1,447 @@
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 500,
+    ["pixel_samples"] = 3,
+    ["max_depth"] = 1,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.5, 4.0),
+}
+
+rectLight = RectLight("rectLight") {
+    ["intensity"] = 0.02,
+    ["node_xform"] = translate(0.0, 0.0, 5.0) *
+                     rotate(30.0, 0.0, 1.0, 0.0),
+}
+
+lights = LightSet("/Scene/lights/lightset") {
+    rectLight
+}
+
+grid = UsdGeometry("/scene/geometry/floor") {
+    ["node_xform"] = scale(100, 100, 100) * rotate(90, 1, 0, 0) * translate(0, 0, -0.15),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+colorData = UserData("colorData") {
+    ["color_key"] = "Cd",
+    ["color_values_0"] = { 
+        Rgb(1.0, 0.0, 0.0),
+        Rgb(0.0, 1.0, 0.0),
+        Rgb(0.0, 0.0, 1.0),
+    },
+}
+
+vertexDataLinear_0 = {
+    Vec3(-0.35, 0.00,  0.0),
+    Vec3(-0.45, 0.15,  0.1),
+    Vec3(-0.25, 0.30,  0.0),
+    Vec3(-0.45, 0.45, -0.1),
+    Vec3(-0.25, 0.60,  0.0),
+    Vec3(-0.35, 0.75,  0.0),
+
+    Vec3( 0.00, 0.00,  0.0),
+    Vec3( 0.10, 0.15, -0.1),
+    Vec3(-0.10, 0.30,  0.0),
+    Vec3( 0.10, 0.45,  0.1),
+    Vec3(-0.10, 0.60,  0.0),
+    Vec3( 0.00, 0.75,  0.0),
+
+    Vec3(0.25, 0.00,  0.0),
+    Vec3(0.15, 0.15,  0.0),
+    Vec3(0.35, 0.30,  0.1),
+    Vec3(0.15, 0.45, -0.1),
+    Vec3(0.35, 0.60,  0.0),
+    Vec3(0.25, 0.75,  0.0),
+}
+
+vertexDataLinear_1 = {
+    Vec3(-0.35, 0.00,  0.0),
+    Vec3(-0.45, 0.15,  0.1),
+    Vec3(-0.25, 0.30,  0.0),
+    Vec3(-0.45, 0.45, -0.1),
+    Vec3(-0.25, 0.60,  0.0),
+    Vec3(-0.35, 0.75,  0.0),
+
+    Vec3( 0.00, 0.00,  0.0),
+    Vec3( 0.10, 0.15, -0.1),
+    Vec3(-0.10, 0.30,  0.0),
+    Vec3( 0.10, 0.45,  0.1),
+    Vec3(-0.10, 0.60,  0.0),
+    Vec3( 0.00, 0.75,  0.0),
+
+    Vec3(0.35, 0.00,  0.0),
+    Vec3(0.25, 0.15,  0.0),
+    Vec3(0.45, 0.30,  0.1),
+    Vec3(0.25, 0.45, -0.1),
+    Vec3(0.45, 0.60,  0.0),
+    Vec3(0.35, 0.75,  0.0),
+}
+
+
+radiusDataLinear = { 
+    0.07, 0.03, 0.02, 0.01, 0.03, 0.04,
+    0.1, 0.04, 0.03, 0.02, 0.01, 0.005,
+    0.1, 0.1, 0.01, 0.01, 0.01, 0.05,
+}
+
+normalDataLinear = UserData("normalDataLinear") {
+    ["vec3f_key"] = "normal",
+    ["vec3f_values_0"] = { 
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+    },
+}
+
+vertexDataBspline_0 = {
+    Vec3(-0.35, 0.00,  0.0),
+    Vec3(-0.45, 0.15,  0.1),
+    Vec3(-0.25, 0.30,  0.0),
+    Vec3(-0.45, 0.45, -0.1),
+    Vec3(-0.25, 0.60,  0.0),
+    Vec3(-0.35, 0.75,  0.0),
+
+    Vec3( 0.00, 0.00,  0.0),
+    Vec3( 0.10, 0.15, -0.1),
+    Vec3(-0.10, 0.30,  0.0),
+    Vec3( 0.10, 0.45,  0.1),
+    Vec3(-0.10, 0.60,  0.0),
+    Vec3( 0.00, 0.75,  0.0),
+
+    Vec3(0.25, 0.00,  0.0),
+    Vec3(0.15, 0.15,  0.0),
+    Vec3(0.35, 0.30,  0.1),
+    Vec3(0.15, 0.45, -0.1),
+    Vec3(0.35, 0.60,  0.0),
+    Vec3(0.25, 0.75,  0.0),
+}
+
+vertexDataBspline_1 = {
+    Vec3(-0.35, 0.00,  0.0),
+    Vec3(-0.45, 0.15,  0.1),
+    Vec3(-0.25, 0.30,  0.0),
+    Vec3(-0.45, 0.45, -0.1),
+    Vec3(-0.25, 0.60,  0.0),
+    Vec3(-0.35, 0.75,  0.0),
+
+    Vec3( 0.00, 0.00,  0.0),
+    Vec3( 0.10, 0.15, -0.1),
+    Vec3(-0.10, 0.30,  0.0),
+    Vec3( 0.10, 0.45,  0.1),
+    Vec3(-0.10, 0.60,  0.0),
+    Vec3( 0.00, 0.75,  0.0),
+
+    Vec3(0.35, 0.00,  0.0),
+    Vec3(0.25, 0.15,  0.0),
+    Vec3(0.45, 0.30,  0.1),
+    Vec3(0.25, 0.45, -0.1),
+    Vec3(0.45, 0.60,  0.0),
+    Vec3(0.35, 0.75,  0.0),
+}
+
+radiusDataBspline = { 
+    0.07, 0.03, 0.02, 0.01, 0.03, 0.04,
+    0.1, 0.04, 0.03, 0.02, 0.01, 0.005,
+    0.1, 0.1, 0.01, 0.01, 0.01, 0.05,
+}
+
+normalDataBspline = UserData("normalDataBspline") {
+    ["vec3f_key"] = "normal",
+    ["vec3f_values_0"] = { 
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+    },
+    ["vec3f_values_1"] = { 
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(-1.0, 0.0, 0.5),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(1.0, 0.0, 0.0),
+        Vec3(1.0, 0.0, 0.0),
+    },
+}
+
+vertexDataBezier_0 = {
+    Vec3(-0.2, 0.0, 0.0),
+    Vec3(-0.2, 0.1, 0.0),
+    Vec3(-0.3, 0.2, 0.0),
+    Vec3(-0.3, 0.3, 0.0),
+    Vec3(-0.3, 0.5, 0.0),
+    Vec3(-0.2, 0.6, 0.2),
+    Vec3(-0.2, 0.8, 0.2),
+
+    Vec3(0.0, 0.0, -0.1),
+    Vec3(0.0, 0.1, -0.1),
+    Vec3(0.0, 0.2, 0.0),
+    Vec3(0.0, 0.3, 0.0),
+    Vec3(0.0, 0.4, 0.0),
+    Vec3(0.0, 0.5, -0.1),
+    Vec3(0.0, 0.6, -0.1),
+
+    Vec3(0.1, 0.0, 0.0),
+    Vec3(0.1, 0.1, 0.0),
+    Vec3(0.1, 0.2, 0.0),
+    Vec3(0.1, 0.3, 0.0),
+    Vec3(0.1, 0.4, 0.0),
+    Vec3(-0.1, 0.5, 0.4),
+    Vec3(-0.1, 0.6, 0.4),
+}
+
+vertexDataBezier_1 = {
+    Vec3(-0.2, 0.0, 0.0),
+    Vec3(-0.2, 0.1, 0.0),
+    Vec3(-0.3, 0.2, 0.0),
+    Vec3(-0.3, 0.3, 0.0),
+    Vec3(-0.3, 0.5, 0.0),
+    Vec3(-0.2, 0.6, 0.2),
+    Vec3(-0.2, 0.8, 0.2),
+
+    Vec3(0.0, 0.0, -0.1),
+    Vec3(0.0, 0.1, -0.1),
+    Vec3(0.0, 0.2, 0.0),
+    Vec3(0.0, 0.3, 0.0),
+    Vec3(0.0, 0.4, 0.0),
+    Vec3(0.0, 0.5, -0.1),
+    Vec3(0.0, 0.6, -0.1),
+
+    Vec3(0.2, 0.0, 0.0),
+    Vec3(0.2, 0.1, 0.0),
+    Vec3(0.2, 0.2, 0.0),
+    Vec3(0.2, 0.3, 0.0),
+    Vec3(0.2, 0.4, 0.0),
+    Vec3(0.0, 0.5, 0.4),
+    Vec3(0.0, 0.6, 0.4),
+}
+
+radiusDataBezier = {
+    0.07, 0.03, 0.02, 0.01, 0.03, 0.04, 0.06,
+    0.1, 0.04, 0.03, 0.02, 0.01, 0.005, 0.0,
+    0.1, 0.1, 0.01, 0.01, 0.01, 0.05, 0.05,
+}
+
+normalDataBezier = UserData("normalDataBezier") {
+    ["vec3f_key"] = "normal",
+    ["vec3f_values_0"] = { 
+        Vec3(1.0, 0.0, 1.0),
+        Vec3(0.0, 0.0, 1.0),
+        Vec3(-1.0, 0.0, 1.0),
+    },
+}
+
+
+curvesLinearRayFacing = RdlCurveGeometry("curvesLinearRayFacing") {
+    ["node_xform"] = translate(-1.0, 1.0, 0.0),
+    ["curve_type"] = "linear",
+    ["curves_subtype"] = "ray_facing",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 6, 6, 6 },
+    ["vertex_list_0"] = vertexDataLinear_0,
+    ["vertex_list_1"] = vertexDataLinear_1,
+    ["radius_list"] = radiusDataLinear,
+    ["primitive_attributes"] = { colorData },
+}
+
+curvesBsplineRayFacing = RdlCurveGeometry("curvesBsplineRayFacing") {
+    ["node_xform"] = translate(0.0, 1.0, 0.0),
+    ["curve_type"] = "bspline",
+    ["curves_subtype"] = "ray_facing",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 6, 6, 6 },
+    ["vertex_list_0"] = vertexDataBspline_0,
+    ["vertex_list_1"] = vertexDataBspline_1,
+    ["radius_list"] = radiusDataBspline,
+    ["primitive_attributes"] = { colorData },
+}
+
+curvesBezierRayFacing = RdlCurveGeometry("curvesBezierRayFacing") {
+    ["node_xform"] = translate(1.0, 1.0, 0.0),
+    ["curve_type"] = "bezier",
+    ["curves_subtype"] = "ray_facing",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 7, 7, 7 },
+    ["vertex_list_0"] = vertexDataBezier_0,
+    ["vertex_list_1"] = vertexDataBezier_1,
+    ["radius_list"] = radiusDataBezier,
+    ["primitive_attributes"] = { colorData },
+}
+
+curvesLinearRound = RdlCurveGeometry("curvesLinearRound") {
+    ["node_xform"] = translate(-1.0, 0.0, 0.0),
+    ["curve_type"] = "linear",
+    ["curves_subtype"] = "round",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 6, 6, 6 },
+    ["vertex_list_0"] = vertexDataLinear_0,
+    ["vertex_list_1"] = vertexDataLinear_1,
+    ["radius_list"] = radiusDataLinear,
+    ["primitive_attributes"] = { colorData },
+}
+
+curvesBsplineRound = RdlCurveGeometry("curvesBsplineRound") {
+    ["node_xform"] = translate(0.0, 0.0, 0.0),
+    ["curve_type"] = "bspline",
+    ["curves_subtype"] = "round",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 6, 6, 6 },
+    ["vertex_list_0"] = vertexDataBspline_0,
+    ["vertex_list_1"] = vertexDataBspline_1,
+    ["radius_list"] = radiusDataBspline,
+    ["primitive_attributes"] = { colorData },
+}
+
+curvesBezierRound = RdlCurveGeometry("curvesBezierRound") {
+    ["node_xform"] = translate(1.0, 0.0, 0.0),
+    ["curve_type"] = "bezier",
+    ["curves_subtype"] = "round",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 7, 7, 7 },
+    ["vertex_list_0"] = vertexDataBezier_0,
+    ["vertex_list_1"] = vertexDataBezier_1,
+    ["radius_list"] = radiusDataBezier,
+    ["primitive_attributes"] = { colorData },
+}
+
+curvesLinearNormalOriented = RdlCurveGeometry("curvesLinearNormalOriented") {
+    ["node_xform"] = translate(-1.0, -1.0, 0.0),
+    ["curve_type"] = "linear",
+    ["curves_subtype"] = "normal_oriented",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 6, 6, 6 },
+    ["vertex_list_0"] = vertexDataLinear_0,
+
+    -- Motion blur on normal oriented curves crashes the render so disabled for now:
+    -- https://jira.dreamworks.net/browse/MOONRAY-5409
+    --["vertex_list_1"] = vertexDataLinear_1,
+    ["radius_list"] = radiusDataLinear,
+    ["primitive_attributes"] = { colorData, normalDataLinear },
+}
+
+curvesBsplineNormalOriented = RdlCurveGeometry("curvesBsplineNormalOriented") {
+    ["node_xform"] = translate(0.0, -1.0, 0.0),
+    ["curve_type"] = "bspline",
+    ["curves_subtype"] = "normal_oriented",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 6, 6, 6 },
+    ["vertex_list_0"] = vertexDataBspline_0,
+    -- Motion blur on normal oriented curves crashes the render so disabled for now:
+    -- https://jira.dreamworks.net/browse/MOONRAY-5409
+    --["vertex_list_1"] = vertexDataBspline_1,
+    ["radius_list"] = radiusDataBspline,
+    ["primitive_attributes"] = { colorData, normalDataBspline },
+}
+
+curvesBezierNormalOriented = RdlCurveGeometry("curvesBezierNormalOriented") {
+    ["node_xform"] = translate(1.0, -1.0, 0.0),
+    ["curve_type"] = "bezier",
+    ["curves_subtype"] = "normal_oriented",
+    ["tessellation_rate"] = 12,
+    ["curves_vertex_count"] = { 7, 7, 7 },
+    ["vertex_list_0"] = vertexDataBezier_0,
+    -- Motion blur on normal oriented curves crashes the render so disabled for now:
+    -- https://jira.dreamworks.net/browse/MOONRAY-5409
+    --["vertex_list_1"] = vertexDataBezier_1,
+    ["radius_list"] = radiusDataBezier,
+    ["primitive_attributes"] = { colorData, normalDataBezier },
+}
+
+GeometrySet("/Scene/geometry/all") {
+    grid,
+
+    curvesLinearRayFacing,
+    curvesBsplineRayFacing,
+    curvesBezierRayFacing,
+
+    curvesLinearRound,
+    curvesBsplineRound,
+    curvesBezierRound,
+
+    curvesLinearNormalOriented,
+    curvesBsplineNormalOriented,
+    curvesBezierNormalOriented,
+}
+
+attrMapCd = AttributeMap("attrMapCd") {
+}
+
+curvesMtl = DwaSolidDielectricMaterial("curvesMtl") {
+    ["show_diffuse"] = true,
+    ["show_specular"] = true,
+    ["albedo"] = bind(attrMapCd, Rgb(0.1, 0.1, 0.1)),
+    ["roughness"] = 0.2,
+    ["thin_geometry"] = true,
+
+}
+
+gridMtl = DwaSolidDielectricMaterial("gridMtl") {
+    ["show_specular"] = false,
+}
+
+Layer("/Scene/rendering/all") {
+    {grid, "", gridMtl, lights},
+
+    {curvesLinearRayFacing, "", curvesMtl, lights},
+    {curvesBsplineRayFacing, "", curvesMtl, lights},
+    {curvesBezierRayFacing, "", curvesMtl, lights},
+
+    {curvesLinearRound, "", curvesMtl, lights},
+    {curvesBsplineRound, "", curvesMtl, lights},
+    {curvesBezierRound, "", curvesMtl, lights},
+
+    -- Linear normal oriented curves are not currently supported and crash the renderer
+    -- https://jira.dreamworks.net/browse/MOONRAY-5409
+    --{curvesLinearNormalOriented, "", curvesMtl, lights},
+    {curvesBsplineNormalOriented, "", curvesMtl, lights},
+    {curvesBezierNormalOriented, "", curvesMtl, lights},
+}
