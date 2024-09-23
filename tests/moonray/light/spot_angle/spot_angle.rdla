@@ -1,0 +1,71 @@
+SceneVariables {
+    ["pixel samples"] = 4,
+    ["light samples"] = 1,
+    ["bsdf samples"] = 1,
+    ["bssrdf samples"] = 0,
+    ["max depth"] = 0,
+    ["russian roulette threshold"] = 0.0,
+    ["image width"] = 400,
+    ["image height"] = 400,
+}
+
+OrthographicCamera("/Scene/rendering/camera") {
+    ["node xform"] = translate(0, 0, 10),
+    ["film width aperture"] = 1,
+    ["near"] = 8,
+}
+
+------------------------------------------------------------------------------
+
+l0 = SpotLight("/Scene/lighting/l0") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(1.0/4.0, -3.0/8.0, 0.0),
+    ["intensity"] = 0.0005,
+    ["outer cone angle"] = 90,
+    ["inner cone angle"] = 90,
+    ["lens radius"] = 1.0/8.0,
+}
+
+l1 = SpotLight("/Scene/lighting/l1") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(-3.0/2.0 * 1.0/8.0, -3.0/8.0, 0.0),
+    ["intensity"] = 0.0005,
+    ["outer cone angle"] = 90,
+    ["inner cone angle"] = 90,
+    ["lens radius"] = 1.0/16.0,
+}
+
+lightSet = LightSet("LightSet") {
+    l0,
+    l1,
+}
+
+------------------------------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+------------------------------------------------------------------------------
+
+local floorGeom = UsdGeometry("/Scene/geometry/floor") {
+    ["node xform"] = rotate(90, 1, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+table.insert(geoms, floorGeom)
+
+local floorMap = ImageMap("/Scene/surfacing/text") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+    ["gamma"] = 1,
+    ["wrap around"] = false,
+}
+
+local floorMtl = BaseMaterial("/Scene/surfacing/floor") {
+    ["diffuse color"] = bind(floorMap, Rgb(1, 1, 1)),
+    ["specular factor"] = 0,
+}
+table.insert(assignments, {floorGeom, "", floorMtl, lightSet})
+
+------------------------------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
