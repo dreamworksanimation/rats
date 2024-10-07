@@ -1,0 +1,51 @@
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 300,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 5.0),
+}
+
+ltSet = LightSet("ltSet") { }
+
+geom0 = RdlMeshGeometry("geom0") {
+    ["node_xform"] = blur(rotate(180.0, 0, 0, 1) * translate(-1.0, 0.0, 0.0),
+                          rotate(0.0,   0, 0, 1) * translate(-1.0, 0.0, 0.0)),
+    ["face_vertex_count"] = { 4 },
+    ["vertices_by_index"] = { 0, 1, 2, 3 },
+    ["vertex_list_0"] = {
+        Vec3(-0.5, -0.5, 0.0),
+        Vec3(-0.5,  0.5, 0.0),
+        Vec3( 0.5,  0.5, 0.0),
+        Vec3( 0.5, -0.5, 0.0),
+    },
+    ["use_rotation_motion_blur"] = false,
+}
+
+geom1 = RdlMeshGeometry("geom1") {
+    ["node_xform"] = blur(rotate(180.0, 0, 0, 1) * translate(1.0, 0.0, 0.0),
+                          rotate(0.0,   0, 0, 1) * translate(1.0, 0.0, 0.0)),
+    ["face_vertex_count"] = { 4 },
+    ["vertices_by_index"] = { 0, 1, 2, 3 },
+    ["vertex_list_0"] = {
+        Vec3(-0.5, -0.5, 0.0),
+        Vec3(-0.5,  0.5, 0.0),
+        Vec3( 0.5,  0.5, 0.0),
+        Vec3( 0.5, -0.5, 0.0),
+    },
+    ["use_rotation_motion_blur"] = true,
+}
+
+GeometrySet("/Scene/geometry/all") {
+    geom0,
+    geom1,
+}
+
+mtl = DwaEmissiveMaterial("mtl") {
+}
+
+layer = Layer("/Scene/rendering/all") {
+    {geom0, "", mtl, ltSet },
+    {geom1, "", mtl, ltSet },
+}

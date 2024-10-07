@@ -1,0 +1,94 @@
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 200,
+    ["max_depth"] = 0,
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = translate(1.6, 1.75, 7.5),
+}
+
+dskLgt = DiskLight("dskLgt") {
+    ["intensity"] = 0.5,
+    ["node_xform"] = translate(0.0, 0.0, 10.0) *
+                     rotate(-30.0, 1.0, 0.0, 0.0) *
+                     rotate(0.0, 0.0, 1.0, 0.0) *
+                     translate(4.0, 2.5, 0.0),
+}
+
+ltSet = LightSet("ltSet") {
+    dskLgt
+}
+
+pointsGeom = UsdGeometry("pointsGeom") {
+    ["node_xform"] = translate(0.0, 0.0, 0.0),
+    ["stage"] = rats_assets_dir.."/models/explicit_shading.usdc",
+    ["prim_path"] = "/points/points_0",
+    ["visible_shadow"] = false,
+    ["use_explicit_shading_attributes"] = true,
+}
+
+bsplineGeom = UsdGeometry("bsplineGeom") {
+    ["node_xform"] = translate(0.75, 0.0, 0.0),
+    ["stage"] = rats_assets_dir.."/models/explicit_shading.usdc",
+    ["prim_path"] = "/bspline/curve_0",
+    ["visible_shadow"] = false,
+    ["use_explicit_shading_attributes"] = true,
+}
+
+linearGeom = UsdGeometry("linearGeom") {
+    ["node_xform"] = translate(1.5, 0.0, 0.0),
+    ["stage"] = rats_assets_dir.."/models/explicit_shading.usdc",
+    ["prim_path"] = "/linear/curve_0",
+    ["visible_shadow"] = false,
+    ["use_explicit_shading_attributes"] = true,
+}
+
+polygonGeom = UsdGeometry("polygonGeom") {
+    ["node_xform"] = rotate(20.0, 0.0, 1.0, 0.0) *
+                     translate(1.5, -0.4, 1.0),
+    ["stage"] = rats_assets_dir.."/models/explicit_shading.usdc",
+    ["prim_path"] = "/polygon/mesh_0",
+    ["visible_shadow"] = false,
+    ["use_explicit_shading_attributes"] = true,
+}
+
+polyPatchGeom = UsdGeometry("polyPatchGeom") {
+    ["stage"] = rats_assets_dir.."/models/explicit_shading.usdc",
+    ["prim_path"] = "/patch/mesh_0",
+}
+
+instanceGeom = UsdInstanceGeometry("usdInstanceGeom") {
+    ["node_xform"] = rotate(180, 0, 1, 0) *
+                     scale(0.15, 0.15, 0.15) *
+                     translate(0.1, 1.3, 1.5),
+    ["stage"] = rats_assets_dir.."/models/explicit_shading.usdc",
+    ["point_instancer_path"] = "/point_instancer",
+    ["references"] = { polyPatchGeom },
+    ["visible_shadow"] = false,
+    ["use_explicit_shading_attributes"] = true,
+}
+
+GeometrySet("/Scene/geoset") {
+    pointsGeom,
+    bsplineGeom,
+    linearGeom,
+    polygonGeom,
+    polyPatchGeom,
+    instanceGeom,
+}
+
+mtl = DwaSolidDielectricMaterial("mtl") {
+    ["show_diffuse"] = true,
+    ["show_specular"] = true,
+    ["albedo"] = Rgb(0.3, 0.3, 0.3),
+}
+
+Layer("/Scene/layer") {
+    {pointsGeom,   {""}, mtl, ltSet },
+    {bsplineGeom,  {""}, mtl, ltSet },
+    {linearGeom,   {""}, mtl, ltSet },
+    {polygonGeom,    {""}, mtl, ltSet },
+    {polyPatchGeom,    {""}, mtl, ltSet },
+    {instanceGeom, {""} },
+}
