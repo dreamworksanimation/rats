@@ -3,4 +3,5 @@
 
 add_subdirectory(widget)
 add_subdirectory(visibility)
+add_subdirectory(child_labels)
 

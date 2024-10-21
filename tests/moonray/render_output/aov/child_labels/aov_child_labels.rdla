@@ -1,0 +1,116 @@
+SceneVariables {
+    ["pixel_samples"] = 1,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 2,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 3,
+    ["max_glossy depth"] = 10,
+    ["image_width"] = 500,
+    ["image_height"] = 175,
+    ["texture_cache_size"] = 1024,
+    ["texture_file_handles"] = 128,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 1.0, 17) * rotate(-10, 1, 0, 0),
+    ["focal"] = 50,
+}
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+sphereLGeom = UsdGeometry("/Scene/geometry/sphereLGeom") {
+    ["node_xform"] = translate(-2.6, 1.0, 0),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere" 
+}
+
+sphereMGeom = UsdGeometry("/Scene/geometry/sphereMGeom") {
+    ["node_xform"] = translate(0, 1.0, 0),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere" 
+}
+
+sphereRGeom = UsdGeometry("/Scene/geometry/sphereRGeom") {
+    ["node_xform"] = translate(2.6, 1.0, 0),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere" 
+}
+
+table.insert(geoms, sphereLGeom)
+table.insert(geoms, sphereMGeom)
+table.insert(geoms, sphereRGeom)
+
+---------------------------------------------------------
+
+mtl0 = DwaSolidDielectricMaterial("mtl0") {
+    ["specular_model"] = 0,
+}
+
+mtl1 = DwaRefractiveMaterial("mtl1") {
+    ["label"] = "mtl1",
+    ["specular_model"] = 0,
+}
+
+mtl2 = DwaMetalMaterial("mtl2") {
+    ["specular_model"] = 0,
+}
+
+switchMtl0 = SwitchMaterial("switchMtl0") {
+    ["choice"] = 0,
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+}
+
+raySwitchMtl = RaySwitchMaterial("/Scene/surfacing/obj_sphere_topleft") {
+    ["default_material"] = mtl1,
+}
+
+switchMtl1 = SwitchMaterial("switchMtl1") {
+    ["choice"] = 2,
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+}
+
+table.insert(assignments, {sphereLGeom, "", switchMtl0, lightSet})
+table.insert(assignments, {sphereMGeom, "", raySwitchMtl, lightSet})
+table.insert(assignments, {sphereRGeom, "", switchMtl1, lightSet})
+
+--------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
+-- specular
+RenderOutput("/output/lpe_diffuse") {
+   ["file_name"] = "lpe_diffuse.exr",
+   ["result"] = 8, -- light aov
+   ["light_aov"] = "C['diffuse'].*L",
+}
+
+RenderOutput("/output/lpe_material") {
+   ["file_name"] = "lpe_material.exr",
+   ["result"] = 8, -- light aov
+   ["light_aov"] = "C['mtl1'].*L",
+}
+
+RenderOutput("/output/material_specular") {
+   ["file_name"] = "material_specular.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "'specular'.albedo",
+}
