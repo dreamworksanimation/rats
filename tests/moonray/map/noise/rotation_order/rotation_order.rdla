@@ -1,0 +1,42 @@
+
+planeMap1 = NoiseMap_v2("/Scene/surfacing/planeMap1") {
+   ["space"] = 4,
+   ["frequency_multiplier"] = 3,
+   ["rotation"] = Vec3(90.0, 90.0, 90.0),
+   ["rotation_order"] = 0, -- XYZ
+}
+
+planeMap2 = NoiseMap_v2("/Scene/surfacing/planeMap2") {
+   ["space"] = 4,
+   ["frequency_multiplier"] = 3,
+   ["rotation"] = Vec3(90.0, 90.0, 90.0),
+   ["rotation_order"] = 1, -- XZY
+}
+
+planeMap3 = NoiseMap_v2("/Scene/surfacing/planeMap3") {
+   ["space"] = 4,
+   ["frequency_multiplier"] = 3,
+   ["rotation"] = Vec3(90.0, 90.0, 90.0),
+   ["rotation_order"] = 2, -- YXZ
+}
+
+planeMap4 = NoiseMap_v2("/Scene/surfacing/planeMap4") {
+   ["space"] = 4,
+   ["frequency_multiplier"] = 3,
+   ["rotation"] = Vec3(90.0, 90.0, 90.0),
+   ["rotation_order"] = 3, -- YZX
+}
+
+planeMap5 = NoiseMap_v2("/Scene/surfacing/planeMap5") {
+   ["space"] = 4,
+   ["frequency_multiplier"] = 3,
+   ["rotation"] = Vec3(90.0, 90.0, 90.0),
+   ["rotation_order"] = 4, -- ZXY
+}
+
+planeMap6 = NoiseMap_v2("/Scene/surfacing/planeMap6") {
+   ["space"] = 4,
+   ["frequency_multiplier"] = 3,
+   ["rotation"] = Vec3(90.0, 90.0, 90.0),
+   ["rotation_order"] = 5, -- ZYX
+}

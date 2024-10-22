@@ -1,0 +1,63 @@
+shotCam = Camera("/Scene/rendering/camera") {
+}
+
+planeMap1 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap1") {
+   ["space"] = 0, -- render space
+   ["seed"] = 31,
+   ["max_level"] = 3,
+   ["frequency"] = 2,
+}
+
+planeMap2 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap2") {
+   ["space"] = 1, -- camera space
+   ["max_level"] = 5,
+   ["frequency"] = 15,
+   ["camera"] = shotCam
+}
+
+planeMap3 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap3") {
+   ["space"] = 2, -- world space
+   ["frequency"] = 5,
+   ["max_level"] = 4,
+}
+
+planeMap4 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap4") {
+   ["space"] = 3, -- screen space
+   ["seed"] = 21,
+   ["frequency"] = 3,
+   ["max_level"] = 5,
+   ["camera"] = shotCam
+}
+
+planeMap5 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap5") {
+   ["space"] = 4, -- object space
+   ["frequency"] = 4,
+   ["max_level"] = 2
+}
+
+planeMap6 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap6") {
+   ["space"] = 5, -- reference space (should match object space)
+   ["frequency"] = 4,
+   ["max_level"] = 2
+}
+
+
+planeMap7 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap7") {
+   ["space"] = 4, -- object space used in displacement
+   ["frequency"] = 3,
+   ["max_level"] = 3
+}
+
+planeMap8 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap8") {
+   ["space"] = 4, 
+   ["frequency"] = 2,
+   ["max_level"] = 3,
+   ["output mode"] = 1
+}
+
+planeMap9 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap9") {
+   ["space"] = 4, 
+   ["frequency"] = 2,
+   ["max_level"] = 1,
+   ["output mode"] = 2
+}

@@ -1,0 +1,74 @@
+planeMap1 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap1") {
+   ["space"] = 4,
+   ["seed"] = 31,
+   ["max_level"] = 3,
+   ["frequency"] = 2,
+   ["remap"] = Vec2(0.25, 0.75),
+}
+
+planeMap2 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap2") {
+   ["space"] = 4,
+   ["seed"] = 31,
+   ["max_level"] = 3,
+   ["frequency"] = 2,
+   ["remap"] = Vec2(0.75, 0.25),
+}
+
+planeMap3 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap3") {
+   ["F1"] = -1.0,
+   ["F2"] = 1.0,
+   ["space"] = 4,
+   ["seed"] = 31,
+   ["frequency"] = 5,
+}
+
+planeMap4 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap4") {
+   ["F1"] = -1.0,
+   ["F2"] = 1.0,
+   ["space"] = 4,
+   ["seed"] = 31,
+   ["frequency"] = 5,
+   ["use_smoothstep"] = true,
+   ["smoothstep"] = Vec2(0.05, 0.1)
+}
+
+planeMap5 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap5") {
+   ["F1"] = -1.0,
+   ["F2"] = 1.0,
+   ["space"] = 4,
+   ["seed"] = 31,
+   ["frequency"] = 5,
+   ["use_smoothstep"] = true,
+   ["smoothstep"] = Vec2(0.05, 0.1)
+}
+
+planeMap6 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap6") {
+   ["space"] = 4,
+   ["seed"] = 31,
+   ["max_level"] = 3,
+   ["frequency"] = 2,
+   ["remap"] = Vec2(0.25, 0.75),
+   ["bias"] = 0.25,
+   ["gain"] = 0.75,
+}
+
+planeMap7 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap7") {
+   ["space"] = 4, -- object space used in displacement
+   ["frequency"] = 3,
+   ["max_level"] = 3,
+   ["color_A"] = Rgb(1.0, 0.0, 0.0),
+   ["color_B"] = Rgb(0.0, 0.0, 1.0),
+}
+
+planeMap8 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap8") {
+   ["space"] = 4, 
+   ["frequency"] = 2,
+   ["max_level"] = 3,
+   ["output_mode"] = 1
+}
+
+planeMap9 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap9") {
+   ["space"] = 4, 
+   ["frequency"] = 2,
+   ["output_mode"] = 2
+}

@@ -1,0 +1,193 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["image_width"] = 400,
+    ["image_height"] = 400,
+}
+
+shotCam = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0.0, 8.75),
+    ["focal"] = 50,
+}
+
+-------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-10, 1, 0, 0) *
+                     rotate(-10, 0, 1, 0),
+    ["intensity"] = 12,
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+-------------------------------------------------------
+
+planeMap1 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap1") {}
+planeMap2 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap2") {}
+planeMap3 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap3") {}
+planeMap4 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap4") {}
+planeMap5 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap5") {}
+planeMap6 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap6") {}
+planeMap7 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap7") {}
+planeMap8 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap8") {}
+planeMap9 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap9") {}
+
+-------------------------------------------------------
+
+planeMtl1 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl1") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap1)
+}
+
+planeMtl2 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl2") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap2)
+}
+
+planeMtl3 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl3") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap3)
+}
+
+planeMtl4 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl4") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap4)
+}
+
+planeMtl5 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl5") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap5)
+}
+
+planeMtl6 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl6") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap6)
+}
+
+planeMtl7 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl7") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap7)
+}
+
+planeMtl8 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl8") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap8)
+}
+
+planeMtl9 = DwaRefractiveMaterial("/Scene/surfacing/planeMtl9") {
+    ["show_specular"] = false, 
+    ["show_transmission"] = false,
+    ["show_emission"] = true, 
+    ["emission"] = bind(planeMap9)
+}
+
+-------------------------------------------------------
+
+planeDisp7 = NormalDisplacement("/Scene/surfacing/planeDisp7") {
+   ["height"] = bind(planeMap7, 0.2)
+}
+
+-------------------------------------------------------
+
+size = 0.9
+
+planeGeom1 = UsdGeometry("/Scene/geometry/planeGeom1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(-1.4, 1.4, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom2 = UsdGeometry("/Scene/geometry/planeGeom2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(0, 1.4, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom3 = UsdGeometry("/Scene/geometry/planeGeom3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(1.4, 1.4, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom4 = UsdGeometry("/Scene/geometry/planeGeom4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(-1.4, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom5 = UsdGeometry("/Scene/geometry/planeGeom5") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(0, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom6 = UsdGeometry("/Scene/geometry/planeGeom6") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(1.4, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom7 = UsdGeometry("/Scene/geometry/planeGeom7") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(-1.4, -1.4, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane_subd.usd",
+    ["prim_path"] = "/plane",
+    ["subd resolution"] = 4,
+}
+
+planeGeom8 = UsdGeometry("/Scene/geometry/planeGeom8") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(0, -1.4, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom9 = UsdGeometry("/Scene/geometry/planeGeom9") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(size, size, 1) * translate(1.4, -1.4, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("Scene/geometrySet"){
+    planeGeom1,
+    planeGeom2,
+    planeGeom3,
+    planeGeom4,
+    planeGeom5,
+    planeGeom6,
+    planeGeom7,
+    planeGeom8,
+    planeGeom9
+}
+
+-------------------------------------------------------
+
+Layer("/Scene/layer") {
+    {planeGeom1, "", planeMtl1, lightSet},
+    {planeGeom2, "", planeMtl2, lightSet},
+    {planeGeom3, "", planeMtl3, lightSet},
+    {planeGeom4, "", planeMtl4, lightSet},
+    {planeGeom5, "", planeMtl5, lightSet},
+    {planeGeom6, "", planeMtl6, lightSet},
+    {planeGeom7, "", planeMtl7, lightSet, planeDisp7, undef()},
+    {planeGeom8, "", planeMtl8, lightSet},
+    {planeGeom9, "", planeMtl9, lightSet},
+}

@@ -1,0 +1,49 @@
+ shotCam = Camera("/Scene/rendering/camera") {}
+
+ planeMap1 = NoiseMap_v2("/Scene/surfacing/planeMap1") {
+   ["space"] = 0, -- render space
+   ["max_level"] = 3,
+   ["frequency_multiplier"] = 2,
+    ["color_A"] = Rgb(-1,-1,-1)
+}
+
+ planeMap2 = NoiseMap_v2("/Scene/surfacing/planeMap2") {
+   ["space"] = 1, -- camera space
+   ["max_level"] = 5,
+   ["frequency_multiplier"] = 15,
+   ["camera"] = shotCam,
+    ["color_A"] = Rgb(-1,-1,-1)
+}
+
+ planeMap3 = NoiseMap_v2("/Scene/surfacing/planeMap3") {
+   ["space"] = 2, -- world space
+   ["frequency_multiplier"] = 5,
+   ["max_level"] = 4,
+}
+
+ planeMap4 = NoiseMap_v2("/Scene/surfacing/planeMap4") {
+   ["space"] = 3, -- screen space
+   ["frequency_multiplier"] = 3,
+   ["max_level"] = 5,
+   ["camera"] = shotCam,
+    ["color_A"] = Rgb(-1,-1,-1)
+}
+
+ planeMap5 = NoiseMap_v2("/Scene/surfacing/planeMap5") {
+   ["space"] = 4, -- object space
+   ["frequency_multiplier"] = 4,
+   ["max_level"] = 2
+}
+
+ planeMap6 = NoiseMap_v2("/Scene/surfacing/planeMap6") {
+   ["space"] = 5, -- reference space (should match object space)
+   ["frequency_multiplier"] = 4,
+   ["max_level"] = 2,
+    ["color_A"] = Rgb(-1,-1,-1)
+}
+
+ planeMap7 = NoiseMap_v2("/Scene/surfacing/planeMap7") {
+   ["space"] = 4, -- object space used in displacement
+   ["frequency_multiplier"] = 3,
+   ["max_level"] = 3
+}
