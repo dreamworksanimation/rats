@@ -1,0 +1,234 @@
+SceneVariables {
+    ["image width"]  = 256,
+    ["image height"] = 256,
+    ["pixel samples"] = 2,
+    ["bsdf_samples"] = 1,
+    ["light_samples"] = 1,
+    ["bssrdf_samples"] = 1,
+    ["enable_presence_shadows"] = true,
+    ["max_depth"] = 2,
+    ["max_diffuse_depth"] = 2,
+    ["max_glossy_depth"] = 2,
+    ["max_mirror_depth"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node xform"] = Mat4(1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 15, 0, 1),
+}
+
+-------------------------------------------------------
+
+plane = UsdGeometry("/Scene/geometry/plane") {
+    ["node xform"] = scale(40, 40, 40) * translate(0, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+leftbox = RdlMeshGeometry("/Scene/geometry/leftbox") {
+    ["node xform"] = scale(1,10,1) * translate(-3, 1, 5),
+    ["vertex_list_0"] = {Vec3(-0.5, 0, 0.5), Vec3(0.5, 0, 0.5), Vec3(0.5, 1, 0.5), Vec3(-0.5, 1, 0.5),
+                           Vec3(-0.5, 0, -0.5), Vec3(0.5, 0, -0.5), Vec3(0.5, 1, -0.5), Vec3(-0.5, 1, -0.5)},
+    ["vertices_by_index"] = {0,1,2,3,
+                             1,5,6,2,
+                             5,4,7,6,
+                             4,0,3,7,
+                             3,2,6,7,
+                             0,4,5,1},
+    ["face_vertex_count"] = {4,4,4,4,4,4},
+    ["side_type"] = 1,
+    ["is_subd"] = false,
+}
+
+middlebox = RdlMeshGeometry("/Scene/geometry/middlebox") {
+    ["node xform"] = scale(1,10,1) * translate(0, 1, 5),
+    ["vertex_list_0"] = {Vec3(-0.5, 0, 0.5), Vec3(0.5, 0, 0.5), Vec3(0.5, 1, 0.5), Vec3(-0.5, 1, 0.5),
+                           Vec3(-0.5, 0, -0.5), Vec3(0.5, 0, -0.5), Vec3(0.5, 1, -0.5), Vec3(-0.5, 1, -0.5)},
+    ["vertices_by_index"] = {0,1,2,3,
+                             1,5,6,2,
+                             5,4,7,6,
+                             4,0,3,7,
+                             3,2,6,7,
+                             0,4,5,1},
+    ["face_vertex_count"] = {4,4,4,4,4,4},
+    ["side_type"] = 1,
+    ["is_subd"] = false,
+}
+
+rightbox = RdlMeshGeometry("/Scene/geometry/rightbox") {
+    ["node xform"] = scale(1,10,1) * translate(3, 1, 5),
+    ["vertex_list_0"] = {Vec3(-0.5, 0, 0.5), Vec3(0.5, 0, 0.5), Vec3(0.5, 1, 0.5), Vec3(-0.5, 1, 0.5),
+                           Vec3(-0.5, 0, -0.5), Vec3(0.5, 0, -0.5), Vec3(0.5, 1, -0.5), Vec3(-0.5, 1, -0.5)},
+    ["vertices_by_index"] = {0,1,2,3,
+                             1,5,6,2,
+                             5,4,7,6,
+                             4,0,3,7,
+                             3,2,6,7,
+                             0,4,5,1},
+    ["face_vertex_count"] = {4,4,4,4,4,4},
+    ["side_type"] = 1,
+    ["is_subd"] = false,
+}
+
+-- The top row of spheres is assigned a glass material
+top_left_sphere = UsdGeometry("/Scene/geometry/top_left_sphere") {
+    ["node xform"] = translate(-3, 1, -4),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 2,
+}
+
+top_middle_sphere = UsdGeometry("/Scene/geometry/top_middle_sphere") {
+    ["node xform"] = translate(0, 1, -4),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 2,
+}
+
+top_right_sphere = UsdGeometry("/Scene/geometry/top_right_sphere") {
+    ["node xform"] = translate(3, 1, -4),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 2,
+}
+
+-- The middle row of spheres is assigned a subsurface material
+middle_left_sphere = UsdGeometry("/Scene/geometry/middle_left_sphere") {
+    ["node xform"] = translate(-3, 1, -1),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 7.5,
+}
+
+middle_center_sphere = UsdGeometry("/Scene/geometry/middle_center_sphere") {
+    ["node xform"] = translate(0, 1, -1),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 7.5,
+}
+
+middle_right_sphere = UsdGeometry("/Scene/geometry/middle_right_sphere") {
+    ["node xform"] = translate(3, 1, -1),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 7.5,
+}
+
+-- The bottom row of spheres is assigned a normal opaque material
+bottom_left_sphere = UsdGeometry("/Scene/geometry/bottom_left_sphere") {
+    ["node xform"] = translate(-3, 1, 2),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 3.5,
+}
+
+bottom_middle_sphere = UsdGeometry("/Scene/geometry/bottom_middle_sphere") {
+    ["node xform"] = translate(0, 1, 2),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 3.5,
+}
+
+bottom_right_sphere = UsdGeometry("/Scene/geometry/bottom_right_sphere") {
+    ["node xform"] = translate(3, 1, 2),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["visible_shadow"] = false,
+    ["shadow_ray_epsilon"] = 3.5,
+}
+
+GeometrySet("geometryset") {
+    plane,
+    leftbox,
+    middlebox,
+    rightbox,
+    middle_left_sphere,
+    middle_center_sphere,
+    middle_right_sphere,
+    bottom_left_sphere,
+    bottom_middle_sphere,
+    bottom_right_sphere,
+    top_left_sphere,
+    top_middle_sphere,
+    top_right_sphere,
+}
+
+-------------------------------------------------------
+
+planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = Rgb(0.5, 0.5, 0.5),
+}
+
+baseVol = BaseVolume("/Scene/surfacing/baseVol1") {
+    ["attenuation color"] = Rgb(0.2, 0.7, 0.9),
+    ["diffuse color"] = Rgb(0.8, 0.3, 0.1),
+}
+
+mat = DwaSolidDielectricMaterial("/Scene/surfacing/mat1")
+{
+    ["albedo"] = Rgb(0.8, 0.3, 0.1),
+}
+
+presenceMat = DwaSolidDielectricMaterial("/Scene/surfacing/mat2")
+{
+    ["albedo"] = Rgb(0.8, 0.3, 0.1),
+    ["presence"] = 0.8,
+}
+
+ssMat = DwaSolidDielectricMaterial("/Scene/surfacing/ss") {
+    ["albedo"] = Rgb(0.1, 0.8, 0.3),
+    ["scattering_radius"] = 1.0,
+    ["scattering_color"] = Rgb(0.8, 0.3, 0.1),
+    ["show_specular"] = false,
+}
+
+glassMat = DwaRefractiveMaterial("/Materials/materials/stained_glass") {
+    ["roughness"] = 0,
+    ["transmission color"] = Rgb(0.111299, 0.302126, 1),
+    ["refractive index"] = 1,
+    ["casts caustics"] = true,
+}
+
+-------------------------------------------------------
+
+key = DistantLight("/Scene/lighting/distant") {
+    ["node xform"] = rotate(-45, 1, 0, 0),
+    ["exposure"] = 0
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.1
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+    env,
+}
+
+Layer("/Scene/rendering/layer") {
+    {plane, "", planeMtl, lightSet},
+    -- these boxes cast shadows onto the spheres
+    {leftbox, "", undef(), lightSet, mat}, -- regular shadow
+    {middlebox, "", undef(), lightSet, presenceMat}, -- presence shadow
+    {rightbox, "", undef(), lightSet, baseVol}, -- volume transmittance
+    -- these spheres have a subsurface material, which tests the subsurface path integrator
+    {middle_left_sphere, "", undef(), lightSet, ssMat},
+    {middle_center_sphere, "", undef(), lightSet, ssMat},
+    {middle_right_sphere, "", undef(), lightSet, ssMat},
+    -- these spheres test the diffuse and specular reflection of the regular path integrator
+    {bottom_left_sphere, "", undef(), lightSet, mat},
+    {bottom_middle_sphere, "", undef(), lightSet, mat},
+    {bottom_right_sphere, "", undef(), lightSet, mat},
+    -- these spheres test specular transmission
+    {top_left_sphere, "", undef(), lightSet, glassMat},
+    {top_middle_sphere, "", undef(), lightSet, glassMat},
+    {top_right_sphere, "", undef(), lightSet, glassMat},
+}
+
