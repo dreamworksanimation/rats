@@ -1,8 +1,9 @@
-# Copyright 2023 DreamWorks Animation LLC
+# Copyright 2024 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(moonray_differentials_scene_text
     INPUTS scene.rdla
+           ../differentials_common.rdla
     CANONICALS scene.exr
 )
 

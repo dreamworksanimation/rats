@@ -1,6 +1,8 @@
-# Copyright 2023 DreamWorks Animation LLC
+# Copyright 2024 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory(dof)
+add_subdirectory(dof_ortho)
+add_subdirectory(glossy_roughness)
 add_subdirectory(scene_text)
 
