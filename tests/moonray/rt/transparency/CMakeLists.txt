@@ -1,0 +1,12 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# Tests transparency on objects with and without refraction.
+
+add_rats_test(moonray_rt_transparency
+    INPUTS transparency.rdla
+    CANONICALS
+        scene.exr
+        transparency.exr
+)
+
