@@ -1,0 +1,123 @@
+SceneVariables {
+    ["image width"] = 300,
+    ["image height"] = 200,
+    ["pixel samples"] = 4,
+    ["lights visible in camera"] = true,
+}
+
+Camera("camera") {
+    ["node_xform"] = translate(8.0, 3.0, 30.0) * rotate(-75, 0, 1, 0),
+}
+
+key1 = RectLight("key1") {
+    ["node xform"] = rotate(90, 0, 1, 0) * translate(100, 0, 0),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.1, 0, 0),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+key2 = RectLight("key2") {
+    ["node xform"] = rotate(90, 0, 1, 0) * translate(99.99, 0, 0),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["color"] = Rgb(0, 0, 0.2),
+    ["width"] = 30,
+    ["height"] = 30,
+}
+
+key3 = RectLight("key3") {
+    ["node xform"] = rotate(-90, 0, 1, 0) * translate(-100, 0, 0),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["color"] = Rgb(0, 1, 0),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+key4 = RectLight("key4") {
+    ["node xform"] = rotate(-90, 0, 1, 0) * translate(-99.9, 0, 0),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["color"] = Rgb(10, 5, 0),
+    ["width"] = 30,
+    ["height"] = 30,
+}
+
+key5 = RectLight("key5") {
+    ["node xform"] = rotate(-90, 1, 0, 0) * translate(0, 200, 0),
+    ["normalized"] = false,
+    ["color"] = Rgb(1, 0.5, 0),
+    ["width"] = 100,
+    ["height"] = 100,
+}
+
+key6 = RectLight("key6") {
+    ["node xform"] = rotate(-90, 1, 0, 0) * translate(0, 199.99, 0),
+    ["normalized"] = false,
+    ["color"] = Rgb(0, 5, 10),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("lightSet") {
+    key1, key2, key3, key4, key5, key6,
+}
+
+sphere1 = SphereGeometry("sphere1") {
+    ["node xform"] = rotate(120, 1, 0, 0) * rotate(10, 0, 0, 1) *
+                     translate(-6, 4, 6),
+    ["radius"] = 4,
+    ["zmin"] = -4,
+    ["zmax"] = 4,
+}
+
+sphere2 = SphereGeometry("sphere2") {
+    ["node xform"] = rotate(70, 0, 1, 0) * rotate(170, 1, 0, 0) *
+                     rotate(20, 0, 0, 1) * translate(6, 4, 6),
+    ["radius"] = 4,
+    ["zmin"] = -2,
+    ["zmax"] = 3.8,
+    ["phi max"] = 180,
+}
+
+wall = RdlMeshGeometry("wall") {
+    ["vertex list"] = { Vec3(-20, 20, -2),
+                        Vec3(-20,  0, -2),
+                        Vec3(-20,  0,  20),
+                        Vec3( 20,  0,  20),
+                        Vec3( 20,  0, -2),
+                        Vec3( 20, 20, -2)
+                    },
+    ["vertices by index"] = {0, 1, 4, 5, 1, 2, 3, 4},
+    ["face vertex count"] = {4, 4},
+    ["is subd"] = false,
+    ["smooth_normal"] = false,
+}
+
+GeometrySet("geometryset") {
+    sphere1,
+    sphere2,
+    wall
+}
+
+planeMap = ImageMap("planeMap1") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+mtl = DwaSolidDielectricMaterial("mtl") {
+    ["albedo"] = bind(planeMap),
+    ["roughness"] = 0.3,
+}
+
+wallMtl = DwaSolidDielectricMaterial("wallMtl") {
+    ["albedo"] = Rgb(0.5, 0.5, 0.5),
+    ["roughness"] = 0.1,
+}
+
+Layer("layer") {
+    {sphere1, "", mtl, lightSet},
+    {sphere2, "", mtl, lightSet},
+    {wall, "", wallMtl, lightSet}
+}

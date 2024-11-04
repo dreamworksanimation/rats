@@ -1,0 +1,81 @@
+SceneVariables {
+    ["image width"] = 500,
+    ["image height"] = 200,
+    ["lights visible in camera"] = true,
+}
+
+Camera("camera") {
+    ["node xform"] = translate(0, 1, 8),
+}
+
+env = EnvLight("env") {
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+}
+
+rayTermination1 = EnvLight("rayTermination1") {
+    ["ray_termination"] = true,
+    ["color"] = Rgb(1, 0, 0);
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+    ["label"] = "rayTermination1",
+}
+
+rayTermination2 = EnvLight("rayTermination2") {
+    ["ray_termination"] = true,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+    ["label"] = "rayTermination2",
+}
+
+lightSet1 = LightSet("lightSet1") {
+    env,
+    rayTermination1,
+}
+
+lightSet2 = LightSet("lightSet2") {
+    env,
+    rayTermination2,
+}
+
+lightSet3 = LightSet("lightSet3") {
+    env,
+}
+
+geom1 = UsdGeometry("geom1") {
+    ["node xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25) * translate(2, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget"
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget"
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25) * translate(-2, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget"
+}
+
+
+GeometrySet("Scene/geometrySet") {
+    geom1,
+    geom2,
+    geom3
+}
+
+mtl = DwaRefractiveMaterial("mtl") {
+    ["roughness"] = 0.1,
+}
+
+Layer("layer") {
+    {geom1, {"stand", "collar", "core", "shell_back", "shell_front"}, mtl,  lightSet1},
+    {geom2, {"stand", "collar", "core", "shell_back", "shell_front"}, mtl,  lightSet2},
+    {geom3, {"stand", "collar", "core", "shell_back", "shell_front"}, mtl,  lightSet3},
+}
+
+RenderOutput("rayTermination") {
+   ["file name"] = "result0.exr",
+   ["result"] = "light aov",
+   ["light aov"] = "C[DSG]+['rayTermination1''rayTermination2']", 
+}

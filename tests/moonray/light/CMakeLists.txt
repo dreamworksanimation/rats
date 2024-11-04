@@ -4,6 +4,8 @@
 add_subdirectory(combined)
 add_subdirectory(filter)
 add_subdirectory(light_sets)
+add_subdirectory(overlap_additive)
+add_subdirectory(ray_termination_color)
 add_subdirectory(shadow_controls)
 add_subdirectory(sidedness)
 add_subdirectory(spot_angle)
