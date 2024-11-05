@@ -1,0 +1,10 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This tests the image map shader attributes 
+
+add_rats_test(moonray_map_image_placement
+    INPUTS placement.rdla
+    CANONICALS scene.exr
+)
+

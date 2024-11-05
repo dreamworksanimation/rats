@@ -1,0 +1,322 @@
+SceneVariables {
+    ["pixel samples"] = 1,
+    ["light samples"] = 0,
+    ["max depth"] = 0,
+    ["image width"] = 256,
+    ["image height"] = 256,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node xform"] = Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, -8, 90, 1),
+    ["near"] = 0.01,
+    ["far"] = 100,
+}
+
+
+-- Geometry --
+
+----- TOP SQUARE -------
+local geom1 = UsdGeometry("/Scene/geometry/geom1") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(0.0, 1.15, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom2 = UsdGeometry("/Scene/geometry/geom2") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(0.0, 0.0, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom3 = UsdGeometry("/Scene/geometry/geom3") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(0.0, -1.15, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom4 = UsdGeometry("/Scene/geometry/geom4") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(-1.15, 1.15, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom5 = UsdGeometry("/Scene/geometry/geom5") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(-1.15, 0.0, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom6 = UsdGeometry("/Scene/geometry/geom6") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(-1.15, -1.15, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom7 = UsdGeometry("/Scene/geometry/geom7") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(1.15, 1.15, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+----- BOTTOM ROW -------
+
+local geom8 = UsdGeometry("/Scene/geometry/geom8") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(-2.8, -2.8, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom9 = UsdGeometry("/Scene/geometry/geom9") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(-1.7, -2.8, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom10 = UsdGeometry("/Scene/geometry/geom10") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(-0.6, -2.8, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom11 = UsdGeometry("/Scene/geometry/geom11") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(0.5, -2.8, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom12 = UsdGeometry("/Scene/geometry/geom12") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(1.6, -2.8, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local geom13 = UsdGeometry("/Scene/geometry/geom13") {
+    ["node xform"] = rotate(90, 1, 0, 0) * translate(2.7, -2.8, 0.0) * scale(10.0, 10.0, 10.0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+
+GeometrySet("geometryset") {
+    geom1,
+    geom2,
+    geom3,
+    geom4,
+    geom5,
+    geom6,
+    geom7,
+    geom8,
+    geom9,
+    geom10,
+    geom11,
+    geom12,
+    geom13,
+}
+
+
+-- Materials --
+
+----- TOP SQUARE -------
+local startEndMap = GradientMap("/Scene/surfacing/startEndMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, 0.0),
+    ["end"] = Vec3(1.0, 1.0, 0.0),
+    ["falloff start"] = 0.4,
+    ["falloff end"] = 0.6,
+    ["falloff type"] = 2, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 6,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+}
+
+local startEndMat = DwaEmissiveMaterial("/Scene/surfacing/startEndMat") {
+    ["emission"] = bind(startEndMap),
+}
+
+local exponentMap = GradientMap("/Scene/surfacing/exponentMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, 0.0),
+    ["end"] = Vec3(1.0, 1.0, 0.0),
+    ["falloff type"] = 2, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 6,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+    ["falloff exponent"] = 2.0,
+}
+
+local exponentMat = DwaEmissiveMaterial("/Scene/surfacing/exponentMat") {
+    ["emission"] = bind(exponentMap),
+}
+
+local endIntensityMap = GradientMap("/Scene/surfacing/endIntensityMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, 0.0),
+    ["end"] = Vec3(1.0, 1.0, 0.0),
+    ["falloff type"] = 2, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 6,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+    ["falloff end intensity"] = 0.5,
+}
+
+local endIntensityMat = DwaEmissiveMaterial("/Scene/surfacing/endIntensityMat") {
+    ["emission"] = bind(endIntensityMap),
+}
+
+local biasMap = GradientMap("/Scene/surfacing/biasMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, 0.0),
+    ["end"] = Vec3(1.0, 1.0, 0.0),
+    ["falloff type"] = 2, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 6,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+    ["falloff bias"] = 0.25,
+}
+
+local biasMat = DwaEmissiveMaterial("/Scene/surfacing/biasMat") {
+    ["emission"] = bind(biasMap),
+}
+
+local symmetricMap = GradientMap("/Scene/surfacing/symmetricMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, 0.0),
+    ["end"] = Vec3(1.0, 1.0, 0.0),
+    ["falloff type"] = 2, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 6,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+    ["symmetric"] = true,
+}
+
+local symmetricMat = DwaEmissiveMaterial("/Scene/surfacing/symmetricMat") {
+    ["emission"] = bind(symmetricMap),
+}
+
+local symmetricCenterMap = GradientMap("/Scene/surfacing/symmetricCenterMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, 0.0),
+    ["end"] = Vec3(1.0, 1.0, 0.0),
+    ["falloff type"] = 2, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 6,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+    ["symmetric"] = true,
+    ["symmetric center"] = 0.8,
+}
+
+local symmetricCenterMat = DwaEmissiveMaterial("/Scene/surfacing/symmetricCenterMat") {
+    ["emission"] = bind(symmetricCenterMap),
+}
+
+local allMap = GradientMap("/Scene/surfacing/allMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, 0.0),
+    ["end"] = Vec3(1.0, 1.0, 0.0),
+    ["falloff start"] = 0.4,
+    ["falloff end"] = 0.6,
+    ["falloff type"] = 2, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 6,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+    ["falloff exponent"] = 2,
+    ["falloff bias"] = 0.25,
+    ["symmetric"] = true,
+    ["symmetric center"] = 0.8,
+    ["falloff end intensity"] = 0.5,
+}
+
+local allMat = DwaEmissiveMaterial("/Scene/surfacing/allMat") {
+    ["emission"] = bind(allMap),
+}
+
+------- BOTTOM ROW ----------
+local noneMap = GradientMap("/Scene/surfacing/noneMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, -1.0),
+    ["end"] = Vec3(0.0, 0.0, 1.0),
+    ["falloff type"] = 0, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 4,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+}
+
+local noneMat = DwaEmissiveMaterial("/Scene/surfacing/noneMat") {
+    ["emission"] = bind(noneMap),
+}
+
+local naturalMap = GradientMap("/Scene/surfacing/naturalMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, -1.0),
+    ["end"] = Vec3(0.0, 0.0, 1.0),
+    ["falloff type"] = 1, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 4,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+}
+
+local naturalMat = DwaEmissiveMaterial("/Scene/surfacing/naturalMat") {
+    ["emission"] = bind(naturalMap),
+}
+
+local linearMap = GradientMap("/Scene/surfacing/linearMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, -1.0),
+    ["end"] = Vec3(0.0, 0.0, 1.0),
+    ["falloff type"] = 2, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 4,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+}
+
+local linearMat = DwaEmissiveMaterial("/Scene/surfacing/linearMat") {
+    ["emission"] = bind(linearMap),
+}
+
+local squaredMap = GradientMap("/Scene/surfacing/squaredMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, -1.0),
+    ["end"] = Vec3(0.0, 0.0, 1.0),
+    ["falloff type"] = 3, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 4,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+}
+
+local squaredMat = DwaEmissiveMaterial("/Scene/surfacing/squaredMat") {
+    ["emission"] = bind(squaredMap),
+}
+
+local gaussianMap = GradientMap("/Scene/surfacing/gaussianMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, -1.0),
+    ["end"] = Vec3(0.0, 0.0, 1.0),
+    ["falloff type"] = 4, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 4,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+}
+
+local gaussianMat = DwaEmissiveMaterial("/Scene/surfacing/gaussianMat") {
+    ["emission"] = bind(gaussianMap),
+}
+
+local easeOutMap = GradientMap("/Scene/surfacing/easeOutMap") {
+    ["color A"] = Rgb(0.1, 0.0, 1.0),
+    ["color B"] = Rgb(1.0, 0.1, 0.1),
+    ["start"] = Vec3(0.0, 0.0, -1.0),
+    ["end"] = Vec3(0.0, 0.0, 1.0),
+    ["falloff type"] = 5, -- 0 NONE, 1 NATURAL, 2 LINEAR, 3 SQUARED, 4 GAUSSIAN, 5 EASE_OUT 
+    ["space"] = 4,   -- 0 RENDER, 1 CAMERA, 2 WORLD, 3 SCREEN, 4 OBJECT, 5 REFERENCE, 6 TEXTURE 
+}
+
+local easeOutMat = DwaEmissiveMaterial("/Scene/surfacing/easeOutMat") {
+    ["emission"] = bind(easeOutMap),
+}
+
+
+-- Lights --
+
+Layer("/Scene/layer") {
+    {geom1, "", startEndMat},
+    {geom2, "", exponentMat},
+    {geom3, "", endIntensityMat},
+    {geom4, "", biasMat},
+    {geom5, "", symmetricMat},
+    {geom6, "", symmetricCenterMat},
+    {geom7, "", allMat},
+    {geom8, "", noneMat},
+    {geom9, "", naturalMat},
+    {geom10, "", linearMat},
+    {geom11, "", squaredMat},
+    {geom12, "", gaussianMat},
+    {geom13, "", easeOutMat},
+}
