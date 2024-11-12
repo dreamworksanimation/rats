@@ -1,0 +1,172 @@
+SceneVariables {
+    ["image_width"]  = 300,
+    ["image_height"] = 400,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0,0,11),
+}
+
+-------------------------------------------------------
+
+lightSet = LightSet("LightSetA") {
+}
+
+baseNoise = NoiseWorleyMap_v2("/Scene/surfacing/baseNoise") {
+   ["space"] = 4,
+   ["frequency"] = 2,
+}
+
+remap1 = RemapMap("/Scene/surfacing/remap1") {
+    ["input"] = bind(baseNoise),
+    ["input_max"] = 0.25,
+}
+
+remap2 = RemapMap("/Scene/surfacing/remap2") {
+    ["input"] = bind(baseNoise),
+    ["remap_method"] = 1,
+    ["input_max_RGB"] = Rgb(0.1, 0.3, 0.7),
+}
+
+remap3 = RemapMap("/Scene/surfacing/remap3") {
+    ["input"] = bind(baseNoise),
+    ["midpoint_bias"] = 0.25,
+}
+
+remap4 = RemapMap("/Scene/surfacing/remap4") {
+    ["input"] = bind(baseNoise),
+    ["remap_method"] = 1,
+    ["midpoint_bias_RGB"] = Rgb(0.65, 0.5, 0.35),
+}
+
+remap5 = RemapMap("/Scene/surfacing/remap5") {
+    ["input"] = bind(baseNoise),
+    ["clamp_min"] = 0.15,
+}
+
+remap6 = RemapMap("/Scene/surfacing/remap6") {
+    ["input"] = bind(baseNoise),
+    ["remap_method"] = 1,
+    ["clamp_min_RGB"] = Rgb(0.05, 0.10, 0.15),
+}
+
+remap7 = RemapMap("/Scene/surfacing/remap7") {
+    ["input"] = bind(baseNoise),
+    ["input_min"] = 0.05,
+    ["input_max"] = 0.5,
+    ["output_min"] = 0.1,
+    ["output_max"] = 0.9,
+    ["midpoint_bias"] = 0.4,
+}
+
+remap8 = RemapMap("/Scene/surfacing/remap8") {
+    ["input"] = bind(baseNoise),
+    ["remap_method"] = 1,
+    ["input_min_RGB"] = Rgb(0.025, 0.05, 0.075),
+    ["input_max_RGB"] = Rgb(0.25, 0.5, 0.75),
+    ["output_min_RGB"] = Rgb(0.05, 0.1, 0.15),
+    ["output_max_RGB"] = Rgb(0.95, 0.9, 0.85),
+    ["midpoint_bias_RGB"] = Rgb(0.35, 0.4, 0.45),
+}
+
+base0 = DwaEmissiveMaterial("/Scene/surfacing/base0") {
+    ["emission"] = bind(baseNoise),
+}
+
+base1 = DwaEmissiveMaterial("/Scene/surfacing/base1") {
+    ["emission"] = bind(remap1),
+}
+
+base2 = DwaEmissiveMaterial("/Scene/surfacing/base2") {
+    ["emission"] = bind(remap2),
+}
+
+base3 = DwaEmissiveMaterial("/Scene/surfacing/base3") {
+    ["emission"] = bind(remap3),
+}
+
+base4 = DwaEmissiveMaterial("/Scene/surfacing/base4") {
+    ["emission"] = bind(remap4),
+}
+
+base5 = DwaEmissiveMaterial("/Scene/surfacing/base5") {
+    ["emission"] = bind(remap5),
+}
+
+base6 = DwaEmissiveMaterial("/Scene/surfacing/base6") {
+    ["emission"] = bind(remap6),
+}
+
+base7 = DwaEmissiveMaterial("/Scene/surfacing/base7") {
+    ["emission"] = bind(remap7),
+}
+
+base8 = DwaEmissiveMaterial("/Scene/surfacing/base8") {
+    ["emission"] = bind(remap8),
+}
+
+-------------------------------------------------------
+
+
+sphere0 = SphereGeometry("/Scene/geometry/sphere0") {  
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, -3,0,0,1),
+}
+
+sphere1 = SphereGeometry("/Scene/geometry/sphere1") {
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,4.5,0,1),
+}
+
+sphere2 = SphereGeometry("/Scene/geometry/sphere2") {
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 3,4.5,0,1),
+}
+
+sphere3 = SphereGeometry("/Scene/geometry/sphere3") {  
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,1.5,0,1),
+}
+
+sphere4 = SphereGeometry("/Scene/geometry/sphere4") {
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 3,1.5,0,1),
+}
+
+sphere5 = SphereGeometry("/Scene/geometry/sphere5") {
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,-1.5,0,1),
+}
+
+sphere6 = SphereGeometry("/Scene/geometry/sphere6") {
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 3,-1.5,0,1),
+}
+
+sphere7 = SphereGeometry("/Scene/geometry/sphere7") {
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,-4.5,0,1),
+}
+
+sphere8 = SphereGeometry("/Scene/geometry/sphere8") {
+    ["node xform"] = Mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 3,-4.5,0,1),
+}
+
+GeometrySet("geometryset") {
+    sphere0,
+    sphere1,
+    sphere2,
+    sphere3,
+    sphere4,
+    sphere5,
+    sphere6,
+    sphere7,
+    sphere8,
+}
+
+-------------------------------------------------------
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {sphere0, "", base0, lightSet},
+    {sphere1, "", base1, lightSet},
+    {sphere2, "", base2, lightSet},
+    {sphere3, "", base3, lightSet},
+    {sphere4, "", base4, lightSet},
+    {sphere5, "", base5, lightSet},
+    {sphere6, "", base6, lightSet},
+    {sphere7, "", base7, lightSet},
+    {sphere8, "", base8, lightSet},
+}

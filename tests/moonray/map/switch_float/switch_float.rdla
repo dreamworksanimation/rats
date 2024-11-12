@@ -1,0 +1,201 @@
+SceneVariables {
+    ["pixel_samples"] = 1,
+    ["image_width"] = 100,
+    ["image_height"] = 100,
+}
+
+shotCam = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0.0, 8.75),
+    ["focal"] = 50,
+}
+
+-------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-10, 1, 0, 0) *
+                     rotate(-10, 0, 1, 0),
+    ["intensity"] = 12,
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+-------------------------------------------------------
+
+planeMap1 = SwitchFloatMap("/Scene/surfacing/planeMap1") {
+    ["choice"] = 0,
+    ["input0"] = 0.1
+}
+
+planeMap2 = SwitchFloatMap("/Scene/surfacing/planeMap2") {
+    ["choice"] = 1,
+    ["input1"] = 0.2
+}
+
+planeMap3 = SwitchFloatMap("/Scene/surfacing/planeMap3") {
+    ["choice"] = 2,
+    ["input2"] = 0.3
+}
+
+planeMap4 = SwitchFloatMap("/Scene/surfacing/planeMap4") {
+    ["choice"] = 3,
+    ["input3"] = 0.4
+}
+
+planeMap5 = SwitchFloatMap("/Scene/surfacing/planeMap5") {
+    ["choice"] = 7,
+    ["input7"] = 0.5
+}
+
+planeMap6 = SwitchFloatMap("/Scene/surfacing/planeMap6") {
+    ["choice"] = 12,
+    ["input12"] = 0.6
+}
+
+planeMap7 = SwitchFloatMap("/Scene/surfacing/planeMap7") {
+    ["choice"] = 16,
+    ["input16"] = 0.7
+}
+
+planeMap8 = SwitchFloatMap("/Scene/surfacing/planeMap8") {
+    ["choice"] = 20,
+    ["input20"] = 0.8
+}
+
+planeMap9 = SwitchFloatMap("/Scene/surfacing/planeMap9") {
+    ["choice"] = 31,
+    ["input31"] = 0.9
+}
+
+-------------------------------------------------------
+
+planeMtl1 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl1") { 
+    ["emission"] = bind(planeMap1)
+}
+
+planeMtl2 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl2") { 
+    ["emission"] = bind(planeMap2)
+}
+
+planeMtl3 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl3") { 
+    ["emission"] = bind(planeMap3)
+}
+
+planeMtl4 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl4") { 
+    ["emission"] = bind(planeMap4)
+}
+
+planeMtl5 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl5") { 
+    ["emission"] = bind(planeMap5)
+}
+
+planeMtl6 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl6") { 
+    ["emission"] = bind(planeMap6)
+}
+
+planeMtl7 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl7") { 
+    ["emission"] = bind(planeMap7)
+}
+
+planeMtl8 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl8") { 
+    ["emission"] = bind(planeMap8)
+}
+
+planeMtl9 = DwaEmissiveMaterial("/Scene/surfacing/planeMtl9") { 
+    ["emission"] = bind(planeMap9)
+}
+
+-------------------------------------------------------
+ 
+planeDisp7 = NormalDisplacement("/Scene/surfacing/planeDisp7") {
+   ["height"] = bind(planeMap7, 0.2)
+}
+
+-------------------------------------------------------
+
+size = 0.9
+
+planeGeom1 = UsdGeometry("/Scene/geometry/planeGeom1") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(-1.4, 1.4, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom2 = UsdGeometry("/Scene/geometry/planeGeom2") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(0, 1.4, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom3 = UsdGeometry("/Scene/geometry/planeGeom3") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(1.4, 1.4, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom4 = UsdGeometry("/Scene/geometry/planeGeom4") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(-1.4, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom5 = UsdGeometry("/Scene/geometry/planeGeom5") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(0, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom6 = UsdGeometry("/Scene/geometry/planeGeom6") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(1.4, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom7 = UsdGeometry("/Scene/geometry/planeGeom7") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(-1.4, -1.4, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["subd resolution"] = 4,
+}
+
+planeGeom8 = UsdGeometry("/Scene/geometry/planeGeom8") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(0, -1.4, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom9 = UsdGeometry("/Scene/geometry/planeGeom9") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(1.4, -1.4, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("Scene/geometrySet") {
+    planeGeom1,
+    planeGeom2,
+    planeGeom3,
+    planeGeom4,
+    planeGeom5,
+    planeGeom6,
+    planeGeom7,
+    planeGeom8,
+    planeGeom9,
+}
+
+-------------------------------------------------------
+
+Layer("/Scene/layer") {
+    {planeGeom1, "", planeMtl1, lightSet},
+    {planeGeom2, "", planeMtl2, lightSet},
+    {planeGeom3, "", planeMtl3, lightSet},
+    {planeGeom4, "", planeMtl4, lightSet},
+    {planeGeom5, "", planeMtl5, lightSet},
+    {planeGeom6, "", planeMtl6, lightSet},
+    {planeGeom7, "", planeMtl7, lightSet, planeDisp7},
+    {planeGeom8, "", planeMtl8, lightSet},
+    {planeGeom9, "", planeMtl9, lightSet},
+}

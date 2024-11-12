@@ -1,0 +1,10 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This tests the UsdTransform2d map
+
+add_rats_test(moonray_map_usd_transform2d
+    INPUTS usd_transform2d.rdla
+    CANONICALS scene.exr
+)
+
