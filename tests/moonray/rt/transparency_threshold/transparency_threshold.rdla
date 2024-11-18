@@ -1,0 +1,111 @@
+SceneVariables{
+    ["image width"] = 256,
+    ["image height"] = 256,
+    ["pixel samples"] = 4,
+    ["max depth"] = 8,
+    ["transparency threshold"] = 0.45,
+}
+
+Camera("camera") {
+    ["node xform"] = rotate(-30, 1, 0, 0) * translate(0, 5, 10),
+}
+
+------------------------------------------------------------------------------
+
+UsdGeometry("floorB") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node xform"] = scale(20, 1, 20) * translate(0, 0, 2),
+}
+
+UsdGeometry("sheet0") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node xform"] = scale(2, 2, 2) * rotate(90, 1, 0, 0) * translate(0, 0.5, -1),
+}
+
+UsdGeometry("sheet1") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node xform"] = scale(2, 2, 2) * rotate(90, 1, 0, 0) * translate(0, 0.5, 0),
+}
+
+UsdGeometry("sheet2") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node xform"] = scale(2, 2, 2) * rotate(90, 1, 0, 0) * translate(0, 0.5, 1),
+}
+
+UsdGeometry("sheet3") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node xform"] = scale(2, 2, 2) * rotate(90, 1, 0, 0) * translate(0, 0.5, 2),
+}
+
+UsdGeometry("sheet4") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node xform"] = scale(2, 2, 2) * rotate(90, 1, 0, 0) * translate(0, 0.5, 3),
+}
+
+UsdGeometry("sheet5") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node xform"] = scale(2, 2, 2) * rotate(90, 1, 0, 0) * translate(0, 0.5, 4),
+}
+
+UsdGeometry("sheet6") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node xform"] = scale(2, 2, 2) * rotate(90, 1, 0, 0) * translate(0, 0.5, 5),
+}
+
+geoms = GeometrySet("geomset") {
+    UsdGeometry("floorB"),
+    UsdGeometry("sheet0"),
+    UsdGeometry("sheet1"),
+    UsdGeometry("sheet2"),
+    UsdGeometry("sheet3"),
+    UsdGeometry("sheet4"),
+    UsdGeometry("sheet5"),
+    UsdGeometry("sheet6"),
+}
+
+------------------------------------------------------------------------------
+
+DwaSolidDielectricMaterial("floorMtl") {
+    ["albedo"] = Rgb(0.6, 0.6, 0.6),
+}
+
+DwaRefractiveMaterial("mtlTransmission") {
+    ["refractive_index"] = 1.0,
+    ["transmission_color"] = Rgb(0.8, 0.8, 0.8),
+}
+
+------------------------------------------------------------------------------
+
+rectLight = RectLight("rectlight") {
+    ["node xform"] = Mat4(-1.03527617, 0, 3.86370325, 0,
+                          1.93185163, 3.46410155, 0.517638087, 0,
+                          -3.34606528, 2, -0.896575451, 0,
+                          -68, 40, -21, 1),
+    ["color"] = Rgb(1, 1, 1),
+    ["intensity"] = 10,
+    ["width"] = 1,
+    ["height"] = 1,
+}
+
+rig = LightSet("rig") {
+    rectLight,
+}
+
+Layer("layer") {
+    {UsdGeometry("floorB"), "", DwaSolidDielectricMaterial("floorMtl"), rig},
+    {UsdGeometry("sheet0"), "", DwaRefractiveMaterial("mtlTransmission"), rig},
+    {UsdGeometry("sheet1"), "", DwaRefractiveMaterial("mtlTransmission"), rig},
+    {UsdGeometry("sheet2"), "", DwaRefractiveMaterial("mtlTransmission"), rig},
+    {UsdGeometry("sheet3"), "", DwaRefractiveMaterial("mtlTransmission"), rig},
+    {UsdGeometry("sheet4"), "", DwaRefractiveMaterial("mtlTransmission"), rig},
+    {UsdGeometry("sheet5"), "", DwaRefractiveMaterial("mtlTransmission"), rig},
+    {UsdGeometry("sheet6"), "", DwaRefractiveMaterial("mtlTransmission"), rig},
+}
