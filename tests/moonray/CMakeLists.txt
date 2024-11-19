@@ -13,3 +13,5 @@ add_subdirectory(motion_blur)
 add_subdirectory(render_output)
 add_subdirectory(rt)
 add_subdirectory(sampling)
+add_subdirectory(stereo)
+
