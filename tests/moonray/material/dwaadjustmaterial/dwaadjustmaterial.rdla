@@ -1,0 +1,114 @@
+SceneVariables {
+    ["image_width"]  = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0,0,15),
+}
+
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+sphere1 = SphereGeometry("/Scene/geometry/sphere1") {}
+
+specular_set = UserData("specular_set") {
+    ["float_key"] = "specular_set",
+    ["float_values_0"] = {1.0, 1.0, 1.0,
+                          1.0, 1.0, 1.0,
+                          1.0, 1.0, 1.0},
+}
+
+roughness_remap_in_min = UserData("roughness_remap_in_min") {
+    ["float_key"] = "roughness_remap_in_min",
+    ["float_values_0"] = {0.8, 0.8, 0.8, 
+                          0.8, 0.8, 0.8, 
+                          0.8, 0.8, 0.8},
+}
+
+roughness_remap_in_max = UserData("roughness_remap_in_max") {
+    ["float_key"] = "roughness_remap_in_max",
+    ["float_values_0"] = {1, 1, 1, 
+                          1, 1, 1, 
+                          1, 1, 1},
+}
+
+roughness_remap_out_min = UserData("roughness_remap_out_min") {
+    ["float_key"] = "roughness_remap_out_min",
+    ["float_values_0"] = {0.02, 0.02, 0.02, 
+                          0.02, 0.02, 0.02, 
+                          0.02, 0.02, 0.02},
+}
+
+roughness_remap_out_max = UserData("roughness_remap_out_max") {
+    ["float_key"] = "roughness_remap_out_max",
+    ["float_values_0"] = {0.1, 0.2, 0.3, 
+                          0.4, 0.5, 0.6, 
+                          0.7, 0.8, 0.9},
+}
+
+color_hue_shift = UserData("color_hue_shift") {
+    ["float_key"] = "color_hue_shift",
+    ["float_values_0"] = {1.000, 0.875, 0.750, 
+                          0.625, 0.500, 0.375, 
+                          0.250, 0.125, 0.000},
+}
+
+presence_set = UserData("presence_set") {
+    ["float_key"] = "presence_set",
+    ["float_values_0"] = {1.000, 0.875, 0.750, 
+                          0.625, 0.500, 0.375, 
+                          0.250, 0.125, 0.000},
+}
+
+instancer1 = RdlInstancerGeometry("instancer1") {
+    ["references"] = {sphere1},
+    ["method"] = 0,
+    ["positions"] = {Vec3(-3.0, 3.0, 0.0),Vec3(0.0, 3.0, 0.0),Vec3(3.0, 3.0, 0.0),
+                     Vec3(-3.0, 0.0, 0.0),Vec3(0.0, 0.0, 0.0),Vec3(3.0, 0.0, 0.0),
+                     Vec3(-3.0,-3.0, 0.0),Vec3(0.0,-3.0, 0.0),Vec3(3.0,-3.0, 0.0)},
+    ["primitive_attributes"] = {color_hue_shift, roughness_remap_in_min,
+                                roughness_remap_in_max, roughness_remap_out_min,
+                                roughness_remap_out_max, specular_set, presence_set},
+}
+
+noise = NoiseWorleyMap_v2("noise") {
+    ["frequency"] = 2,
+    ["max_level"] = 3,
+    ["use_smoothstep"] = true,
+    ["distance_method"] = 3,
+    ["smoothstep"] = Vec2(0.5, 0.6),
+}
+
+base = DwaSolidDielectricMaterial("base") {
+    ["albedo"] = Rgb(0.1, 0.2, 0.7),
+    ["roughness"] = 0.9,
+}
+
+adjusted = DwaAdjustMaterial("adjusted") {
+    ["input_material"] = base,
+    ["mix"] = bind(noise),
+}
+
+GeometrySet("geometryset") {
+    instancer1,
+    sphere1,
+}
+
+-------------------------------------------------------
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {instancer1, "", lightSet},
+    {sphere1, "", adjusted, lightSet},
+}

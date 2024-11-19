@@ -1,0 +1,108 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["bsdf_samples"] = 4,
+    ["max_depth"] = 3,
+    ["image_width"] = 960,
+    ["image_height"] = 125,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0.75, 120) * rotate(-30, 1, 0, 0),
+    ["focal"] = 100,
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 12,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+-------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+local posMin = -13
+local posMax = 13
+
+local anisoMin = 0
+local anisoMax = -1.0
+
+local numCol = 11
+for col = 1, numCol do
+    local ratio = (col - 1) / (numCol - 1)
+
+    local posX = posMin + (posMax - posMin) * ratio        
+
+    local aniso = 0.1
+
+    -- Linear wedge of anisotropy
+    aniso = anisoMin + (anisoMax - anisoMin) * ratio
+
+    posZ = 0
+    
+    --print("Aniso = " .. aniso)
+
+    local geom = UsdGeometry("/Scene/geometry/geom" .. col) {
+        ["node_xform"] = rotate(180, 0, 1, 0) * translate(posX, 1, posZ),
+        ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
+        ["prim_path"] = "/sphere"
+    }
+    table.insert(geoms, geom)
+
+    local mtl = DwaBaseMaterial("/Scene/surfacing/mtl" .. col) {
+        ["albedo"] = Rgb(0.125,0.125,0.125),
+        ["roughness"] = 0.6,
+        ["specular_model"] = 0,
+        ["anisotropy"] = aniso,
+        ["metallic"] = 1.0,
+        ["metallic_color"] = Rgb(0.5,0.5,0.5)
+    }
+    table.insert(assignments, {geom, "", mtl, lightSet})
+end
+
+-------------------------------------------------------
+
+local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(30, 1, 12),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+table.insert(geoms, planeGeom)
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(7, 4),
+    ["offset"] = Vec2(0, .25),
+    ["wrap_around"] = true,
+}
+
+local planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["show_diffuse"] = true,
+    ["albedo"] = bind(planeMap),
+    ["show_specular"] = false,
+}
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
