@@ -2,5 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory(bv_ramp)
+add_subdirectory(homogenous_scattering)
 add_subdirectory(overlapping)
+add_subdirectory(transmittance)
 
