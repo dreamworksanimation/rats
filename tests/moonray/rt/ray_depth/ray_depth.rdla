@@ -1,0 +1,74 @@
+SceneVariables{
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["max_depth"] = 0,
+}
+
+Camera("camera") {
+    ["node_xform"] = translate(0, 0.5, 8) * rotate(-10, 1, 0, 0)
+}
+
+back = UsdGeometry("back") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(3, 3, 3) * rotate(90, 1, 0, 0) * translate(0, 1.5, -3),
+}
+
+left = UsdGeometry("left") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(3, 3, 3) * rotate(90, 1, 0, 0) * rotate(45, 0, 1, 0) * translate(-2.55, 1.5, -1.95),
+}
+
+right = UsdGeometry("right") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(3, 3, 3) * rotate(90, 1, 0, 0) * rotate(-45, 0, 1, 0) * translate(2.55, 1.5, -1.95),
+}
+
+floor = UsdGeometry("/floor") {
+   ["stage"] = rats_assets_dir.."/models/plane.usdc",
+   ["prim_path"] = "/plane",
+   ["node_xform"] = scale(8, 8, 8),
+}
+
+torus = UsdGeometry("torus") {
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+    ["node_xform"] = rotate(-50, 1, 0, 0) * rotate(-30, 0, 0, 1) * translate(0, 1, 0) * scale(1.5, 1.5, 1.5),
+}
+
+geoms = GeometrySet("geomset") {
+    back,
+    left,
+    right,
+    floor,
+    torus
+}
+
+specMat = DwaMetalMaterial("specMat") {
+    ["roughness"] = 0.0,
+}
+
+torusMat = DwaSolidDielectricMaterial("torusMat") {
+    ["albedo"] = Rgb(1, 0, 0),
+}
+
+floorMat = DwaSolidDielectricMaterial("floorMat") {
+    ["albedo"] = Rgb(1, 0.5, 1),
+}
+
+envlight = EnvLight("envlight") {
+}
+
+rig = LightSet("rig") {
+    envlight
+}
+
+Layer("layer") {
+    {back, "", specMat, rig},
+    {left, "", specMat, rig},
+    {right, "", specMat, rig},
+    {floor, "", floorMat, rig},
+    {torus, "", torusMat, rig}
+}

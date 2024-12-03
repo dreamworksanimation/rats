@@ -1,0 +1,133 @@
+SceneVariables {
+    ["image_width"] = 512,
+    ["image_height"] = 256,
+    ["max_depth"] = 3,
+    ["propagate_visibility_bounce_type"] = false,
+}
+
+floor = UsdGeometry("/Scene/geometry/floor") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(50, 1, 50),
+    ["visible_diffuse_reflection"] = true,
+}
+
+wall = UsdGeometry("/Scene/geometry/wall") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = rotate(-75, 1, 0, 0)*scale(20, 20, 20)*translate(0, 2, -8),
+    ["visible_shadow"] = false,
+}
+
+torus = UsdGeometry("/Scene/geometry/torus") {
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-10, 2, 0),
+    ["visible_in_camera"] = true,
+    ["visible_shadow"] = false,
+    ["visible_diffuse_reflection"] = true,
+    ["visible_glossy_reflection"] = false,
+    ["visible_mirror_reflection"] = true 
+}
+
+cylinder = UsdGeometry("/Scene/geometry/cylinder") {
+    ["stage"] = rats_assets_dir.."/models/cylinder.usdc",
+    ["prim_path"] = "/cylinder",
+    ["node_xform"] = scale(2, 2, 2) * translate(-5, 2, 0),
+    ["visible_in_camera"] = true,
+    ["visible_shadow"] = true,
+    ["visible_diffuse_reflection"] = false,
+    ["visible_glossy_reflection"] = true,
+    ["visible_mirror_reflection"] = false
+}
+
+sphere = UsdGeometry("/Scene/geometry/sphere") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = translate(0, 2, 0),
+    ["visible_in camera"] = false,
+    ["visible_shadow"] = true,
+    ["visible_diffuse_reflection"] = true,
+    ["visible_glossy_reflection"] = true,
+    ["visible_mirror_reflection"] = true
+}
+
+hair1 = UsdGeometry("/Scene/geometry/hair1") {
+    ["stage"] = rats_assets_dir.."/models/curves.usdc",
+    ["prim_path"] = "/curve_0",
+    ["node_xform"] = scale(0.5, 0.5, 0.5) * translate(5, 2, 0),
+    ["visible_in_camera"] = false,
+    ["visible_shadow"] = true,
+    ["visible_diffuse_reflection"] = false,
+    ["visible_glossy_reflection"] = true,
+    ["visible_mirror_reflection"] = false
+}
+
+hair2 = UsdGeometry("/Scene/geometry/hair2") {
+    ["stage"] = rats_assets_dir.."/models/curves.usdc",
+    ["prim_path"] = "/curve_0",
+    ["node_xform"] = scale(0.5, 0.5, 0.5) * translate(9, 2, 0),
+    ["visible_in_camera"] = true,
+    ["visible_shadow"] = false,
+    ["visible_diffuse_reflection"] = true,
+    ["visible_glossy_reflection"] = false,
+    ["visible_mirror_reflection"] = true
+}
+
+floorMat = DwaMetalMaterial("/Scene/surfacing/floorMat") {
+    ["roughness"] = 0.1,
+}
+
+wallMat = DwaMetalMaterial("/Scene/surfacing/wallMat") {
+    ["roughness"] = 0.0,
+}
+
+torusMat = DwaSolidDielectricMaterial("/Scene/surfacing/torusMat") {
+    ["albedo"] = Rgb(0, 1, 1),
+}
+
+cylinderMat = DwaSolidDielectricMaterial("/Scene/surfacing/cylinderMat") {
+    ["albedo"] = Rgb(1, 1, 0),
+}
+
+sphereMat = DwaSolidDielectricMaterial("/Scene/surfacing/sphereMat") {
+    ["albedo"] = Rgb(1, 0, 1),
+}
+
+hairMat = DwaSolidDielectricMaterial("/Scene/surfacing/hairMat") {
+    ["albedo"] = Rgb(0.8, 0.2, 0),
+}
+
+spot_light = SpotLight("/Scene/lighting/spot") {
+    ["node_xform"] = rotate(-90, 0, 1, 0) * rotate(-45, 0, 0, 1) * translate(-60, 60, 0); 
+    ["intensity"] = 8,
+}
+
+geoms = GeometrySet("/Scene/geometry/all") {
+    floor,
+    wall,
+    torus,
+    cylinder,
+    sphere,
+    hair1,
+    hair2,
+}
+
+rig = LightSet("/Scene/lighting/rig") {
+    spot_light
+}
+
+layer = Layer("/Scene/rendering/all") {
+    {floor, "", floorMat, rig},
+    {wall, "", wallMat, rig},
+    {torus, "", torusMat, rig},
+    {cylinder, "", cylinderMat, rig},
+    {sphere, "", sphereMat, rig},
+    {hair1, "", hairMat, rig},
+    {hair2, "", hairMat, rig}
+}
+
+shot_cam = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 2, 35) * rotate(-10, 1, 0, 0)
+}
+

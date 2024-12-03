@@ -1,0 +1,80 @@
+SceneVariables {
+    ["camera"] = PerspectiveCamera("/obj/base_volume_test_cam"),
+    ["frame"] = 115.0,
+    ["layer"] = Layer("/Scene/layer"),
+    ["max_depth"] = 20,
+    ["max_diffuse_depth"] = 20,
+    ["max_glossy_depth"] = 20,
+    ["max_mirror_depth"] = 20,
+    ["max_presence_depth"] = 20,
+    ["max_volume_depth"] = 20,
+    ["pixel_samples"] = 4,
+    ["scene_scale"] = 0.03,
+    ["volume_quality"] = 1,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+}
+
+PerspectiveCamera("/obj/base_volume_test_cam") {
+    ["node_xform"] = Mat4(0.707413, 0.000250012, -0.7068, 0, 
+                         -0.353247, 0.866275, -0.353247, 0,
+                          0.612195, 0.499567, 0.612903, 0,
+                          1.96913, 1.31424, 1.66993, 1),
+}
+
+SpotLight("/obj/base_volume_light") {
+    ["node_xform"] = Mat4(-0.61511525385, 0.0, -0.788437203892, 0.0, 
+                          -0.437257497053, 0.832125367329, 0.341135243444, 0.0,
+                          0.656078581995, 0.554587570225, -0.511853026952, 0.0,
+                          6.39566570259, 5.08069173099, -4.97372514442, 1.0),
+}
+
+LightSet("/Scene/lightset/1") {
+    SpotLight("/obj/base_volume_light"),
+}
+
+red = BaseVolume("/obj/BaseVolume1") {
+    ["attenuation_color"] = Rgb(1.0, 0.4, 0.4),
+    ["attenuation_intensity"] = 16.0,
+}
+
+blue = BaseVolume("/obj/BaseVolume2") {
+    ["attenuation_color"] = Rgb(0.4, 0.4, 1.0),
+    ["attenuation_intensity"] = 16.0,
+}
+
+green = BaseVolume("/obj/BaseVolume3") {
+    ["attenuation_color"] = Rgb(0.4, 1.0, 0.4),
+    ["attenuation_intensity"] = 16.0,
+}
+
+UsdGeometry("/obj/base_volume_sphere_red") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = scale(0.6, 0.6, 0.6)
+}
+
+UsdGeometry("/obj/base_volume_sphere_blue") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = scale(0.5, 0.5, 0.5) * translate(0.5,0,0)
+}
+
+UsdGeometry("/obj/base_volume_torus_green") {
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+    ["node_xform"] = scale(0.5, 0.5, 0.5) * translate(0.5,0.3,0.4),
+}
+
+GeometrySet("/Scene/geoset") {
+    UsdGeometry("/obj/base_volume_sphere_red"),
+    UsdGeometry("/obj/base_volume_sphere_blue"),
+    UsdGeometry("/obj/base_volume_torus_green"),
+}
+
+Layer("/Scene/layer") {
+    {UsdGeometry("/obj/base_volume_sphere_red"), "", undef(), LightSet("/Scene/lightset/1"), undef(), red},
+    {UsdGeometry("/obj/base_volume_sphere_blue"), "", undef(), LightSet("/Scene/lightset/1"), undef(), blue},
+    {UsdGeometry("/obj/base_volume_torus_green"), "", undef(), LightSet("/Scene/lightset/1"), undef(), green},
+}
+

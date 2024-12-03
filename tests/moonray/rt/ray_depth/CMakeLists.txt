@@ -1,0 +1,10 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# Tests the maximum depth limiter.
+
+add_rats_test(moonray_rt_ray_depth
+    INPUTS ray_depth.rdla
+    CANONICALS scene.exr
+)
+
