@@ -1,0 +1,429 @@
+local cast_caustics = false
+
+SceneVariables {
+    ["pixel_samples"] = 4,
+    ["light_samples"] = 1,
+    ["max_depth"] = 10,
+    ["max_diffuse_depth"] = 2,
+    ["max_glossy_depth"] = 2,
+    ["max_mirror_depth"] = 4,
+    ["image_width"] = 480,
+    ["image_height"] = 270,
+    ["sample_clamping_value"] = 0.0,
+}
+
+Camera("/Scene/camera") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-7.5, 140, 0),
+}
+
+----------------------- LIGHTS ---------------------------
+
+rect_light = RectLight("/Scene/lighting/rect_light") {
+    ["node_xform"] = rotate(-20, 1, 0, 0) * 
+                     rotate(25, 0, 1, 0) * 
+                     translate(82, 151, 275),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = 800,
+    ["height"] = 800,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightset = LightSet("lightset") {
+    rect_light,
+}
+
+--------------------- GEOMETRY ---------------------------
+
+floor = UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = scale(200, 200, 200) * translate(0, 0, 7.5),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+----- Row 0 -----
+
+sphere01 = SphereGeometry("/Scene/geometry/sphere01") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-37.5, 5, -22.5),
+}
+
+sphere02 = SphereGeometry("/Scene/geometry/sphere02") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-22.5, 5, -22.5),
+}
+
+sphere03 = SphereGeometry("/Scene/geometry/sphere03") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-7.5, 5, -22.5),
+}
+
+sphere04 = SphereGeometry("/Scene/geometry/sphere04") {
+    ["node_xform"] = scale(5, 5, 5) * translate(7.5, 5, -22.5),
+}
+
+sphere05 = SphereGeometry("/Scene/geometry/sphere05") {
+    ["node_xform"] = scale(5, 5, 5) * translate(22.5, 5, -22.5),
+}
+
+----- Row 1 -----
+
+sphere11 = SphereGeometry("/Scene/geometry/sphere11") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-37.5, 5, -7.5),
+}
+
+sphere12 = SphereGeometry("/Scene/geometry/sphere12") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-22.5, 5, -7.5),
+}
+
+sphere13 = SphereGeometry("/Scene/geometry/sphere13") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-7.5, 5, -7.5),
+}
+
+sphere14 = SphereGeometry("/Scene/geometry/sphere14") {
+    ["node_xform"] = scale(5, 5, 5) * translate(7.5, 5, -7.5),
+}
+
+sphere15 = SphereGeometry("/Scene/geometry/sphere15") {
+    ["node_xform"] = scale(5, 5, 5) * translate(22.5, 5, -7.5),
+}
+
+----- Row 2 -----
+
+sphere21 = SphereGeometry("/Scene/geometry/sphere21") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-37.5, 5, 7.5),
+}
+
+sphere22 = SphereGeometry("/Scene/geometry/sphere22") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-22.5, 5, 7.5),
+}
+
+sphere23 = SphereGeometry("/Scene/geometry/sphere23") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-7.5, 5, 7.5),
+}
+
+sphere24 = SphereGeometry("/Scene/geometry/sphere24") {
+    ["node_xform"] = scale(5, 5, 5) * translate(7.5, 5, 7.5),
+}
+
+sphere25 = SphereGeometry("/Scene/geometry/sphere25") {
+    ["node_xform"] = scale(5, 5, 5) * translate(22.5, 5, 7.5),
+}
+
+----- Row 3 -----
+
+sphere31 = SphereGeometry("/Scene/geometry/sphere31") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-37.5, 5, 22.5),
+}
+
+sphere32 = SphereGeometry("/Scene/geometry/sphere32") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-22.5, 5, 22.5),
+}
+
+sphere33 = SphereGeometry("/Scene/geometry/sphere33") {
+    ["node_xform"] = scale(5, 5, 5) * translate(-7.5, 5, 22.5),
+}
+
+sphere34 = SphereGeometry("/Scene/geometry/sphere34") {
+    ["node_xform"] = scale(5, 5, 5) * translate(7.5, 5, 22.5),
+}
+
+sphere35 = SphereGeometry("/Scene/geometry/sphere35") {
+    ["node_xform"] = scale(5, 5, 5) * translate(22.5, 5, 22.5),
+}
+
+--------------------- MATERIALS ---------------------------
+
+floor_material = DwaBaseMaterial("/Materials/materials/floor_material") {
+    ["albedo"] = Rgb(1, 1, 1),
+    ["show_specular"] = false,
+    ["casts_caustics"] = cast_caustics,
+}
+
+-- sphere 01 material
+matte = DwaBaseMaterial("/Materials/materials/matte") {
+    ["albedo"] = Rgb(0.701169, 0.701169, 0.701169),
+    ["show_specular"] = false,
+    ["roughness"] = 0.54772255750517,
+    ["casts_caustics"] = cast_caustics,
+}
+
+-- sphere 02 material
+rubber = DwaBaseMaterial("/Materials/materials/rubber") {
+    ["albedo"] = Rgb(0.358654, 0.14198, 0.121986),
+    ["specular"] = 1,
+    ["roughness"] = 0.38729833462074,
+    ["specular_model"] = 0,
+}
+
+-- sphere 03 material
+glossy3 = DwaBaseMaterial("/Materials/materials/glossy3") {
+    ["albedo"] = Rgb(0.947959, 0.205742, 0.00187354),
+    ["specular"] = 1,
+    ["roughness"] = 0.70710678118655,
+    ["specular_model"] = 0,
+    ["metallic"] = .3,
+	["metallic_color"] = Rgb(1, 1,1),
+}
+
+-- sphere 04 material
+glossy2 = DwaBaseMaterial("/Materials/materials/glossy2") {
+    ["albedo"] = Rgb(0.947959, 0.205545, 0.00187354),
+    ["specular"] = 0.5,
+    ["roughness"] = 0.54772255750517,
+    ["specular_model"] = 0,
+    ["show_transmission"] = true,
+    ["transmission_color"] = Rgb(1, 1, 1),
+    ["refractive_index"] = 1,
+    ["casts_caustics"] = cast_caustics,
+	["metallic"] = .3,
+}
+
+-- sphere 05 material
+glossy1 = DwaBaseMaterial("/Materials/materials/glossy1") {
+    ["albedo"] = Rgb(0.948, 0.206, 0.002),
+    ["specular"] = 0.5,
+    ["roughness"] = 0.31622776601684,
+    ["specular_model"] = 0,
+    ["refractive_index"] = 1,
+    ["casts_caustics"] = cast_caustics,
+}
+
+-- sphere 10 material
+pool_ball = DwaBaseMaterial("/Materials/materials/pool_ball") {
+    ["albedo"] = Rgb(0.899384, 0.859174, 0.722672),
+    ["roughness"] = 0,
+    ["refractive_index"] = 1,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = .1,
+	["metallic_color"] = Rgb(1,1,1),
+	["metallic_edge_color"] = Rgb(1, 1, 1),
+}
+
+-- sphere 12 material
+plastic = DwaBaseMaterial("/Materials/materials/plastic") {
+    ["albedo"] = Rgb(0.819964, 0.00969633, 0.0277553),
+    ["specular"] = .25,
+    ["roughness"] = 0,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = .1,
+	["metallic_color"] = Rgb(1,1,1),
+	["metallic_edge_color"] = Rgb(1, 1, 1),
+}
+
+-- sphere 13 material
+car_paint = DwaBaseMaterial("/Materials/materials/car_paint") {
+    ["albedo"] = Rgb(1, 0.0205396, 0.0205396),--*.06
+    ["specular"] = .5,
+    ["roughness"] = 0.45,
+    ["specular_model"] = 0,
+    ["refractive_index"] = 1,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = 1,
+	["metallic_color"] = Rgb(1, 0.0205396, 0.0205396),
+	["metallic_edge_color"] = Rgb(1, 0.0205396, 0.0205396),
+	["show_clearcoat"] = true,
+	["clearcoat"] = 1,
+	["clearcoat_roughness"] = 0,
+	["clearcoat_refractive_index"] = 1.8,
+}
+
+-- sphere 14 material
+car_paint2 = DwaBaseMaterial("/Materials/materials/car_paint2") {
+    ["albedo"] = Rgb(1, 0.0205396, 0.0205396),
+    ["specular"] = .9,
+    ["roughness"] = 0.45,
+    ["specular_model"] = 0,
+    ["refractive_index"] = 1,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = 1,
+	["metallic_color"] = Rgb(1, 0.0205396, 0.0205396),
+	["metallic_edge_color"] = Rgb(1, 0.0205396, 0.0205396),
+	["show_clearcoat"] = true,
+	["clearcoat"] = 1,
+	["clearcoat_roughness"] = 0,
+	["clearcoat_refractive_index"] = 1.8,
+}
+
+-- sphere 15 material
+car_paint3 = DwaBaseMaterial("/Materials/materials/car_paint3") {
+    ["albedo"] = Rgb(0.0205396, 0.0256696, 1),
+    ["specular"] = 1,
+    ["roughness"] = 0.45,
+    ["specular_model"] = 0,
+    ["refractive_index"] = 1,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = 1,
+	["metallic_color"] = Rgb(0.0205396, 0.0256696, 1),
+	["metallic_edge_color"] = Rgb(0.0205396, 0.0256696, 1),
+	["show_clearcoat"] = true,
+	["clearcoat"] = 1,
+	["clearcoat_roughness"] = 0,
+	["clearcoat_refractive_index"] = 1.8,
+}
+
+-- sphere 20 material
+mirror = DwaBaseMaterial("/Materials/materials/mirror") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["specular"] = 1,
+    ["roughness"] = 0,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = 1,
+}
+
+-- sphere 21 material
+glass2 = DwaBaseMaterial("/Materials/materials/glass2") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["specular"] = .94,
+    ["roughness"] = 0,
+    ["transmission_color"] = Rgb(1, 1, 1),
+    ["show_transmission"] = true,
+    ["transmission"] = 1,
+    ["refractive_index"] = 1.52,
+    ["casts_caustics"] = true,
+}
+
+-- sphere 22 material
+olive_oil = DwaBaseMaterial("/Materials/materials/olive_oil") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["specular"] = 1,
+    ["roughness"] = 0,
+    ["transmission_color"] = Rgb(0.598949, 0.646235, 0.0788091),
+    ["show_transmission"] = true,
+    ["transmission"] = 1,
+    ["refractive_index"] = 1.47,
+    ["casts_caustics"] = true,
+}
+
+-- sphere 23 material
+water = DwaBaseMaterial("/Materials/materials/water") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["specular"] = 1,
+    ["roughness"] = 0,
+    ["transmission_color"] = Rgb(1, 1, 1),
+    ["show_transmission"] = true,
+    ["transmission"] = 1,
+    ["refractive_index"] = 1.33,
+    ["casts_caustics"] = true,
+}
+
+-- sphere 24 material
+stained_glass = DwaBaseMaterial("/Materials/materials/stained_glass") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["specular"] = 1,
+    ["roughness"] = 0,
+    ["transmission_color"] = Rgb(0.111299, 0.302126, 1),
+    ["show_transmission"] = true,
+    ["transmission"] = 1,
+    ["refractive_index"] = 1,
+    ["casts_caustics"] = true,
+    ["metallic"] = .05,
+}
+
+-- sphere 30 material
+frosted_aluminum = DwaBaseMaterial("/Materials/materials/frosted_aluminum") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["specular"] = .75,
+    ["roughness"] = 0.38729833462074,
+    ["specular_model"] = 0,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = 1,
+	["metallic_color"] = Rgb(0.75, 0.78, 0.8),
+	["metallic_edge_color"] = Rgb(0.75, 0.78, 0.8),
+}
+
+-- sphere 31 material
+metal_glossy_aniso = DwaBaseMaterial("/Materials/materials/metal_glossy_aniso") {
+    ["albedo"] = Rgb(0.037, 0.037, 0.037),
+    ["specular"] = 222814,
+    ["roughness"] = 0.44721359549996,
+    ["specular_model"] = 0,
+    ["anisotropy"] = 0.9,
+    ["refractive_index"] = 1,
+    ["casts_caustics"] = cast_caustics,
+	["metallic"] = 1,
+	["metallic_color"] = Rgb(0.222814, 0.222814, 0.222814),
+	["metallic_edge_color"] = Rgb(1, 1, 1),
+}
+
+-- sphere 32 material
+gold = DwaBaseMaterial("/Materials/materials/gold") {
+    ["albedo"] = Rgb(0.000367136, 0.000261544, 5.69218e-05),
+    ["specular"] = 1,
+    ["roughness"] = 0.22360679774998,
+    ["specular_model"] = 0,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = 1,
+	["metallic_color"] = Rgb(0.991, 0.5, 0.133),
+	["metallic_edge_color"] = Rgb(0.991, 0.752, 0.133),
+}
+
+-- sphere 33 material
+copper = DwaBaseMaterial("/Materials/materials/copper") {
+    ["albedo"] = Rgb(0.000804659, 0.000261544, 5.69218e-05),
+    ["specular"] = .923993,
+    ["roughness"] = 0.22360679774998,
+    ["specular_model"] = 0,
+    ["casts_caustics"] = cast_caustics,
+    ["metallic"] = 1,
+	["metallic_color"] = Rgb(0.923993, 0.320382, 0.0846415),
+	["metallic_edge_color"] = Rgb(1, 1, 1),
+}
+
+-- sphere 34 material
+bronze = DwaBaseMaterial("/Materials/materials/bronze") {
+    ["albedo"] = Rgb(0.0829594, 0.0410168, 0.00856045),
+    ["specular"] = 1,
+    ["roughness"] = 0.22360679774998,
+    ["specular_model"] = 0,
+    ["metallic"] = 1,
+	["metallic_color"] = Rgb(0.306635, 0.147998, 0.0315514),
+	["metallic_edge_color"] = Rgb(0.306635, 0.147998, 0.0315514),
+}
+
+---------------------------------------------------------------
+
+GeometrySet("geometryset") {
+    floor,
+    sphere01, 
+    sphere02, 
+    sphere03, 
+    sphere04, 
+    sphere05, 
+    sphere11, 
+    sphere12, 
+    sphere13, 
+    sphere14, 
+    sphere15, 
+    sphere21, 
+    sphere22, 
+    sphere23, 
+    sphere24, 
+    sphere25, 
+    sphere31, 
+    sphere32, 
+    sphere33, 
+    sphere34, 
+    sphere35, 
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {floor, "", floor_material, lightset},
+    {sphere01, "", matte, lightset},
+    {sphere02, "", rubber, lightset},
+    {sphere03, "", glossy3, lightset},
+    {sphere04, "", glossy2, lightset},
+    {sphere05, "", glossy1, lightset},
+    {sphere11, "", pool_ball, lightset},
+    {sphere12, "", plastic, lightset},
+    {sphere13, "", car_paint, lightset},
+    {sphere14, "", car_paint2, lightset},
+    {sphere15, "", car_paint3, lightset},
+    {sphere21, "", mirror, lightset},
+    {sphere22, "", glass2, lightset},
+    {sphere23, "", olive_oil, lightset},
+    {sphere24, "", water, lightset},
+    {sphere25, "", stained_glass, lightset},
+    {sphere31, "", frosted_aluminum, lightset},
+    {sphere32, "", metal_glossy_aniso, lightset},
+    {sphere33, "", gold, lightset},
+    {sphere34, "", copper, lightset},
+    {sphere35, "", bronze, lightset},
+}
