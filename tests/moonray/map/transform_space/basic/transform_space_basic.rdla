@@ -54,7 +54,7 @@ for x=0,4 do -- from space
     }
     local geom = UsdGeometry("/root/geom/geom_"..x..y..t) {
         ["node_xform"] = rotate(90, 1, 0, 0) * translate(tx + x, y, 0),
-        ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+        ["stage"] = rats_assets_dir .. "/models/plane.usdc",
         ["prim_path"] = "/plane"
     }
     table.insert(geoms, geom)

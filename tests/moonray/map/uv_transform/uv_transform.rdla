@@ -273,31 +273,31 @@ local mtlRef = DwaEmissiveMaterial("/Scene/surfacing/mtlRef") {
 -------------------------------------------------------
 local planeGeom1 = UsdGeometry("/Scene/geometry/planeGeom1") {
     ["node_xform"] = rotate(90, 1, 0, 0) * translate(-2.2, 1.3, 0.0) * scale(4.0, 4.0, 4.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeom2 = UsdGeometry("/Scene/geometry/planeGeom2") {
     ["node_xform"] = rotate(90, 1, 0, 0) * translate(-1.0, 1.3, 0.0) * scale(4.0, 4.0, 4.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeom3 = UsdGeometry("/Scene/geometry/planeGeom3") {
     ["node_xform"] = rotate(90, 1, 0, 0) * translate(0.2, 1.3, 0.0) * scale(4.0, 4.0, 4.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeom4 = UsdGeometry("/Scene/geometry/planeGeom4") {
     ["node_xform"] = rotate(90, 1, 0, 0) * translate(-2.2, 0.1, 0.0) * scale(4.0, 4.0, 4.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeom5 = UsdGeometry("/Scene/geometry/planeGeom5") {
     ["node_xform"] = rotate(90, 1, 0, 0) * translate(-1.0, 0.1, 0.0) * scale(4.0, 4.0, 4.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
@@ -320,37 +320,37 @@ local boxGeom2 = BoxGeometry("/Scene/geometry/boxGeom2") {
 
 local planeGeomRender = UsdGeometry("/Scene/geometry/planeGeomRender") {
     ["node xform"] = rotate(90, 1, 0, 0) * translate(-3.0, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeomCamera = UsdGeometry("/Scene/geometry/planeGeomCamera") {
     ["node xform"] = rotate(90, 1, 0, 0) * translate(-1.8, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeomScreen = UsdGeometry("/Scene/geometry/planeGeomScreen") {
     ["node xform"] = rotate(90, 1, 0, 0) * translate(-0.6, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeomWorld = UsdGeometry("/Scene/geometry/planeGeomWorld") {
     ["node xform"] = rotate(90, 1, 0, 0) * translate(0.6, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeomObject = UsdGeometry("/Scene/geometry/planeGeomObject") {
     ["node xform"] = rotate(90, 1, 0, 0) * translate(1.8, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 local planeGeomRef = UsdGeometry("/Scene/geometry/planeGeomRef") {
     ["node xform"] = rotate(90, 1, 0, 0) * translate(3.0, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
-    ["stage"] = "/usr/pic1/alee1/git/openmoonray/rats/assets/models/plane.usdc",
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 

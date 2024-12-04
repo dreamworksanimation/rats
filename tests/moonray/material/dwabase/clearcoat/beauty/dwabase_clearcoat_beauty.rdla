@@ -1,0 +1,89 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 2.75, 24) * rotate(-20, 1, 0, 0) * rotate(-100, 0, 1, 0),
+    ["focal"] = 50,
+}
+
+env = EnvLight("/Scene/lighting/env") {
+    ["exposure"] = -0.2,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr"
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(140, 0, 1, 0),
+    ["exposure"] = 4,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+-------------------------------------------------------
+
+local grayMtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/gray") {
+    ["albedo"] = Rgb(0.217, 0.217, 0.217),
+    ["show_specular"] = false,
+}
+
+local geom = UsdGeometry("/Scene/geometry/geom/widget_DWA") {
+    ["node_xform"] = rotate(-20, 0, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget"
+}
+
+local mtl = DwaMetalMaterial("metal") {
+    ["roughness"] = 0.3,
+    ["specular_model"] = 0,
+    ["show_clearcoat"] = true,
+    ["clearcoat"] = 1,
+    ["clearcoat_model"] = 0,
+    ["clearcoat_thickness"] = 1,
+    ["clearcoat_refractive_index"] = 1.9,
+    ["metallic_color"] = Rgb(0.5,0.921,0.924),
+}
+
+-------------------------------------------------------
+
+local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(200, 1, 200),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/graphpaper.tx",
+    ["scale"] = Vec2(40, 40),
+    ["offset"] = Vec2(0, .25),
+    ["wrap_around"] = true,
+}
+
+local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap, Rgb(0.75, 0.75, 0.75)),
+    ["show_specular"] = false,
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    geom,
+    planeGeom
+}
+
+Layer("/Scene/layer") {
+    {geom, "shell_front", mtl, lightSet},
+    {geom, "shell_back", mtl, lightSet},
+    {geom, "collar", mtl, lightSet},
+    {geom, "stand", grayMtl, lightSet},
+    {geom, "core", grayMtl, lightSet},
+    {planeGeom, "", planeMtl, lightSet},
+}
