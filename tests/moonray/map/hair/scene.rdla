@@ -1,0 +1,149 @@
+SceneVariables {
+    ["image_width"] = 370,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 4,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, -0.5, 3.8),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/curves.usdc"
+
+hairWithCol = UsdGeometry("hairWithCol") {
+    ["node_xform"] = scale(0.1, 0.1, 0.001) * translate(-0.7, -0.2, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/curve_0",
+}
+
+hairNoCol = UsdGeometry("hairNoCol") {
+    ["node_xform"] = scale(0.1, 0.1, 0.001) * translate(0.7, -0.2, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/curve_0",
+}
+
+hair1 = UsdGeometry("hair1") {
+    ["node_xform"] = scale(0.04, 0.15, 0.001) * translate(-1.2, -1.3, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/curve_0",
+}
+
+hair2 = UsdGeometry("hair2") {
+    ["node_xform"] = scale(0.04, 0.15, 0.001) * translate(-0.6, -1.3, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/curve_0",
+}
+
+hair3 = UsdGeometry("hair3") {
+    ["node_xform"] = scale(0.04, 0.15, 0.001) * translate(0.0, -1.3, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/curve_0",
+}
+
+hair4 = UsdGeometry("hair4") {
+    ["node_xform"] = scale(0.04, 0.15, 0.001) * translate(0.6, -1.3, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/curve_0",
+}
+
+hair5 = UsdGeometry("hair5") {
+    ["node_xform"] = scale(0.04, 0.15, 0.001) * translate(1.2, -1.3, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/curve_0",
+}
+
+GeometrySet("geomset") {
+    hairWithCol, hairNoCol,
+    hair1, hair2, hair3, hair4, hair5
+}
+
+hairColumnMap = HairColumnMap("hairColumnMap") { }
+
+imgMap = ImageMap("imgMap") {
+    ["texture"] = rats_assets_dir .. "/textures/dif_hair_column.tx",
+    ["texture_coordinates"] = "input texture coordinates",
+    ["input_texture coordinates"] = bind(hairColumnMap),
+    ["wrap_around"] = false,
+}
+
+withColumnMap = HairMap("withColumnMap") {
+    ["column_uv_color"] = bind(imgMap),
+}
+
+noColumnMap = HairMap("noColumnMap") {
+}
+
+hairMap = HairMap("hairMap") {
+  ["base_color"] = Rgb(1.0, 1.0, 1.0),
+  ["tip_color"] = Rgb(0.0, 1.0, 0.0),
+  ["bias"] = 0.5,
+  ["gain"] = 0.5,
+}
+
+hairMapBiasUp = HairMap("hairMapBiasUp") {
+  ["base_color"] = Rgb(1.0, 1.0, 1.0),
+  ["tip_color"] = Rgb(0.0, 1.0, 0.0),
+  ["bias"] = 0.75,
+  ["gain"] = 0.5,
+}
+
+hairMapBiasDown = HairMap("hairMapBiasDown") {
+  ["base_color"] = Rgb(1.0, 1.0, 1.0),
+  ["tip_color"] = Rgb(0.0, 1.0, 0.0),
+  ["bias"] = 0.25,
+  ["gain"] = 0.5,
+}
+
+hairMapGainUp = HairMap("hairMapGainUp") {
+  ["base_color"] = Rgb(1.0, 1.0, 1.0),
+  ["tip_color"] = Rgb(0.0, 1.0, 0.0),
+  ["bias"] = 0.5,
+  ["gain"] = 0.9,
+}
+
+hairMapGainDown = HairMap("hairMapGainDown") {
+  ["base_color"] = Rgb(1.0, 1.0, 1.0),
+  ["tip_color"] = Rgb(0.0, 1.0, 0.0),
+  ["bias"] = 0.5,
+  ["gain"] = 0.1,
+}
+
+withColumnMtl = DwaEmissiveMaterial("withColumnMtl") {
+    ["emission_color"] = bind(withColumnMap),
+}
+
+noColumnMtl = DwaEmissiveMaterial("noColumnMtl") {
+    ["emission_color"] = bind(noColumnMap),
+}
+
+hairMtl = DwaEmissiveMaterial("hairMtl") {
+    ["emission_color"] = bind(hairMap),
+}
+
+hairMtlBiasUp = DwaEmissiveMaterial("hairMtlBiasUp") {
+    ["emission_color"] = bind(hairMapBiasUp),
+}
+
+hairMtlBiasDown = DwaEmissiveMaterial("hairMtlBiasDown") {
+    ["emission_color"] = bind(hairMapBiasDown),
+}
+
+hairMtlGainUp = DwaEmissiveMaterial("hairMtlGainUp") {
+    ["emission_color"] = bind(hairMapGainUp),
+}
+
+hairMtlGainDown = DwaEmissiveMaterial("hairMtlGainDown") {
+    ["emission_color"] = bind(hairMapGainDown),
+}
+
+Layer("/Scene/layer") {
+    {hairWithCol, {""}, withColumnMtl , ltSet},
+    {hairNoCol, {""}, noColumnMtl , ltSet},
+    {hair1, {""}, hairMtl, ltSet},
+    {hair2, {""}, hairMtlBiasUp, ltSet},
+    {hair3, {""}, hairMtlBiasDown, ltSet},
+    {hair4, {""}, hairMtlGainUp, ltSet},
+    {hair5, {""}, hairMtlGainDown, ltSet},
+}

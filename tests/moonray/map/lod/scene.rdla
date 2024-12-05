@@ -1,0 +1,84 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.5, 6),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/MoonRayWidget.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(-1.0, 0.75, -0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(-0.7, -1.5, 3.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(1.0, 0.5, -1.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(3.0, -3.0, -7.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4,
+}
+
+lodMap1 = LODMap("lodMap1") {
+}
+
+lodMap2 = LODMap("lodMap2") {
+    ["stop"] = 0.2,
+}
+
+lodMap3 = LODMap("lodMap3") {
+    ["mode"] = "camera distance",
+    ["start"] = 1,
+    ["stop"]  = 100
+}
+
+lodMap4 = LODMap("lodMap4") {
+}
+
+mtl1 = DwaEmissiveMaterial("mtl1") {
+    ["emission_color"] = bind(lodMap1),
+}
+
+mtl2 = DwaEmissiveMaterial("mtl2") {
+    ["emission_color"] = bind(lodMap2),
+}
+
+mtl3 = DwaEmissiveMaterial("mtl3") {
+    ["emission_color"] = bind(lodMap3),
+}
+
+mtl4 = DwaEmissiveMaterial("mtl4") {
+    ["emission_color"] = bind(lodMap4),
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, mtl1, ltSet},
+    {geom2, {""}, mtl2, ltSet},
+    {geom3, {""}, mtl3, ltSet},
+    {geom4, {""}, mtl4, ltSet},
+}

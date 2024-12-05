@@ -1,0 +1,233 @@
+SceneVariables {
+    ["image width"] = 250,
+    ["image height"] = 250,
+    ["pixel samples"] = 2,
+}
+
+Camera("/Scene/camera") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0, 35, 0),
+    ["focal"] = 100,
+}
+
+ltSet = LightSet("ltSet") { }
+
+sphereModel = rats_assets_dir .. "/models/sphere.usdc"
+
+sphereHeight = UsdGeometry("sphereHeight") {
+    ["node_xform"] = translate(-3, 0, -3),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+sphereXy = UsdGeometry("sphereXy") {
+    ["node_xform"] = translate(-1, 0, -3),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+sphereVec = UsdGeometry("sphereVec") {
+    ["node_xform"] = translate(1, 0, -3),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+sphereCd = UsdGeometry("sphereCd") {
+    ["node_xform"] = translate(3, 0, -3),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+sphereP = UsdGeometry("sphereP") {
+    ["node_xform"] = translate(-3, 0, -1),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+sphereSt = UsdGeometry("sphereSt") {
+    ["node_xform"] = translate(-1, 0, -1),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+sphereN = UsdGeometry("sphereN") {
+    ["node_xform"] = translate(1, 0, -1),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+sphereNg = UsdGeometry("sphereNg") {
+    ["node_xform"] = translate(3, 0, -1),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+spheredPds = UsdGeometry("spheredPds") {
+    ["node_xform"] = translate(-3, 0, 1),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+spheredPdt = UsdGeometry("spheredPdt") {
+    ["node_xform"] = translate(-1, 0, 1),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+spheredNds = UsdGeometry("spheredNds") {
+    ["node_xform"] = translate(1, 0, 1),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+spheredNdt = UsdGeometry("spheredNdt") {
+    ["node_xform"] = translate(3, 0, 1),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+sphereDefault = UsdGeometry("sphereDefault") {
+    ["node_xform"] = translate(0, 0, 3),
+    ["stage"] = sphereModel,
+    ["prim_path"] = "/sphere"
+}
+
+GeometrySet("geometryset") {
+    sphereHeight,
+    sphereXy,
+    sphereVec,
+    sphereCd,
+    sphereP,
+    sphereSt,
+    sphereN,
+    sphereNg,
+    spheredPds,
+    spheredPdt,
+    spheredNds,
+    spheredNdt,
+    sphereDefault,
+}
+
+attrHeight = AttributeMap("attrHeight") {
+    ["primitive attribute name"] = "height",
+    ["primitive attribute type"] = "float",
+}
+
+attrXy = AttributeMap("attrXy") {
+    ["primitive attribute name"] = "xy",
+    ["primitive attribute type"] = "vec2f",
+}
+
+attrVec = AttributeMap("attrVec") {
+    ["primitive attribute name"] = "vec",
+    ["primitive attribute type"] = "vec3f",
+}
+
+attrCd = AttributeMap("attrCd") {
+    ["primitive attribute name"] = "displayColor",
+    ["primitive attribute type"] = "rgb",
+}
+
+attrPosition = AttributeMap("attrPosition") {
+    ["map type"] = "position",
+}
+
+attrSt = AttributeMap("attrSt") {
+    ["map type"] = "texture st",
+}
+
+attrN = AttributeMap("attrN") {
+    ["map type"] = "shading normal",
+}
+
+attrNg = AttributeMap("attrNg") {
+    ["map type"] = "geometric normal",
+}
+
+attrdPds = AttributeMap("attrdPds") {
+    ["map type"] = "dpds",
+}
+
+attrdPdt = AttributeMap("attrdPdt") {
+    ["map type"] = "dpdt",
+}
+
+attrdNds = AttributeMap("attrdNds") {
+    ["map type"] = "dnds",
+}
+
+attrdNdt = AttributeMap("attrdNdt") {
+    ["map type"] = "dndt",
+}
+
+attrDefault = AttributeMap("attrDefault") {
+    ["primitive attribute name"] = "attr_not_exist",
+    ["default value"] = Rgb(1, 0, 0),
+}
+
+mtlHeight = DwaEmissiveMaterial("mtlHeight") {
+    ["emission_color"] = bind(attrHeight),
+}
+
+mtlXy = DwaEmissiveMaterial("mtlXy") {
+    ["emission_color"] = bind(attrXy),
+}
+
+mtlVec = DwaEmissiveMaterial("mtlVec") {
+    ["emission_color"] = bind(attrVec),
+}
+
+mtlCd = DwaEmissiveMaterial("mtlCd") {
+    ["emission_color"] = bind(attrCd),
+}
+
+mtlPosition = DwaEmissiveMaterial("mtlPosition") {
+    ["emission_color"] = bind(attrPosition, Rgb(0.1, 0.1, 0.1)),
+}
+
+mtlSt = DwaEmissiveMaterial("mtlSt") {
+    ["emission_color"] = bind(attrSt),
+}
+
+mtlN = DwaEmissiveMaterial("mtlN") {
+    ["emission_color"] = bind(attrN),
+}
+
+mtlNg = DwaEmissiveMaterial("mtlNg") {
+    ["emission_color"] = bind(attrNg),
+}
+
+mtldPds = DwaEmissiveMaterial("mtldPds") {
+    ["emission_color"] = bind(attrdPds, Rgb(0.1, 0.1, 0.1)),
+}
+
+mtldPdt = DwaEmissiveMaterial("mtldPdt") {
+    ["emission_color"] = bind(attrdPdt, Rgb(0.1, 0.1, 0.1)),
+}
+
+mtldNds = DwaEmissiveMaterial("mtldNds") {
+    ["emission_color"] = bind(attrdNds, Rgb(0.1, 0.1, 0.1)),
+}
+
+mtldNdt = DwaEmissiveMaterial("mtldNdt") {
+    ["emission_color"] = bind(attrdNdt, Rgb(0.1, 0.1, 0.1)),
+}
+
+mtlDefault = DwaEmissiveMaterial("mtlDefault") {
+    ["emission_color"] = bind(attrDefault),
+}
+
+Layer("layer") {
+    { sphereHeight, "", mtlHeight, ltSet },
+    { sphereXy, "", mtlXy, ltSet },
+    { sphereVec, "", mtlVec, ltSet },
+    { sphereCd, "", mtlCd, ltSet },
+    { sphereP, "", mtlPosition, ltSet },
+    { sphereSt, "", mtlSt, ltSet },
+    { sphereN, "", mtlN, ltSet },
+    { sphereNg, "", mtlNg, ltSet },
+    { spheredPds, "", mtldPds, ltSet },
+    { spheredPdt, "", mtldPdt, ltSet },
+    { spheredNds, "", mtldNds, ltSet },
+    { spheredNdt, "", mtldNdt, ltSet },
+    { sphereDefault, "", mtlDefault, ltSet },
+}

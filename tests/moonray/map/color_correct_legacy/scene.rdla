@@ -5,7 +5,7 @@ SceneVariables {
 }
 
 Camera("/Scene/rendering/camera") {
-	["node_xform"] = translate(-0.5, -0.5, 3.0),
+    ["node_xform"] = translate(-0.5, -0.5, 3.0),
 }
 
 ltSet = LightSet("LightSet") { }
@@ -19,7 +19,7 @@ geom1 = UsdGeometry("geom1") {
 }
 
 geom2 = UsdGeometry("geom2") {
-    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, 0.0, 0.0),
+    ["node_xform"] = rotate(-90, 1, 0, 0),
     ["stage"] = model,
     ["prim_path"] = "/plane",
 }
@@ -46,7 +46,6 @@ immap = ImageMap("immap") {
 
 ccmapon = ColorCorrectLegacyMap("ccmapon") {
     ["input"] = bind(immap), 
-    ["on"] = true,
     ["mask"] = bind(immap),
     ["brightness"] = 70,
     ["contrast"] = 50,

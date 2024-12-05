@@ -1,0 +1,137 @@
+SceneVariables {
+    ["image_width"] = 370,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, -0.5, 3.8),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/plane.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom5 = UsdGeometry("geom5") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom6 = UsdGeometry("geom6") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4, geom5, geom6,
+}
+
+immap = ImageMap("immap") {
+    ["texture"] = rats_assets_dir .. "/textures/fancy_A.tx",
+}
+
+chmap = CheckerboardMap("chmap") { }
+
+nmap = NoiseWorleyMap_v2("nmap") {
+    ["space"] = 2,
+    ["frequency"] = 8,
+    ["bias"] = 0.7,
+    ["gain"] = 0.95,
+}
+
+blendDefaults = BlendMap("blendDefaults") {
+    ["color A"] = bind(immap), 
+    ["color B"] = bind(chmap),
+}
+
+blendCubic = BlendMap("blendCubic") {
+    ["color A"] = bind(immap), 
+    ["color B"] = bind(chmap),
+    ["blend type"] = 1,
+    ["blend amount"] = bind(nmap), --0.8,
+}
+
+blendAmount = BlendMap("blendAmount") {
+    ["color A"] = bind(immap), 
+    ["color B"] = bind(chmap),
+    ["blend amount"] = bind(nmap), --0.8,
+}
+
+blendThreshold = BlendMap("blendThreshold") {
+    ["color A"] = bind(immap), 
+    ["color B"] = bind(chmap),
+    ["blend amount"] = 0.1,
+    ["threshold max"] = 0.5,
+}
+
+blendIn = BlendMap("blendIn") {
+    ["color A"] = bind(immap), 
+    ["color B"] = bind(chmap),
+    ["blend amount"] = 0.8,
+}
+
+blendBad = BlendMap("blendBad") {
+    ["color A"] = bind(immap), 
+    ["color B"] = bind(chmap),
+    ["blend amount"] = -0.5,
+    ["threshold min"] = -0.8,
+}
+
+blendDefaultsMtl = DwaEmissiveMaterial("blendDefaultsMtl") {
+    ["emission_color"] = bind(blendDefaults),
+}
+
+blendCubicMtl = DwaEmissiveMaterial("blendCubicMtl") {
+    ["emission_color"] = bind(blendCubic),
+}
+
+blendAmountMtl = DwaEmissiveMaterial("blendAmountMtl") {
+    ["emission_color"] = bind(blendAmount),
+}
+
+blendThresholdMtl = DwaEmissiveMaterial("blendThresholdMtl") {
+    ["emission_color"] = bind(blendThreshold),
+}
+
+blendInMtl = DwaEmissiveMaterial("blendInMtl") {
+    ["emission_color"] = bind(blendIn),
+}
+
+blendBadMtl = DwaEmissiveMaterial("blendBadMtl") {
+    ["emission_color"] = bind(blendBad),
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, blendDefaultsMtl, ltSet},
+    {geom2, {""}, blendCubicMtl, ltSet},
+    {geom3, {""}, blendAmountMtl, ltSet},
+    {geom4, {""}, blendThresholdMtl, ltSet},
+    {geom5, {""}, blendInMtl, ltSet},
+    {geom6, {""}, blendBadMtl, ltSet},
+}

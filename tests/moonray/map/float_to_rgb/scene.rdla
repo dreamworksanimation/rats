@@ -1,0 +1,102 @@
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 100,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 6.2),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/plane.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-2.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom5 = UsdGeometry("geom5") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(2.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4, geom5,
+}
+
+texture = rats_assets_dir .. "/textures/fancy_A.tx"
+
+imgA = ImageMap("imgA") {
+    ["texture"] = texture,
+}
+
+imgA_R = RgbToFloatMap("imgA_R") {
+    ["input"] = bind(imgA),
+    ["mode"] = "r",
+}
+
+imgA_G = RgbToFloatMap("imgA_G") {
+    ["input"] = bind(imgA),
+    ["mode"] = "g",
+}
+
+imgA_B = RgbToFloatMap("imgA_B") {
+    ["input"] = bind(imgA),
+    ["mode"] = "b",
+}
+
+f2c = FloatToRgbMap("f2c") {
+    ["R"] = bind(imgA_R),
+    ["G"] = bind(imgA_G),
+    ["B"] = bind(imgA_B),
+}
+
+mtlR = DwaEmissiveMaterial("mtlR") {
+    ["emission_color"] = bind(imgA_R),
+}
+
+mtlG = DwaEmissiveMaterial("mtlG") {
+    ["emission_color"] = bind(imgA_G),
+}
+
+mtlB = DwaEmissiveMaterial("mtlB") {
+    ["emission_color"] = bind(imgA_B),
+}
+
+mtlRGB = DwaEmissiveMaterial("mtlRGB") {
+    ["emission_color"] = bind(imgA),
+}
+
+mtlF2C = DwaEmissiveMaterial("mtlF2C") {
+    ["emission_color"] = bind(f2c),
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, mtlR, ltSet},
+    {geom2, {""}, mtlG, ltSet},
+    {geom3, {""}, mtlB, ltSet},
+    {geom4, {""}, mtlRGB, ltSet},
+    {geom5, {""}, mtlF2C, ltSet},
+}
