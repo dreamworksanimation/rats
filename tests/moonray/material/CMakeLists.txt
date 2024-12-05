@@ -3,5 +3,8 @@
 
 add_subdirectory(dwaadjustmaterial)
 add_subdirectory(dwabase)
+add_subdirectory(dwacolorcorrect)
+add_subdirectory(dwafabric)
+add_subdirectory(dwalayer)
 # add_subdirectory(hair)
 

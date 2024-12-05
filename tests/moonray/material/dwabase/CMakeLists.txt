@@ -15,4 +15,10 @@ add_subdirectory(iridescence_metallic)
 add_subdirectory(iridescence_ramp)
 add_subdirectory(roughness)
 add_subdirectory(spheres)
+add_subdirectory(thin_geometry_diffuse_transmission)
+add_subdirectory(thin_geometry_reflection)
+add_subdirectory(thin_geometry_subsurface_scattering)
+add_subdirectory(thin_geometry_transmission)
+add_subdirectory(transmission_ior)
+
 
