@@ -1,0 +1,94 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+	["node_xform"] = translate(-0.5, -0.5, 3.0),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/plane.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4,
+}
+
+immap = ImageMap("immap") {
+    ["texture"] = rats_assets_dir .. "/textures/fancy_A.tx",
+}
+
+ccmapon = ColorCorrectLegacyMap("ccmapon") {
+    ["input"] = bind(immap), 
+    ["on"] = true,
+    ["mask"] = bind(immap),
+    ["brightness"] = 70,
+    ["contrast"] = 50,
+    ["hue"] = 220,
+    ["saturation"] = 200,
+    ["multiplier"] = Rgb(0.5, 0.5, 2.0),
+    ["clamp"] = true,
+}
+
+ccmapdefaults = ColorCorrectLegacyMap("ccmapdefaults") {
+    ["input"] = bind(immap), 
+}
+
+ccmapgray = ColorCorrectLegacyMap("ccmapgray") {
+    ["input"] = bind(immap), 
+    ["monochrome"] = 1, -- Luminance
+}
+
+ccmapinvert = ColorCorrectLegacyMap("ccmapinvert") {
+    ["input"] = bind(immap), 
+    ["invert"] = true,
+}
+
+ccdefaults = DwaEmissiveMaterial("ccdefaults") {
+    ["emission_color"] = bind(ccmapon),
+}
+
+testHue = DwaEmissiveMaterial("testHue") {
+    ["emission_color"] = bind(ccmapdefaults),
+}
+
+testSaturation = DwaEmissiveMaterial("testSaturation") {
+    ["emission_color"] = bind(ccmapgray),
+}
+
+testValue = DwaEmissiveMaterial("testValue") {
+    ["emission_color"] = bind(ccmapinvert),
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, ccdefaults, ltSet},
+    {geom2, {""}, testHue, ltSet},
+    {geom3, {""}, testSaturation, ltSet},
+    {geom4, {""}, testValue, ltSet},
+}

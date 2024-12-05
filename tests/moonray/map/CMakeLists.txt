@@ -3,6 +3,11 @@
 
 add_subdirectory(axis_angle)
 add_subdirectory(checkerboard)
+add_subdirectory(color_correct)
+add_subdirectory(color_correct_hsv)
+add_subdirectory(color_correct_legacy)
+add_subdirectory(combine_normal)
+add_subdirectory(deformation)
 add_subdirectory(directional)
 add_subdirectory(gradient)
 add_subdirectory(image)

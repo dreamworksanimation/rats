@@ -1,0 +1,92 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+	["node_xform"] = translate(-0.5, -0.5, 3.0),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/plane.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4,
+}
+
+immap = ImageMap("immap") {
+    ["texture"] = rats_assets_dir .. "/textures/fancy_A.tx",
+}
+
+ccmapdefaults = ColorCorrectHsvMap("ccmapdefaults") {
+    ["input"] = bind(immap), 
+}
+
+testHueMap = ColorCorrectHsvMap("testHueMap") {
+    ["input"] = bind(immap), 
+    ["on"] = true,
+    ["hue_shift"] = -120,
+}
+
+testSaturationMap = ColorCorrectHsvMap("testSaturationMap") {
+    ["input"] = bind(immap), 
+    ["saturation_contrast"] = 0.7,
+    ["saturation_factor"] = 1.5,
+    ["saturation_shift"] = 0.5,
+}
+
+testValueMap = ColorCorrectHsvMap("testValueMap") {
+    ["input"] = bind(immap), 
+    ["value_shift"] = 0.2,
+    ["value_factor"] = 0.5,
+    ["value_contrast"] = -0.2,
+}
+
+ccdefaults = DwaEmissiveMaterial("ccdefaults") {
+    ["emission_color"] = bind(ccmapdefaults),
+}
+
+testHue = DwaEmissiveMaterial("testHue") {
+    ["emission_color"] = bind(testHueMap),
+}
+
+testSaturation = DwaEmissiveMaterial("testSaturation") {
+    ["emission_color"] = bind(testSaturationMap),
+}
+
+testValue = DwaEmissiveMaterial("testValue") {
+    ["emission_color"] = bind(testValueMap),
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, ccdefaults, ltSet},
+    {geom2, {""}, testHue, ltSet},
+    {geom3, {""}, testSaturation, ltSet},
+    {geom4, {""}, testValue, ltSet},
+}

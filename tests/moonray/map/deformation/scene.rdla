@@ -1,0 +1,34 @@
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 300,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["near"] = 0.1,
+    ["node_xform"] = translate(0.0, 0.0, 8.0)
+}
+
+ltSet = LightSet("LightSet") { }
+
+geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/deformation.usdc",
+    ["prim_path"] = "/geom/mesh_0",
+    ["subd_type"] = "force subdivision mesh",
+    ["mesh_resolution"] = 5,
+}
+
+GeometrySet("geomset") {
+    geom
+}
+
+deformationMap = DeformationMap("deformationMap") {}
+
+
+mtl = DwaEmissiveMaterial("mtl1") {
+    ["emission_color"] = bind(deformationMap),
+}
+
+Layer("/Scene/layer") {
+    {geom, {""}, mtl, ltSet},
+}

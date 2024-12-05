@@ -1,0 +1,138 @@
+function linstep(inmin, inmax, outmin, outmax, t, power)
+    t = math.pow((t - inmin) / (inmax - inmin), power)
+    if t<0 then t = 0 end
+    if t>1 then t = 1 end
+    return outmin + t * (outmax - outmin)
+end
+
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 450,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = Mat4(0.776239,  4.97066e-05, -0.630439,  0,
+                         -0.0781026, 0.992304,    -0.0960869, 0,
+                          0.625583,  0.123825,     0.770268,  0,
+                         16.1788,    2.55414,     19.8414,    1),
+}
+
+imageMap = ImageMap("/Scene/surfacing/immap") {
+    ["texture"] = rats_assets_dir .. "/textures/fancy_A.tx",
+}
+
+lightSet = LightSet("lightSet") {}
+geoms = {}
+assignments = {}
+
+numCol = 10 
+numRow = 9 
+numDeep = 5
+spacingX = 1.5
+spacingY = 1.5
+spacingZ = 3.0
+scl = 1.4
+posXMin = -((numCol - 1) * spacingX) / 2.0
+posYMin = -((numRow - 1)* spacingY) / 2.0
+posZMin = -((numDeep - 1)* spacingZ) / 2.0
+posX = posXMin
+posY = posYMin
+posZ = posZMin
+
+hueShiftMin = 0.0
+hueShiftMax = 1.0
+
+contrastMin = 1.0
+contrastMax = -1.0
+
+saturationMin = 0.0
+saturationMax = 4.0
+
+gammaMin = 0.0
+gammaMax = 4.0
+
+gainMin = 0.0
+gainMax = 4.0
+
+offsetMin = -1.0
+offsetMax = 1.0
+
+tempuratureMin = -2.0
+tempuratureMax = 2.0
+
+magentaMin = -2.0
+magentaMax = 2.0
+
+intensityMin = -2.0
+intensityMax = 2.0
+
+mixMin = 0.0
+mixMax = 1.0
+
+for depth = 0, (numDeep - 1) do
+    posY = posYMin
+    for row = 0, (numRow - 1) do
+        posX = posXMin
+        for col = 0, (numCol - 1) do
+
+            colT = col / numCol
+            rowT = row / numRow
+            depthT = depth / numDeep
+
+            geom = UsdGeometry("geom" .. row .. "-" .. col .. "-" .. depth) {
+                ["node_xform"] = rotate(-90, 1, 0, 0) * scale(scl, scl, scl) * translate(posX, posY, posZ),
+                ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+                ["prim_path"] = "/plane",
+            }
+            table.insert(geoms, geom)
+
+            st = 1.0
+            of = 0.0
+
+            ccMap = ColorCorrectMap("ccMap" .. row .. "-" .. col .. "-" .. depth) {
+                ["input"] = bind(imageMap), 
+                ["on"] = true,
+                ["mix"] = linstep(0.0, 1.0, mixMin, mixMax, depthT, 1.0),
+
+                ["hue_shift_enabled"] = row == 0 and true or false,
+                ["hue_shift"] = linstep(0.0, 1.0, hueShiftMin, hueShiftMax, colT, 1.0),
+
+                ["contrast_enabled"] = row == 1 and true or false,
+                ["contrast"] = linstep(0.0, 1.0, contrastMin, contrastMax, colT, 1.0),
+
+                ["saturation_enabled"] = row == 2 and true or false,
+                ["saturation"] = linstep(0.0, 1.0, saturationMin, saturationMax, colT, 1.0),
+
+                ["gamma_enabled"] = row == 3 and true or false,
+                ["gamma"] = linstep(0.0, 1.0, gammaMin, gammaMax, colT, 1.0),
+
+                ["gain_offset_enabled"] = (row == 4 or row == 5) and true or false,
+                ["gain"] = (row == 4) and linstep(0.0, 1.0, gainMin, gainMax, colT, 1.0) or 1.0,
+                ["offset"] = (row == 5) and linstep(0.0, 1.0, offsetMin, offsetMax, colT, 1.0) or 0.0,
+
+                ["TMI_enabled"] = (row == 6 or row == 7 or row == 8) and true or false,
+                ["TMI"] = Rgb(
+                    (row == 6) and linstep(0.0, 1.0, tempuratureMin, tempuratureMax, colT, 1.0) or 0.0,
+                    (row == 7) and linstep(0.0, 1.0, magentaMin, magentaMax, colT, 1.0) or 0.0,
+                    (row == 8) and linstep(0.0, 1.0, intensityMin, intensityMax, colT, 1.0) or 0.0
+                ),
+            }
+
+            mtl = DwaSolidDielectricMaterial("mtl" .. row .. "-" .. col .. "-" .. depth) {
+                ["show_diffuse"] = false,
+                ["show_specular"] = false,
+                ["show_emission"] = true,
+                ["emission"] = bind(ccMap, Rgb(1,1,1)),
+            }
+            table.insert(assignments, {geom, "", mtl, lightSet})
+
+            posX = posX + spacingX 
+        end
+        posY = posY + spacingY
+    end
+    posZ = posZ + spacingZ
+end
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
