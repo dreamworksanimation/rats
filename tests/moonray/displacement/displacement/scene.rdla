@@ -1,0 +1,153 @@
+SceneVariables {
+    ["image width"] = 500,
+    ["image height"] = 300,
+    ["pixel_samples"] = 4,
+    ["max_depth"] = 1,
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 5.0) * rotate(40, 1, 0, 0),
+}
+
+envLight = EnvLight("envLight") {
+    ["node_xform"] = rotate(180, 0, 1, 0),
+    ["texture"] = rats_assets_dir.."/hdri/studio_3_point.exr",
+}
+
+ltSet = LightSet("ltSet") {
+    envLight,
+}
+
+model = rats_assets_dir.."/models/plane.usdc"
+primPath = "/plane"
+mesh_resolution = 50
+
+plane1 = UsdGeometry("plane1") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(180, 0, 0, 1) * translate(-1.1, 0.55, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = primPath,
+    ["mesh_resolution"] = mesh_resolution,
+}
+
+plane2 = UsdGeometry("plane2") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(180, 0, 0, 1) * translate(0.0, 0.55, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = primPath,
+    ["mesh_resolution"] = mesh_resolution,
+}
+
+plane3 = UsdGeometry("plane3") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(180, 0, 0, 1) * translate(1.1, 0.55, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = primPath,
+    ["mesh_resolution"] = mesh_resolution,
+}
+
+plane4 = UsdGeometry("plane4") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(180, 0, 0, 1) * translate(-1.1, -0.55, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = primPath,
+    ["mesh_resolution"] = mesh_resolution,
+}
+
+plane5 = UsdGeometry("plane5") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(180, 0, 0, 1) * translate(0.0, -0.55, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = primPath,
+    ["mesh_resolution"] = mesh_resolution,
+}
+
+plane6 = UsdGeometry("plane6") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(180, 0, 0, 1) * translate(1.1, -0.55, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = primPath,
+    ["mesh_resolution"] = mesh_resolution,
+}
+
+GeometrySet("/Scene/geoset") {
+    plane1,
+    plane2,
+    plane3,
+    plane4,
+    plane5,
+    plane6,
+}
+
+worleyMap = NoiseWorleyMap_v2("worleyMap") {
+    ["space"] = "object", 
+    ["frequency"] = 5.0,
+    ["use_smoothstep"] = true,
+    ["smoothstep"] = Vec2(0.15, 1.0),
+}
+
+normalWorleyDisp = NormalDisplacement("normalWorleyDisp") {
+    ["height"] = bind(worleyMap, 0.25),
+    ["zero_value"] = 0.5,
+}
+
+P = AttributeMap("P") {
+    ["map_type"] = "position", 
+}
+
+screenP = TransformSpaceMap("screenP") {
+    ["input"] = bind(P),
+    ["input_type"] = "point",
+    ["from_space"] = "render",
+    ["to_space"] = "screen"
+}
+
+checkerMap = CheckerboardMap("checkerMap") {
+    ["num_u_tiles"] = 10,
+    ["num_v_tiles"] = 0.5,
+    ["texture_coordinates"] = "input texture coordinates",
+    ["input_texture_coordinates"] = bind(screenP)
+}
+
+earImageMap = ImageMap("earImageMap") {
+    ["texture"] = rats_assets_dir.."/textures/shrek_ear.tx",
+    ["scale"] = Vec2(0.5, 0.5),
+    ["offset"] = Vec2(0.25, 0.25),
+}
+
+vectorEarDisp = VectorDisplacement("vectorEarDisp") {
+    ["vector"] = bind(earImageMap),
+    ["source space"] = "object",
+}
+
+switchDisp = SwitchDisplacement("switchDisp") {
+    ["choice"] = bind(checkerMap, 1),
+    ["displacement0"] = vectorEarDisp,
+    ["displacement1"] = normalWorleyDisp
+}
+
+combineDispAdd = CombineDisplacement("combineDispAdd") {
+    ["operation"] = "add",
+    ["input_1"] = normalWorleyDisp,
+    ["input_2"] = vectorEarDisp,
+}
+
+combineDispMax = CombineDisplacement("combineDispMax") {
+    ["operation"] = "max magnitude",
+    ["input_1"] = normalWorleyDisp,
+    ["input_2"] = vectorEarDisp,
+}
+
+combineDispMin = CombineDisplacement("combineDispMin") {
+    ["operation"] = "min magnitude",
+    ["input_1"] = normalWorleyDisp,
+    ["input_2"] = vectorEarDisp,
+}
+
+mtl = DwaSolidDielectricMaterial("/obj/Looks/sphere/DwaSolidDielectricMaterial1") {
+    ["albedo"] = Rgb(0.7, 0.7, 0.0),
+    ["roughness"] = 0.5,
+}
+
+Layer("/Scene/layer") {
+    { plane1, {""}, mtl, ltSet, normalWorleyDisp },
+    { plane2, {""}, mtl, ltSet, switchDisp},
+    { plane3, {""}, mtl, ltSet, vectorEarDisp },
+    { plane4, {""}, mtl, ltSet, combineDispAdd },
+    { plane5, {""}, mtl, ltSet, combineDispMax },
+    { plane6, {""}, mtl, ltSet, combineDispMin },
+}
