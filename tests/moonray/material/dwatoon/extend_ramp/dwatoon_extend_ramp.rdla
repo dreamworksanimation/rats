@@ -1,0 +1,92 @@
+-- Scene: 
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 0,
+    ["scene_scale"] = 0.03,
+    ["image_width"] = 450,
+    ["image_height"] = 150
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = translate(2.0, 0.0, 8.0), 
+}
+
+-------------------------------------------------------------------
+
+key = RectLight("key") {
+    ["node_xform"] = rotate(-45, 1, 0, 0) * translate(10, 13, 5),
+    ["exposure"] = 1.5,
+}
+
+lightset = LightSet("/Scene/shadowset/1") {
+    key, 
+}
+
+-------------------------------------------------------------------
+
+-- sphere 1
+mtl1 = DwaToonMaterial("/obj/sphere1/matnet1/DwaToonMaterial1") {
+    ["albedo"] = Rgb(0.275, 0.518, 1.0),
+    ["diffuse_model"] = 1,
+    ["colors"] = {Rgb(1.0, 1.0, 1.0), Rgb(1.0, 1.0, 1.0), Rgb(0.0, 0.0, 1.0)},
+    ["interpolations"] = {1, 1, 1},
+    ["positions"] = {0.0, 0.6, 1.0},
+    ["show_specular"] = false,
+    ["prevent_light_culling"] = true,
+    ["extend_ramp"] = true,
+}
+
+-- sphere 2
+mtl2 = DwaToonMaterial("/obj/sphere2/matnet1/DwaToonMaterial1") {
+    ["albedo"] = Rgb(0.275, 0.518, 1.0),
+    ["diffuse_model"] = 1,
+    ["colors"] = {Rgb(1.0, 1.0, 1.0), Rgb(1.0, 1.0, 1.0), Rgb(0.0, 1.0, 0.0)},
+    ["interpolations"] = {1, 1, 1},
+    ["positions"] = {0.0, 0.6, 1.0},
+    ["show_specular"] = false,
+    ["prevent_light_culling"] = true,
+    ["extend_ramp"] = true,
+}
+
+-- sphere 3
+mtl3 = DwaToonMaterial("/obj/sphere3/matnet1/DwaToonMaterial1") {
+    ["albedo"] = Rgb(0.275, 0.518, 1.0),
+    ["diffuse_model"] = 1,
+    ["colors"] = {Rgb(1.0, 1.0, 1.0), Rgb(1.0, 1.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1},
+    ["positions"] = {0.0, 0.6, 1.0},
+    ["show_specular"] = false,
+    ["prevent_light_culling"] = true,
+    ["extend_ramp"] = true,
+}
+
+-------------------------------------------------------------------
+
+sphere1 = SphereGeometry("/obj/sphere1") {
+    ["node_xform"] = scale(0.8, 0.8, 0.8) * translate(0, 0, 0),
+    ["visible_shadow"] = false,
+}
+
+sphere2 = SphereGeometry("/obj/sphere2") {
+    ["node_xform"] = scale(0.8, 0.8, 0.8) * translate(2, 0, 0),
+    ["visible_shadow"] = false,
+}
+
+sphere3 = SphereGeometry("/obj/sphere3") {
+    ["node_xform"] = scale(0.8, 0.8, 0.8) * translate(4, 0, 0),
+    ["visible_shadow"] = false,
+}
+
+-------------------------------------------------------------------
+
+GeometrySet("/Scene/geoset") {
+    sphere1, 
+    sphere2, 
+    sphere3, 
+}
+
+Layer("/Scene/layer") {
+    {sphere1, "", mtl1, lightset},
+    {sphere2, "", mtl2, lightset},
+    {sphere3, "", mtl3, lightset},
+}
