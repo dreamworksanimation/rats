@@ -1,0 +1,11 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# A scene with two overlapping volumes in front of a plane.
+# One of the volumes is cutout.
+
+add_rats_test(moonray_volume_cutout
+    INPUTS cutout.rdla
+    CANONICALS scene.exr
+)
+
