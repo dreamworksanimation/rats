@@ -1,0 +1,68 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["image_width"] = 512,
+    ["image_height"] = 256,
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = Mat4(0.999074115102, -6.93889390391e-18, -0.0430222330045, 0.0,
+                         -0.0179486003796, 0.90881763734, -0.416807329356, 0.0, 
+                          0.0390993641522, 0.417193602612, 0.907976176814, 0.0, 
+                          1.5546043012, 4.2638509463, 9.23319238714, 1.0),
+}
+
+DwaSolidDielectricMaterial("/floormaterial") {
+    ["albedo"] = Rgb(0.0, 0.25, 0.0),
+}
+
+VdbGeometry("/obj/sphere1") {
+    ["model"] = rats_assets_dir.."/models/torus.vdb",
+    ["node_xform"] = scale(0.0035, 0.0035, 0.0035) * translate(0, -0.5, 0),
+}
+
+VdbGeometry("/obj/sphere2") {
+    ["model"] = rats_assets_dir.."/models/torus.vdb",
+    ["node_xform"] = scale(0.0035, 0.0035, 0.0035) * translate(2.4, -0.5, 0),
+}
+
+VdbVolume("/mat/VdbVolume1") {
+}
+
+UsdGeometry("/obj/grid1") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = translate(0, -1, 0) * scale(40, 1, 40),
+}
+
+GeometrySet("/Scene/geoset") {
+    UsdGeometry("/obj/grid1"),
+    VdbGeometry("/obj/sphere1"),
+    VdbGeometry("/obj/sphere2"), 
+}
+
+SpotLight("/obj/SpotLight2") {
+    ["lens_radius"] = 0.1,
+    ["exposure"] = -3.0,
+    ["node_xform"] = Mat4(0.0107586713889, 0.0, -0.99994212382, 0.0, 
+                         -0.289838888811, 0.957070370312, -0.0031184618451, 0.0, 
+                          0.957014978735, 0.289855664549, 0.0102968056102, 0.0, 
+                          6.23620862613, 2.22288597362, 0.0464278116991, 1.0),
+}
+
+ShadowSet("/Scene/shadowset/4") {
+    SpotLight("/obj/SpotLight2"),
+}
+
+ShadowSet("/Scene/shadowset/2") {
+}
+
+LightSet("/Scene/lightset/1") {
+    SpotLight("/obj/SpotLight2"),
+}
+
+Layer("/Scene/layer") {
+    {UsdGeometry("/obj/grid1"), "", DwaSolidDielectricMaterial("/floormaterial"), LightSet("/Scene/lightset/1"), ShadowSet("/Scene/shadowset/4")},
+    {VdbGeometry("/obj/sphere1"), "", LightSet("/Scene/lightset/1"), ShadowSet("/Scene/shadowset/2"), VdbVolume("/mat/VdbVolume1")},
+    {VdbGeometry("/obj/sphere2"), "", LightSet("/Scene/lightset/1"), ShadowSet("/Scene/shadowset/4"), VdbVolume("/mat/VdbVolume1")},
+}
+

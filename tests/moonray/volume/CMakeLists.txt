@@ -5,5 +5,6 @@ add_subdirectory(bv_ramp)
 add_subdirectory(cutout)
 add_subdirectory(homogenous_scattering)
 add_subdirectory(overlapping)
+add_subdirectory(shadowset)
 add_subdirectory(transmittance)
 
