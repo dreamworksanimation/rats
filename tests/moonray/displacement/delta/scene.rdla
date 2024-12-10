@@ -1,0 +1,46 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image width"] = 250,
+    ["image height"] = 250,
+    ["pixel samples"] = 2,
+    ["max depth"] = 0,
+}
+
+Camera("camera") {
+    ["node xform"] = translate(0, 0, 4),
+}
+
+env = EnvLight("env") {
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("lightSet") {
+    env
+}
+
+sphereGeom = UsdGeometry("sphereGeom") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["subd_type"] = "force subdivision mesh",
+    ["mesh_resolution"] = 10,
+}
+
+GeometrySet("geomset") {
+    sphereGeom,
+}
+
+giraffeMap = ImageMap("giraffeMap") {
+    ["texture"] = rats_assets_dir.."/textures/giraffe.tx",
+}
+
+giraffeDisp = NormalDisplacement("giraffeDisp") {
+    ["height"] = bind(giraffeMap, 0.2),
+}
+
+sphereMtl = DwaSolidDielectricMaterial("sphereMtl") {
+}
+
+Layer("layer") {
+    { sphereGeom, "", sphereMtl, lightSet, giraffeDisp },
+}

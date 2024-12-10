@@ -3,7 +3,7 @@
 
 # This tests the NormalDisplacement, VectorDisplacement, SwitchDisplacement, and CombineDisplacement maps
 
-add_rats_test(moonray_map_color_correct
+add_rats_test(moonray_displacement_displacement
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

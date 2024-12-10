@@ -79,6 +79,9 @@ function(add_rats_test test_basename)
             INPUTS              # (required) ordered list of input files the test requires.
                                 # example: INPUTS scene.rdla scene.rdlb
 
+            DELTAS              # (optional) ordered list of optional delta files for the test.
+                                # example: DELTAS deltas.rdla
+
             RENDER_ARGS         # (optional) list of renderer args to set/override.
             RENDER_ARGS_SCALAR  # | (optional) list of renderer args to set/override per execution mode
             RENDER_ARGS_VECTOR  # | example: RENDER_ARGS_XPU -scene_var pixel_samples 1 -texture_cache_size 8192
@@ -162,6 +165,9 @@ function(add_rats_test test_basename)
         foreach(rdl_input ${ARG_INPUTS})
             list(APPEND render_cmd -in ${CMAKE_CURRENT_SOURCE_DIR}/${rdl_input})
         endforeach()
+        foreach(rdl_delta ${ARG_DELTAS})
+            list(APPEND render_cmd -deltas ${CMAKE_CURRENT_SOURCE_DIR}/${rdl_delta})
+        endforeach()
         if(${renderer} STREQUAL "moonray")
             list(APPEND render_cmd -exec_mode ${exec_mode})
             list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
@@ -196,6 +202,7 @@ function(add_rats_test test_basename)
             DEPENDS "${canonical_dependencies}"
             DISABLED ${ARG_DISABLED}
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
+            ENVIRONMENT RATS_ASSETS_DIR=${rats_assets_dir}
         )
 
         # Add CTest to render result
@@ -208,6 +215,7 @@ function(add_rats_test test_basename)
             DEPENDS "${render_dependencies}"
             DISABLED ${ARG_DISABLED}
             ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
+            ENVIRONMENT RATS_ASSETS_DIR=${rats_assets_dir}
         )
 
         # Add CTest to diff against the canonical images

@@ -1,0 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+giraffeMap = ImageMap("giraffeMap") {
+    ["texture"] = rats_assets_dir.."/textures/dots.tx",
+}
