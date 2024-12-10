@@ -1,0 +1,11 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# Test the blending algorithm of glitter material
+
+add_rats_test(moonray_material_glitter_blend
+    INPUTS glitter_blend.rdla
+    CANONICALS
+        scene.exr
+)
+

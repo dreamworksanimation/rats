@@ -1,0 +1,136 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 1,
+    ["image_width"] = 600,
+    ["image_height"] = 200,
+}
+
+local camera = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 8.0),
+}
+
+------------------------- Lights ----------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["node_xform"] = rotate(120, 0, 1, 0),
+    ["sample_upper_hemisphere_only"] = false,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightset = LightSet("LightSetA") {
+    env,
+}
+
+------------------------- Geometry ---------------------------
+
+sphere_left = SphereGeometry("/Scene/geometry/sphere_left") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(80, 0, 1, 0) * translate(-2.1, 0, 0),
+}
+
+sphere_center = SphereGeometry("/Scene/geometry/sphere_center") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(70, 0, 1, 0) * translate(0.0, 0, 0),
+}
+
+sphere_right = SphereGeometry("/Scene/geometry/sphere_right") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(60, 0, 1, 0) * translate(2.1, 0, 0),
+}
+
+GeometrySet("geometryset") {
+    sphere_left,
+    sphere_center,
+    sphere_right,
+}
+
+------------------------- Materials --------------------------
+
+local flakeRandomness = 0.5;
+
+local checker = CheckerboardMap("/Scene/surfacing/map/checker") {
+    ["color_A"] = Rgb(0, 0, 0),  -- Rgb
+    ["color_B"] = Rgb(1, 1, 1),  -- Rgb
+    ["num_u_tiles"] = 1,  -- Int
+    ["num_v_tiles"] = 24,  -- Int
+}
+
+local dwasolid1 = DwaSolidDielectricMaterial("/Scene/surfacing/solid1") {
+    ["albedo"] = Rgb(0.55, 0.10, 0.10),
+    ["refractive_index"] = 1.54,
+    ["roughness"] = 0.1,
+    ["specular_model"] = 0,
+}
+
+local dwasolid2 = DwaMetalMaterial("/Scene/surfacing/solid2") {
+    ["metallic_color"] = Rgb(0.15, 0.10, 0.40),
+    ["metallic_edge_color"] = Rgb(0.55, 0.10, 0.10),
+    ["roughness"] = 0.3,
+    ["specular_model"] = 0,
+}
+
+local dwalayer = DwaLayerMaterial("/Scene/surfacing/layered_solids") {
+    ["material_A"] = dwasolid1,
+    ["material_B"] = dwasolid2,
+    ["mask"] = 0.5,
+}
+
+-- Very dense flakes (ggx approximation kicks in at this distance)
+local glitterMat = DwaBaseMaterial("/Scene/surfacing/glitter") {
+    ["show_glitter"] = true,
+    ["glitter_color_A"] = Rgb(0.55, 0.55, 0.55),
+    ["glitter_density"] = 500,
+    ["glitter_randomness"] = flakeRandomness, 
+    ["glitter_roughness_A"] = 0.1, 
+    ["glitter_size_A"] = 0.08/500,
+    ["glitter_space"] = 4,
+    ["glitter_layering_mode"] = 0,
+}
+
+-- Sparse flakes with additive layering
+local glitterMatAdditive = DwaBaseMaterial("/Scene/surfacing/glitter_additive") {
+    ["show_glitter"] = true,
+    ["glitter_color_A"] = Rgb(0.55, 0.55, 0.55),
+    ["glitter_density"] = 50,
+    ["glitter_randomness"] = flakeRandomness, 
+    ["glitter_roughness_A"] = 0.1, 
+    ["glitter_size_A"] = 0.01,
+    ["glitter_space"] = 4,
+    ["glitter"] = bind(checker, 1.0),
+    ["glitter_layering_mode"] = 1,
+}
+
+-- Test: layering of dense glitter (ggx approximation) over another layer material
+-- with a bound dwalayer mask. 
+local dwalayerGlitter = DwaLayerMaterial("/Scene/surfacing/layer_glitter") {
+    ["material_A"] = glitterMat,
+    ["material_B"] = dwalayer,
+    ["mask"] = bind(checker, 1.0),
+}
+
+-- Test: binding the glitter attribute alone without dwalayer using the glitter
+-- physical layering mode. 
+local glitterMatPhysical = DwaBaseMaterial("/Scene/surfacing/glitter_physical") {
+    ["show_glitter"] = true,
+    ["glitter_color_A"] = Rgb(0.55, 0.55, 0.55),
+    ["glitter_density"] = 50,
+    ["glitter_randomness"] = flakeRandomness, 
+    ["glitter_roughness_A"] = 0.1, 
+    ["glitter_size_A"] = 0.01,
+    ["glitter_space"] = 4,
+    ["glitter"] = bind(checker, 1.0),
+    ["glitter_layering_mode"] = 0,
+}
+
+-- Test: additive glitter layering mode being layered over another layer material
+-- but with the mask applied to the child material's 'glitter' attribute.
+local dwalayerGlitterAdditive = DwaLayerMaterial("/Scene/surfacing/layer_glitter_additive") {
+    ["material_A"] = glitterMatAdditive,
+    ["material_B"] = dwalayer,
+    ["mask"] = 1.0,
+}
+
+------------------------------------------------------------
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {sphere_left, "", dwalayerGlitter, lightset},
+    {sphere_center, "", glitterMatPhysical, lightset},
+    {sphere_right, "", dwalayerGlitterAdditive, lightset},
+}

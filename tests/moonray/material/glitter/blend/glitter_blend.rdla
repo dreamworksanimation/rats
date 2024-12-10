@@ -1,0 +1,101 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 0,
+    ["image_width"] = 550,
+    ["image_height"] = 256,
+}
+
+local camera = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 10),
+    ["near"] = 0.01,
+}
+
+--------------------- Geometry ------------------------
+
+-- LEFT : Super close (4 lobe glitter only)
+sphere1 = SphereGeometry("/Scene/geometry/sphere_topleft") {
+    ["node_xform"] = translate(-0.6, 0.84, 9.98),
+}
+
+sphere2 = SphereGeometry("/Scene/geometry/sphere_bottomleft") {
+    ["node_xform"] = translate(-0.6, -0.84, 9.98),
+}
+
+-- MIDDLE (blend between glitter and microflake)
+sphere3 = SphereGeometry("/Scene/geometry/sphere_topcenter") {
+    ["node_xform"] = scale(0.5, 0.5, 0.5) * translate(0.35, 0.50, 7),
+}
+
+sphere4 = SphereGeometry("/Scene/geometry/sphere_bottomcenter") {
+    ["node_xform"] = scale(0.5, 0.5, 0.5) * translate(0.35, -0.50, 7),
+}
+
+-- RIGHT (microfacet approximation only)
+sphere5 = SphereGeometry("/Scene/geometry/sphere_topright") {
+    ["node_xform"] = translate(6.5, 1.5, -10),
+}
+
+sphere6 = SphereGeometry("/Scene/geometry/sphere_bottomright") {
+    ["node_xform"] = translate(6.5, -1.5, -10),
+}
+
+GeometrySet("geometryset") {
+    sphere1,
+    sphere2,
+    sphere3,
+    sphere4,
+    sphere5,
+    sphere6,
+}
+
+------------------------- Materials -----------------------------
+
+local flakeRandomness = 0.5;
+local flakeDensity = 3162.28;
+
+top_mtl = DwaBaseMaterial("/Scene/surfacing/obj_sphere_top") {
+    ["show_specular"] = false,
+    ["show_diffuse"] = false,
+    ["show_glitter"] = true,
+    ["glitter_color_A"] = Rgb(0.55, 0.55, 0.55),
+    ["glitter_density"] = flakeDensity,
+    ["glitter_randomness"] = flakeRandomness,
+    ["glitter_roughness_A"] = 0.1,
+    ["glitter_size_A"] = 1.0/flakeDensity,
+    ["glitter_space"] = 4,
+}
+
+bottom_mtl = DwaBaseMaterial("/Scene/surfacing/obj_sphere_bottom") {
+    ["show_specular"] = false,
+    ["show_diffuse"] = false,
+    ["show_glitter"] = true,
+    ["glitter_color_A"] = Rgb(0.55, 0.55, 0.55),
+    ["glitter_density"] = flakeDensity,
+    ["glitter_randomness"] = flakeRandomness,
+    ["glitter_roughness_A"] = 0.1,
+    ["glitter_size_A"] = 1.0/flakeDensity,
+    ["glitter_debug_mode"] = "blend",
+    ["glitter_space"] = 4,
+}
+
+-------------------------- Lights -------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["node_xform"] = rotate(80, 0, 1, 0),
+    ["intensity"] = 1.5,
+	["sample_upper_hemisphere_only"] = false,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightset = LightSet("LightSetA") {
+    env,
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {sphere1, "", top_mtl, lightset},
+    {sphere2, "", top_mtl, lightset},
+    {sphere3, "", top_mtl, lightset},
+    {sphere4, "", bottom_mtl, lightset},
+    {sphere5, "", bottom_mtl, lightset},
+    {sphere6, "", bottom_mtl, lightset},
+}

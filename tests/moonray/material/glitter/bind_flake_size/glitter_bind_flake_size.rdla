@@ -1,0 +1,56 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+}
+
+local camera = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 3),
+}
+
+----------------------------------------------------------
+
+envLight = EnvLight("envLight") {
+    ["node xform"] = rotate(45, 0, 1, 0),
+    ["intensity"] = 0.6,
+	["sample upper hemisphere only"] = false,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+ltSet = LightSet("ltSet") {
+    envLight
+}
+
+----------------------------------------------------------
+
+sphereGeom = SphereGeometry("sphereGeom") {}
+
+GeometrySet("geometryset") {
+    sphereGeom
+}
+
+----------------------------------------------------------
+
+noiseMap = NoiseMap_v2("noiseMap") {
+    ["frequency_multiplier"] = 3,
+    ["max_level"] = 3,
+    ["use_smoothstep"] = true,
+    ["smoothstep"] = Vec2(0.2, 0.9),
+}
+
+glitterMtl = DwaBaseMaterial("glitterMtl") {
+    ["show_specular"] = false,
+    ["show_diffuse"] = false,
+    ["show_glitter"] = true,
+    ["glitter_color_A"] = Rgb(0.55, 0.55, 0.55),
+    ["glitter_density"] = 50,
+    ["glitter_roughness_A"] = 0.1,
+    ["glitter_size_A"] = bind(noiseMap, 1.0/50),
+    ["glitter_space"] = 4,
+}
+
+----------------------------------------------------------
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {sphereGeom, "", glitterMtl, ltSet},
+}

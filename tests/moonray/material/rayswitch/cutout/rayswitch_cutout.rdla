@@ -1,0 +1,91 @@
+SceneVariables {
+    ["pixel_samples"] = 3,
+    ["max_depth"] = 3,
+    ["image_width"] = 900,
+    ["image_height"] = 250,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 1.0, 17) * rotate(-10, 1, 0, 0),
+    ["focal"] = 50,
+}
+
+----------------------- Lights --------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+----------------------- Geometry -----------------------
+
+sphereLGeom = SphereGeometry("/Scene/geometry/sphereLGeom") {
+    ["node_xform"] = translate(-2.6, 1.0, 0),
+}
+
+sphereMGeom = SphereGeometry("/Scene/geometry/sphereMGeom") {
+    ["node_xform"] = translate(0, 1.0, 0),
+}
+
+sphereRGeom = SphereGeometry("/Scene/geometry/sphereRGeom") {
+    ["node_xform"] = translate(2.6, 1.0, 0),
+}
+
+planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(18, 1, 10),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+---------------------- Materials ------------------------
+
+sphereLIndirectMtl = DwaBaseMaterial("/Scene/surfacing/sphereLIndirectMtl") {
+    ["albedo"] = Rgb(0.5, 0.5, 0.5),
+    ["show_emission"] = true,
+    ["emission"] = Rgb(1, 0, 0),
+    ["show_specular"] = false,
+}
+
+sphereLMtl = RaySwitchMaterial("/Scene/surfacing/sphereLMtl") {
+    ["cutout_camera_rays"] = true,
+    ["indirect_diffuse_ray_material"] = sphereLIndirectMtl,
+    ["indirect_glossy_ray_material"] = sphereLIndirectMtl,
+    ["indirect_mirror_ray_material"] = sphereLIndirectMtl,
+}
+
+sphereMMtl = DwaBaseMaterial("/Scene/surfacing/sphereMMtl") {
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.5, 0.5),
+    ["roughness"] = 0.0,
+    ["anisotropy"] = 0.0,
+}
+
+sphereRMtl = RaySwitchMaterial("/Scene/surfacing/sphereRMtl") {
+    ["cutout_camera_rays"] = true
+}
+
+planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = Rgb(0.18, 0.18, 0.18),
+    ["show_specular"] = false,
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    planeGeom,
+    sphereLGeom,
+    sphereMGeom,
+    sphereRGeom
+}
+
+Layer("/Scene/layer") {
+    {planeGeom, "", planeMtl, lightSet},
+    {sphereLGeom, "", sphereLMtl, lightSet},
+    {sphereMGeom, "", sphereMMtl, lightSet},
+    {sphereRGeom, "", sphereRMtl, lightSet}
+}

@@ -12,5 +12,8 @@ add_subdirectory(dwarefractive)
 add_subdirectory(dwaskin)
 add_subdirectory(dwasoliddielectric)
 add_subdirectory(dwatoon)
+add_subdirectory(glitter)
 # add_subdirectory(hair)
+add_subdirectory(rayswitch)
+add_subdirectory(self_intersecting_dielectric)
 
