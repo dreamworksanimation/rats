@@ -6,6 +6,7 @@ add_subdirectory(cutout)
 add_subdirectory(homogenous_scattering)
 add_subdirectory(instancing)
 add_subdirectory(overlapping)
+add_subdirectory(position)
 add_subdirectory(shadowset)
 add_subdirectory(transmittance)
 
