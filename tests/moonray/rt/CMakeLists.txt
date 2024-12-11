@@ -11,5 +11,6 @@ add_subdirectory(ray_mask_propagate_on)
 add_subdirectory(shadow_ray_epsilon)
 add_subdirectory(sidedness)
 add_subdirectory(transparency)
+add_subdirectory(transparency_map)
 add_subdirectory(transparency_threshold)
 
