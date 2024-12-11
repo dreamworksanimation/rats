@@ -1,0 +1,139 @@
+SceneVariables {
+    ["image width"] = 300,
+    ["image height"] = 300,
+    ["pixel samples"] = 4,
+}
+
+shotCam = Camera("camera") {
+    ["node xform"] = translate(0, 0.0, 5),
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") { }
+
+planeGeom1 = UsdGeometry("planeGeom1") {
+    ["node xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-1, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom2 = UsdGeometry("planeGeom2") {
+    ["node xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(1, 1, -0.25),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom3 = UsdGeometry("planeGeom3") {
+    ["node xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-0.5, -0.5, 0.5),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom4 = UsdGeometry("planeGeom4") {
+    ["node xform"] = scale(1.8, 1.8, 1) * translate(1, -1, -1),
+    ["stage"] = rats_assets_dir .. "/models/plane_xy_unit_ref.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeGeom5 = UsdGeometry("planeGeom5") {
+    ["node xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-1, -1, -1.5),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    planeGeom1,
+    planeGeom2,
+    planeGeom3,
+    planeGeom4,
+    planeGeom5,
+}
+
+projCam1 = Camera("/projCam1") {
+   ["node xform"] = translate(-1, 1, 8.75),
+   ["focal"] = 150,
+}
+
+projCam2 = Camera("projCam2") {
+   ["node xform"] = translate(1, 1, 8.75),
+   ["focal"] = 140,
+}
+
+projCam3 = Camera("projCam3") {
+   ["node xform"] = translate(-0.5, -0.5, 8.75),
+   ["focal"] = 130,
+}
+
+projCam4 = Camera("projCam4") {
+   ["node xform"] = translate(0, 0, 4.0),
+   ["focal"] = 120,
+}
+
+projCam5 = Camera("projCam5") {
+   ["node xform"] = translate(1, -1.0, 16.75) * rotate(180, 0, 1, 0),
+   ["focal"] = 130,
+}
+
+projMap1 = ProjectCameraMap_v2("projMap1") {
+    ["texture"] = rats_assets_dir .. "/textures/anamorphic2_35.tx",
+    ["projector"] = projCam1,
+}
+
+projMap2 = ProjectCameraMap_v2("projMap2") {
+   ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+   ["projector"] = projCam2,
+   ["aspect_ratio_source"] = "custom",
+   ["custom_aspect_ratio"] = 1.25,
+}
+
+projMap3 = ProjectCameraMap_v2("projMap3") {
+    ["projector"] = projCam3,
+    ["texture"] = rats_assets_dir .. "/textures/wood_splat.tx",
+    ["unpremultiply"] = true,
+}
+
+projMap3_alpha = ProjectCameraMap_v2("projMap3_alpha") {
+    ["projector"] = projCam3,
+    ["texture"] = rats_assets_dir .. "/textures/wood_splat.tx",
+    ["alpha_only"] = true,
+}
+
+projMap4 = ProjectCameraMap_v2("projMap4") {
+   ["projector"] = projCam4,
+   ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+   ["use_reference_space"] = true,
+}
+
+projMap5 = ProjectCameraMap_v2("projMap5") {
+   ["projector"] = projCam5,
+   ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+   ["project_on_back_faces"] = true,
+}
+
+projMtl1 = DwaEmissiveMaterial("projMtl1") {
+    ["emission_color"] = bind(projMap1),
+}
+
+projMtl2 = DwaEmissiveMaterial("projMtl2") {
+    ["emission_color"] = bind(projMap2),
+}
+
+projMtl3 = DwaEmissiveMaterial("projMtl3") {
+    ["emission_color"] = bind(projMap3),
+    ["presence"] = bind(projMap3_alpha),
+}
+
+projMtl4 = DwaEmissiveMaterial("projMtl4") {
+    ["emission_color"] = bind(projMap4),
+}
+
+projMtl5 = DwaEmissiveMaterial("projMtl5") {
+    ["emission_color"] = bind(projMap5),
+}
+
+Layer("layer") {
+    {planeGeom1, "", projMtl1, lightSet},
+    {planeGeom2, "", projMtl2, lightSet},
+    {planeGeom3, "", projMtl3, lightSet},
+    {planeGeom4, "", projMtl4, lightSet},
+    {planeGeom5, "", projMtl5, lightSet},
+}

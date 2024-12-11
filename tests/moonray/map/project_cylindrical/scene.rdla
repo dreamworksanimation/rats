@@ -1,0 +1,103 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 2.2, 12), -- YXZ
+}
+
+lightSet = LightSet("lightSet") { }
+
+cyl1 = UsdGeometry("cyl1") {
+    ["node_xform"] = scale(2.0, 3.0, 2.0) * translate(-2, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/cylinder.usdc",
+    ["prim_path"] = "/cylinder",
+}
+
+cyl2 = UsdGeometry("cyl2") {
+    ["node_xform"] = scale(2.0, 3.0, 2.0) * rotate(-45, 1, 0, 0) * translate(2, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/cylinder.usdc",
+    ["prim_path"] = "/cylinder",
+}
+
+mug1 = UsdGeometry("mug1") {
+    ["node_xform"] = scale(0.7, 0.7, 0.7) * rotate(45, 0, 1, 0) * rotate(45, 1, 0, 0) * translate(-2, 3, 0),
+    ["stage"] = rats_assets_dir .. "/models/mug.usdc",
+    ["prim_path"] = "/mug",
+    ["mesh_resolution"] = 1,
+}
+
+mug2 = UsdGeometry("mug2") {
+    ["node_xform"] = scale(0.7, 0.7, 0.7) * rotate(25, 0, 1, 0) * rotate(45, 1, 0, 0) * translate(2, 3, 0),
+    ["stage"] = rats_assets_dir .. "/models/mug.usdc",
+    ["prim_path"] = "/mug",
+    ["mesh_resolution"] = 1,
+}
+
+GeometrySet("geometrySet") { cyl1, cyl2, mug1, mug2, }
+
+projMap1 = ProjectCylindricalMap("projMap1") {
+    ["projection_mode"] = "TRS",
+    ["translate"] = Vec3(-2.0, 0.0, 0.0),
+    ["use_reference_space"] = false
+}
+
+checkerMap1 = CheckerboardMap("checkerMap1") {
+    ["texture_coordinates"] = "input texture coordinates",
+    ["input_texture_coordinates"] = bind(projMap1),
+}
+
+projMap2 = ProjectCylindricalMap("projMap2") {
+    ["projection_mode"] = "projection_matrix",
+    ["use_reference_space"] = true
+}
+
+checkerMap2 = CheckerboardMap("checkerMap2") {
+    ["texture_coordinates"] = "input texture coordinates",
+    ["input_texture_coordinates"] = bind(projMap2),
+}
+
+projMug1 = ProjectCylindricalMap("projMug1") {
+    ["projector"] = mug1,
+    ["project_on_inward_surfaces"] = false,
+}
+
+checkerMug1 = CheckerboardMap("checkerMug1") {
+    ["texture_coordinates"] = "input texture coordinates",
+    ["input_texture_coordinates"] = bind(projMug1),
+}
+
+projMug2 = ProjectCylindricalMap("projMug2") {
+    ["projector"] = mug2,
+    ["project_on_outward_surfaces"] = false,
+}
+
+checkerMug2 = CheckerboardMap("checkerMug2") {
+    ["texture_coordinates"] = "input texture coordinates",
+    ["input_texture_coordinates"] = bind(projMug2),
+}
+
+mtl1 = DwaEmissiveMaterial("mtl1") {
+    ["emission_color"] = bind(checkerMap1)
+}
+
+mtl2 = DwaEmissiveMaterial("mtl2") {
+    ["emission_color"] = bind(checkerMap2)
+}
+
+mtlMug1 = DwaEmissiveMaterial("mtlMug1") {
+    ["emission_color"] = bind(checkerMug1),
+}
+
+mtlMug2 = DwaEmissiveMaterial("mtlMug2") {
+    ["emission_color"] = bind(checkerMug2),
+}
+
+Layer("layer") {
+    { cyl1, "", mtl1, lightSet, },
+    { cyl2, "", mtl2, lightSet, },
+    { mug1, "", mtlMug1, lightSet, },
+    { mug2, "", mtlMug2, lightSet, },
+}

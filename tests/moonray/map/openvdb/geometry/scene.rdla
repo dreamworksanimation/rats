@@ -1,0 +1,33 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 1,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0.0, 0.0, 2.0),
+}
+
+envLight = EnvLight("envLight") { }
+
+lightSet = LightSet("lightSet") { envLight }
+
+bunnyVdb = VdbGeometry("bunnyVdb") {
+    ["model"] = rats_assets_dir .. "/models/bunny.vdb",
+}
+
+GeometrySet("/Scene/geoset") { bunnyVdb }
+
+openVdbMap = OpenVdbMap_v2("openVdbMap") {
+    ["grid_name"] = "foo",
+    ["openvdb_geometry"] = { bunnyVdb },
+    ["vdb_source"] = "from OpenVdbGeometry",
+}
+
+baseVolume = BaseVolume("baseVolume") {
+    ["diffuse_color"] = bind(openVdbMap),
+}
+
+Layer("/Scene/layer") {
+    {bunnyVdb, "", lightSet, baseVolume },
+}

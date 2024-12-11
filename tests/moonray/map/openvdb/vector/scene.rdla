@@ -1,0 +1,34 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+PerspectiveCamera("cam") {
+    ["node_xform"] = translate(0, 0, 150),
+}
+
+lightSet = LightSet("lightSet") {
+}
+
+geom = UsdGeometry("geom") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(100.0, 100.0, 100.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom,
+}
+
+vdbmap = OpenVdbMap_v2("vdbmap") {
+    ["texture"] = rats_assets_dir .. "/models/velocity.vdb",
+}
+
+mtl = DwaEmissiveMaterial("mtl") {
+    ["emission_color"] = bind(vdbmap),
+}
+
+Layer("layer") {
+    { geom, "", mtl, lightSet },
+}

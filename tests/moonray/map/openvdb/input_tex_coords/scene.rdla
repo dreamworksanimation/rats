@@ -1,0 +1,75 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+PerspectiveCamera("cam") {
+    ["node_xform"] = translate(0, 0, 150),
+}
+
+lightSet = LightSet("lightSet") {
+}
+
+geom = UsdGeometry("geom") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(100.0, 100.0, 100.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom,
+}
+
+P = AttributeMap("P") {
+    ["map_type"] = "position",
+}
+
+noise = NoiseMap_v2("noise") {
+    ["color"] = true,
+    ["frequency_multiplier"] = 10.0,
+}
+
+times2_minus1 = OpMap("times2_minus1") {
+    ["operation"] = "subtract",
+    ["op1"] = bind(noise, Rgb(2,2,2)),
+}
+
+perturbed = OpMap("perturbed") {
+    ["operation"] = "add",
+    ["op1"] = bind(P),
+    ["op2"] = bind(times2_minus1, Rgb(10,10,10)),
+}
+
+pWorld = TransformSpaceMap("pWorld") {
+    ["input"] = bind(perturbed),
+    ["input_type"] = "point",
+}
+
+vdbmap = OpenVdbMap_v2("vdbmap") {
+    ["texture"] = rats_assets_dir .. "/models/sphere_sdf.vdb",
+    ["texture_coordinates"] = "input texture coordinates",
+    ["input_texture_coordinates"] = bind(pWorld),
+}
+
+abs = OpMap("abs") {
+    ["operation"] = "abs",
+    ["op1"] = bind(vdbmap),
+}
+
+remapSDF = RemapMap("remapSDF") {
+    ["input"] = bind(abs),
+    ["input_min"] = 0,
+    ["input_max"] = 16,
+    ["output_min"] = 1,
+    ["output_max"] = 0,
+    ["midpoint_bias"] = 0.8,
+}
+
+mtl = DwaEmissiveMaterial("mtl") {
+    ["emission_color"] = bind(remapSDF),
+}
+
+Layer("layer") {
+    { geom, "", mtl, lightSet },
+}

@@ -1,0 +1,150 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 4.0),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/plane.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom5 = UsdGeometry("geom5") {
+    ["node_xform"] = rotate(-90, 1, 0, 0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom7 = UsdGeometry("geom7") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom8 = UsdGeometry("geom8") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom9 = UsdGeometry("geom9") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4, geom5, geom7, geom8, geom9,
+}
+
+imgA = ImageMap("imgA") {
+    ["texture"] = rats_assets_dir .. "/textures/rgbcmyw.tx",
+}
+
+c2fR = MultiChannelToFloatMap("c2fR") {
+    ["input"] = bind(imgA),
+    ["mode"] = "Red",
+}
+
+c2fG = MultiChannelToFloatMap("c2fG") {
+    ["input"] = bind(imgA),
+    ["mode"] = "Green",
+}
+
+c2fB = MultiChannelToFloatMap("c2fB") {
+    ["input"] = bind(imgA),
+    ["mode"] = "Blue",
+}
+
+c2fWhite = MultiChannelToFloatMap("c2fWhite") {
+    ["input"] = bind(imgA),
+    ["mode"] = "White",
+}
+
+c2fCyan = MultiChannelToFloatMap("c2fCyan") {
+    ["input"] = bind(imgA),
+    ["mode"] = "Cyan",
+    ["tolerance"] = 0.5,
+}
+
+c2fMagenta = MultiChannelToFloatMap("c2fMagenta") {
+    ["input"] = bind(imgA),
+    ["mode"] = "Magenta",
+    ["tolerance"] = 0.5,
+}
+
+c2fYellow = MultiChannelToFloatMap("c2fYellow") {
+    ["input"] = bind(imgA),
+    ["mode"] = "Yellow",
+    ["tolerance"] = 0.5,
+}
+
+planeMtlR = DwaEmissiveMaterial("gplaneMtlR") {
+    ["emission_color"] = bind(c2fR),
+}
+
+planeMtlG = DwaEmissiveMaterial("gplaneMtlG") {
+    ["emission_color"] = bind(c2fG),
+}
+
+planeMtlB = DwaEmissiveMaterial("gplaneMtlB") {
+    ["emission_color"] = bind(c2fB),
+}
+
+planeMtlWhite = DwaEmissiveMaterial("gplaneMtlWhite") {
+    ["emission_color"] = bind(c2fWhite),
+}
+
+planeMtlImg = DwaEmissiveMaterial("gplaneMtlImg") {
+    ["emission_color"] = bind(imgA),
+}
+
+planeMtlCyan = DwaEmissiveMaterial("gplaneMtlCyan") {
+    ["emission_color"] = bind(c2fCyan),
+}
+
+planeMtlMagenta = DwaEmissiveMaterial("gplaneMtlMagenta") {
+    ["emission_color"] = bind(c2fMagenta),
+}
+
+planeMtlYellow = DwaEmissiveMaterial("gplaneMtlYellow") {
+    ["emission_color"] = bind(c2fYellow),
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, planeMtlR, ltSet},
+    {geom2, {""}, planeMtlG, ltSet},
+    {geom3, {""}, planeMtlB, ltSet},
+    {geom4, {""}, planeMtlWhite, ltSet},
+    {geom5, {""}, planeMtlImg, ltSet},
+    {geom7, {""}, planeMtlCyan, ltSet},
+    {geom8, {""}, planeMtlMagenta, ltSet},
+    {geom9, {""}, planeMtlYellow, ltSet},
+}
