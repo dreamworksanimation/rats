@@ -1,0 +1,32 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 2.0),
+}
+
+ltSet = LightSet("LightSet") { }
+
+geom = UsdGeometry("geom1") {
+    ["stage"] = rats_assets_dir .. "/models/plane_xy_unit_uv4x4.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") { geom, }
+
+udim = ImageMap("udim") {
+    ["texture"] = rats_assets_dir .. "/textures/udim/rgb_checker_black_<UDIM>.tx",
+    ["default_color"] = Rgb(0.2, 0.8, 0.2),
+    ["use_default_color_when_missing"] = true,
+}
+
+mtl = DwaEmissiveMaterial("mtl") {
+    ["emission_color"] = bind(udim),
+}
+
+Layer("/Scene/layer") {
+    {geom, {""}, mtl, ltSet},
+}

@@ -1,0 +1,46 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 1,
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = translate(0.25, 0.5, 2.0),
+}
+
+ltSet = LightSet("ltSet") { }
+
+tubeDeform = UsdGeometry("tubeDeform") {
+    ["stage"] = rats_assets_dir .. "/models/tube_deform.usdc",
+    ["prim_path"] = "/tube"
+}
+
+GeometrySet("/Scene/geoset") { tubeDeform }
+
+refN = AttributeMap("refN") {
+    ["map_type"] = "primitive attribute",
+    ["primitive_attribute_name"] = "ref_N",
+    ["primitive_attribute_type"] = "vec3f",
+}
+
+transformWorldToReferenceTangent = TransformSpaceMap("transformWorldToReferenceTangent") {
+    ["input"] = bind(refN),
+    ["input_type"] = "normal",
+    ["from_space"] = "world",
+    ["to_space"] = "local reference tangent",
+}
+
+transformTangentToRender = TransformSpaceMap("transformTangentToRender") {
+    ["input"] = bind(transformWorldToReferenceTangent),
+    ["input_type"] = "normal",
+    ["from_space"] = "local tangent",
+    ["to_space"] = "render",
+}
+
+mtl = DwaEmissiveMaterial("mtl") {
+    ["emission_color"] = bind(transformTangentToRender, Rgb(1.0, 1.0, 1.0)),
+}
+
+Layer("/Scene/layer") {
+    { tubeDeform, {""}, mtl, ltSet },
+}

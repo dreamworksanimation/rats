@@ -1,0 +1,96 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 4,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.5, 6),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/MoonRayWidget.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(-1.1, 0.75, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(-1.1, -1.5, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(1.1, 0.75, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(1.1, -1.5, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4,
+}
+
+wireframeMap1 = WireframeMap("wireframeMap1") {
+    ["line_width"] = 1,
+    ["line_color"] = Rgb(1.0, 0.0, 0.0),
+    ["fill_color"] = Rgb(0.0, 1.0, 0.0),
+    ["raster"] = true
+}
+
+wireframeMap2 = WireframeMap("wireframeMap2") {
+    ["line_width"] = 2,
+    ["line_color"] = Rgb(1.0, 0.0, 0.0),
+    ["fill_color"] = Rgb(0.0, 1.0, 0.0),
+    ["raster"] = true
+}
+
+wireframeMap3 = WireframeMap("wireframeMap3") {
+    ["line_width"] = 0.003,
+    ["line_color"] = Rgb(0.0, 0.0, 1.0),
+    ["fill_color"] = Rgb(1.0, 1.0, 0.0),
+    ["raster"] = false
+}
+
+wireframeMap4 = WireframeMap("wireframeMap4") {
+    ["line_width"] = 0.006,
+    ["line_color"] = Rgb(0.0, 0.0, 1.0),
+    ["fill_color"] = Rgb(1.0, 1.0, 0.0),
+    ["raster"] = false
+}
+
+mtl1 = DwaEmissiveMaterial("mtl1") {
+    ["emission_color"] = bind(wireframeMap1),
+}
+
+mtl2 = DwaEmissiveMaterial("mtl2") {
+    ["emission_color"] = bind(wireframeMap2),
+}
+
+mtl3 = DwaEmissiveMaterial("mtl3") {
+    ["emission_color"] = bind(wireframeMap3),
+}
+
+mtl4 = DwaEmissiveMaterial("mtl4") {
+    ["emission_color"] = bind(wireframeMap4),
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, mtl1, ltSet},
+    {geom2, {""}, mtl2, ltSet},
+    {geom3, {""}, mtl3, ltSet},
+    {geom4, {""}, mtl4, ltSet},
+}

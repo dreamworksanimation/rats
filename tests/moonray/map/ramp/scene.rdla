@@ -1,0 +1,663 @@
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 350,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 1.0, 9.0),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/plane.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-3.0, 3.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-2.0, 3.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 3.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, 3.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom5 = UsdGeometry("geom5") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, 3.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom6 = UsdGeometry("geom6") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(2.0, 3.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom7 = UsdGeometry("geom7") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(3.0, 3.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom8 = UsdGeometry("geom8") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-3.0, 2.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom9 = UsdGeometry("geom9") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-2.0, 2.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom10 = UsdGeometry("geom10") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 2.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom11 = UsdGeometry("geom11") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, 2.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom12 = UsdGeometry("geom12") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, 2.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom13 = UsdGeometry("geom13") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(2.0, 2.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom14 = UsdGeometry("geom14") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(3.0, 2.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom15 = UsdGeometry("geom15") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-3.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom16 = UsdGeometry("geom16") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-2.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom17 = UsdGeometry("geom17") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom18 = UsdGeometry("geom18") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom19 = UsdGeometry("geom19") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom20 = UsdGeometry("geom20") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(2.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom21 = UsdGeometry("geom21") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(3.0, 1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom22 = UsdGeometry("geom22") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-3.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom23 = UsdGeometry("geom23") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-2.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom24 = UsdGeometry("geom24") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom25 = UsdGeometry("geom25") {
+    ["node_xform"] = rotate(-90, 1, 0, 0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom26 = UsdGeometry("geom26") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(1.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom27 = UsdGeometry("geom27") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(2.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom28 = UsdGeometry("geom28") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(3.0, 0.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom29 = UsdGeometry("geom29") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-3.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom30 = UsdGeometry("geom30") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-2.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+geom31 = UsdGeometry("geom31") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-1.0, -1.0, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4, geom5, geom6, geom7, geom8, geom9, geom10,
+    geom11, geom12, geom13, geom14, geom15, geom16, geom17, geom18, geom19, geom20,
+    geom21, geom22, geom23, geom24, geom25, geom26, geom27, geom28, geom29, geom30,
+    geom31,
+}
+
+positions = { 0.0, 0.33, 0.5, 0.75, 1.0 }
+
+colors = { 
+    Rgb(0.9, 0.1, 0.1),
+    Rgb(0.1, 0.025, 0.4),
+    Rgb(0.8, 0.1, 0.2),
+    Rgb(0.2, 0.8, 0.1),
+    Rgb(0.1, 1.0, 1.0)
+}
+
+linInterp = { 1, 1, 1, 1, 1 }
+
+rampConstant = RampMap("rampConstant") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = { 0, 0, 0, 0, 0 },
+    ["space"] = "texture",
+}
+
+rampLinear = RampMap("rampLinear") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+}
+
+rampExpUp = RampMap("rampExpUp") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = { 2, 2, 2, 2, 2 },
+    ["space"] = "texture",
+}
+
+rampExpDown = RampMap("rampExpDown") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = { 3, 3, 3, 3, 3 },
+    ["space"] = "texture",
+}
+
+rampSmooth = RampMap("rampSmooth") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = { 4, 4, 4, 4, 4 },
+    ["space"] = "texture",
+}
+
+rampCatmull = RampMap("rampCatmull") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = { 5, 5, 5, 5, 5 },
+    ["space"] = "texture",
+}
+
+rampMono = RampMap("rampMono") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = { 6, 6, 6, 6, 6 },
+    ["space"] = "texture",
+}
+
+rampMixed1 = RampMap("rampMixed1") {
+    ["positions"] = { 0.0, 0.1, 0.2, 0.35, 0.5, 0.75, 1.0 },
+    ["colors"] = {
+        Rgb(0.9, 0.1, 0.1),
+        Rgb(0.1, 0.025, 0.4),
+        Rgb(0.8, 0.1, 0.2),
+        Rgb(0.2, 0.8, 0.1),
+        Rgb(0.1, 1.0, 1.0),
+        Rgb(0.8, 0.1, 0.2),
+        Rgb(0.8, 0.9, 0.2)
+    },
+    ["interpolations"] = { 4, 2, 5, 3, 1, 6, 0 },
+    ["space"] = "texture",
+}
+
+rampMixed2 = RampMap("rampMixed2") {
+    ["positions"] = { 0.0, 0.33, 0.5, 0.75, 1.0 },
+    ["colors"] = {
+        Rgb(0.9, 0.1, 0.1),
+        Rgb(0.1, 0.025, 0.4),
+        Rgb(0.8, 0.1, 0.2),
+        Rgb(0.2, 0.8, 0.1),
+        Rgb(0.1, 1.0, 1.0) },
+    ["interpolations"] = { 5, 5, 5, 6, 6 },
+    ["space"] = "texture",
+}
+
+rampWrap = RampMap("rampWrap") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "u",
+    ["wrap_type"] = "wrap",
+    ["uv_repeat"] = Vec2(1.5, 1.0),
+    ["color_space"] = "hsl", 
+}
+
+rampClamp = RampMap("rampClamp") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "u",
+    ["wrap_type"] = "clamp",
+    ["uv_repeat"] = Vec2(1.5, 1.0),
+    ["color_space"] = "hsl", 
+}
+
+rampUnsorted = RampMap("rampUnsorted") {
+    ["positions"] = { 0.33, 0.0, 0.75, 1.0, 0.5 },
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "u",
+    ["color_space"] = "hsl", 
+}
+
+rampWave = RampMap("rampWave") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "box",
+    ["uv_wave"] = Vec2(0.1, 0.2),
+    ["color_space"] = "hsl", 
+}
+
+rampRepeat = RampMap("rampRepeat") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "box",
+    ["uv_repeat"] = Vec2(1.5, 3.0),
+}
+
+rampRender = RampMap("rampRender") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "render",
+    ["ramp_type"] = "u",
+}
+
+rampCam = Camera("rampCam") {
+   ["node xform"] = translate(-10, 10, 10.75) * rotate(30, 0, 0, 1),
+}
+
+rampCamera = RampMap("rampCamera") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "camera",
+    ["camera"] = rampCam,
+    ["ramp_type"] = "u",
+}
+
+rampWorld = RampMap("rampWorld") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "world",
+    ["ramp_type"] = "u",
+}
+
+rampScreen = RampMap("rampScreen") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "screen",
+    ["ramp_type"] = "u",
+}
+
+obj = UsdGeometry("obj") {
+    ["node_xform"] = rotate(45.0, 0, 0, 1),
+}
+
+rampObj = RampMap("rampObj") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "object",
+    ["object"] = obj,
+    ["ramp_type"] = "u",
+}
+
+rampRef = RampMap("rampRef") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "reference",
+    ["ramp_type"] = "u",
+}
+
+rampRgb = RampMap("rampRgb") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "u",
+    ["color_space"] = "rgb",
+}
+
+rampHsv = RampMap("rampHsv") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "u",
+    ["color_space"] = "hsv",
+}
+
+rampHsl = RampMap("rampHsl") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "u",
+    ["color_space"] = "hsl",
+}
+
+rampV = RampMap("rampV") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "v",
+}
+
+rampU = RampMap("rampU") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "u",
+}
+
+rampDiag = RampMap("rampDiag") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "diagonal",
+}
+
+rampCirc = RampMap("rampCirc") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "circular",
+}
+
+rampBox = RampMap("rampBox") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "box",
+}
+
+rampUxv = RampMap("rampUxv") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "uxv",
+}
+
+rampCorner = RampMap("rampCorner") {
+    ["positions"] = { 0.33, 0.5, 0.75, 1.0 },
+    ["colors"] = {
+        Rgb(0.1, 0.025, 0.4),
+        Rgb(0.8, 0.1, 0.2),
+        Rgb(0.2, 0.8, 0.1),
+        Rgb(0.1, 1.0, 1.0)
+    },
+    ["interpolations"] = { 1, 1, 1, 1 },
+    ["space"] = "texture",
+    ["ramp_type"] = "four corner",
+}
+
+noise = NoiseMap_v2("noise") {
+   ["space"] = "object",
+   ["frequency_multiplier"] = 2,
+   ["max_level"] = 3
+}
+
+rampInput = RampMap("rampInput") {
+    ["positions"] = positions,
+    ["colors"] = colors,
+    ["interpolations"] = linInterp,
+    ["space"] = "texture",
+    ["ramp_type"] = "input",
+    ["input"] = bind(noise),
+}
+
+mtlConstant = DwaEmissiveMaterial("mtlConstant") {
+    ["emission_color"] = bind(rampConstant),
+}
+
+mtlLinear = DwaEmissiveMaterial("mtlLinear") {
+    ["emission_color"] = bind(rampLinear),
+}
+
+mtlExpUp = DwaEmissiveMaterial("mtlExpUp") {
+    ["emission_color"] = bind(rampExpUp),
+}
+
+mtlExpDown = DwaEmissiveMaterial("mtlExpDown") {
+    ["emission_color"] = bind(rampExpDown),
+}
+
+mtlSmooth = DwaEmissiveMaterial("mtlSmooth") {
+    ["emission_color"] = bind(rampSmooth),
+}
+
+mtlCatmull = DwaEmissiveMaterial("mtlCatmull") {
+    ["emission_color"] = bind(rampCatmull),
+}
+
+mtlMono = DwaEmissiveMaterial("mtlMono") {
+    ["emission_color"] = bind(rampMono),
+}
+
+mtlMixed1 = DwaEmissiveMaterial("mtlMixed1") {
+    ["emission_color"] = bind(rampMixed1),
+}
+
+mtlMixed2 = DwaEmissiveMaterial("mtlMixed2") {
+    ["emission_color"] = bind(rampMixed2),
+}
+
+mtlWrap = DwaEmissiveMaterial("mtlWrap") {
+    ["emission_color"] = bind(rampWrap),
+}
+
+mtlClamp = DwaEmissiveMaterial("mtlClamp") {
+    ["emission_color"] = bind(rampClamp),
+}
+
+mtlUnsorted = DwaEmissiveMaterial("mtlUnsorted") {
+    ["emission_color"] = bind(rampUnsorted),
+}
+
+mtlWave = DwaEmissiveMaterial("mtlWave") {
+    ["emission_color"] = bind(rampWave),
+}
+
+mtlRepeat = DwaEmissiveMaterial("mtlRepeat") {
+    ["emission_color"] = bind(rampRepeat),
+}
+
+mtlRender = DwaEmissiveMaterial("mtlRender") {
+    ["emission_color"] = bind(rampRender),
+}
+
+mtlCamera = DwaEmissiveMaterial("mtlCamera") {
+    ["emission_color"] = bind(rampCamera),
+}
+
+mtlWorld = DwaEmissiveMaterial("mtlWorld") {
+    ["emission_color"] = bind(rampWorld),
+}
+
+mtlScreen = DwaEmissiveMaterial("mtlScreen") {
+    ["emission_color"] = bind(rampScreen),
+}
+
+mtlObj = DwaEmissiveMaterial("mtlObj") {
+    ["emission_color"] = bind(rampObj),
+}
+
+mtlRef = DwaEmissiveMaterial("mtlRef") {
+    ["emission_color"] = bind(rampRef),
+}
+
+mtlRgb = DwaEmissiveMaterial("mtlRgb") {
+    ["emission_color"] = bind(rampRgb),
+}
+
+mtlHsv = DwaEmissiveMaterial("mtlHsv") {
+    ["emission_color"] = bind(rampHsv),
+}
+
+mtlHsl = DwaEmissiveMaterial("mtlHsl") {
+    ["emission_color"] = bind(rampHsl),
+}
+
+mtlV = DwaEmissiveMaterial("mtlV") {
+    ["emission_color"] = bind(rampV),
+}
+
+mtlU = DwaEmissiveMaterial("mtlU") {
+    ["emission_color"] = bind(rampU),
+}
+
+mtlDiag = DwaEmissiveMaterial("mtlDiag") {
+    ["emission_color"] = bind(rampDiag),
+}
+
+mtlCirc = DwaEmissiveMaterial("mtlCirc") {
+    ["emission_color"] = bind(rampCirc),
+}
+
+mtlBox = DwaEmissiveMaterial("mtlBox") {
+    ["emission_color"] = bind(rampBox),
+}
+
+mtlUxv = DwaEmissiveMaterial("mtlUxv") {
+    ["emission_color"] = bind(rampUxv),
+}
+
+mtlCorner = DwaEmissiveMaterial("mtlCorner") {
+    ["emission_color"] = bind(rampCorner),
+}
+
+mtlInput = DwaEmissiveMaterial("mtlInput") {
+    ["emission_color"] = bind(rampInput),
+}
+
+Layer("/Scene/layer") {
+    {geom1,  {""}, mtlConstant, ltSet},
+    {geom2,  {""}, mtlLinear,   ltSet},
+    {geom3,  {""}, mtlExpUp,    ltSet},
+    {geom4,  {""}, mtlExpDown,  ltSet},
+    {geom5,  {""}, mtlSmooth,   ltSet},
+    {geom6,  {""}, mtlCatmull,  ltSet},
+    {geom7,  {""}, mtlMono,     ltSet},
+    {geom8,  {""}, mtlMixed1,   ltSet},
+    {geom9,  {""}, mtlMixed2,   ltSet},
+    {geom10, {""}, mtlWrap,     ltSet},
+    {geom11, {""}, mtlClamp,    ltSet},
+    {geom12, {""}, mtlUnsorted, ltSet},
+    {geom13, {""}, mtlWave,     ltSet},
+    {geom14, {""}, mtlRepeat,   ltSet},
+    {geom15, {""}, mtlRender,   ltSet},
+    {geom16, {""}, mtlCamera,   ltSet},
+    {geom17, {""}, mtlWorld,    ltSet},
+    {geom18, {""}, mtlScreen,   ltSet},
+    {geom19, {""}, mtlObj,      ltSet},
+    {geom20, {""}, mtlRef,      ltSet},
+    {geom21, {""}, mtlRgb,      ltSet},
+    {geom22, {""}, mtlHsv,      ltSet},
+    {geom23, {""}, mtlHsl,      ltSet},
+    {geom24, {""}, mtlV,        ltSet},
+    {geom25, {""}, mtlU,        ltSet},
+    {geom26, {""}, mtlDiag,     ltSet},
+    {geom27, {""}, mtlCirc,     ltSet},
+    {geom28, {""}, mtlBox,      ltSet},
+    {geom29, {""}, mtlUxv,      ltSet},
+    {geom30, {""}, mtlCorner,   ltSet},
+    {geom31, {""}, mtlInput,    ltSet},
+}

@@ -1,0 +1,94 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 4,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.5, 6),
+}
+
+ltSet = LightSet("LightSet") { }
+
+model = rats_assets_dir .. "/models/MoonRayWidget.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(-1.1, 0.75, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(-1.1, -1.5, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(1.1, 0.75, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+geom4 = UsdGeometry("geom4") {
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(1.1, -1.5, 0.0),
+    ["stage"] = model,
+    ["prim_path"] = "/widget",
+    ["subd_type"] = "force polygon mesh",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2, geom3, geom4,
+}
+
+toonMap1 = ToonMap("toonMap1") {
+    ["mode"] = "outline",
+}
+
+toonMap2 = ToonMap("toonMap2") {
+    ["outline_threshold"] = 0.1,
+    ["outline_color"] = Rgb(1.0, 0.0, 0.0),
+    ["fill_color"] = Rgb(0.0, .0, 0.3),
+
+}
+
+toonMap3 = ToonMap("toonMap3") {
+    ["fill_color"] = Rgb(0.1, 0., 0),
+    ["mode"] = "crease",
+    ["crease_threshold"] = 90,
+    ["crease_scale"] = 8,
+    ["crease_color"] = Rgb(.0, 1.0, 1),
+
+}
+
+toonMap4 = ToonMap("toonMap4") {
+    ["outline_threshold"] = 0.008,
+    ["outline_color"] = Rgb(.0, 1.0, 0),
+    ["fill_color"] = Rgb(0.1, 0.1, 0),
+}
+
+mtl1 = DwaEmissiveMaterial("mtl1") {
+    ["emission_color"] = bind(toonMap1),
+}
+
+mtl2 = DwaEmissiveMaterial("mtl2") {
+    ["emission_color"] = bind(toonMap2),
+}
+
+mtl3 = DwaEmissiveMaterial("mtl3") {
+    ["emission_color"] = bind(toonMap3),
+}
+
+mtl4 = DwaEmissiveMaterial("mtl4") {
+    ["emission_color"] = bind(toonMap4),
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, mtl1, ltSet},
+    {geom2, {""}, mtl2, ltSet},
+    {geom3, {""}, mtl3, ltSet},
+    {geom4, {""}, mtl4, ltSet},
+}

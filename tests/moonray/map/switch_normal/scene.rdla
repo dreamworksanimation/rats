@@ -1,0 +1,57 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["near"] = 0.1,
+    ["node_xform"] = translate(0.0, 0.0, 1.0) * rotate(-45, 1, 0, 0) * translate(0.0, 0.0, 0.2),
+}
+
+rectLgt = RectLight("rectLgt") {
+    ["node_xform"] = translate(0.0, 0.0, 30.0) * rotate(-45.0, 1, 0, 0) * rotate(180.0, 0, 1, 0),
+}
+
+ltSet = LightSet("LightSet") {
+    rectLgt,
+}
+
+geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom
+}
+
+snow1 = ImageNormalMap("snow1") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/snow1_nml.tx",
+}
+
+snow2 = ImageNormalMap("snow2") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/snow2_nml.tx",
+}
+
+checkMap = CheckerboardMap("checkMap") {
+}
+
+switchNormalMap = SwitchNormalMap("switchNormalMap") {
+    ["choice"] = bind(checkMap, 1.0),
+    ["input0"] = snow2,
+    ["input1"] = snow1,
+}
+
+mtl = DwaSolidDielectricMaterial("mtl1") {
+    ["show_diffuse"] = false,
+    ["show_specular"] = true,
+    ["roughness"] = 0.3,
+    ["input_normal"] = switchNormalMap,
+    --["show_emission"] = true,
+    --["emission_color"] = bind(checkMap),
+}
+
+Layer("/Scene/layer") {
+    {geom, {""}, mtl, ltSet},
+}
