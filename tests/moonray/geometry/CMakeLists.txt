@@ -11,4 +11,6 @@ add_subdirectory(primitive_attributes)
 add_subdirectory(reverse_normals)
 add_subdirectory(rotational_motion_blur)
 add_subdirectory(sphere)
+add_subdirectory(subdiv_creases)
+add_subdirectory(usd_instance)
 

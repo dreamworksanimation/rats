@@ -1,0 +1,37 @@
+local tx = 5    -- common x-translation performed before rotations
+local ty = 3    -- common y-translation performed after rotations
+local tz = 1    -- common z-translation performed after rotations
+local ry = -5   -- small y-rotation to bring lights slightly in front of widget
+local rz = 20   -- z-rotation of first light
+local dr = 22.5 -- incremental z-rotation stepping from one light to the next
+
+cylinderlight = CylinderLight("scene/lights/cylinderlight") {
+    ["node_xform"] = translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+0*dr, 0, 0, 1) * translate(0, ty, tz),
+    ["color"] = Rgb(0, 1, 0),
+}
+
+spherelight = SphereLight("scene/lights/spherelight") {
+    ["node_xform"] = translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+1*dr, 0, 0, 1) * translate(0, ty, tz),
+    ["color"] = Rgb(1, 0, 0),
+    ["intensity"] = 0.05,
+}
+
+disklight = DiskLight("scene/lights/disklight") {
+    ["color"] = Rgb(1, 0, 1),
+    ["radius"] = 0.1,
+}
+
+rectlight = RectLight("scene/lights/rectlight") {
+    ["color"] = Rgb(1, 0.5, 0),
+    ["width"] = 10,
+}
+
+spotlight = SpotLight("scene/lights/spotlight") {
+    ["color"] = Rgb(1, 0.0, 0.5),
+    ["outer_cone_angle"] = 90,
+}
+
+meshlight = MeshLight("scene/lights/meshlight") {
+    ["node_xform"] = rotate(90, 0, 1, 0) * translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+5*dr, 0, 0, 1) * translate(0, ty, tz),
+    ["color"] = Rgb(0, 0, 1),
+}

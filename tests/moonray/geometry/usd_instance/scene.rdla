@@ -1,0 +1,81 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 3,
+    ["enable_motion_blur"] = true,
+    ["frame"] = 20,
+}
+
+PerspectiveCamera("shot_cam") {
+    ["node_xform"] = translate(0.2, -0.1, 2.5),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+}
+
+ltSet = LightSet("all") {
+    env, key
+}
+
+usdCube = UsdGeometry("usdCube") {
+    ["stage"] = rats_assets_dir .. "/models/point_instancer.usdc",
+    ["prim_path"] = "/point_instancer/Prototypes/Geometry/cube",
+}
+
+usdTube = UsdGeometry("usdTube") {
+    ["stage"] = rats_assets_dir .. "/models/point_instancer.usdc",
+    ["prim_path"] = "/point_instancer/Prototypes/Geometry/tube",
+}
+
+usdInstanceGeom1 = UsdInstanceGeometry("usdInstanceGeom1") {
+    ["stage"] = rats_assets_dir .. "/models/point_instancer.usdc",
+    ["point_instancer_path"] = "/point_instancer",
+    ["references"] = {usdCube, usdTube},
+    ["disable_indices"] = {1,2,3,4,5,6,7,8,9,10},
+}
+
+usdInstanceGeom2 = UsdInstanceGeometry("usdInstanceGeom2") {
+    ["stage"] = rats_assets_dir .. "/models/point_instancer.usdc",
+    ["point_instancer_path"] = "/point_instancer1",
+    ["references"] = {usdInstanceGeom1},
+}
+
+GeometrySet("default_geo_set") {
+    usdCube,
+    usdTube,
+    usdInstanceGeom1,
+    usdInstanceGeom2,
+}
+
+attrMapCd = AttributeMap("attrMapCd") {
+    ["map_type"] = "primitive attribute",
+    ["primitive_attribute_name"] = "displayColor",
+    ["primitive_attribute_type"] = "rgb",
+}
+
+attrMapEmissionColor = AttributeMap("attrMapEmissionColor") {
+    ["map_type"] = "primitive attribute",
+    ["primitive_attribute_name"] = "emissionColor",
+    ["primitive_attribute_type"] = "rgb",
+}
+
+mtl = DwaSolidDielectricMaterial("mtl") {
+    ["albedo"] = bind(attrMapCd, Rgb(0.2, 0.2, 0.2)),
+    ["show_emission"] = true,
+    ["emission"] = bind(attrMapEmissionColor, Rgb(0.2, 0.2, 0.2)),
+}
+
+Layer("defaultRenderLayer") {
+    {usdCube, {""}, mtl, ltSet},
+    {usdTube, {""}, mtl, ltSet},
+    {usdInstanceGeom1, {""}, mtl, LightSet("all")},
+    {usdInstanceGeom2, {""}, mtl, LightSet("all")},
+}

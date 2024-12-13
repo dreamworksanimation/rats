@@ -2,6 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_subdirectory(combined)
+add_subdirectory(combined_mb)
+add_subdirectory(deltas)
 add_subdirectory(filter)
 add_subdirectory(light_sets)
 add_subdirectory(overlap_additive)
