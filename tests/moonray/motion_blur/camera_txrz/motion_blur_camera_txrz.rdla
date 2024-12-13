@@ -1,0 +1,18 @@
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = blur(
+        rotate(180, 0, 0, 1) * translate(-3.0, 8.5, 20),
+        rotate(0, 0, 0, 1) * translate(0.0, 8.5, 10)),
+}
+
+-------------------------------------------------------
+
+sphere = SphereGeometry("/Scene/geometry/sphereMm") {
+    ["node_xform"] = scale(0.5, 0.5, 0.5) * translate(0, 10, 0),
+}
+table.insert(geoms, sphere)
+table.insert(assignments, {sphere, "", torusMtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)

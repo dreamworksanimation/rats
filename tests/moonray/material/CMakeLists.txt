@@ -16,4 +16,6 @@ add_subdirectory(glitter)
 # add_subdirectory(hair)
 add_subdirectory(rayswitch)
 add_subdirectory(self_intersecting_dielectric)
+add_subdirectory(sss)
+add_subdirectory(switch)
 

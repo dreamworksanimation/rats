@@ -1,0 +1,11 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This tests the "max_subsurface_per_path" depth-based scene variable.
+
+add_rats_test(moonray_material_sss_sss_depth
+    INPUTS sss_depth.rdla
+    CANONICALS
+        scene.exr
+)
+

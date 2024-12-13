@@ -1,0 +1,73 @@
+SceneVariables {
+    ["pixel_samples"] = 4,
+    ["max_depth"] = 3,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["min_frame"] = 101,
+    ["max_frame"] = 200,
+    ["frame"] = 101,
+    ["motion_steps"] = {-1, 0},
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.3, 12) * rotate(-30, 1, 0, 0),
+}
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.5,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-160, 0, 1, 0),
+    ["intensity"] = 12,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 5,
+    ["height"] = 5,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+-------------------------------------------------------
+
+torusMtl = DwaSolidDielectricMaterial("/Scene/surfacing/torusMtl") {
+    ["albedo"] = Rgb(0.319, 0.06, 0.0),
+    ["roughness"] = 0.3,
+}
+
+-------------------------------------------------------
+
+planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(30, 1, 20),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+table.insert(geoms, planeGeom)
+
+planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(7, 4),
+    ["offset"] = Vec2(0, .25),
+    ["wrap_around"] = true,
+}
+
+planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap),
+    ["specular"] = 0
+}
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
