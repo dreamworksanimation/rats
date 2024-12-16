@@ -1,0 +1,48 @@
+-- diffuse
+RenderOutput("/output/diffuse") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 8, -- light aov
+   ["light_aov"] = "diffuse",
+   ["channel_format"] = 0,
+}
+
+-- emission
+RenderOutput("/output/emission") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 8, -- light aov
+   ["light_aov"] = "emission", 
+   ["channel_format"] = 0,
+}
+
+-- glossy
+RenderOutput("/output/glossy") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 8, -- light aov
+   ["light_aov"] = "glossy", 
+   ["channel_format"] = 0,
+}
+
+-- mirror
+RenderOutput("/output/mirror") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 8, -- light aov
+   ["light_aov"] = "mirror", 
+   ["channel_format"] = 0,
+}
+
+-- reflection
+RenderOutput("/output/reflection") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 8, -- light aov
+   ["light_aov"] = "reflection", 
+   ["channel_format"] = 0,
+}
+
+-- translucent
+RenderOutput("/output/translucent") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 8, -- light aov
+   ["light_aov"] = "translucent",
+   ["channel_format"] = 0,
+}
+

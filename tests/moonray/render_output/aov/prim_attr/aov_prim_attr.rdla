@@ -1,0 +1,189 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 6,
+    ["max_depth"] = 0 -- useful when comparing results
+}
+
+Camera("/camera") {
+    ["node_xform"] = translate(0, 0, 1.8),
+}
+
+----------------------------------------------------------
+
+local ref_P = UserData("/ref_P") {
+   ["vec3f_key"] = "ref_P",
+   ["vec3f_values"] = {
+      Vec3(-0.5, -0.5, 0.0),
+      Vec3( 0.5, -0.5, 0.0),
+      Vec3( 0.5,  0.5, 0.0),
+      Vec3(-0.5,  0.5, 0.0)
+   },
+}
+
+local cd = UserData("/cd") {
+   ["color_key"] = "cd",
+   ["color_values"] = {
+      Rgb(0.0, 0.0, 0.0),
+      Rgb(0.5, 0.5, 0.5),
+      Rgb(1.0, 1.0, 1.0),
+      Rgb(0.5, 0.5, 0.5)
+   },
+}
+
+local vid = UserData("/vid") {
+   ["float_key"] = "vid",
+   ["float_values"] = { 0.0, 1.0, 2.0, 3.0 },
+}
+
+----------------------------------------------------------
+
+RdlMeshGeometry("/plane") {
+   ["vertex_list"] = {
+      Vec3(-0.5, -0.5, 0.0),
+      Vec3( 0.5, -0.5, 0.0),
+      Vec3( 0.5,  0.5, 0.0),
+      Vec3(-0.5,  0.5, 0.0)
+   },
+   ["normal_list"] = {
+      Vec3(0, 0, 1),
+      Vec3(0, 0, 1),
+      Vec3(0, 0, 1),
+      Vec3(0, 0, 1)
+   },
+   ["uv_list"] = {
+      Vec2(0.0, 0.0),
+      Vec2(1.0, 0.0),
+      Vec2(1.0, 1.0),
+      Vec2(0.0, 1.0)
+   },
+   ["vertices_by_index"] = {0, 1, 2, 3},
+   ["face_vertex_count"] = {4},
+   ["is_subd"] = false,
+   ["primitive_attributes"] = {vid, cd, ref_P},
+}
+
+RdlMeshGeometry("/plane2") {
+   ["node_xform"] = translate(.5, -.5, .5),
+   ["vertex_list"] = {
+      Vec3(-0.5, -0.5, 0.0),
+      Vec3( 0.5, -0.5, 0.0),
+      Vec3( 0.5,  0.5, 0.0),
+      Vec3(-0.5,  0.5, 0.0)
+   },
+   ["normal_list"] = {
+      Vec3(0, 0, 1),
+      Vec3(0, 0, 1),
+      Vec3(0, 0, 1),
+      Vec3(0, 0, 1)
+   },
+   ["uv_list"] = {
+      Vec2(0.0, 0.0),
+      Vec2(1.0, 0.0),
+      Vec2(1.0, 1.0),
+      Vec2(0.0, 1.0)
+   },
+   ["vertices_by_index"] = {0, 1, 2, 3},
+   ["face_vertex_count"] = {4},
+   ["is_subd"] = false,
+   ["primitive_attributes"] = {vid, cd, ref_P},
+}
+
+GeometrySet("/geometrySet") {
+   RdlMeshGeometry("/plane"),
+   RdlMeshGeometry("/plane2");
+}
+
+----------------------------------------------------------
+
+-- This map is actually bound to the emission channel of plane
+-- and will have a visible impact on the main render result
+local debugMap = DebugMap("/debugMap") {
+   ["checkerboard"] = false,
+   ["map_type"] = 6, -- primitive attribute
+   ["primitive_attribute_name"] = "st",
+   ["primitive_attribute_type"] = 1 -- Vec2f
+}
+
+DwaBaseMaterial("/planeMtl") {
+   ["albedo"] = Rgb(0, 0, 0),
+   ["show_diffuse"] = false,
+   ["show_specular"] = false,
+   ["show_emission"] = true,
+   ["emission"] = bind(debugMap),
+}
+
+RaySwitchMaterial("/plane2Mtl") {
+   ["cutout_camera_rays"] = true,
+}
+
+----------------------------------------------------------
+
+LightSet("/lightset") {
+   -- empty
+}
+
+Layer("/layer") {
+    {RdlMeshGeometry("/plane"), "", DwaBaseMaterial("/planeMtl"), LightSet("/lightset")},
+    {RdlMeshGeometry("/plane2"), "", RaySwitchMaterial("/plane2Mtl"), LightSet("/lightset")},
+}
+
+----------------------------------------------------------
+
+-- test primitive attributes
+-- When assigned a cutout material, primitive attribute (and state variable)
+-- aovs should show up.  When ouput as a material
+-- aov, with an empty lobe selector they should not.  Completely
+-- empty materials should show up in both cases.
+
+RenderOutput("/output/result/vid") {
+   ["file_name"] = "result0.exr",
+   ["result"] = "primitive attribute",
+   ["primitive_attribute"] = "vid",
+   ["primitive_attribute_type"] = "FLOAT",
+}
+
+RenderOutput("/output/result/mataov_vid") {
+   ["file_name"] = "result0.exr",
+   ["result"] = "material aov",
+   ["material_aov"] = "float:vid",
+}
+
+RenderOutput("/output/result/st") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 4, -- primitive attribute
+   ["primitive_attribute"] = "st",
+   ["primitive_attribute_type"] = 1 -- Vec2f
+}
+
+RenderOutput("/output/result/mataov_st") {
+   ["file_name"] = "result0.exr",
+   ["result"] = "material aov",
+   ["material_aov"] = "vec2:st",
+}
+
+RenderOutput("/output/result/ref_P") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 4, -- primitive attribute
+   ["primitive_attribute"] = "ref_P",
+   ["primitive_attribute_type"] = 2 -- Vec3f
+}
+
+RenderOutput("/output/result/mataov_ref_P") {
+   ["file_name"] = "result0.exr",
+   ["result"] = "material aov",
+   ["material_aov"] = "vec3:ref_P",
+}
+
+RenderOutput("/output/result/cd") {
+   ["file_name"] = "result0.exr",
+   ["result"] = "primitive attribute",
+   ["primitive_attribute"] = "cd",
+   ["primitive_attribute_type"] = "RGB",
+}
+
+RenderOutput("/output/result/mataov_cd") {
+   ["file_name"] = "result0.exr",
+   ["result"] = "material aov",
+   ["material_aov"] = "rgb:cd",
+}
