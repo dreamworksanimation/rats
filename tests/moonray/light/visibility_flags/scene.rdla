@@ -1,0 +1,262 @@
+SceneVariables {
+    ["image_width"] = 480,
+    ["image_height"] = 180,
+    ["pixel_samples"] = 4,
+}
+
+Camera("camera") {
+    ["node_xform"] = rotate(-54, 1, 0, 0) * translate(0, 100, 100),
+}
+
+env = EnvLight("env") {
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+light_width = 10
+
+diffuse_reflection = RectLight("diffuse_reflection") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-37.5, 15, 22.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_diffuse_reflection"] = false,
+}
+
+glossy_reflection = RectLight("glossy_reflection") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-22.5, 15, 22.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_glossy_reflection"] = false,
+}
+
+mirror_reflection = RectLight("mirror_reflection") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-7.5, 15, 22.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_mirror_reflection"] = false,
+}
+
+mirror_transmission = RectLight("mirror_transmission") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(7.5, 15, 22.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_mirror_transmission"] = false,
+}
+
+glossy_transmission = RectLight("glossy_transmission") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(22.5, 10, 22.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_glossy_transmission"] = false,
+}
+
+diffuse_transmission = RectLight("diffuse_transmission") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(37.5, 15, 22.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_diffuse_transmission"] = false,
+}
+
+rectlight1 = RectLight("rectlight1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-37.5, 15, 37.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+rectlight2 = RectLight("rectlight2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-22.5, 15, 37.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+rectlight3 = RectLight("rectlight3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-7.5, 15, 37.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+rectlight4 = RectLight("rectlight4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(7.5, 15, 37.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+rectlight5 = RectLight("rectlight5") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(22.5, 10, 37.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+rectlight6 = RectLight("rectlight6") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(37.5, 15, 37.5),
+    ["intensity"] = 2,
+    ["normalized"] = false,
+    ["width"] = light_width,
+    ["height"] = light_width,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+envSet = LightSet("envSet") { env }
+set1 =   LightSet("set1")   { diffuse_reflection }
+set2 =   LightSet("set2")   { glossy_reflection }
+set3 =   LightSet("set3")   { mirror_reflection }
+set4 =   LightSet("set4")   { mirror_transmission }
+set5 =   LightSet("set5")   { glossy_transmission }
+set6 =   LightSet("set6")   { diffuse_transmission } 
+set7 =   LightSet("set7")   { rectlight1 }
+set8 =   LightSet("set8")   { rectlight2 }
+set9 =   LightSet("set9")   { rectlight3 }
+set10 =  LightSet("set10")  { rectlight4 }
+set11 =  LightSet("set11")  { rectlight5 }
+set12 =  LightSet("set12")  { rectlight6 }
+
+floor = UsdGeometry("floor") {
+    ["node_xform"] = scale(200, 200, 200),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+sphere1 = SphereGeometry("sphere1") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(-37.5, 5, 22.5),
+}
+
+sphere2 = SphereGeometry("sphere2") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(-22.5, 5, 22.5),
+}
+
+sphere3 = SphereGeometry("sphere3") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(-7.5, 5, 22.5),
+}
+
+sphere4 = SphereGeometry("sphere4") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(7.5, 5, 22.5),
+}
+
+sphere5 = SphereGeometry("sphere5") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(22.5, 5, 22.5),
+}
+
+sphere6 = SphereGeometry("sphere6") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(37.5, 5, 22.5),
+}
+
+sphere7 = SphereGeometry("sphere7") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(-37.5, 5, 37.5),
+}
+
+sphere8 = SphereGeometry("sphere8") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(-22.5, 5, 37.5),
+}
+
+sphere9 = SphereGeometry("sphere9") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(-7.5, 5, 37.5),
+}
+
+sphere10 = SphereGeometry("sphere10") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(7.5, 5, 37.5),
+}
+
+sphere11 = SphereGeometry("sphere11") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(22.5, 5, 37.5),
+}
+
+sphere12 = SphereGeometry("sphere12") {
+    ["node_xform"] = scale(5.0, 5.0, 5.0) * translate(37.5, 5, 37.5),
+}
+
+GeometrySet("geometryset") {
+    floor,
+    sphere1, sphere2, sphere3, sphere4, sphere5, sphere6,
+    sphere7, sphere8, sphere9, sphere10, sphere11, sphere12,
+}
+
+diffuse_reflection_mtl = DwaBaseMaterial("diffuse_reflection_mtl") {
+    ["albedo"] = Rgb(0.701169, 0.701169, 0.701169),
+    ["show_specular"] = false,
+}
+
+floor_mtl = DwaBaseMaterial("floor_mtl") {
+    ["albedo"] = Rgb(1, 1, 1),
+    ["show_specular"] = false,
+}
+
+glossy_reflection_mtl = DwaBaseMaterial("glossy_reflection_mtl") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["specular"] = 0.75,
+    ["roughness"] = 0.4,
+    ["specular_model"] = "Beckmann",
+    ["metallic"] = 1,
+    ["metallic_color"] = Rgb(0.75, 0.78, 0.8),
+    ["metallic_edge_color"] = Rgb(0.75, 0.78, 0.8),
+}
+
+mirror_transmission_mtl = DwaBaseMaterial("mirror_transmission_mtl") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["roughness"] = 0,
+    ["transmission"] = 1,
+    ["refractive_index"] = 1.33,
+    ["casts_caustics"] = true,
+}
+
+mirror_reflection_mtl = DwaBaseMaterial("mirror_reflection_mtl") {
+    ["albedo"] = Rgb(0, 0, 0),
+    ["roughness"] = 0,
+    ["metallic"] = 1,
+}
+
+glossy_transmission_mtl = DwaRefractiveMaterial("glossy_transmission_mtl") {
+    ["specular_model"] = "Beckmann",
+}
+
+diffuse_transmission_mtl = DwaSolidDielectricMaterial("diffuse_transmission_mtl") {
+    ["translucent_diffuse"] = Rgb(1.0, 1.0, 1.0),
+    ["specular_model"] = "Beckmann",
+}
+
+Layer("layer") {
+    {floor,    "", floor_mtl,                envSet},
+    {sphere1,  "", diffuse_reflection_mtl,   set1 },
+    {sphere2,  "", glossy_reflection_mtl,    set2 },
+    {sphere3,  "", mirror_reflection_mtl,    set3 },
+    {sphere4,  "", mirror_transmission_mtl,  set4 },
+    {sphere5,  "", glossy_transmission_mtl,  set5 },
+    {sphere6,  "", diffuse_transmission_mtl, set6 },
+    {sphere7,  "", diffuse_reflection_mtl,   set7 },
+    {sphere8,  "", glossy_reflection_mtl,    set8 },
+    {sphere9,  "", mirror_reflection_mtl,    set9 },
+    {sphere10, "", mirror_transmission_mtl,  set10 },
+    {sphere11, "", glossy_transmission_mtl,  set11 },
+    {sphere12, "", diffuse_transmission_mtl, set12 },
+}

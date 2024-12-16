@@ -1,0 +1,37 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 4,
+    ["max_glossy_depth"]  = 5,
+    ["lights_visible_in_camera"] = true,
+}
+
+PerspectiveCamera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 4.0, 13.0),
+}
+
+env = EnvLight("env") {
+    ["texture"] = rats_assets_dir .. "/textures/env_filtered.tx",
+    ["texture_filter"] = "bilinear with nearest mip",
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+}
+
+geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+GeometrySet("geometrySet") {
+    geom,
+}
+
+mtl = DwaRefractiveMaterial("mtl") {
+    ["roughness"] = 0.1,
+}
+
+Layer("layer") {
+    { geom, "", mtl, lightSet },
+}

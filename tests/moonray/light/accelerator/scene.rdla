@@ -1,0 +1,56 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 2,
+    ["bsdf_samples"] = 4,
+    ["light_samples"] = 1,
+    ["lights_visible_in_camera"] = true,
+    ["max_depth"] = 0
+}
+
+cam = PerspectiveCamera("cam") {
+    ["node_xform"] = translate(0, 4, 20),
+}
+
+cube = UsdGeometry("cube") {
+    ["node_xform"] = scale(2,2,2),
+    ["stage"] = rats_assets_dir.."/models/cube.usdc",
+    ["prim_path"] = "/cube",
+}
+
+floor = UsdGeometry("floor") {
+    ["node_xform"] = scale(100, 100, 100) * translate(0, -2, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geom") { cube, floor }
+
+mtlCube = DwaSolidDielectricMaterial("mtlCube") {
+    ["albedo"] = Rgb(0, 1, 1),
+}
+
+mtlFloor = DwaSolidDielectricMaterial("mtlFloor") {
+}
+
+lights = {}
+
+for x = -4, 3, 1 do
+    for z = -4, 3, 1 do
+        local light = SphereLight("/Scene/lighting/sphere"..x.."."..z) {
+            ["node_xform"] = translate(x, 10, z),
+            ["color"] = Rgb(1, 0.9, 0.6),
+            ["exposure"] = 1,
+            ["normalized"] = false,
+            ["radius"] = 0.3,
+        }
+        table.insert(lights, light)
+    end
+end
+
+lightSet = LightSet("lgts")(lights)
+
+layer = Layer("defaultLayer") {
+    { cube,  "", mtlCube,  lightSet },
+    { floor, "", mtlFloor, lightSet }
+}
