@@ -1,0 +1,137 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 150,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0.25, 0.35, 10),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.7,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("key") {
+    ["node_xform"] = translate(0, 0, 270) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 70,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+    key,
+}
+
+lock1 = UsdGeometry("lock1") {
+    ["node_xform"] = translate(-2.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock2 = UsdGeometry("lock2") {
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock3 = UsdGeometry("lock3") {
+    ["node_xform"] = translate(2.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+GeometrySet("geometryset") {
+    lock1,
+    lock2,
+    lock3,
+}
+
+noiseMap = NoiseMap("noiseMap") {
+    ["space"] = "object",
+    ["frequency_multiplier"] = 5,
+    ["use_smoothstep"] = true,
+    ["smoothstep"] = Vec2(0.0, 0.6),
+}
+
+rampMap = RampMap("rampMap") {
+    ["positions"] = { 0.0, 0.7 },
+    ["colors"] = { Rgb(0.0, 0.0, 0.0), Rgb(1.0, 1.0, 1.0) },
+    ["interpolations"] = { 2, 2 },
+    ["ramp_type"] = "u",
+    ["wrap_type"] = "clamp",
+    ["space"] = "texture",
+}
+
+hairSilverMtl = HairMaterial_v3("hairSilverMtl") {
+    ["hair_color"] = Rgb(0.552, 0.56, 0.58),
+    ["primary_specular_roughness"] = 0.12,
+    ["primary_specular_offset"] = -3.0,
+    ["use_independent_secondary_specular_roughness"] = true,
+    ["independent_secondary_specular_roughness"] = 0.4,
+    ["secondary_specular_offset"] = 4.5,
+    ["use_independent_transmission_roughness"] = true,
+    ["independent_transmission_roughness"] = 0.5,
+    ["transmission_azimuthal_roughness"] = 0.4,
+    ["cuticle_layer_thickness"] = 1,
+    ["fresnel_type"] = "layered cuticles", 
+    ["show_primary_specular"] = true,
+    ["show_secondary_specular"] = true,
+    ["show_transmission"] = true,
+    ["show_multiple_scattering"] = true,
+    ["use_optimized_sampling"] = true,
+}
+
+hairRedMtl = HairMaterial_v3("/Scene/surfacing/hairRedMtl") {
+    ["hair_color"] = Rgb(0.2, 0.0, 0.0),
+    ["primary_specular_roughness"] = 0.5,
+    ["primary_specular_offset"] = -3.0,
+    ["secondary_specular_offset"] = 4.5,
+    ["use_independent_transmission_roughness"] = true,
+    ["independent_transmission_roughness"] = 0.2,
+    ["transmission_azimuthal_roughness"] = 0.7,
+    ["cuticle_layer_thickness"] = 0.2,
+    ["presence"] = 1.0,
+    ["fresnel_type"] = "layered cuticles", 
+    ["show_primary_specular"] = true,
+    ["show_secondary_specular"] = true,
+    ["show_transmission"] = true,
+    ["show_multiple_scattering"] = true,
+    ["use_optimized_sampling"] = true,
+}
+
+hairDiffuseMtl1 = HairDiffuseMaterial("hairDiffuseMtl1") {
+    ["hair_color"] = Rgb(0.1, 0.0, 0.2),
+}
+
+hairLayerMtl1 = HairLayerMaterial("hairLayerMtl1") {
+    ["hair_material_A"] = hairRedMtl,
+    ["hair_material_B"] = hairSilverMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+    ["blend_color_space"] = "RGB",
+}
+
+hairLayerMtl2 = HairLayerMaterial("hairLayerMtl2") {
+    ["hair_material_A"] = hairDiffuseMtl1,
+    ["hair_material_B"] = hairSilverMtl,
+    ["mask"] = bind(rampMap, 1), 
+    ["blend_color_space"] = "HSV",
+}
+
+hairLayerMtl3 = HairLayerMaterial("hairLayerMtl3") {
+    ["hair_material_A"] = hairDiffuseMtl1,
+    ["hair_material_B"] = hairLayerMtl1,
+    ["mask"] = bind(rampMap, 1), 
+    ["blend_color_space"] = "HSL",
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {lock1, "", hairLayerMtl1, lightSet},
+    {lock2, "", hairLayerMtl2, lightSet},
+    {lock3, "", hairLayerMtl3, lightSet},
+}

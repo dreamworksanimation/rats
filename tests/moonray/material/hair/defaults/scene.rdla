@@ -1,0 +1,88 @@
+SceneVariables {
+    ["image_width"] = 350,
+    ["image_height"] = 150,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0.25, 0.35, 13),
+}
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.7,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 270) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 130,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+rim = RectLight("/Scene/lighting/rim") {
+    ["node_xform"] = translate(0, 0, 270) *
+                     rotate(0, 1, 0, 0) *
+                     rotate(170, 0, 1, 0),
+    ["intensity"] = 20,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSetFront = LightSet("/Scene/lighting/lightSetFront") {
+    env,
+    key,
+}
+
+lightSetBack = LightSet("/Scene/lighting/lightSetBack") {
+    env,
+    rim,
+}
+
+lock1 = UsdGeometry("lock1") {
+    ["node_xform"] = translate(-3.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock2 = UsdGeometry("lock2") {
+    ["node_xform"] = translate(1.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair1 = UsdGeometry("hair1") {
+    ["node_xform"] = translate(-1.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair2 = UsdGeometry("hair2") {
+    ["node_xform"] = translate(3.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+GeometrySet("geometryset") {
+    lock1,
+    hair1,
+    lock2,
+    hair2,
+}
+
+hairMtl = HairMaterial_v3("/Scene/surfacing/hairMtlDefaults") {
+    ["hair_color"] = Rgb(0.319, 0.06, 0.0),
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {lock1, "", hairMtl, lightSetFront},
+    {hair1, "", hairMtl, lightSetFront},
+    {lock2, "", hairMtl, lightSetBack},
+    {hair2, "", hairMtl, lightSetBack},
+}

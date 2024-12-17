@@ -1,0 +1,45 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 3,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0.0, 0.35, 6),
+}
+
+env = EnvLight("env") {
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 270) * rotate(-40, 1, 0, 0) * rotate(180, 0, 1, 0),
+    ["exposure"] = 8,
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSet = LightSet("lightSet") {
+    env, key,
+}
+
+lock1 = UsdGeometry("lock1") {
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+GeometrySet("geometryset") {
+    lock1,
+}
+
+hairMtl = HairMaterial_v3("hairMtl") {
+    ["hair color"] = Rgb(0.04, 0.009, 0.001),
+    ["refractive_index"] = 1.4,
+    ["transmission_azimuthal_roughness"] = 0.2,
+    ["direct_transmission_saturation"] = 0.5,
+    
+}
+
+Layer("layer") {
+    {lock1, "", hairMtl, lightSet},
+}

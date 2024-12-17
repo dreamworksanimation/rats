@@ -1,0 +1,133 @@
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 400,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 0.25, 12),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.7,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 270) * rotate(-40, 1, 0, 0) * rotate(-60, 0, 1, 0),
+    ["intensity"] = 70,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSet = LightSet("lightSet") {
+    env, key,
+}
+
+lock1 = UsdGeometry("lock1") {
+    ["node_xform"] = translate(-3, 2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock2 = UsdGeometry("lock2") {
+    ["node_xform"] = translate(-1, 2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock3 = UsdGeometry("lock3") {
+    ["node_xform"] = translate(1, 2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock4 = UsdGeometry("lock4") {
+    ["node_xform"] = translate(3, 2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair1 = UsdGeometry("hair1") {
+    ["node_xform"] = translate(-3, -2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair2 = UsdGeometry("hair2") {
+    ["node_xform"] = translate(-1, -2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair3 = UsdGeometry("hair3") {
+    ["node_xform"] = translate(1, -2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair4 = UsdGeometry("hair4") {
+    ["node_xform"] = translate(3, -2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+GeometrySet("geometryset") {
+    lock1, lock2, lock3, lock4,
+    hair1, hair2, hair3, hair4,
+}
+
+hairAlbinoMtl = HairMaterial_v3("hairAlbinoMtl") {
+    ["hair_color"] = Rgb(0.552, 0.567, 0.582),
+    ["primary_specular_roughness"] = 0.15,
+    ["primary_specular_offset"] = -3.0,
+    ["independent_secondary_specular_roughness"] = 0.5,
+    ["secondary_specular_offset"] = 4.5,
+    ["transmission_azimuthal_roughness"] = 1,
+    ["fresnel_type"] = "simple longitudinal",
+}
+
+hairBlondMtl = HairMaterial_v3("hairBlondMtl") {
+    ["hair_color"] = Rgb(0.351, 0.275, 0.15),
+    ["primary_specular_roughness"] = 0.6,
+    ["primary_specular_offset"] = -10.0,
+    ["fresnel_type"] = "dielectric cylinder",
+}
+
+hairBrownMtl = HairMaterial_v3("hairBrownMtl") {
+    ["hair_color"] = Rgb(0.04, 0.009, 0.001),
+    ["primary_specular_roughness"] = 0.5,
+    ["primary_specular_offset"] = -3.0,
+    ["use_independent_secondary_specular_roughness"] = true,
+    ["independent_secondary_specular_roughness"] = 0.4,
+    ["secondary_specular_offset"] = 4.5,
+    ["use_independent_transmission_roughness"] = true,
+    ["independent_transmission_roughness"] = 0.5,
+    ["transmission_azimuthal_roughness"] = 0.4,
+    ["use_optimized_sampling"] = false,
+    ["fresnel_type"] = "layered cuticles",
+}
+
+hairRedMtl = HairMaterial_v3("hairRedMtl") {
+    ["hair_color"] = Rgb(0.119000, 0.01000, 0.00001),
+    ["primary_specular_roughness"] = 0.5,
+    ["primary_specular_offset"] = -3.0,
+    ["secondary_specular_offset"] = 4.5,
+    ["use_independent_transmission_roughness"] = true,
+    ["independent_transmission_roughness"] = 0.2,
+    ["transmission_azimuthal_roughness"] = 0.7,
+    ["fresnel_type"] = "layered cuticles",
+}
+
+Layer("layer") {
+    {lock1, "", hairAlbinoMtl, lightSet},
+    {lock2, "", hairBlondMtl, lightSet},
+    {lock3, "", hairBrownMtl, lightSet},
+    {lock4, "", hairRedMtl, lightSet},
+    {hair1, "", hairAlbinoMtl, lightSet},
+    {hair2, "", hairBlondMtl, lightSet},
+    {hair3, "", hairBrownMtl, lightSet},
+    {hair4, "", hairRedMtl, lightSet},
+}

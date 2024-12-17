@@ -1,13 +1,11 @@
 SceneVariables {
-    ["image width"] = 256,
-    ["image height"] = 256,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 4,
 }
 
 Camera("camera") {
-    ["node xform"] = Mat4(0.568882, 0,        -0.822419, 0,
-                         -0.408342, 0.868029, -0.282457, 0,
-                          0.713881, 0.496511,  0.493804, 0,
-                         15.7872,  12.1717,   10.3742,   1),
+    ["node_xform"] = translate(0.0, 0.0, 22.0) * rotate(-23, 1, 0, 0) * rotate(-25, 0, 1, 0) * translate(1.0, 1, 0),
 }
 
 env = EnvLight("env") {
@@ -34,7 +32,7 @@ GeometrySet("geoms") {
 
 hairMtl = HairMaterial_v3("hairMtl") {
     ["primary_specular_roughness"] = 0.5,
-    ["hair color"] = Rgb(0.39, 0.3, 0.11),
+    ["hair_color"] = Rgb(0.39, 0.3, 0.11),
     ["show_hair_glint"] = true,
     ["glint_roughness"] = 0.3,
     ["glint_eccentricity"] = 0.95,

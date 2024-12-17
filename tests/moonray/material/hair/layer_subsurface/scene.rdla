@@ -1,0 +1,116 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 300,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0.25, 0.35, 10),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.7,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("key") {
+    ["node_xform"] = translate(0, 0, 270) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 70,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+    key,
+}
+
+lock1 = UsdGeometry("lock1") {
+    ["node_xform"] = translate(-2.5, 2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock2 = UsdGeometry("lock2") {
+    ["node_xform"] = translate(0, 2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock3 = UsdGeometry("lock3") {
+    ["node_xform"] = translate(2.5, 2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock4 = UsdGeometry("lock4") {
+    ["node_xform"] = translate(-2.5, -2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock5 = UsdGeometry("lock5") {
+    ["node_xform"] = translate(0, -2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock6 = UsdGeometry("lock6") {
+    ["node_xform"] = translate(2.5, -2, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+GeometrySet("geometryset") {
+    lock1, lock2, lock3,
+    lock4, lock5, lock6,
+}
+
+hairDiffRed = HairDiffuseMaterial("hairDiffRed") {
+    ["hair_color"] = Rgb(0.4, 0.1, 0.1),
+    ["scattering_radius"] = 0.5,
+    ["subsurface_blend"] = 1.0
+}
+
+hairDiffBlue = HairDiffuseMaterial("hairDiffBlue") {
+    ["hair_color"] = Rgb(0.1, 0.1, 0.4),
+    ["scattering_radius"] = 0.0,
+    ["subsurface_blend"] = 0.0
+}
+
+hairSpec = HairMaterial_v3("hairSpec") {
+    ["hair_color"] = Rgb(0.1, 0.1, 0.4),
+    ["fresnel_type"] = 2,
+    ["primary_specular_roughness"] = 0.12,    
+    ["use_independent_secondary_specular_roughness"] = true,
+    ["independent_secondary_specular_roughness"] = 0.4,
+    ["cuticle_layer_thickness"] = 0.5,
+    ["show_transmission"] = false,
+}
+
+hairLayerDiff = HairLayerMaterial("hairLayerDiff") {
+    ["hair_material_A"] = hairDiffRed,
+    ["hair_material_B"] = hairDiffBlue,
+    ["mask"] = 0.5,
+    ["blend_color_space"] = "RGB",
+}
+
+hairLayerSpec = HairLayerMaterial("hairLayerSpec") {
+    ["hair_material_A"] = hairDiffRed,
+    ["hair_material_B"] = hairSpec,
+    ["mask"] = 0.5, 
+    ["blend_color_space"] = "RGB",
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {lock1, "", hairDiffRed, lightSet},
+    {lock2, "", hairLayerSpec, lightSet},
+    {lock3, "", hairSpec, lightSet},
+    {lock4, "", hairDiffRed, lightSet},
+    {lock5, "", hairLayerDiff, lightSet},
+    {lock6, "", hairDiffBlue, lightSet},
+}

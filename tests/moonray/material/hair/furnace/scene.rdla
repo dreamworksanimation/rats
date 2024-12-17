@@ -1,0 +1,41 @@
+-- Scene: 
+SceneVariables {
+    ["image_height"] = 200,
+    ["image_width"] = 200,
+    ["pixel_samples"] = 4,
+    ["max_depth"] = 100,
+    ["max_glossy_depth"] = 100,
+    ["max_hair_depth"] = 100,
+    ["max_diffuse_depth"] = 100,
+    ["lights_visible_in_camera"] = true,
+}
+
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 0, 5)
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.217,
+}
+
+ltSet = LightSet("ltSet") {
+    env,
+}
+
+hairGeom = UsdGeometry("hairGeom") {
+    ["stage"] = rats_assets_dir .. "/models/hair_ball.usdc",
+    ["prim_path"] = "/hair",
+    ["radius_mult"] = 0.1,
+}
+
+GeometrySet("geoset") {
+    hairGeom,
+}
+
+hair = HairMaterial_v3("hair") {
+}
+
+Layer("layer") {
+   { hairGeom, "", hair, ltSet },
+}

@@ -1,0 +1,85 @@
+SceneVariables {
+    ["image_width"] = 350,
+    ["image_height"] = 150,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0.25, 0.35, 13),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.7,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("key") {
+    ["node_xform"] = translate(0, 0, 270) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 70,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+    key,
+}
+
+lock1 = UsdGeometry("lock1") {
+    ["node_xform"] = translate(-3.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock2 = UsdGeometry("lock2") {
+    ["node_xform"] = translate(1.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair1 = UsdGeometry("hair1") {
+    ["node_xform"] = translate(-1.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair2 = UsdGeometry("hair2") {
+    ["node_xform"] = translate(3.5, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+GeometrySet("geometryset") {
+    lock1,
+    hair1,
+    lock2,
+    hair2,
+}
+
+color = HairMap("hairColor") {
+    ["base_color"] = Rgb(0.4, 0.3, 0.3),
+    ["tip_color"] = Rgb(1, 1, 1),
+}
+
+hair1Mtl = HairDiffuseMaterial("/hairAlbinoMtl") {
+    ["hair_color"] = bind(color)
+}
+
+-- Test Front and Back Hair Color
+hair2Mtl = HairDiffuseMaterial("hairBlondMtl") {
+    ["hair_color"] = Rgb(0.351, 0.275, 0.15),
+    ["use_independent_front_and_back_hair_color"] = true,
+    ["front_hair_color"] = Rgb(0.4, 0, 0),
+    ["back_hair_color"] = Rgb(0, 0, 0.4)
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {lock1, "", hair1Mtl, lightSet},
+    {lock2, "", hair2Mtl, lightSet},
+    {hair1, "", hair1Mtl, lightSet},
+    {hair2, "", hair2Mtl, lightSet},
+}

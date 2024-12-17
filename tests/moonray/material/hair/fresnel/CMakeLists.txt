@@ -1,9 +1,9 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-# Tests hair glints added as a part of the TRT lobe.
+# This test tests all three modes of hair fresnel - simple, dielectric and layered.
 
-add_rats_test(moonray_material_hair_glint
+add_rats_test(moonray_material_hair_fresnel
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

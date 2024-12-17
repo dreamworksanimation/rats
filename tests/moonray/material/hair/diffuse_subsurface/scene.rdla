@@ -1,0 +1,104 @@
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 150,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(1.2, 0.35, 17),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.7,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("key") {
+    ["node_xform"] = translate(0, 0, 270) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 70,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+    key,
+}
+
+lock1 = UsdGeometry("lock1") {
+    ["node_xform"] = translate(-4.3, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock2 = UsdGeometry("lock2") {
+    ["node_xform"] = translate(-2.0, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+lock3 = UsdGeometry("lock3") {
+    ["node_xform"] = translate(0.3, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair1 = UsdGeometry("hair1") {
+    ["node_xform"] = translate(2.0, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair2 = UsdGeometry("hair2") {
+    ["node_xform"] = translate(4.0, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+hair3 = UsdGeometry("hair3") {
+    ["node_xform"] = translate(6.0, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/hair_curly.usdc",
+    ["prim_path"] = "/hair",
+}
+
+GeometrySet("geometryset") {
+    hair1, hair2, hair3,
+    lock1, lock2, lock3,
+}
+
+color = HairMap("hairColor") {
+    ["base_color"] = Rgb(0.351, 0.275, 0.15),
+    ["tip_color"] = Rgb(1, 1, 1),
+}
+
+hairMtl1 = HairDiffuseMaterial("/Scene/surfacing/hairBlondMtl") {
+    ["hair_color"] = bind(color),
+    ["scattering_radius"] = 0.5,
+    ["subsurface_blend"] = 1.0,
+}
+
+hairMtl2 = HairDiffuseMaterial("/Scene/surfacing/hairBlondMtl2") {
+    ["hair_color"] = bind(color),
+    ["scattering_radius"] = 0.5,
+    ["subsurface_blend"] = 0.5,
+}
+
+hairMtl3 = HairDiffuseMaterial("/Scene/surfacing/hairBlondMtl3") {
+    ["hair_color"] = bind(color),
+    ["scattering_radius"] = 0.5,
+    ["subsurface_blend"] = 0.0,
+}
+
+
+Layer("layer") {
+    {lock1, "", hairMtl1, lightSet},
+    {lock2, "", hairMtl2, lightSet},
+    {lock3, "", hairMtl3, lightSet},
+    {hair1, "", hairMtl1, lightSet},
+    {hair2, "", hairMtl2, lightSet},
+    {hair3, "", hairMtl3, lightSet},
+}

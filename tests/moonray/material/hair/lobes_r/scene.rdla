@@ -1,0 +1,77 @@
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(-4.9, 0.3, 18),
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 30,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 10,
+    ["height"] = 10,
+}
+
+lightSet = LightSet("lightSet") {
+    key,
+}
+
+geoms = {}
+assignments = {}
+
+local posMin = -10
+local posMax = 10
+
+local roughnessMin = 0
+local roughnessMax = 1
+
+local offsetMin = -10
+local offsetMax = 10
+
+-- row wedges: 1=roughness, 2=offset, 3=azimRoughness
+for row = 1, 2 do
+
+    local numCol = 5
+    for col = 1, numCol do
+        local ratio = (col - 1) / (numCol - 1)
+        
+        local posX = posMin + (posMax - posMin) * ratio * 0.5
+        
+        local roughness = 0.3
+        local offset = -5
+        
+        if row == 1 then
+            roughness = roughnessMin + (roughnessMax - roughnessMin) * ratio
+            posY = 2.0
+        elseif row == 2 then
+            offset = offsetMin + (offsetMax - offsetMin) * ratio
+            posY = -2.0
+        end
+
+
+        local geom = UsdGeometry("geom" .. row .. "-" .. col) {
+            ["node_xform"] = translate(posX, posY, 0),
+            ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+            ["prim_path"] = "/hair",
+        }
+        table.insert(geoms, geom)
+
+        local mtl = HairMaterial_v3("mtl" .. row .. "-" .. col) {
+            ["primary_specular_roughness"] = roughness,
+            ["primary_specular_offset"] = offset,
+            ["show_secondary_specular"] = false,
+            ["show_transmission" ] = false
+
+        }
+        table.insert(assignments, {geom, "", mtl, lightSet})
+    end
+end
+
+GeometrySet("geometrySet")(geoms)
+Layer("layer")(assignments)

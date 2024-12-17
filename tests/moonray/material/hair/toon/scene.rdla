@@ -1,0 +1,62 @@
+SceneVariables {
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 3.0),
+}
+
+diskLight = DiskLight("diskLight") {
+    ["radius"] = 0.1,
+    ["exposure"] = -3.0,
+    ["node_xform"] = translate(0.0, 0.0, 10.0) * rotate(-45, 1, 0, 0) * rotate(45, 0, 1, 0),
+}
+
+ltSet = LightSet("/Scene/lightset/1") { diskLight }
+
+sphereGeom = SphereGeometry("sphereGeom") {
+    ["node_xform"] = rotate(90.0, 1.0, 0.0, 0.0),
+}
+
+GeometrySet("/Scene/geoset") { sphereGeom }
+
+hairToonMtl = HairToonMaterial("hairToonMtl") {
+    ["show_hair_diffuse"] = false,
+    ["hair_color"] = Rgb(0.1, 0.0, 0.0),
+
+    ["specular_1_show"] = true,
+    ["specular_1_intensity"] = 1.0,
+    ["specular_1_tint"] = Rgb(1.0, 0.5, 0.5),
+    ["specular_1_interpolations"] = {1, 1, 1},
+    ["specular_1_positions"] = {0.0, 0.1, 0.3},
+    ["specular_1_values"] = {1.0, 0.1, 0.0},
+    ["specular_1_stretch_u"] = -0.5,
+    ["specular_1_stretch_v"] = 0.2,
+    ["specular_1_fresnel_blend"] = 0.0,
+
+    ["specular_2_show"] = true,
+    ["specular_2_intensity"] = 1.0,
+    ["specular_2_tint"] = Rgb(0.5, 1.0, 0.5),
+    ["specular_2_interpolations"] = {1, 1, 1},
+    ["specular_2_positions"] = {0.0, 0.1, 0.3},
+    ["specular_2_values"] = {1.0, 0.1, 0.0},
+    ["specular_2_stretch_u"] = 0.2,
+    ["specular_2_stretch_v"] = -0.5,
+    ["specular_2_fresnel_blend"] = 0.0,
+
+    ["specular_3_show"] = true,
+    ["specular_3_intensity"] = 0.1,
+    ["specular_3_tint"] = Rgb(0.5, 0.5, 1.0),
+    ["specular_3_interpolations"] = {1, 1, 1},
+    ["specular_3_positions"] = {0.0, 0.1, 0.4},
+    ["specular_3_values"] = {1.0, 0.1, 0.0},
+    ["specular_3_stretch_u"] = 0.0,
+    ["specular_3_stretch_v"] = 0.0,
+    ["specular_3_fresnel_blend"] = 0.0,
+}
+
+Layer("/Scene/layer") {
+    {sphereGeom, "", hairToonMtl, ltSet},
+}

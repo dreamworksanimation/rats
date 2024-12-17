@@ -1,0 +1,31 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 3,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0.0, 0.35, 6),
+}
+
+lightSet = LightSet("lightSet") { }
+
+lock1 = UsdGeometry("lock1") {
+    ["stage"] = rats_assets_dir .. "/models/hair_lock.usdc",
+    ["prim_path"] = "/hair",
+}
+
+GeometrySet("geometryset") {
+    lock1,
+}
+
+hairMtl = HairMaterial_v3("hairMtl") {
+    ["show_primary_specular"] = false,
+    ["show_secondary_specular"] = false,
+    ["show_transmission"] = false,
+    ["show_multiple_scattering"] = false,
+}
+
+Layer("layer") {
+    {lock1, "", hairMtl, lightSet},
+}

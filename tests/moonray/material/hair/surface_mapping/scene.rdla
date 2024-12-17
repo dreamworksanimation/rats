@@ -1,0 +1,35 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 4,
+    ["max_depth"] = 0,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, -1, 32) * rotate(-45, 1, 0, 0),
+}
+
+ltSet = LightSet("ltSet") {
+}
+
+geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/grass.usdc",
+    ["prim_path"] = "/grass",
+}
+
+GeometrySet("geomset") {
+   geom
+}
+
+imgMap = ImageMap("imgMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["texture_coordinates"] = "hair surface",
+}
+
+mtl = DwaEmissiveMaterial("mtl") {
+    ["emission_color"] = bind(imgMap),
+}
+
+layer = Layer("layer") {
+    { geom, "", mtl, ltSet },
+}

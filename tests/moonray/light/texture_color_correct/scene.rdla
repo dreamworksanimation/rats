@@ -1,0 +1,145 @@
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 150,
+    ["pixel_samples"] = 2,
+    ["light_samples"] = 2,
+    ["lights_visible_in_camera"] = true,
+    ["bsdf_samples"] = 1,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 0,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 2.0, 40) * rotate(-5, 1, 0, 0),
+}
+
+lightPosY = 4
+lightRadius = 2
+lightRotX = -60
+
+disk1 = DiskLight("disk1") {
+    ["node_xform"] = rotate(lightRotX, 1, 0, 0) * rotate(180, 0, 1, 0) * translate(-12, lightPosY, 0),
+    ["normalized"] = false,
+    ["radius"] = lightRadius,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["saturation"] = Rgb(3, 3, 3),
+}
+
+disk2 = DiskLight("disk2") {
+	["node_xform"] = rotate(lightRotX, 1, 0, 0) * rotate(180, 0, 1, 0) * translate(-8, lightPosY, 0),
+    ["normalized"] = false,
+    ["radius"] = lightRadius,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["contrast"] = Rgb(2, 2, 2),
+}
+
+disk3 = DiskLight("disk3") {
+	["node_xform"] = rotate(lightRotX, 1, 0, 0) * rotate(180, 0, 1, 0) * translate(-4, lightPosY, 0),
+    ["normalized"] = false,
+    ["radius"] = lightRadius,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["gamma"] = Rgb(2, 2, 2),
+}
+
+disk4 = DiskLight("disk4") {
+	["node_xform"] = rotate(lightRotX, 1, 0, 0) * rotate(180, 0, 1, 0) * translate(0, lightPosY, 0),
+    ["normalized"] = false,
+    ["radius"] = lightRadius,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["gain"] = Rgb(0.3, 0.3, 0.3),
+}
+
+disk5 = DiskLight("disk5") {
+	["node_xform"] = rotate(lightRotX, 1, 0, 0) * rotate(180, 0, 1, 0) * translate(4, lightPosY, 0),
+    ["normalized"] = false,
+    ["radius"] = lightRadius,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["offset"] = Rgb(-0.5, -0.5, -0.5),
+}
+
+disk6 = DiskLight("disk6") {
+	["node_xform"] = rotate(lightRotX, 1, 0, 0) * rotate(180, 0, 1, 0) * translate(8, lightPosY, 0),
+    ["normalized"] = false,
+    ["radius"] = lightRadius,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["temperature"] = Vec3(-1.8, 0.4, 0.86),
+}
+
+disk7 = DiskLight("disk7") {
+	["node_xform"] = rotate(lightRotX, 1, 0, 0) * rotate(180, 0, 1, 0) * translate(12, lightPosY, 0),
+    ["normalized"] = false,
+    ["radius"] = lightRadius,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["exposure"] = 2,
+}
+
+lightSet = LightSet("LightSetA") {
+    disk1, disk2, disk3, disk4, disk5, disk6, disk7,
+}
+
+floorGeom = UsdGeometry("floorGeom") {
+    ["node_xform"] = scale(200, 200, 200),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+wallGeom = UsdGeometry("wallGeom") {
+    ["node_xform"] = scale(40, 1, 10) * rotate(90, 1, 0, 0) * translate(0, 0, -5),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+sphere1 = SphereGeometry("sphere1") {
+    ["node_xform"] = translate(-12, 1, 0),
+}
+
+sphere2 = SphereGeometry("sphere2") {
+    ["node_xform"] = translate(-8, 1, 0),
+}
+
+sphere3 = SphereGeometry("sphere3") {
+    ["node_xform"] = translate(-4, 1, 0),
+}
+
+sphere4 = SphereGeometry("sphere4") {
+    ["node_xform"] = translate(0, 1, 0),
+}
+
+sphere5 = SphereGeometry("sphere5") {
+    ["node_xform"] = translate(4, 1, 0),
+}
+
+sphere6 = SphereGeometry("sphere6") {
+    ["node_xform"] = translate(8, 1, 0),
+}
+
+sphere7 = SphereGeometry("sphere7") {
+    ["node_xform"] = translate(12, 1, 0),
+}
+
+GeometrySet("geometrySet") {
+    floorGeom, wallGeom,
+    sphere1, sphere2, sphere3, sphere4, sphere5, sphere6, sphere7,
+}
+
+
+floorMtl = DwaSolidDielectricMaterial("floorMtl") {
+    ["roughness"] = 0.3,
+}
+
+sphereMtl = DwaSolidDielectricMaterial("sphereMtl") {
+    ["albedo"] = Rgb(0.2, 0.2, 0.2),
+    ["roughness"] = 0.15,
+}
+
+Layer("layer") {
+    { floorGeom, "", floorMtl, lightSet },
+    { wallGeom, "", floorMtl, lightSet },
+    { sphere1, "", sphereMtl, lightSet },
+    { sphere2, "", sphereMtl, lightSet },
+    { sphere3, "", sphereMtl, lightSet },
+    { sphere4, "", sphereMtl, lightSet },
+    { sphere5, "", sphereMtl, lightSet },
+    { sphere6, "", sphereMtl, lightSet },
+    { sphere7, "", sphereMtl, lightSet },
+}
