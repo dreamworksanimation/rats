@@ -1,0 +1,141 @@
+SceneVariables {
+    ["image_width"] = 650,
+    ["image_height"] = 150,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 12.0) * rotate(-33, 1, 0, 0) * translate(0, 1.0, 0),
+}
+
+---------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["exposure"] = 0.0,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) * rotate(-60, 1, 0, 0) * rotate(-60, 0, 1, 0),
+    ["intensity"] = 12,
+    ["exposure"] = 0.0,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+---------------------------------------------------
+
+planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(20.0, 1, 20.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+sphereGeom1 = SphereGeometry("/Scene/geometry/sphereGeom1") {
+    ["node_xform"] = translate(-3.3, 1, 0),
+}
+
+sphereGeom2 = SphereGeometry("/Scene/geometry/sphereGeom2") {
+    ["node_xform"] = translate(-1.1, 1, 0),
+}
+
+sphereGeom3 = SphereGeometry("/Scene/geometry/sphereGeom3") {
+    ["node_xform"] = translate(1.1, 1, 0),
+}
+
+sphereGeom4 = SphereGeometry("/Scene/geometry/sphereGeom4") {
+    ["node_xform"] = translate(3.3, 1, 0),
+}
+
+GeometrySet("Scene/geometrySet") {
+    planeGeom, sphereGeom1, sphereGeom2, sphereGeom3, sphereGeom4
+}
+
+---------------------------------------------------
+
+planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(10.0, 10.0),
+}
+
+planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap),
+    ["show_specular"] = false,
+}
+
+---- Sphere 1 Material ----
+
+sphereMtl1 = UsdPreviewSurface("sphereMtl1") {
+    ["diffuseColor"] = Rgb(0.25, 0.0, 0.0), 
+    ["clearcoat"] = 0.0,
+    ["metallic"] = 0.0,
+    ["roughness"] = 0.3,
+    ["opacity"] = 1.0,
+}
+
+---- Sphere 2 Material ----
+
+sphereMtl2 = UsdPreviewSurface("sphereMtl2") {
+    ["diffuseColor"] = Rgb(0.25, 0.0, 0.0), 
+    ["clearcoat"] = 1.0,
+    ["metallic"] = 0.5,
+    ["roughness"] = 0.3,
+    ["opacity"] = 1.0,
+}
+
+---- Sphere 3 Material ----
+
+sphereMtl3 = UsdPreviewSurface("sphereMtl3") {
+    ["diffuseColor"] = Rgb(0.25, 0.0, 0.0), 
+    ["clearcoat"] = 0.0,
+    ["metallic"] = 1.0,
+    ["roughness"] = 0.5,
+    ["opacity"] = 1.0,
+}
+
+---- Sphere 4 Material ----
+
+normalMap = ImageMap("normalMap") {
+    ["texture"] = rats_assets_dir .. "/textures/metal_anti_slip.tx",
+    ["scale"] = Vec2(9.0, 9.0),
+    ["offset"] = Vec2(0.0, 0.0),
+}
+
+opMap = OpMap("opMap") {
+    ["op1"] = bind(normalMap, Rgb(1.0, 1.0, 1.0)),
+    ["op2"] = Rgb(1.0, 1.0, 1.0),
+    ["op1_factor"] = 2.0,
+    ["operation"] = "subtract"
+}
+
+checkerMap = CheckerboardMap("checkerMap") {
+    ["num_u_tiles"] = 12,
+    ["num_v_tiles"] = 12,
+}
+
+sphereMtl4 = UsdPreviewSurface("sphereMtl4") {
+    ["diffuseColor"] = Rgb(0.25, 0.0, 0.0), 
+    ["clearcoat"] = 1.0,
+    ["metallic"] = 0.75,
+    ["roughness"] = 0.3,
+    ["opacity"] = bind(checkerMap, 1.0),
+    ["opacityThreshold"] = 0.1,
+    ["normal"] = bind(opMap),
+}
+
+--------------------------------------------------------
+
+Layer("/Scene/layer") {
+    {planeGeom, {""}, planeMtl, lightSet},
+    {sphereGeom1, {""}, sphereMtl1, lightSet},
+    {sphereGeom2, {""}, sphereMtl2, lightSet},
+    {sphereGeom3, {""}, sphereMtl3, lightSet},
+    {sphereGeom4, {""}, sphereMtl4, lightSet},
+}

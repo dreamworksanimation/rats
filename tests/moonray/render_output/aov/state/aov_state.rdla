@@ -1,0 +1,145 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 6,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["max_depth"] = 0 -- useful when comparing results
+}
+
+Camera("/camera") {
+    ["node_xform"] = translate(0, 0.75, 4) * rotate(-20, 1, 0, 0) * rotate(-30, 0, 1, 0),
+}
+
+lightset = LightSet("/lightset") {
+   -- empty
+}
+
+--------------------------------------------------------
+
+widget = UsdGeometry("/widget") {
+   ["node_xform"] = scale(0.27, 0.27, 0.27) * translate(0, -0.15, 0),
+   ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+   ["prim_path"] = "/widget"
+}
+
+GeometrySet("/geometrySet") {
+    widget,
+}
+
+--------------------------------------------------------
+
+-- debug map is useful for checking the correctness of
+-- render output
+local debugMap = DebugMap("/debugMap") {
+   ["checkerboard"] = false,
+   ["map_type"] = 2 -- shading normal
+}
+
+emissiveMat = DwaEmissiveMaterial("/emissiveMat") {
+   ["emission"] = bind(debugMap)
+}
+
+--------------------------------------------------------
+
+Layer("/layer") {
+    {widget, {"shell_front", "shell_back", "collar", "core", "stand"}, emissiveMat, lightset},
+}
+
+--------------------------------------------------------
+
+-- test built-in state variables
+RenderOutput("/output/result/pos") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 0, -- "P"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/material_pos") {
+   ["file_name"] = "result0.exr",
+   ["result"] = "material aov",
+   ["material_aov"] = "P",
+   ["channel_name"] = "mat_P",
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/geometricNormal") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 1, -- "Ng"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/normal") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 2, -- "N"
+   ["channel_format"] = 0,
+   ["channel_suffix_mode"] = "rgb"
+}
+
+RenderOutput("/output/result/st") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 3, -- "ST"
+   ["channel_format"] = 0,
+   ["channel_suffix_mode"] = "uvw"
+}
+
+RenderOutput("/output/result/dpds") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 4, -- "DPDS"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/dpdt") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 5, -- "DPDT"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/dsdx") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 6, -- "DSDX"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/dsdy") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 7, -- "DSDY"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/dtdx") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 8, -- "DTDX"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/dtdy") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 9, -- "DTDY"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/worldPos") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 3, -- state variable
+   ["state_variable"] = 10, -- "WP"
+   ["channel_format"] = 0
+}
+
+RenderOutput("/output/result/depth") {
+   ["file_name"] = "result0.exr",
+   ["result"] = "state variable",
+   ["state_variable"] = "depth",
+   ["math_filter"] = "min",
+   ["channel_format"] = "float"
+}

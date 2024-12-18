@@ -1,0 +1,100 @@
+SceneVariables {
+    ["pixel_samples"] = 4,
+    ["max_depth"] = 3,
+    ["image_width"] = 540,
+    ["image_height"] = 260,
+    ["sample_clamping_value"] = 0.5,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = rotate(-28, 1, 0, 0) * translate(3.5, 18.5, 33.7),
+    ["pixel_sample_map"] = rats_assets_dir .. "/images/ramp.exr"
+}
+
+-------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 270) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 14,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+-------------------------------------------------------
+
+sphere1 = SphereGeometry("/Scene/geometry/sphere1") {
+    ["node_xform"] = rotate(120, 1, 0, 0) * 
+                     rotate(10, 0, 0, 1) * 
+                     scale(4, 4, 4) * 
+                     translate(7, 4, 6),
+}
+
+sphere2 = SphereGeometry("/Scene/geometry/sphere2") {
+    ["node_xform"] = rotate(260, 1, 0, 0) * 
+                     rotate(20, 0, 0, 1) * 
+                     scale(4, 4, 4) * 
+                     translate(-1, 4, 6),
+}
+
+wall = RdlMeshGeometry("/Scene/geometry/wall") {
+    ["vertex_list"] = { Vec3(-20,  20, -2), Vec3(-20,  0, -2), Vec3(-20,  0,   20),
+                        Vec3( 20,  0,   20), Vec3(20,  0, -2), Vec3( 20,  20, -2)},
+    ["vertices_by_index"] = {0, 1, 4, 5,
+                             1, 2, 3, 4},
+    ["face_vertex_count"] = {4, 4},
+    ["is_subd"] = false,
+    ["smooth_normal"] = false,
+}
+
+GeometrySet("geometryset") {
+    sphere1,
+    sphere2,
+    wall
+}
+
+-------------------------------------------------------
+
+planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["saturation"] = Rgb(1.5, 1.5, 1.5),
+    ["saturation_enabled"] = true
+}
+
+baseMat = DwaBaseMaterial("/Scene/surfacing/base") {
+    ["albedo"] = bind(planeMap, Rgb(1, 1, 1)),
+    ["specular"] = 0.0,
+    ["roughness"] = 0.316228,
+}
+
+refractiveMtl = DwaRefractiveMaterial("/Scene/surfacing/refractiveMtl") {
+    ["roughness"] = 0.5,
+    ["presence"] = 0.5,
+    ["transmission_color"] = Rgb(0.7, 0.389, 0.319),
+    ["refractive_index"] = 1.3,
+}
+
+wallMap = ImageMap("/Scene/surfacing/wallMap") {
+    ["texture"] = rats_assets_dir .. "/textures/graphpaper.tx",
+}
+
+wallMat = DwaBaseMaterial("/Scene/surfacing/wall") {
+    ["albedo"] = bind(wallMap, Rgb(1, 1, 1)),
+    ["specular"] = 0.0,
+    ["roughness"] = 0.316228,
+}
+-------------------------------------------------------
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {sphere1, "", refractiveMtl, lightSet},
+    {sphere2, "", baseMat, lightSet},
+    {wall, "", wallMat, lightSet}
+}
+

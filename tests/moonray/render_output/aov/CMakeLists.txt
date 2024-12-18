@@ -13,6 +13,7 @@ add_subdirectory(material_properties)
 add_subdirectory(prim_attr)
 add_subdirectory(prim_attr_part_rdlmesh)
 add_subdirectory(prim_attr_part_usd)
+add_subdirectory(state)
 add_subdirectory(visibility)
 add_subdirectory(widget)
 

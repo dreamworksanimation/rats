@@ -1,0 +1,84 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 2,
+    ["bsdf_samples"] = 3,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 3,
+    ["sample_clamping_value"] = 0,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 4) *
+                     rotate(-10, 1, 0, 0) *
+                     translate(0, 0.1, -2.2),
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["exposure"] = -5.0,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+local plane_width = 40
+local plane_depth = 40
+local checker_size = 4.0
+
+local groundMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(plane_width / checker_size, plane_depth / checker_size),
+    ["offset"] = Vec2(-0.5 * plane_width / checker_size,
+                      -0.5 * plane_depth / checker_size),
+    ["saturation_enabled"] = true,
+    ["saturation"] = Rgb(2, 2, 2),
+}
+
+checkerMap = CheckerboardMap("checkerMap") {
+    ["num_u_tiles"] = 5,
+    ["num_v_tiles"] = 5,
+}
+
+-------------------------------------------------------
+
+local groundMtl = DwaBaseMaterial("/Scene/surfacing/groundMtl") {
+    ["albedo"] = bind(groundMap),
+    ["show_specular"] = false,
+}
+
+local planeMtl = DwaEmissiveMaterial("/Scene/surfacing/planeMtl") {
+    ["emission"] = Rgb(0.2, 1.5, 0.0),
+    ["show_emission"] = true,
+    ["presence"] = bind(checkerMap, 1.0),
+}
+
+-------------------------------------------------------
+
+local ground = UsdGeometry("/Scene/geometry/groundGeom") {
+    ["node_xform"] = scale(0.5 * plane_width, 1, 0.5 * plane_depth),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+local plane = UsdGeometry("/Scene/geometry/plane") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(0, 0.5, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    ground, plane
+}
+
+Layer("/Scene/layer") {
+    {ground, "", groundMtl, lightSet},
+    {plane, "", planeMtl, lightSet},
+}

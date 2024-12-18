@@ -1,0 +1,10 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This tests the ability of the RenderOutput objects to output state aovs.
+
+add_rats_test(moonray_render_output_aov_state
+    INPUTS aov_state.rdla
+    CANONICALS result0.exr
+)
+

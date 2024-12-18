@@ -1,0 +1,11 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This tests roughness clamping. Demonstrates how fireflies are eliminated on 
+# the plane (change roughness_clamping_factor to 0.0 to see fireflies)
+
+add_rats_test(moonray_sampling_roughness_clamping2
+    INPUTS ../roughness_clamping1/roughness_clamping1.rdla
+           roughness_clamping2.rdla
+    CANONICALS scene.exr
+)

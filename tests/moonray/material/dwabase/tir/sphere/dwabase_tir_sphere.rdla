@@ -1,0 +1,62 @@
+SceneVariables {
+    ["pixel_samples"] = 3,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 10,
+    ["image_width"] = 500,
+    ["image_height"] = 250,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0.0, 6) * rotate(15, 1, 0, 0)
+                   * translate(0.0, 1, 0.0),
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["exposure"] = 0.0,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+local sphere1 = SphereGeometry("/Scene/geometry/geom1") {
+    ["node_xform"] = translate(-1.25, 1, 0),
+}
+
+local sphere2 = SphereGeometry("/Scene/geometry/geom2") {
+    ["node_xform"] = translate(1.25, 1, 0),
+}
+
+-------------------------------------------------------
+
+local mtl1 = DwaRefractiveMaterial("/Scene/surfacing/mtl1") {
+    ["roughness"] = 0.0,
+    ["refractive_index"] = 0.8,
+    
+}
+
+local mtl2 = DwaRefractiveMaterial("/Scene/surfacing/mtl2") {
+    ["specular"] = 0.04,
+    ["roughness"] = 0.0,
+    ["refractive_index"] = 1.5,
+    
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    sphere1,
+    sphere2
+}
+
+Layer("/Scene/layer") {
+    {sphere1, "", mtl1, lightSet},
+    {sphere2, "", mtl2, lightSet},
+}
