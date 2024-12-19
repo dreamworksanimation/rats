@@ -1,0 +1,11 @@
+# Copyright 2024 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This tests dispersion in the DwaRefractive material
+
+add_rats_test(moonray_material_dwarefractive_dispersion
+    INPUTS scene.rdla
+    CANONICALS
+        scene.exr
+)
+

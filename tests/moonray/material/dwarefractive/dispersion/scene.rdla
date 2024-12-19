@@ -1,0 +1,61 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 4,
+    ["max_glossy_depth"] = 10,
+    ["lights_visible_in_camera"] = true,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 0, 7.0) * rotate(-29, 1, 0, 0) * translate(0, 0.5, 0),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_in_camera"] = 1,
+}
+
+key = RectLight("key") {
+    ["node_xform"] = translate(0, 0, 100) * rotate(-60, 1, 0, 0) * rotate(-60, 0, 1, 0),
+    ["intensity"] = 16,
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+    key,
+}
+
+geom1 = SphereGeometry("geom1") {
+    ["node_xform"] = translate(-1.5, 1, 0),
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = scale(0.25, 0.25, 0.25) * translate(0.8, 0, 1),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+GeometrySet("geometrySet") {
+    geom1,
+    geom2,
+}
+
+mirror = DwaRefractiveMaterial("mirror") {
+    ["roughness"] = 0.0,
+    ["use_dispersion"] = true,
+}
+
+rough = DwaRefractiveMaterial("rough") {
+    ["refractive_index"] = 1.45,
+    ["roughness"] = 0.1,
+    ["use_dispersion"] = true,
+    ["dispersion_abbe_number"] = 10
+}
+
+Layer("layer") {
+    { geom1, "", mirror, lightSet },
+    { geom2, "", rough, lightSet },
+}

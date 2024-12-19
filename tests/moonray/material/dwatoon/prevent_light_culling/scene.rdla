@@ -1,0 +1,46 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 0,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 5, 20),
+}
+
+distLight = DistantLight("distLight") {
+    ["node_xform"] = rotate(-90, 1, 0, 0),
+}
+
+lightSet = LightSet("lightSet") { distLight, }
+
+geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["visible_shadow"] = false,
+}
+
+GeometrySet("geoset") { geom, }
+
+tsmMap = TransformSpaceMap("tsmMap") {
+    ["input"] = Vec3(0.0, 1.0, 0.0),
+    ["input_type"] = "normal",
+    ["from_space"] = "world",
+    ["to_space"] = "render",
+}
+
+rgb2nMap = RgbToNormalMap("rgb2nMap") {
+    ["input"] = bind(tsmMap, Rgb(1.0, 1.0, 1.0)),
+}
+
+mtl = DwaToonMaterial("mtl") {
+    ["albedo"] = Rgb(0.0, 0.5, 0.0),
+    ["input_normal"] = rgb2nMap,
+    ["show_specular"] = false,
+    ["prevent_light_culling"] = true,
+}
+
+Layer("layer") {
+    { geom,  "", mtl, lightSet },
+}

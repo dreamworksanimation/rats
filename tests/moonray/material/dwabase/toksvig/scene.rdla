@@ -1,0 +1,71 @@
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 500,
+    ["pixel_samples"] = 3,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(-0.6, -0.5, 15) * rotate(-7, 1, 0, 0) * rotate(3, 0, 1, 0),
+}
+
+env = EnvLight("env") {
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+disk = DiskLight("disk") {
+    ["node_xform"] = translate(0.0, 0.0, 20.0) * rotate(-45, 1, 0, 0) * rotate(75, 0, 1, 0),
+    ["radius"] = 10.0,
+}
+
+lightSet = LightSet("lightSet") { env, disk, }
+
+sphere1 = SphereGeometry("sphere1") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(3.5, -2.6, 0),
+}
+
+sphere2 = SphereGeometry("sphere2") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(6.2, -3.7, -25),
+}
+
+sphere3 = SphereGeometry("sphere3") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(10.5, -4.0, -75),
+}
+
+sphere4 = SphereGeometry("sphere4") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-0.5, 0.8, 11),
+}
+
+sphere5 = SphereGeometry("sphere5") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(13.5, -4.0, -75),
+}
+
+GeometrySet("geoset") {
+    sphere1, sphere2, sphere3, sphere4, sphere5,
+}
+
+nmlMap = ImageNormalMap("nmlMap") {
+    ["scale"] = Vec2(4.0, 4.0),
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/normal_high_freq.tx",
+}
+
+mtl1 = DwaSolidDielectricMaterial("mtl1") {
+    ["show_diffuse"] = false,
+    ["roughness"] = 0.3,
+    ["input_normal"] = nmlMap,
+    ["normal_AA_strategy"] = "toksvig",
+}
+
+mtl2 = DwaSolidDielectricMaterial("mtl2") {
+    ["show_diffuse"] = false,
+    ["roughness"] = 0.3,
+    ["input_normal"] = nmlMap,
+    ["normal_AA_strategy"] = "none",
+}
+
+Layer("layer") {
+    { sphere1, {""}, mtl1, lightSet },
+    { sphere2, {""}, mtl1, lightSet },
+    { sphere3, {""}, mtl1, lightSet },
+    { sphere4, {""}, mtl1, lightSet },
+    { sphere5, {""}, mtl2, lightSet },
+}

@@ -1,0 +1,91 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 3,
+    ["enable_presence_shadows"] = true,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 0.0, 4.0) * rotate(-10, 1, 0, 0) * translate(0, 0.1, -2.0),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_in_camera"] = 1,
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) * rotate(-60, 1, 0, 0) * rotate(-60, 0, 1, 0),
+    ["intensity"] = 12,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+ground = UsdGeometry("ground") {
+    ["node_xform"] = scale(20, 1, 20),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+sphere = SphereGeometry("sphere") {
+    ["node_xform"] = translate(0, 1, 0) * scale(0.5, 0.5, 0.5),
+}
+
+GeometrySet("geometrySet") {
+    ground, sphere,
+}
+
+groundMap = ImageMap("groundMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(10, 10),
+}
+
+planarProjMap = ProjectPlanarMap("projectPlanarMap") {
+    ["projection_mode"] = "projection_matrix",
+    ["projection_matrix"] = scale(1.0, -0.5, 1.0) * translate(0.0, 0.5, 0.0),
+}
+
+gradImageMap = ImageMap("gradImage") {
+    ["texture"] = rats_assets_dir .. "/textures/grad.tx",
+    ["input_texture_coordinates"] = bind(planarProjMap),
+    ["texture_coordinates"] = 2,
+    ["wrap_around"] = false,
+}
+
+gradOpMap = OpMap("gradOpMap") {
+    ["operation"] = "power",
+    ["op1"] = bind(gradImageMap),
+    ["op1_factor"] = 3.0,
+}
+
+groundMtl = DwaBaseMaterial("groundMtl") {
+    ["albedo"] = bind(groundMap),
+    ["show_specular"] = false,
+}
+
+presenceOneMtl = DwaBaseMaterial("presenceOneMtl") {
+    ["albedo"] = Rgb(0.5, 0.0, 0.0),
+    ["roughness"] = 0.1,
+    ["presence"] = 1.0
+}
+
+presenceZeroMtl = DwaBaseMaterial("presenceZeroMtl") {
+    ["albedo"] = Rgb(0.0, 0.5, 0.0),
+    ["roughness"] = 0.1,
+    ["presence"] = 0.0
+}
+
+layerMtl = DwaLayerMaterial("layerMtl") {
+    ["material_A"] = presenceOneMtl,
+    ["material_B"] = presenceZeroMtl,
+    ["mask"] = bind(gradOpMap, 1.0),
+}
+
+Layer("layer") {
+    { ground, "", groundMtl, lightSet },
+    { sphere, "", layerMtl, lightSet },
+}

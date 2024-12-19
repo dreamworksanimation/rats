@@ -1,0 +1,63 @@
+SceneVariables {
+    ["image_width"] = 300,
+    ["image_height"] = 150,
+    ["pixel_samples"] = 2,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 3.0),
+}
+
+env = EnvLight("env") {
+    ["node xform"] = rotate(45, 0, 1, 0),
+    ["intensity"] = 0.6,
+	["sample upper hemisphere only"] = false,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+ltSet = LightSet("LightSet") { env, }
+
+model = rats_assets_dir .. "/models/plane.usdc"
+
+geom1 = UsdGeometry("geom1") {
+    ["node_xform"] = translate(-0.6, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane_deform.usdc",
+    ["prim_path"] = "/plane",
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["node_xform"] = translate(0.6, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane_deform.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geomset") {
+    geom1, geom2
+}
+
+mtl1 = DwaBaseMaterial("mtl1") {
+    ["show_specular"] = false,
+    ["show_diffuse"] = false,
+    ["show_glitter"] = true,
+    ["glitter_color_A"] = Rgb(0.6, 0.4, 0.4),
+    ["glitter_color_hue_variation"] = 1.0,
+    ["glitter_density"] = 12.0,
+    ["glitter_size_A"] = 0.05,
+    ["glitter_compensate_reference_space_deformation"] = false,
+}
+
+mtl2 = DwaBaseMaterial("mtl2") {
+    ["show_specular"] = false,
+    ["show_diffuse"] = false,
+    ["show_glitter"] = true,
+    ["glitter_color_A"] = Rgb(0.6, 0.4, 0.4),
+    ["glitter_color_hue_variation"] = 1.0,
+    ["glitter_density"] = 12.0,
+    ["glitter_size_A"] = 0.05,
+    ["glitter_compensate_reference_space_deformation"] = true,
+}
+
+Layer("/Scene/layer") {
+    {geom1, {""}, mtl1, ltSet},
+    {geom2, {""}, mtl2, ltSet},
+}

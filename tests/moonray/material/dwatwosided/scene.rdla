@@ -1,0 +1,58 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 2,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 0, 3) * rotate(-10, 1, 0, 0),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("lightSet") { env, }
+
+sphere = SphereGeometry("sphere") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(160, 0, 1, 0),
+    ["zmin"] = -0.6,
+    ["zmax"] = 0.6,
+    ["phi_max"] = 240,
+}
+
+GeometrySet("geometrySet") { sphere, }
+
+dots = ImageMap("dots") {
+    ["texture"] = rats_assets_dir .. "/textures/dots.tx",
+    ["scale"] = Vec2(2, 1),
+}
+
+front = DwaRefractiveMaterial("front") {
+    ["roughness"] = 0.1,
+}
+
+back = DwaSolidDielectricMaterial("back") {
+    ["albedo"] = Rgb(0.0, 0.0, 0.6),
+    ["roughness"] = 0.3,
+}
+
+mtl = DwaTwoSidedMaterial("mtl") {
+    ["front_material"] = front,
+    ["back_material"] = back,
+}
+
+greenMetal = DwaMetalMaterial("green") {
+    ["metallic_color"] = Rgb(0.0, 1.0, 0.0),
+}
+
+lyr = DwaLayerMaterial("lyr") {
+    ["material_A"] = greenMetal,
+    ["material_B"] = mtl,
+    ["mask"] = bind(dots, 1.0),
+}
+
+Layer("layer") {
+    { sphere, "", lyr, lightSet },
+}

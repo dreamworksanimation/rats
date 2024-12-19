@@ -1,0 +1,67 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 4,
+    ["enable_presence_shadows"] = true,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 0.0, 4.0) * rotate(-10, 1, 0, 0) * translate(0, 0.1, -2.0),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_in_camera"] = 1,
+}
+
+key = RectLight("key") {
+    ["node_xform"] = translate(0, 0, 100) * rotate(-40, 1, 0, 0) * rotate(-40, 0, 1, 0),
+    ["intensity"] = 12,
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+    key,
+}
+
+ground = UsdGeometry("ground") {
+    ["node_xform"] = scale(20, 1, 20),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+plane = UsdGeometry("plane") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0, 0.5, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometrySet") {
+    ground, plane,
+}
+
+groundMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(10, 10),
+}
+
+checkerMap = CheckerboardMap("checkerMap") {
+}
+
+groundMtl = DwaBaseMaterial("groundMtl") {
+    ["albedo"] = bind(groundMap),
+    ["show_specular"] = false,
+}
+
+planeMtl = DwaBaseMaterial("planeMtl") {
+    ["albedo"] = Rgb(0.2, 0.5, 0.0),
+    ["roughness"] = 0.1,
+    ["specular_model"] = 0,
+    ["presence"] = bind(checkerMap, 1.0),
+}
+
+Layer("layer") {
+    {ground, "", groundMtl, lightSet},
+    {plane, "", planeMtl, lightSet},
+}

@@ -1,0 +1,36 @@
+SceneVariables {
+    ["image_width"] = 300,
+    ["image_height"] = 300,
+    ["pixel_samples"] = 2,
+    ["lights_visible_in_camera"] = true,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 5, 100) * rotate(-45, 1, 0, 0) * rotate(-45, 0, 1, 0) * translate(0, -10, 0),
+}
+
+env = EnvLight("env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+ltSet = LightSet("ltSet") { env, }
+
+cloth = UsdGeometry("cloth") {
+    ["stage"] = rats_assets_dir .. "/models/cloth.usdc",
+    ["prim_path"] = "/cloth",
+}
+
+GeometrySet("geoset") {
+    cloth
+}
+
+testMat = DwaVelvetMaterial_v2("testMaterial") {
+    ["fuzz_coverage"] = 0.5,
+    ["fuzz_albedo"] = Rgb(0.2, 0.2, 0.2), 
+    ["albedo"] = Rgb(0.1, 0.02, 0.02)
+}
+
+Layer("layer") {
+    { cloth, "", testMat, ltSet },
+}

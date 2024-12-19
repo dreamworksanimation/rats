@@ -1,0 +1,44 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 5,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 1.0, 4) * rotate(-30, 1, 0, 0),
+    ["focal"] = 70,
+}
+
+env = EnvLight("env") {
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("key") {
+    ["node_xform"] = translate(0, 0, 100) * rotate(-60, 1, 0, 0) * rotate(-60, 0, 1, 0),
+    ["intensity"] = 12,
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("lightSet") { env, key, }
+
+sphere = SphereGeometry("sphere") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0, 1, 0),
+}
+
+GeometrySet("geometrySet") { sphere }
+
+normalMap = ImageNormalMap("normalMap") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/wood_planks_nml.tx",
+    ["scale"] = Vec2(2, 2),
+}
+
+sphereMtl = DwaBaseMaterial("sphereMtl") {
+    ["albedo"] = Rgb(0.1, 0.1, 0.1),
+    ["roughness"] = 0.25,
+    ["input_normal"] = normalMap,
+}
+
+Layer("layer") {
+    { sphere, "", sphereMtl, lightSet },
+}
