@@ -1,0 +1,30 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 0, 75) * rotate(-30, 0, 1, 0),
+    ["mb_shutter_open"] = -0.5,
+    ["mb_shutter_close"] = 0.5,
+}
+
+lightSet = LightSet("lightSet") { }
+
+geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/points_accel.usdc",
+    ["prim_path"] = "/points",
+    ["motion_blur_type"] = "acceleration",
+}
+
+GeometrySet("geomSet") { geom, }
+
+cd = AttributeMap("cd") { }
+
+mtl = DwaEmissiveMaterial("mtl") {
+    ["emission_color"] = bind(cd, Rgb(5, 5, 5)),
+}
+
+Layer("layer") {
+  {geom, "", mtl, lightSet},
+}
