@@ -1,0 +1,270 @@
+
+SceneVariables {
+    ["camera"] = PerspectiveCamera("/interactive/camera"),
+    ["deep_id_attribute_names"] = {"prim_id"},
+    ["exr_header_attributes"] = Metadata("/Scene/exrheader"),
+    ["layer"] = Layer("/Scene/layer"),
+    ["max_depth"] = 4,
+    ["max_glossy_depth"] = 4,
+    ["max_mirror_depth"] = 4,
+    ["output_file"] = "result.exr",
+    ["image_width"] = 512,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 2,
+}
+
+Metadata("/Scene/exrheader") {
+    {"cryptomatte/ae93ba3/conversion", "string", "uint32_to_float32"},
+    {"cryptomatte/ae93ba3/hash", "string", "MurmurHash3_32"},
+    {"cryptomatte/ae93ba3/manif_file", "string", "manifest.json"},
+    {"cryptomatte/ae93ba3/name", "string", "Cryptomatte"},
+    {"id_manifest_path", "string", "manifest.idMap"},
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["film_width_aperture"] = 25,
+    ["node_xform"] = rotate(-12, 1, 0, 0) * translate(0, 150, 430),
+}
+
+LightSet("/Scene/lightset/1") {
+    EnvLight("/sceneflow_gaffer/lgt_0"),
+}
+
+EnvLight("/sceneflow_gaffer/lgt_0") {
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+    ["visible_in_camera"] = "force on",
+}
+
+UsdGeometry("/obj/floor") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["node_xform"] = scale(750, 1, 700),
+    ["primitive_attributes"] = {UserData("/obj/background/UserData/prim_id")},
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/obj/wall") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["node_xform"] = scale(750, 1, 500) *
+                     rotate(-90, 1, 0, 0) *
+                     translate(0, 250, -350),
+    ["primitive_attributes"] = {UserData("/obj/background/UserData/prim_id")},
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/obj/sphere_1") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["node_xform"] = scale(50, 100, 50) *
+                     translate(172, -10, -280) *
+                     rotate(15, 0, 0, 1),
+    ["primitive_attributes"] = {UserData("/obj/sphere_1/UserData/prim_id")},
+    ["prim_path"] = "/sphere",
+}
+
+UsdGeometry("/obj/sphere_2") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["node_xform"] = scale(30, 60, 30) *
+                     translate(43, 10, -112) *
+                     rotate(-15, 0, 0, 1),
+    ["primitive_attributes"] = {UserData("/obj/sphere_2/UserData/prim_id")},
+    ["prim_path"] = "/sphere",
+}
+
+UsdGeometry("/obj/sphere_3") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["node_xform"] = scale(40, 80, 40) *
+                     translate(-177, 0, -162) *
+                     rotate(-12, 0, 0, 1),
+    ["primitive_attributes"] = {UserData("/obj/sphere_3/UserData/prim_id")},
+    ["prim_path"] = "/sphere",
+}
+
+UsdGeometry("/obj/sphere_4_REFRACT") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["node_xform"] = scale(40, 40, 40) * translate(-81.0, 0.0, -50),
+    ["primitive_attributes"] = {UserData("/obj/sphere_4_REFRACT/UserData/prim_id")},
+    ["prim_path"] = "/sphere",
+}
+
+UsdGeometry("/obj/sphere_4_MIRROR") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["node_xform"] = scale(40, 40, 40) * translate(-28.0, 0.0, -202.6),
+    ["primitive_attributes"] = {UserData("/obj/sphere_4_MIRROR/UserData/prim_id")},
+    ["prim_path"] = "/sphere",
+}
+
+UsdGeometry("/obj/sphere_5") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["node_xform"] = scale(29, 58, 29) * translate(172.0, -20.0, -80.0),
+    ["prim_path"] = "/sphere",
+}
+
+Layer("/Scene/layer") {
+    {UsdGeometry("/obj/floor"),             "",  DwaRefractiveMaterial("/obj/MTL_BG/DwaRefractiveMaterial"),                LightSet("/Scene/lightset/1")},
+    {UsdGeometry("/obj/wall"),              "",  DwaRefractiveMaterial("/obj/MTL_BG/DwaRefractiveMaterial"),                LightSet("/Scene/lightset/1")},
+    {UsdGeometry("/obj/sphere_1"),          "",  DwaSolidDielectricMaterial("/obj/MTL_BLUE/DwaSolidDielectricMaterial"),    LightSet("/Scene/lightset/1")},
+    {UsdGeometry("/obj/sphere_2"),          "",  DwaSolidDielectricMaterial("/obj/MTL_BLUE/DwaSolidDielectricMaterial"),    LightSet("/Scene/lightset/1")},
+    {UsdGeometry("/obj/sphere_3"),          "",  DwaSolidDielectricMaterial("/obj/MTL_GREEN/DwaSolidDielectricMaterial"),   LightSet("/Scene/lightset/1")},
+    {UsdGeometry("/obj/sphere_4_MIRROR"),   "",  DwaSolidDielectricMaterial("/obj/MTL_MIRROR/DwaSolidDielectricMaterial"),  LightSet("/Scene/lightset/1")},
+    {UsdGeometry("/obj/sphere_4_REFRACT"),  "",  DwaRefractiveMaterial("/obj/MTL_REFRACT/DwaRefractiveMaterial"),           LightSet("/Scene/lightset/1")},
+    {UsdGeometry("/obj/sphere_5"),          "",  DwaSolidDielectricMaterial("/obj/MTL_GREEN/DwaSolidDielectricMaterial"),   LightSet("/Scene/lightset/1")},
+}
+
+GeometrySet("/Scene/geoset") {
+    UsdGeometry("/obj/floor"),
+    UsdGeometry("/obj/wall"),
+    UsdGeometry("/obj/sphere_1"),
+    UsdGeometry("/obj/sphere_2"),
+    UsdGeometry("/obj/sphere_3"),
+    UsdGeometry("/obj/sphere_4_MIRROR"),
+    UsdGeometry("/obj/sphere_4_REFRACT"),
+    UsdGeometry("/obj/sphere_5"),
+}
+
+UserData("/obj/sphere_1/UserData/prim_id") {
+    ["float_key"] = "prim_id",
+    ["float_values"] = {-7.471702447458067e-34},
+}
+
+UserData("/obj/sphere_2/UserData/prim_id") {
+    ["float_key"] = "prim_id",
+    ["float_values"] = {1.0825493670763376e-34},
+}
+
+UserData("/obj/sphere_3/UserData/prim_id") {
+    ["float_key"] = "prim_id",
+    ["float_values"] = {-0.2570781409740448},
+}
+
+UserData("/obj/sphere_4_REFRACT/UserData/prim_id") {
+    ["float_key"] = "prim_id",
+    ["float_values"] = {2.637528601340784e+37},
+}
+
+UserData("/obj/sphere_4_MIRROR/UserData/prim_id") {
+    ["float_key"] = "prim_id",
+    ["float_values"] = {-3.962240895083978e-14},
+}
+
+UserData("/obj/sphere_5/UserData/prim_id") {
+    ["float_key"] = "prim_id",
+    ["float_values"] = {-375465.90625},
+}
+
+UserData("/obj/background/UserData/prim_id") {
+    ["float_key"] = "prim_id",
+    ["float_values"] = {1.472171217048082e-34},
+}
+
+RenderOutput("/Scene/AOVs/main/default_file/Beauty") {
+    ["channel_format"] = "float",
+    ["compression"] = "dwab",
+    ["exr_dwa_compression_level"] = 85.0,
+    ["exr_header_attributes"] = Metadata("/Scene/exrheader"),
+    ["file_name"] = "beauty.exr",
+    ["file_part"] = "main",
+    ["result"] = "beauty",
+}
+
+RenderOutput("/Scene/AOVs/main/default_file/Alpha") {
+    ["channel_format"] = "float",
+    ["compression"] = "dwab",
+    ["exr_dwa_compression_level"] = 85.0,
+    ["exr_header_attributes"] = Metadata("/Scene/exrheader"),
+    ["file_name"] = "beauty.exr",
+    ["file_part"] = "main",
+    ["result"] = "alpha",
+}
+
+RenderOutput("/Scene/AOVs/dynamic/data_file/CryptoMatte") {
+    ["channel_format"] = "float",
+    ["channel_name"] = "CryptoMatte",
+    ["compression"] = "zip",
+    ["cryptomatte_record_reflected"] = true,
+    ["cryptomatte_record_refracted"] = true,
+    ["cryptomatte_depth"] = 1,
+    ["exr_dwa_compression_level"] = 85.0,
+    ["exr_header_attributes"] = Metadata("/Scene/exrheader"),
+    ["file_name"] = "cryptomatte.exr",
+    ["file_part"] = "CryptoMatte",
+    ["result"] = "cryptomatte",
+}
+
+-- We need this dummy RenderOutput to force the "prim_id" to
+-- be passed along by the geometry procedurals.  This is a bug
+-- and is logged in MOONRAY-2492
+RenderOutput("/Scene/AOVs/dynamic/custom_file/prim_id") {
+    ["channel_name"] = "prim_id",
+    ["compression"] = "dwab",
+    ["exr_dwa_compression_level"] = 85.0,
+    ["exr_header_attributes"] = Metadata("/Scene/exrheader"),
+    ["file_name"] = "throwaway.exr",
+    ["file_part"] = "prim_id",
+    ["primitive_attribute"] = "prim_id",
+    ["primitive_attribute_type"] = "FLOAT",
+    ["result"] = "primitive attribute",
+}
+
+DwaSolidDielectricMaterial("/obj/SceneFlow/import_geo/DEFAULT_SHADER/DwaSolidDielectricMaterial") {
+    ["albedo"] = bind(AttributeMap("/obj/SceneFlow/import_geo/DEFAULT_SHADER/AttributeMap_Cd"), Rgb(1.0, 1.0, 1.0)),
+    ["roughness"] = 0.5,
+}
+
+DwaRefractiveMaterial("/obj/MTL_REFRACT/DwaRefractiveMaterial") {
+    ["record_reflected_cryptomatte"] = true,
+    ["record_refracted_cryptomatte"] = true,
+    ["roughness"] = bind(CheckerboardMap("/obj/MTL_REFRACT/CheckerboardMap1"), 1.0),
+}
+
+DwaSolidDielectricMaterial("/obj/MTL_MIRROR/DwaSolidDielectricMaterial") {
+    ["albedo"] = bind(CheckerboardMap("/obj/MTL_MIRROR/CheckerboardMap2"), Rgb(1.0, 1.0, 1.0)),
+    ["roughness"] = bind(CheckerboardMap("/obj/MTL_MIRROR/CheckerboardMap1"), 1.0),
+}
+
+DwaSolidDielectricMaterial("/obj/MTL_GREEN/DwaSolidDielectricMaterial") {
+    ["albedo"] = Rgb(0.275, 0.6, 0.15),
+    ["roughness"] = 0.5,
+}
+
+DwaSolidDielectricMaterial("/obj/MTL_BLUE/DwaSolidDielectricMaterial") {
+    ["albedo"] = Rgb(0.15, 0.25, 0.6),
+    ["roughness"] = 0.5,
+}
+
+DwaRefractiveMaterial("/obj/MTL_BG/DwaRefractiveMaterial") {
+    ["record_reflected_cryptomatte"] = true,
+    ["record_refracted_cryptomatte"] = true,
+    ["roughness"] = bind(CheckerboardMap("/obj/MTL_BG/CheckerboardMap1"), 1.0),
+    ["refractive_index"] = 2.2,
+    ["thin_geometry"] = true,
+    ["transmission_color"] = Rgb(1, 1, 0.4),
+}
+
+CheckerboardMap("/obj/MTL_REFRACT/CheckerboardMap1") {
+    ["color_B"] = Rgb(0.075, 0.075, 0.075),
+    ["num_u_tiles"] = 8,
+    ["num_v_tiles"] = 16,
+}
+
+CheckerboardMap("/obj/MTL_MIRROR/CheckerboardMap1") {
+    ["color_B"] = Rgb(0.075, 0.075, 0.075),
+    ["num_u_tiles"] = 8,
+    ["num_v_tiles"] = 16,
+}
+
+CheckerboardMap("/obj/MTL_BG/CheckerboardMap1") {
+    ["color_B"] = Rgb(0.075, 0.075, 0.075),
+    ["num_u_tiles"] = 16,
+    ["num_v_tiles"] = 16,
+}
+
+CheckerboardMap("/obj/MTL_MIRROR/CheckerboardMap2") {
+    ["color_B"] = Rgb(0.2, 0.2, 0.2),
+    ["num_u_tiles"] = 12,
+    ["num_v_tiles"] = 6,
+}
+
+AttributeMap("/obj/SceneFlow/import_geo/DEFAULT_SHADER/AttributeMap_Cd") {
+    ["default_value"] = Rgb(0.25, 0.25, 0.25),
+    ["primitive_attribute_name"] = "Cd",
+}
+
