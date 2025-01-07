@@ -1,0 +1,81 @@
+SceneVariables {
+    ["pixel_samples"] = 4,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 0,
+    ["russian_roulette_threshold"] = 0.0,
+    ["texture_blur"] = 0,
+    ["image_width"] = 250,
+    ["image_height"] = 134,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 5.5),
+}
+
+------------------------------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 10),
+    ["intensity"] = 250,
+    ["normalized"] = false,
+}
+
+lightSet = LightSet("LightSet") {
+    key,
+}
+
+------------------------------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+local numBlade = 150
+for blade = 1, numBlade do
+    -- ratio = [0..1[
+    local ratio = (blade - 1) / numBlade
+
+    local rot = 360 * ratio
+
+    local geom = RdlMeshGeometry("/Scene/geometry/geom" .. blade) {
+        ["node_xform"] = scale(1, 0.02, 1) * rotate(rot, 0, 0, 1) * translate(1.1, 0, 0),
+        ["vertex_list"] = { Vec3(1, 0.5, 0), Vec3(1, -0.5, 0), Vec3(0, 0, 0) },
+        ["vertices_by_index"] = { 0, 1, 2 },
+        ["face_vertex_count"] = { 3 },
+    }
+
+    local mtl = DwaBaseMaterial("/Scene/surfacing/mtl" .. blade) {
+        ["specular"] = 0,
+    }
+
+    table.insert(geoms, geom)
+    table.insert(assignments, {geom, "", mtl, lightSet})
+end
+
+
+------------------------------------------------------------------------------
+
+local planeGeom = UsdGeometry("/Scene/geometry/plane") {
+    ["node_xform"] = scale(2, 2, 2) * rotate(90, 1, 0, 0) * translate(-1.1, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeMap = ImageMap("/Scene/surfacing/text") {
+    ["texture"] = rats_assets_dir .. "/textures/text-ure.tx",
+}
+
+local planeMtl = DwaBaseMaterial("/Scene/surfacing/plane") {
+    ["albedo"] = bind(planeMap, Rgb(1, 1, 1)),
+    ["specular"] = 0,
+}
+
+table.insert(geoms, planeGeom)
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+------------------------------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+

@@ -1,0 +1,324 @@
+
+SceneVariables {
+   ["image_width"] = 250,
+   ["image_height"] = 134,
+}
+
+Camera("/scene/rendering/camera") {
+   ["node_xform"] = blur(translate(0, .08, 10), translate(0, 0, 10)),
+   -- Use an extremely short shutter duration to produce, essentially,
+   -- a non-mb render that contains velocity information that is valid
+   -- at time 0. One could move this short shutter around to produce
+   -- instantaneous velocity information at any desired moment in time.
+   ["mb_shutter_open"] = -0.0001,
+   ["mb_shutter_close"] = 0,
+}
+
+------------------------------------------------------------------------
+
+local key = EnvLight("/scene/lighting/key") {}
+local lightSet = LightSet("/scene/lighting/light_set") { key }
+
+------------------------------------------------------------------------
+
+local mtl = DwaSolidDielectricMaterial("/scene/surfacing/mtl") {}
+
+------------------------------------------------------------------------
+
+-- test quad mesh, camera motion only
+local planeGeom = RdlMeshGeometry("/scene/geometry/plane_geom") {
+   ["node_xform"] = translate(-3.0, 1.5, 0),
+   ["vertex_list"] = { 
+      Vec3(-0.5, -0.5, 0.0), 
+      Vec3( 0.5, -0.5, 0.0), 
+      Vec3( 0.5,  0.5, 0.0), 
+      Vec3(-0.5,  0.5, 0.0)
+   },
+   ["vertices_by_index"] = { 0, 1, 2, 3 },
+   ["face_vertex_count"] = { 4 },
+   ["is_subd"] = false,
+}
+
+-- test quad mesh, camera motion + rotation
+local planeGeom1 = RdlMeshGeometry("/scene/geometry/plane_geom1") {
+   ["node_xform"] = blur(rotate(45, 0, 0, -1) * translate(-1.5, 1.5, 0), 
+                         rotate( 0, 0, 0, -1) * translate(-1.5, 1.5, 0)),
+   ["vertex_list"] = {
+      Vec3(-0.5, -0.5, 0.0), 
+      Vec3( 0.5, -0.5, 0.0), 
+      Vec3( 0.5,  0.5, 0.0), 
+      Vec3(-0.5,  0.5, 0.0)
+   },
+   ["vertices_by_index"] = { 0, 1, 2, 3 },
+   ["face_vertex_count"] = { 4 },
+   ["is_subd"] = false,
+}
+
+-- test quad mesh, camera motion + rotation/instancing
+local planeGeom2 = RdlMeshGeometry("/scene/geometry/plane_geom2") {
+   ["node_xform"] = blur(rotate(45, 0, 0, -1) * translate(0.0, 1.5, 0), 
+                         rotate( 0, 0, 0, -1) * translate(0.0, 1.5, 0)),
+   ["use_rotation_motion_blur"] = true, -- triggers instancing under the hood
+   ["vertex_list"] = {
+      Vec3(-0.5, -0.5, 0.0), 
+      Vec3( 0.5, -0.5, 0.0), 
+      Vec3( 0.5,  0.5, 0.0), 
+      Vec3(-0.5,  0.5, 0.0)
+   },
+   ["vertices_by_index"] = { 0, 1, 2, 3 },
+   ["face_vertex_count"] = { 4 },
+   ["is_subd"] = false,
+}
+
+-- test subd mesh, camera motion + rotation
+local planeGeom3 = RdlMeshGeometry("/scene/geometry/plane_geom3") {
+   ["node_xform"] = blur(rotate(45, 0, 0, -1) * translate(1.5, 1.5, 0), 
+                         rotate( 0, 0, 0, -1) * translate(1.5, 1.5, 0)),
+   ["vertex_list"] = {
+      Vec3(-0.5, -0.5, 0.0), 
+      Vec3( 0.5, -0.5, 0.0), 
+      Vec3( 0.5,  0.5, 0.0), 
+      Vec3(-0.5,  0.5, 0.0)
+   },
+   ["vertices_by_index"] = { 0, 1, 2, 3 },
+   ["face_vertex_count"] = { 4 },
+   ["is_subd"] = true,
+}
+
+-- test subd mesh, camera motion + rotation/instancing
+local planeGeom4 = RdlMeshGeometry("/scene/geometry/plane_geom4") {
+   ["node_xform"] = blur(rotate(45, 0, 0, -1) * translate(3.0, 1.5, 0), 
+                         rotate( 0, 0, 0, -1) * translate(3.0, 1.5, 0)),
+   ["use_rotation_motion_blur"] = true, -- triggers instancing under the hood
+   ["vertex_list"] = {
+      Vec3(-0.5, -0.5, 0.0), 
+      Vec3( 0.5, -0.5, 0.0), 
+      Vec3( 0.5,  0.5, 0.0), 
+      Vec3(-0.5,  0.5, 0.0)
+   },
+   ["vertices_by_index"] = { 0, 1, 2, 3 },
+   ["face_vertex_count"] = { 4 },
+   ["is_subd"] = true,
+}
+
+-- test tri mesh, camera motion + rotation
+local planeGeom5 = RdlMeshGeometry("/scene/geometry/plane_geom5") {
+   ["node_xform"] = blur(rotate(45, 0, 0, -1) * translate(-3.0, 0.0, 0), 
+                         rotate( 0, 0, 0, -1) * translate(-3.0, 0.0, 0)),
+   ["vertex_list"] = {
+      Vec3(-0.5, -0.5, 0.0), 
+      Vec3( 0.5, -0.5, 0.0), 
+      Vec3( 0.5,  0.5, 0.0)
+   },
+   ["vertices_by_index"] = { 0, 1, 2 },
+   ["face_vertex_count"] = { 3 },
+   ["is_subd"] = false,
+}
+
+-- test tri mesh, camera motion + rotation/instancing
+local planeGeom6 = RdlMeshGeometry("/scene/geometry/plane_geom6") {
+   ["node_xform"] = blur(rotate(45, 0, 0, -1) * translate(-1.5, 0.0, 0), 
+                         rotate( 0, 0, 0, -1) * translate(-1.5, 0.0, 0)),
+   ["use_rotation_motion_blur"] = true, -- triggers instancing under the hood
+   ["vertex_list"] = {
+      Vec3(-0.5, -0.5, 0.0), 
+      Vec3( 0.5, -0.5, 0.0), 
+      Vec3( 0.5,  0.5, 0.0)
+   },
+   ["vertices_by_index"] = { 0, 1, 2 },
+   ["face_vertex_count"] = { 3 },
+   ["is_subd"] = false,
+}
+
+-- test bezier curve camera motion
+local curveGeom = RdlCurveGeometry("/scene/geometry/curve_geom") {
+   ["node_xform"] = scale(1.4, 1.4, 1.4) * translate(-0.45, -0.7, 0.0),
+   ["curve_type"] = "bezier",
+   ["tessellation_rate"] = 12,
+   ["curves_subtype"] = "ray_facing",
+   ["curves_vertex_count"] = { 7 },
+   ["vertex_list_0"] = {
+      Vec3( 0.4, 0.00, 0.0),
+      Vec3( 0.0, 0.20, 0.0),
+      Vec3( 0.4, 0.5, 0.0),
+      Vec3( 0.4, 0.5, 0.0),
+      Vec3( 0.6, 0.7, 0.0 ),
+      Vec3( 0.3, 0.9, 0.0 ),
+      Vec3( 0.3, 0.9, 0.0 ),
+   },
+   ["radius_list"] = { 0.03, }
+}
+
+-- test bezier curve camera motion + translation
+local curveGeom1 = RdlCurveGeometry("/scene/geometry/curve_geom1") {
+   ["node_xform"] = blur(scale(1.4, 1.4, 1.4) * translate(0.5, -0.7, 0.0),
+                         scale(1.4, 1.4, 1.4) * translate(1.0, -0.7, 0.0)),
+   ["curve_type"] = "bezier",
+   ["tessellation_rate"] = 12,
+   ["curves_subtype"] = "ray_facing",
+   ["curves_vertex_count"] = { 7 },
+   ["vertex_list_0"] = {
+      Vec3( 0.4, 0.00, 0.0),
+      Vec3( 0.0, 0.20, 0.0),
+      Vec3( 0.4, 0.5, 0.0),
+      Vec3( 0.4, 0.5, 0.0),
+      Vec3( 0.6, 0.7, 0.0 ),
+      Vec3( 0.3, 0.9, 0.0 ),
+      Vec3( 0.3, 0.9, 0.0 ),
+   },
+   ["radius_list"] = { 0.03, }
+}
+
+-- test bezier curve via instance geometry
+local curveGeom2 = RdlCurveGeometry("/scene/geometry/curve_geom2") {
+   ["curve_type"] = "bezier",
+   ["tessellation_rate"] = 12,
+   ["curves_subtype"] = "ray_facing",
+   ["curves_vertex_count"] = { 7 },
+   ["vertex_list_0"] = {
+      Vec3( 0.4, 0.00, 0.0),
+      Vec3( 0.0, 0.20, 0.0),
+      Vec3( 0.4, 0.5, 0.0),
+      Vec3( 0.4, 0.5, 0.0),
+      Vec3( 0.6, 0.7, 0.0 ),
+      Vec3( 0.3, 0.9, 0.0 ),
+      Vec3( 0.3, 0.9, 0.0 ),
+   },
+   ["radius_list"] = { 0.03, }
+}
+local ig0 = RdlInstancerGeometry("/scene/geometry/ig0") {
+   ["references"] = { curveGeom2 },
+   ["positions"] = { Vec3(2.5, -0.7, 0.0) },
+   ["scales"] = { Vec3(1.4, 1.4, 1.4) },
+   ["velocities"] = { Vec3(10.0, 0.0, 0.0) }
+}
+
+-- test points with camera motion
+local pointGeom = RdlPointGeometry("/scene/geometry/point_geom") {
+   ["node_xform"] = translate(-3.0, -1.5, 0),
+   ["vertex_list"] = { Vec3(-0.25, -0.25, 0.0), Vec3(0.25, 0.25, 0.0) },
+   ["radius_list"] = { .125, .125 },
+}
+
+-- test points with rotation
+local pointGeom1 = RdlPointGeometry("/scene/geometry/point_geom1") {
+   ["node_xform"] = blur(rotate(45, 0, 0, 1) * translate(-1.5, -1.5, 0), 
+                         rotate( 0, 0, 0, 1) * translate(-1.5, -1.5, 0)),
+   ["vertex_list"] = { Vec3(-0.25, -0.25, 0.0), Vec3(0.25, 0.25, 0.0) },
+   ["radius_list"] = { .125, .125 },
+}
+
+-- test points with rotation/instancing
+local pointGeom2 = RdlPointGeometry("/scene/geometry/point_geom2") {
+   ["node_xform"] = blur(rotate(45, 0, 0, 1) * translate(0.0, -1.5, 0), 
+                         rotate( 0, 0, 0, 1) * translate(0.0, -1.5, 0)),
+   ["use_rotation_motion_blur"] = true, -- triggers instancing under the hood
+   ["vertex_list"] = { Vec3(-0.25, -0.25, 0.0), Vec3(0.25, 0.25, 0.0) },
+   ["radius_list"] = { .125, .125 },
+}
+
+-- tests line segments with camera motion
+local segmentGeom = RdlCurveGeometry("/scene/geometry/segment_geom") {
+   ["node_xform"] = scale(1.4, 1.4, 1.4) * translate(0.9, -1.9, 0.0),
+   ["curve_type"] = "linear",
+   ["tessellation_rate"] = 12,
+   ["curves_subtype"] = "ray_facing",
+   ["curves_vertex_count"] = { 4 },
+   ["vertex_list_0"] = {
+      Vec3( 0.4, 0.00, 0.0),
+      Vec3( 0.0, 0.25, 0.0),
+      Vec3( 0.4, 0.50, 0.0),
+      Vec3( 0.4, 0.50, 0.0),
+   },
+   ["radius_list"] = { 0.03, }
+}
+
+-- tests line segments camera motion + translation
+local segmentGeom1 = RdlCurveGeometry("/scene/geometry/segment_geom1") {
+   ["node_xform"] = blur(scale(1.4, 1.4, 1.4) * translate(1.3, -1.9, 0.0),
+                         scale(1.4, 1.4, 1.4) * translate(1.8, -1.9, 0.0)),
+   ["curve_type"] = "linear",
+   ["tessellation_rate"] = 12,
+   ["curves_subtype"] = "ray_facing",
+   ["curves_vertex_count"] = { 4 },
+   ["vertex_list_0"] = {
+      Vec3( 0.4, 0.00, 0.0),
+      Vec3( 0.0, 0.25, 0.0),
+      Vec3( 0.4, 0.50, 0.0),
+      Vec3( 0.4, 0.50, 0.0),
+   },
+   ["radius_list"] = { 0.03, }
+}
+
+-- test linear segments via instance geometry
+local segmentGeom2 = RdlCurveGeometry("/scene/geometry/segment_geom2") {
+   ["curve_type"] = "linear",
+   ["tessellation_rate"] = 12,
+   ["curves_subtype"] = "ray_facing",
+   ["curves_vertex_count"] = { 4 },
+   ["vertex_list_0"] = {
+      Vec3( 0.4, 0.00, 0.0),
+      Vec3( 0.0, 0.25, 0.0),
+      Vec3( 0.4, 0.50, 0.0),
+      Vec3( 0.4, 0.50, 0.0),
+   },
+   ["radius_list"] = { 0.03, }
+}
+local ig1 = RdlInstancerGeometry("/scene/geometry/ig1") {
+   ["references"] = { segmentGeom2 },
+   ["positions"] = { Vec3(2.7, -1.9, 0.0) },
+   ["scales"] = { Vec3(1.4, 1.4, 1.4) },
+   ["velocities"] = { Vec3(10.0, 0.0, 0.0) }
+}
+
+----------------------------------------------------------
+
+GeometrySet("/scene/geometry_set") {
+   planeGeom,
+   planeGeom1,
+   planeGeom2,
+   planeGeom3,
+   planeGeom4,
+   planeGeom5,
+   planeGeom6,
+   curveGeom,
+   curveGeom1,
+   ig0,
+   pointGeom,
+   pointGeom1,
+   pointGeom2,
+   segmentGeom,
+   segmentGeom1,
+   segmentGeom2,
+   ig1
+}
+
+Layer("/scene/layer") {
+   {planeGeom,    "", mtl, lightSet},
+   {planeGeom1,   "", mtl, lightSet},
+   {planeGeom2,   "", mtl, lightSet},
+   {planeGeom3,   "", mtl, lightSet},
+   {planeGeom4,   "", mtl, lightSet},
+   {planeGeom5,   "", mtl, lightSet},
+   {planeGeom6,   "", mtl, lightSet},
+   {curveGeom,    "", mtl, lightSet},
+   {curveGeom1,   "", mtl, lightSet},
+   {curveGeom2,   "", mtl, lightSet},
+   {ig0,          "",      lightSet},
+   {pointGeom,    "", mtl, lightSet},
+   {pointGeom1,   "", mtl, lightSet},
+   {pointGeom2,   "", mtl, lightSet},
+   {segmentGeom,  "", mtl, lightSet},
+   {segmentGeom1, "", mtl, lightSet},
+   {segmentGeom2, "", mtl, lightSet},
+   {ig1,          "",      lightSet},
+}
+
+-----------------------------------------------------------------
+
+-- this is the output we want to test
+RenderOutput("/output/motion_vectors") {
+   ["result"] = "material aov",
+   ["material_aov"] = "motionvec",
+   ["channel_suffix_mode"] = "rgb"
+}
