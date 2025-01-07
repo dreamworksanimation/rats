@@ -1,0 +1,56 @@
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["image_width"]  = 256,
+    ["image_height"] = 256,
+}
+
+Camera("/Scene/rendering/camera") {
+}
+
+sphereLight = SphereLight("sphere_light2") {
+    ["node_xform"] = translate(0, 0, -300),
+    ["intensity"] = 8000000,
+    ["normalized"] = false,
+}
+
+lightSet1 = LightSet("/Scene/lighting/lightSet") {
+}
+
+lightSet2 = LightSet("/Scene/lighting/lightSet2") {
+    sphereLight,
+}
+
+torus = UsdGeometry("/Scene/geometry/torus") {
+    ["node_xform"] = scale(4, 1, 4) * rotate(90, 1, 0, 0) * translate(2.5, 0, -25),
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+}
+
+volumeBox = UsdGeometry("/Scene/geometry/box") {
+    ["stage"] = rats_assets_dir.."/models/cube.usdc",
+    ["prim_path"] = "/cube",
+    ["node_xform"] = scale(10000, 10000, 10000),
+}
+
+GeometrySet("Scene/geometrySet") {
+    torus,
+    volumeBox,
+}
+
+torusMtl = DwaSolidDielectricMaterial("/Scene/surfacing/torusMtl") {
+    ["albedo"] = Rgb(0, 0, 0),
+}
+
+baseVolMtl = BaseVolume("/Scene/surfacing/baseVolMtl") {
+    ["attenuation_color"] = Rgb(1, 1, 1),
+    ["attenuation_intensity"] = 0.00003,
+    ["diffuse_color"] = Rgb(1, 1, 1),
+    ["anisotropy"] = 0.95,
+}
+
+-------------------------------------------------------
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {torus, "", torusMtl, lightSet1},
+    {volumeBox, "", lightSet2, baseVolMtl},
+}
+
