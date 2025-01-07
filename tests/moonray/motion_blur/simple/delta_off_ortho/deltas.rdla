@@ -1,0 +1,5 @@
+SceneVariables {
+    ["motion_steps"] = {0},
+    ["camera"] = OrthographicCamera("ortho"),
+}
+

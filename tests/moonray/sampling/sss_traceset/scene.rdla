@@ -1,0 +1,63 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 4,
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = translate(0, 3.5, 15) * rotate(-10, 1, 0, 0),
+}
+
+env = EnvLight("env") {
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("key") {
+    ["node_xform"] = translate(0, 0, 100) * rotate(-60, 1, 0, 0) * rotate(-60, 0, 1, 0),
+    ["intensity"] = 16,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("lightSet") {
+    env,
+    key,
+}
+
+widgetGeom = UsdGeometry("widgetGeom") {
+    ["node_xform"] = rotate(-35, 0, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+sphereGeom = SphereGeometry("sphereGeom") {
+    ["node_xform"] = translate(-0.8, 5.7, 1.3),
+}
+
+GeometrySet("geometrySet") {
+    widgetGeom, sphereGeom,
+}
+
+traceset = TraceSet("traceset") {
+    { widgetGeom, { "shell_front", "shell_back", "collar" } },
+    { sphereGeom, "" }
+}
+
+mtl1 = DwaSolidDielectricMaterial("mtl1") {
+    ["show_specular"] = false,
+    ["albedo"] = Rgb(0.6, 0.4, 0.3),
+    ["scattering_radius"] = 0.1,
+    ["scattering_color"] = Rgb(1.0, 0.4, 0.4),
+    ["sss_trace_set"] = traceset
+}
+
+mtl2 = DwaSolidDielectricMaterial("mtl2") {
+    ["show_specular"] = false,
+    ["albedo"] = Rgb(0.6, 0.4, 0.3),
+}
+
+Layer("layer") {
+    {widgetGeom, { "shell_front", "shell_back", "collar", "stand", "core" }, mtl1, lightSet},
+    {sphereGeom, "", mtl2, lightSet},
+}

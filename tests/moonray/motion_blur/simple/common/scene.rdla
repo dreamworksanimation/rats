@@ -1,0 +1,44 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 4,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["max_depth"] = 1,
+    ["max_diffuse_depth"] = 0,
+    ["max_glossy_depth"] = 0,
+    ["max_mirror_depth"] = 0,
+    ["motion_steps"] = {0, 1},
+    ["frame"] = 115,
+    ["camera"] = PerspectiveCamera("camera"),
+}
+
+ltSet = LightSet("ltSet") { }
+
+PerspectiveCamera("camera") { 
+    ["node_xform"] = translate(0, 0, 10),
+    ["mb_shutter_open"] = 0,
+    ["mb_shutter_close"] = 0.5,
+}
+
+OrthographicCamera("ortho") { 
+    ["film_width_aperture"] = 5.4,
+    ["node_xform"] = translate(0, 0, 25),
+    ["mb_shutter_open"] = 0,
+    ["mb_shutter_close"] = 0.5,
+}
+
+plane = UsdGeometry("plane") {
+    ["stage"] = rats_assets_dir .. "/models/deform_mb.usdc",
+    ["prim_path"] = "/deform",
+}
+
+GeometrySet("geometryset") { plane, }
+
+mtl = DwaEmissiveMaterial("mtl") {
+    ["emission_color"] = Rgb(0.18, 0.18, 0.18),
+}
+
+Layer("/mylayer") {
+    {plane, "", mtl, ltSet}
+}

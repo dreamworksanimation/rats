@@ -1,0 +1,4 @@
+SceneVariables {
+    ["node_xform"] = translate(0, 0, 12),
+}
+

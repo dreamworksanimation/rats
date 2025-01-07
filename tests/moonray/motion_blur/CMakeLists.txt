@@ -9,4 +9,5 @@ add_subdirectory(camera_tx)
 add_subdirectory(camera_txrz)
 add_subdirectory(camera_tz)
 add_subdirectory(curved)
+add_subdirectory(simple)
 

@@ -1,0 +1,70 @@
+SceneVariables {
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 4,
+    ["max_depth"] = 10,
+    ["max_mirror_depth"] = 10,
+}
+
+Camera("camera") {
+    ["node_xform"] = translate(0, 0.0, 12) * rotate(-18, 1, 0, 0) * translate(0.0, 2.5, 0.0),
+}
+
+env = EnvLight("env") {
+    ["node_xform"] = rotate(195, 0, 1, 0),
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_in_camera"] = "force on",
+}
+
+lightSet = LightSet("lightSet") { env }
+
+plane1Geom = UsdGeometry("plane1Geom") {
+    ["node_xform"] = scale(10, 10, 10),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+plane2Geom = UsdGeometry("plane2Geom") {
+    ["node_xform"] = scale(20, 20, 20) * translate(0, -0.001, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+cupGeom = UsdGeometry("cupGeom") {
+    ["stage"] = rats_assets_dir .. "/models/cup.usdc",
+    ["prim_path"] = "/cup",
+}
+
+GeometrySet("geomset") {
+    plane1Geom,
+    plane2Geom,
+    cupGeom,
+}
+
+planeMap = ImageMap("planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(5, 5),
+}
+
+plane1Mtl = DwaBaseMaterial("plane1Mtl") {
+    ["albedo"] = bind(planeMap),
+    ["show_specular"] = false,
+}
+
+plane2Mtl = DwaBaseMaterial("plane2Mtl") {
+    ["albedo"] = Rgb(0.2, 0.2, 0.2),
+}
+
+cupMtl = DwaRefractiveMaterial("cupMtl") {
+    ["roughness"] = 0.0,
+    ["transmission_color"] = Rgb(1,1,.5),
+    ["specular"] = 0.06,
+    ["refractive_index"] = 1.5,
+    ["casts_caustics"] = true,
+}
+
+Layer("layer") {
+    { plane1Geom, "", plane1Mtl, lightSet },
+    { plane2Geom, "", plane2Mtl, lightSet },
+    { cupGeom, "", cupMtl, lightSet },
+}

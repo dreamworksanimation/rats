@@ -1,0 +1,5 @@
+SceneVariables {
+    ["frame"] = 110,
+    ["camera"] = OrthographicCamera("ortho"),
+}
+
