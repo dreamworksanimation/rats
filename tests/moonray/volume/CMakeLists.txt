@@ -3,6 +3,7 @@
 
 add_subdirectory(bv_ramp)
 add_subdirectory(cutout)
+add_subdirectory(frustum_vdb)
 add_subdirectory(godrays)
 add_subdirectory(homogenous_scattering)
 add_subdirectory(instancing)
