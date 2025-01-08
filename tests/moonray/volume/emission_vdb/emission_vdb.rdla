@@ -1,0 +1,94 @@
+sceneVars = SceneVariables {
+    ["pixel_samples"] = 1,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+}
+
+shotCam = Camera("/Scene/rendering/shot_cam") {
+    ["node_xform"] = rotate(-180, 0, 1, 0) * translate(-50, 50, -120),
+}
+
+lightSet = LightSet("LightSet") {}
+
+planeBack = UsdGeometry("/Scene/geometry/back") {
+    ["node_xform"] = rotate(-90, 0, 0, 1) * rotate(90, 0, 1, 0) * scale(100, 100, 100) * translate(-50, 50, 100),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeBottom = UsdGeometry("/Scene/geometry/bottom") {
+    ["node_xform"] = scale(100, 100, 100) * translate(-50, 0, 50),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeTop = UsdGeometry("/Scene/geometry/top") {
+    ["node_xform"] = rotate(-180, 0, 0, 1) * scale(100, 100, 100) * translate(-50, 100, 50),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeLeft = UsdGeometry("/Scene/geometry/left") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * scale(100, 100, 100) * translate(0, 50, 50),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeRight = UsdGeometry("/Scene/geometry/right") {
+    ["node_xform"] = rotate(-90, 0, 0, 1) * scale(100, 100, 100) * translate(-100, 50, 50),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+fogBox = UsdGeometry("/Scene/geometry/box") {
+    ["node_xform"] = scale(100, 100, 100) * translate(-50, 50, 50),
+    ["stage"] = rats_assets_dir.."/models/cube.usdc",
+    ["prim_path"] = "/cube",
+}
+
+torchGeom = VdbGeometry("/Scene/geometry/torch") {
+    ["node_xform"] = scale(2, 2, 2) * translate(-50, 10, 40),
+    ["model"] = rats_assets_dir.."/models/torch_rgb_emission.vdb",
+    ["emission_grid"] = "temperature_rgb",
+}
+
+whiteMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/white") {
+    ["albedo"] = Rgb(0.6, 0.55, 0.4),
+}
+
+leftMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/left") {
+    ["albedo"] = Rgb(0.7, 0.1, 0.08),
+}
+
+rightMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/right") {
+    ["albedo"] = Rgb(0.2, 0.4, 0.7),
+}
+
+torchVolume = VdbVolume("torchVolume") {
+    ["incandescence_gain_mult"] = Rgb(0.6, 0.6, 0.6),
+}
+
+fogVolume = BaseVolume("fogVolume") {
+    ["attenuation_intensity"] = 0.01
+}
+
+GeometrySet("Scene/geometrySet") {
+    planeBack,
+    planeBottom,
+    planeTop,
+    planeLeft,
+    planeRight,
+    fogBox,
+    torchGeom
+}
+
+Layer("Scene/layer") {
+    {planeBack, "", whiteMtl, lightSet},
+    {planeBottom, "", whiteMtl, lightSet},
+    {planeTop, "", whiteMtl, lightSet},
+    {planeLeft, "", leftMtl, lightSet},
+    {planeRight, "", rightMtl, lightSet},
+    {fogBox, "", lightSet, fogVolume},
+    {torchGeom, "", lightSet, torchVolume}
+}
+

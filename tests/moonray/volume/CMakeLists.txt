@@ -3,6 +3,7 @@
 
 add_subdirectory(bv_ramp)
 add_subdirectory(cutout)
+add_subdirectory(emission_vdb)
 add_subdirectory(equiangular_mis)
 add_subdirectory(frustum_vdb)
 add_subdirectory(godrays)
