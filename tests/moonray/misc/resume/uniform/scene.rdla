@@ -1,6 +1,7 @@
 SceneVariables {
     ["image_width"] = 256,
     ["image_height"] = 213,
+    ["sampling_mode"] = 0,
 }
 
 Camera("/Scene/rendering/camera") {
@@ -70,57 +71,45 @@ Layer("/Scene/layer")(assignments)
 
 -------------------------------------------------------
 
--- alpha
 RenderOutput("/output/alpha") {
-   ["file_name"] = "render.exr",
    ["result"] = "alpha",
    ["channel_name"] = "alpha",
 }
 
--- beauty
 RenderOutput("/output/beauty") {
-   ["file_name"] = "render.exr",
    ["result"] = "beauty",
    ["channel_name"] = "beauty",
    ["compression"] = "zip",
    ["channel_format"] = "float"
 }
 
--- weight
 RenderOutput("/output/weight") {
-   ["file_name"] = "render.exr",
    ["result"] = "weight",
    ["channel_name"] = "weight",
    ["compression"] = "zip",
    ["channel_format"] = "float"
 }
 
--- beauty aux
 RenderOutput("/output/beautyaux") {
-   ["file_name"] = "render.exr",
    ["result"] = "beauty aux",
    ["channel_name"] = "beauty aux",
    ["compression"] = "zip",
    ["channel_format"] = "float"
 }
 
--- alpha aux
 RenderOutput("/output/alphaAux") {
-   ["file_name"] = "render.exr",
    ["result"] = "alpha aux",
    ["channel_name"] = "alpha aux",
    ["compression"] = "zip",
    ["channel_format"] = "float"
 }
 
--- display filter
 ColorCorrectDisplayFilter("/display/exposure") {
     ["input"] = RenderOutput("/output/beauty"),
     ["exposure"] = -1,
 }
 
 RenderOutput("/output/exposure") {
-    ["file_name"] = "render.exr",
     ["result"] = "display filter",
     ["display_filter"] = ColorCorrectDisplayFilter("/display/exposure"),
     ["channel_name"] = "exposure",

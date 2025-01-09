@@ -16,9 +16,9 @@ if("$CACHE{RATS_CANONICAL_DIR}" STREQUAL "")
     cmake_path(NATIVE_PATH example_path NORMALIZE example_path_native)
     message(WARNING
             "  The RATS_CANONICAL_DIR must be set before the generation step - skipping the RaTS tests.\n"
-            "  To include building the RaTS tests run the cmake configure step again with:\n"
+            "  To generate the RATS CTest tests run the cmake configure step again with:\n"
             "            -DRATS_CANONICAL_DIR=${example_path_native}\n"
-            "  or use ccmake or cmake_gui to set the cache variable and reconfigure/regenerate.")
+            "  or use ccmake or cmake_gui to set the RATS_CANONICAL_DIR cache variable and reconfigure/regenerate.")
 else()
     message("RATS_CANONICAL_DIR: $CACHE{RATS_CANONICAL_DIR}")
 

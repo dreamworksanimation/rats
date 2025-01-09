@@ -160,7 +160,10 @@ function(diff_images args canonical_image result_image)
         message("   result | ${res}")
         message("     diff | ${dif}")
         message("")
+    endif()
 
+    # idiff returns 1 on warning and 2 on error
+    if(result EQUAL 2)
         message(FATAL_ERROR "Exit Code: ${result}")
     endif()
 endfunction()

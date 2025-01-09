@@ -1,4 +1,4 @@
-# Copyright 2023 DreamWorks Animation LLC
+# Copyright 2023-2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 set(supported_renderers moonray hd_render)
@@ -39,31 +39,33 @@ set(supported_renderers moonray hd_render)
 #
 # ---------------------
 function(add_rats_test test_basename)
-    # basename:                 basename of tests. By convention includes relative folder structure, example: moonray_geometry_spheres
+    # test_basename:            # basename of tests. By convention includes relative folder structure, example: moonray_geometry_spheres
 
     # The following KEYWORD arguments are supported:
     set(options
-            DIFF_HEADERS        # (optional) adds an extra CTest with the 'diff' label to compare the canonical
+            DIFF_HEADERS        # Adds an extra CTest with the 'diff' label to compare the canonical
                                 # and result image headers.
 
-            DISABLED            # (optional) disables this test, for whatever reason.
+            DISABLED            # Disables this test, for whatever reason.
 
-            NO_SCALAR           # | (optional) execution modes to skip for this test. For example, path guiding is
+            NO_SCALAR           # | Execution modes to skip for this test. For example, path guiding is
             NO_VECTOR           # | currently only supported in scalar mode, so tests using path guiding may want
             NO_XPU              # | to pass: NO_VECTOR NO_XPU.
+
+            SKIP_IMAGE_DIFF     # Do not generate canonical/diff/header stages for this test.
     )
 
     set(oneValueArgs
-            OUTPUT              # (optional) name of output image file, will be added to render args as -out <OUTPUT>
+            OUTPUT              # Name of output image file, will be added to render args as -out <OUTPUT>
             RENDERER            # moonray|hd_render (defaults to moonray)
     )
 
     set(multiValueArgs
-            CANONICALS          # (optional) list of output files the test produces (aka. results/canonicals).
-                                # if empty, no canonical/diff/header CTests are created for this test.
+            CANONICALS          # List of output files the test produces (aka. results/canonicals).
+                                # if empty, no canonical/diff/header stages are created for this test.
                                 # example: CANONICALS scene.exr aovs.exr more_aovs.exr
 
-            DEPENDS             # (optional) list of tests that should be run before this test (for canonical and
+            DEPENDS             # List of tests that should be run before this test (for canonical and
                                 # render stages) when running ctest with multiple jobs (eg. -j N). For example,
                                 # for a test that uses checkpoint/resume rendering the resume test should run _after_
                                 # the checkpoint test, and should therefore specify the checkpoint test's basename
@@ -72,20 +74,20 @@ function(add_rats_test test_basename)
                                 # but specifying an explicit dependency here allows such tests to run in the correct
                                 # order when multiple jobs are used via the -J option to the ctest command).
 
-            IDIFF_ARGS_SCALAR   # | (optional) list of idiff args to set/override for a particular execution mode.
-            IDIFF_ARGS_VECTOR   # | example: IDIFF_ARGS_VECTOR -failpercent 0.025 -hardfail 0.035
-            IDIFF_ARGS_XPU
+            IDIFF_ARGS_SCALAR   # | List of idiff args to set/override for a particular execution mode. Example:
+            IDIFF_ARGS_VECTOR   # | IDIFF_ARGS_VECTOR -failpercent 0.025 -hardfail 0.035
+            IDIFF_ARGS_XPU      # |
 
-            INPUTS              # (required) ordered list of input files the test requires.
+            INPUTS              # (required) Ordered list of input files the test requires.
                                 # example: INPUTS scene.rdla scene.rdlb
 
-            DELTAS              # (optional) ordered list of optional delta files for the test.
+            DELTAS              # Ordered list of optional delta files for the test.
                                 # example: DELTAS deltas.rdla
 
-            RENDER_ARGS         # (optional) list of renderer args to set/override.
-            RENDER_ARGS_SCALAR  # | (optional) list of renderer args to set/override per execution mode
-            RENDER_ARGS_VECTOR  # | example: RENDER_ARGS_XPU -scene_var pixel_samples 1 -texture_cache_size 8192
-            RENDER_ARGS_XPU
+            RENDER_ARGS         # List of renderer args to set/override.
+            RENDER_ARGS_SCALAR  # | List of renderer args to set/override per execution mode.
+            RENDER_ARGS_VECTOR  # | Example: RENDER_ARGS_XPU -scene_var pixel_samples 1 -texture_cache_size 8192
+            RENDER_ARGS_XPU     # |
     )
 
     # parse and validate arguments
@@ -107,13 +109,6 @@ function(add_rats_test test_basename)
     endif()
     if(NOT ${renderer} IN_LIST supported_renderers)
         message(FATAL_ERROR "Unsupported renderer: ${renderer}")
-    endif()
-
-    # Build render command
-    if(${renderer} STREQUAL "moonray")
-        set(render_cmd $<TARGET_FILE:moonray>)
-    elseif(${renderer} STREQUAL "hd_render")
-        set(render_cmd $<TARGET_FILE:hd_render>)
     endif()
 
     # configure some paths
@@ -140,6 +135,13 @@ function(add_rats_test test_basename)
 
     # add CTests
     foreach(exec_mode ${exec_modes})
+        # Build render command
+        if(${renderer} STREQUAL "moonray")
+            set(render_cmd $<TARGET_FILE:moonray>)
+        elseif(${renderer} STREQUAL "hd_render")
+            set(render_cmd $<TARGET_FILE:hd_render>)
+        endif()
+
         set(canonical_dir ${root_canonical_path}/${exec_mode})
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         string(TOUPPER ${exec_mode} exec_mode_upper)
@@ -219,48 +221,68 @@ function(add_rats_test test_basename)
         )
 
         # Add CTest to diff against the canonical images
-        foreach(canonical ${ARG_CANONICALS})
-            cmake_path(GET canonical STEM stem)
-            cmake_path(GET canonical EXTENSION extension)
+        if(NOT ARG_SKIP_IMAGE_DIFF)
+            foreach(canonical ${ARG_CANONICALS})
+                cmake_path(GET canonical STEM stem)
+                cmake_path(GET canonical EXTENSION extension)
 
-            # diff image header?
-            if(ARG_DIFF_HEADERS)
-                set(header_test_name "rats_${exec_mode_short}_header_${test_basename}_${stem}${extension}")
+                # diff image header?
+                if(ARG_DIFF_HEADERS)
+                    set(header_test_name "rats_${exec_mode_short}_header_${test_basename}_${stem}${extension}")
 
-                add_test(NAME ${header_test_name}
-                    WORKING_DIRECTORY ${render_dir}
-                    COMMAND ${CMAKE_COMMAND}
-                            "-DOIIOTOOL=${OIIOTOOL}"
-                            "-DCANONICAL=${canonical_dir}/${canonical}"
-                            "-DRESULT=${canonical}"
-                            -P ${PROJECT_SOURCE_DIR}/cmake/CompareImageHeaders.cmake
-                )
-                set_tests_properties(${header_test_name} PROPERTIES
+                    add_test(NAME ${header_test_name}
+                        WORKING_DIRECTORY ${render_dir}
+                        COMMAND ${CMAKE_COMMAND}
+                                "-DOIIOTOOL=${OIIOTOOL}"
+                                "-DCANONICAL=${canonical_dir}/${canonical}"
+                                "-DRESULT=${canonical}"
+                                -P ${PROJECT_SOURCE_DIR}/cmake/CompareImageHeaders.cmake
+                    )
+                    set_tests_properties(${header_test_name} PROPERTIES
+                        LABELS "diff"
+                        DEPENDS "${render_test_name}"
+                        DISABLED ${ARG_DISABLED}
+                    )
+                endif()
+
+                # diff canonical images
+                set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}${extension}")
+                set(diff_image_name "${stem}_diff${extension}")
+                if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/diff.cmake)
+                    # use custom diff tool
+                    add_test(NAME ${diff_test_name}
+                        WORKING_DIRECTORY ${render_dir}
+                        COMMAND ${CMAKE_COMMAND}
+                                "-DCANONICAL=${canonical_dir}/${canonical}"
+                                "-DDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
+                                "-DDIFF_IMAGE=${diff_image_name}"
+                                "-DEXEC_MODE=${exec_mode}"
+                                "-DIDIFFTOOL=${IDIFF}"
+                                "-DOIIOTOOL=${OIIOTOOL}"
+                                "-DRESULT=${canonical}"
+                                -P ${CMAKE_CURRENT_SOURCE_DIR}/diff.cmake
+                    )
+                else()
+                    # use idiff
+                    add_test(NAME ${diff_test_name}
+                        WORKING_DIRECTORY ${render_dir}
+                        COMMAND ${CMAKE_COMMAND}
+                                "-DCANONICAL=${canonical_dir}/${canonical}"
+                                "-DDIFF_IMAGE=${diff_image_name}"
+                                "-DEXEC_MODE=${exec_mode}"
+                                "-DIDIFF=${IDIFF}"
+                                "-DIDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
+                                "-DRESULT=${canonical}"
+                                -P ${PROJECT_SOURCE_DIR}/cmake/CompareImages.cmake
+                    )
+                endif() # custom diff
+                set_tests_properties(${diff_test_name} PROPERTIES
                     LABELS "diff"
-                    DEPENDS "${render_test_name}"
+                    DEPENDS ${render_test_name}
                     DISABLED ${ARG_DISABLED}
                 )
-            endif()
-
-            # diff canonical images
-            set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}${extension}")
-            add_test(NAME ${diff_test_name}
-                WORKING_DIRECTORY ${render_dir}
-                COMMAND ${CMAKE_COMMAND}
-                        "-DEXEC_MODE=${exec_mode}"
-                        "-DCANONICAL=${canonical_dir}/${canonical}"
-                        "-DRESULT=${canonical}"
-                        "-DDIFF_IMAGE=${diff_image_name}"
-                        "-DIDIFF=${IDIFF}"
-                        "-DIDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
-                        -P ${PROJECT_SOURCE_DIR}/cmake/CompareImages.cmake
-            )
-            set_tests_properties(${diff_test_name} PROPERTIES
-                LABELS "diff"
-                DEPENDS ${render_test_name}
-                DISABLED ${ARG_DISABLED}
-            )
-        endforeach() # canonical
+            endforeach() # canonical
+        endif()
     endforeach() # exec mode
 endfunction()
 

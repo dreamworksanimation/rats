@@ -1,21 +1,27 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
+# This test checks uniform sampling checkpoint/resume rendering
+
+# NOTE: these images contain 12 channels, some of which can contain
+# pixels with extremely large values. This makes finding reasonable
+# idiff arguments difficult.
+
+# create the checkpoint file
 add_rats_test(moonray_misc_resume_uniform_checkpoint
     DIFF_HEADERS
     INPUTS scene.rdla checkpoint.rdla
-    CANONICALS checkpoint.exr
-    IDIFF_ARGS_SCALAR -hardfail 0.12 -warnpercent 0.1 -failpercent 0.1  # TODO: why do these -hardfail settings need to be so high?
-    IDIFF_ARGS_VECTOR -hardfail 0.25 -warnpercent 2.2 -failpercent 2.2
-    IDIFF_ARGS_XPU    -hardfail 0.25 -warnpercent 2.2 -failpercent 2.2
+    CANONICALS checkpoint_result.exr checkpoint_result0.exr
+    IDIFF_ARGS_VECTOR -fail 0.035 -hardfail inf -failpercent 2
+    IDIFF_ARGS_XPU    -fail 0.035 -hardfail inf -failpercent 2
 )
 
-add_rats_test(moonray_misc_resume_uniform
+# do a final (resume) render from checkpoint
+add_rats_test(moonray_misc_resume_uniform_final
     DEPENDS moonray_misc_resume_uniform_checkpoint
-    INPUTS scene.rdla checkpoint.rdla
-    CANONICALS render.exr
-    IDIFF_ARGS_SCALAR -hardfail 0.12 -warnpercent 0.1 -failpercent 0.1  # TODO: why do these -hardfail settings need to be so high?
-    IDIFF_ARGS_VECTOR -hardfail 0.25 -warnpercent 2.2 -failpercent 2.2
-    IDIFF_ARGS_XPU    -hardfail 0.25 -warnpercent 2.2 -failpercent 2.2
+    INPUTS scene.rdla resume.rdla
+    CANONICALS resume_result.exr resume_result0.exr
+    IDIFF_ARGS_VECTOR -fail 0.035 -hardfail inf -failpercent 2
+    IDIFF_ARGS_XPU    -fail 0.035 -hardfail inf -failpercent 2
 )
 

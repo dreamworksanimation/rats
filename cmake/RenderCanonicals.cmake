@@ -1,16 +1,29 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
+# =====================================================================================
+# This script is run during execution of the rats tests via
+#     ${CMAKE_COMMAND} -P <thisscript>.cmake -DEXAMPLE_DEF1=... -DEXAMPLE_DEF2=...
+#
+# It is responsible for executing a render and copying the outputs to the canonicals dir
 # -------------------------------------------------------------------------------------
-# This script is run during execution of the rats tests and is responsible for rendering
-# a canonical image, creating a dir for the image and copying the image to that dir.
-# It expects to be run with the following variables defined:
+#
+# Required definitions:
 #   CANONICALS_DIR  : directory to store the canonicals. It will be created if necessary.
 #   CANONICALS      : list of output images to be stored as canonicals, eg.
 #                       scene.exr;aovs.exr;more_aovs.exr
 #   RENDER_CMD      : fully qualified render commnd line as a list, eg:
 #                       /path/to/moonray;-in;scene.rdla;-exec_mode;scalar
 # -------------------------------------------------------------------------------------
+# Validate script inputs, these are required to be defined by the calling code
+foreach(required_def CANONICALS_DIR CANONICALS RENDER_CMD)
+    if(NOT DEFINED ${required_def})
+        message(FATAL_ERROR "${required_def} is undefined")
+    endif()
+endforeach()
+# =====================================================================================
+
+
 
 macro(exec_and_check)
     set(args ${ARGV})

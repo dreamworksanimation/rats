@@ -1,34 +1,35 @@
 SceneVariables {
     ["resume_render"] = true,
+    ["output_file"] = "resume_result.exr",
 }
 
--- alpha
 RenderOutput("/output/alpha") {
-   ["resume_file_name"] = "checkpoint.exr",
-}
-
--- beauty
-RenderOutput("/output/beauty") {
-   ["resume_file_name"] = "checkpoint.exr",
-}
-
--- weight
-RenderOutput("/output/weight") {
-   ["resume_file_name"] = "checkpoint.exr",
-}
-
--- beauty aux
-RenderOutput("/output/beautyaux") {
-   ["resume_file_name"] = "checkpoint.exr",
-}
-
--- alpha aux
-RenderOutput("/output/alphaAux") {
-   ["resume_file_name"] = "checkpoint.exr",
-}
-
-RenderOutput("/output/exposure") {
+    ["file_name"] = "resume_result0.exr",
     ["resume_file_name"] = "checkpoint.exr",
 }
 
+RenderOutput("/output/beauty") {
+    ["file_name"] = "resume_result0.exr",
+    ["resume_file_name"] = "checkpoint.exr",
+}
+
+RenderOutput("/output/weight") {
+    ["file_name"] = "resume_result0.exr",
+    ["resume_file_name"] = "checkpoint.exr",
+}
+
+RenderOutput("/output/beautyaux") {
+    ["file_name"] = "resume_result0.exr",
+    ["resume_file_name"] = "checkpoint.exr",
+}
+
+RenderOutput("/output/alphaAux") {
+    ["file_name"] = "resume_result0.exr",
+    ["resume_file_name"] = "checkpoint.exr",
+}
+
+RenderOutput("/output/exposure") {
+    ["file_name"] = "resume_result0.exr",
+    ["resume_file_name"] = "checkpoint.exr",
+}
 
