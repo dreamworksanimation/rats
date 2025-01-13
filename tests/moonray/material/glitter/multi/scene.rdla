@@ -1,0 +1,68 @@
+SceneVariables {
+    ["pixel_samples"] = 8,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+}
+
+local shotCam = Camera("/Scene/rendering/camera") {
+    ["node xform"] = translate(0, 0, 18),
+}
+
+-------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 10) * rotate(-30, 1, 0, 0) * rotate(30, 0, 1, 0),
+    ["exposure"] = -4,
+    ["width"] = 4,
+    ["height"] = 4,
+}
+
+dome = EnvLight("dome") { ["exposure"] = -7, }
+
+lightSet = LightSet("lightSet") { key, dome }
+
+
+-------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+local mtl = DwaBaseMaterial("mtl") {
+    ["glitter_randomness"] = 1.0,
+    ["glitter_seed"] = 3,
+    ["glitter"] = 1.0,
+    ["glitter_density"] = 10.0,
+    ["glitter_space"] = "object",
+    ----------------------------------
+    ["glitter_style_A_frequency"] = 0.5,
+    ["glitter_style_B_frequency"] = 0.5,
+    ["glitter_roughness_A"] = 0.11,
+    ["glitter_roughness_B"] = 0.5,
+    ["glitter_color_A"] = Rgb(1.0, 0.05, 0.05),
+    ["glitter_color_B"] = Rgb(0.05, 0.05, 1.0),
+    ["glitter_size_A"] = 0.16,
+    ["glitter_size_B"] = 0.09,
+    ["show_specular"] = false,
+    ["show_glitter"] = true,
+    ["show_diffuse"] = false,
+}
+
+-------------------------------------------------------
+
+local geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node_xform"] = rotate(45, 1, 0, 0) * translate(0, -2, -0),
+}
+
+table.insert(geoms, geom)
+
+table.insert(assignments, {geom, "", mtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+

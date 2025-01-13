@@ -1,0 +1,70 @@
+SceneVariables {
+    ["image width"] = 256,
+    ["image height"] = 128,
+}
+
+Camera("/Scene/rendering/camera") {
+}
+
+-------------------------------------------------------
+checker1 = CheckerboardMap("/Scene/maps/checker1") {
+    ["color_A"] = Rgb(0.125, 0.125, 0.125),
+    ["color_B"] = Rgb(0.25, 0.25, 0.25),
+}
+
+checker2 = CheckerboardMap("/Scene/maps/checker2") {
+    ["color_A"] = Rgb(0.0, 0.0, 0.0),
+    ["color_B"] = Rgb(0.5, 0.25, 0.125),
+    ["num_u_tiles"] = 12,
+    ["num_v_tiles"] = 12,
+}
+
+geoms = {}
+assignments = {}
+lightSet = LightSet("/Scene/lighting/lightSet") {
+}
+
+for k = 0, 14 do
+    y = math.floor(k / 5)
+    x = math.fmod(k, 5)
+    sphere = SphereGeometry("/Scene/geometry/sphere" .. k) {
+        ["node xform"] = translate(x - 2, 1 - y, -8),
+        ["radius"] = 0.4,
+    }
+    table.insert(geoms, sphere)
+    
+    layer = LayerMap("layerMap-" .. k) {
+        ["input_B"] = bind(checker1, Rgb(1.0, 1.0, 1.0)),
+        ["input_A"] = bind(checker2, Rgb(1.0, 1.0, 1.0)),
+    }
+
+    mtl = DwaSolidDielectricMaterial("mtl-" .. k) {
+        ["show_diffuse"] = false,
+        ["show_specular"] = false,
+        ["show_emission"] = true,
+        ["emission"] = bind(LayerMap("layerMap-" .. k), Rgb(1.0, 1.0, 1.0)),
+    }
+
+    table.insert(assignments, {sphere, "", mtl, lightSet})
+end
+
+-------------------------------------------------------
+
+LayerMap("layerMap-0") {["mode"] = "over"}
+LayerMap("layerMap-1") {["mode"] = "add"}
+LayerMap("layerMap-2") {["mode"] = "subtract"}
+LayerMap("layerMap-3") {["mode"] = "multiply"}
+LayerMap("layerMap-4") {["mode"] = "screen"}
+LayerMap("layerMap-5") {["mode"] = "overlay"}
+LayerMap("layerMap-6") {["mode"] = "overlay contrast"}
+LayerMap("layerMap-7") {["mode"] = "darken"}
+LayerMap("layerMap-8") {["mode"] = "lighten"}
+LayerMap("layerMap-9") {["mode"] = "color dodge"}
+LayerMap("layerMap-10") {["mode"] = "color burn"}
+LayerMap("layerMap-11") {["mode"] = "hard light"}
+LayerMap("layerMap-12") {["mode"] = "soft light"}
+LayerMap("layerMap-13") {["mode"] = "difference"}
+LayerMap("layerMap-14") {["mode"] = "exclusion"}
+
+GeometrySet("/Scene/geometryset")(geoms)
+Layer("/Scene/layer")(assignments)

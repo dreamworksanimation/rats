@@ -1,0 +1,60 @@
+SceneVariables {
+    ["pixel_samples"] = 8,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+}
+
+local shotCam = Camera("/Scene/rendering/camera") {
+    ["node xform"] = translate(0, 0, 5),
+}
+
+-------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = rotate(-45, 1, 0, 0) * rotate(-45, 0, 1, 0) * translate(7, 7, -5),
+    ["exposure"] = -3,
+    ["width"] = 5,
+    ["height"] = 5,
+}
+
+lightSet = LightSet("lightSet") { key, }
+
+
+-------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+local projGeom = BoxGeometry("projGeom") {
+    ["node_xform"] = rotate(0, 1, 0, 0),
+}
+
+local projNormalMap = ProjectPlanarNormalMap("/Scene/surfacing/projMap") {
+   ["projector"] = projGeom,
+   ["use reference space"] = false,
+   ["texture"] = rats_assets_dir .. "/textures/chesterfield.tx",
+}
+
+local mtl = DwaSolidDielectricMaterial("mtl") {
+    ["input_normal"] = projNormalMap
+}
+
+-------------------------------------------------------
+
+local geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node_xform"] = rotate(45, 1, 0, 0) * translate(0, -2, -13),
+}
+
+table.insert(geoms, geom)
+
+table.insert(assignments, {geom, "", mtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+
