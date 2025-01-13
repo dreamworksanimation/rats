@@ -1,0 +1,44 @@
+SceneVariables {
+    ["camera"] = PerspectiveCamera("mainCam"),
+    ["dicing_camera"] = PerspectiveCamera("dicingCam"),
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+}
+
+planeDistance = -30
+
+mainCam = PerspectiveCamera("mainCam") {
+    ["focal"] = 18.0,
+    ["node_xform"] = rotate(-90, 1, 0, 0),
+}
+
+dicingCam = PerspectiveCamera("dicingCam") {
+    ["focal"] = 18.0,
+    ["node_xform"] = rotate(90, 0, 1, 0) * translate(0, planeDistance - 5, 0),
+}
+
+local planeMtl = DwaSolidDielectricMaterial("planeMtl") {
+}
+
+UsdGeometry("planeAbc") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(40, 40, 40) * translate(0, planeDistance, 0),
+    ["subd_resolution"] = 5.0,
+    ["subd_type"] = 2,
+    ["adaptive_error"] = 0.1,
+}
+
+GeometrySet("/Scene/geoset") {
+    UsdGeometry("planeAbc"),
+}
+
+Layer("/Scene/layer") {
+    {UsdGeometry("planeAbc"), "", planeMtl},
+}
+
+RenderOutput("/output/wire") {
+   ["file_name"] = "wireframe.exr",
+   ["result"] = 6 -- "wireframe"
+}
+
