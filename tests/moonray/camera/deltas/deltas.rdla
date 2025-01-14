@@ -1,0 +1,67 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["camera"] = OrthographicCamera("/Scene/rendering/camera")
+}
+
+OrthographicCamera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 10),
+    ["film_width_aperture"] = 2,
+    ["near"] = 4,
+    ["far"] = 10000,
+}
+
+PerspectiveCamera("/Scene/rendering/persp_camera") {
+    ["node_xform"] = translate(0, 0, 10),
+    ["near"] = 4,
+    ["far"] = 10000,
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(-.5, 0, 25),
+    ["intensity"] = 250,
+    ["normalized"] = false,
+}
+
+lightSet = LightSet("LightSet") {
+    key,
+}
+
+floorGeom0 = UsdGeometry("/Scene/geometry/floor0") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = rotate(90, 1, 0, 0),
+}
+
+floorGeom1 = UsdGeometry("/Scene/geometry/floor1") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(.5, .5, 5),
+}
+
+floorGeom2 = UsdGeometry("/Scene/geometry/floor2") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-.5, -.5, -5),
+}
+
+GeometrySet("Scene/geometrySet") {
+    floorGeom0,
+    floorGeom1,
+    floorGeom2,
+}
+
+floorMap = ImageMap("/Scene/surfacing/text") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+floorMtl = DwaSolidDielectricMaterial("/Scene/surfacing/floor") {
+    ["albedo"] = bind(floorMap, Rgb(1, 1, 1)),
+}
+
+Layer("/Scene/layer") {
+    {floorGeom0, "", floorMtl, lightSet},
+    {floorGeom1, "", floorMtl, lightSet},
+    {floorGeom2, "", floorMtl, lightSet},
+}
+

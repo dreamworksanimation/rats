@@ -1,0 +1,12 @@
+# Copyright 2025 DreamWorks Animation LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This test verifies that the camera can be changed with a delta.
+
+add_rats_test(moonray_camera_deltas
+    INPUTS deltas.rdla
+    DELTAS deltas_deltas.rdla
+    CANONICALS
+        scene.exr
+)
+

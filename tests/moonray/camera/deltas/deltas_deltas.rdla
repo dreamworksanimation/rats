@@ -1,0 +1,4 @@
+SceneVariables {
+   ["camera"] = PerspectiveCamera("/Scene/rendering/persp_camera")
+}
+
