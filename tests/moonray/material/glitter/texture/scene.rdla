@@ -1,0 +1,71 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+}
+
+local shotCam = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 18),
+}
+
+-------------------------------------------------------
+
+-- Lights --
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 10) * rotate(-30, 1, 0, 0) * rotate(30, 0, 1, 0),
+    ["exposure"] = -4,
+    ["width"] = 4,
+    ["height"] = 4,
+}
+
+dome = EnvLight("dome") {
+    ["exposure"] = -7,
+}
+
+lightSet = LightSet("lightSet") {
+    key,
+    dome
+}
+
+-- Geometry --
+
+geoms = {}
+assignments = {}
+
+local geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node_xform"] = rotate(45, 1, 0, 0) * translate(0, -2, -0),
+}
+
+table.insert(geoms, geom)
+
+-- Materials --
+
+mtl = DwaBaseMaterial("mtl") {
+    ["glitter_color_A"] = Rgb(0.65, 0.45, 0.125),
+    ["glitter_color_B"] = Rgb(0.25, 0.35, 0.625),
+    ["glitter_density"] = 5.0,
+    ["glitter_randomness"] = 1.0,
+    ["glitter_texture_orientation_randomness"] = 1.0,
+    ["glitter_roughness_A"] = 0.5,
+    ["glitter_roughness_B"] = 0.5,
+    ["glitter_size_A"] = 0.6,
+    ["glitter_size_B"] = 0.4,
+    ["glitter_space"] = 4,
+    ["glitter_texture_A"] = rats_assets_dir .. "/textures/crescent_alpha.tx",
+    ["glitter_texture_B"] = rats_assets_dir .. "/textures/star_alpha.tx",
+    ["glitter_style_A_frequency"] = 0.3,
+    ["glitter_style_B_frequency"] = 0.7,
+    ["glitter_approximate_for_secondary_rays"] = false,
+    ["show_specular"] = false,
+    ["show_glitter"] = true,
+    ["show_diffuse"] = false,
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer") {
+    {geom, "", mtl, lightSet},
+}

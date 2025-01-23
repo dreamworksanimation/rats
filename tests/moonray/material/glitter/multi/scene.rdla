@@ -5,7 +5,7 @@ SceneVariables {
 }
 
 local shotCam = Camera("/Scene/rendering/camera") {
-    ["node xform"] = translate(0, 0, 18),
+    ["node_xform"] = translate(0, 0, 18),
 }
 
 -------------------------------------------------------

@@ -1,0 +1,121 @@
+SceneVariables {
+    ["pixel_samples"] = 3,
+    ["image_width"] = 300,
+    ["image_height"] = 100,
+}
+
+local camera = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 8.0),
+}
+
+-- Geometry --
+
+sphereLeft = UsdGeometry("sphereLeft") {
+    ["node_xform"] = translate(-2.1, 0.0, 0.0),
+    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+sphereCenter = UsdGeometry("sphereCenter") {
+    ["node_xform"] = translate(0.0, 0.0, 0.0),
+    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+sphereRight = UsdGeometry("sphereRight") {
+    ["node_xform"] = translate(2.1, 0.0, 0.0),
+    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+GeometrySet("geometryset") {
+    sphereLeft, sphereCenter, sphereRight
+}
+
+glitterMetalMtl = DwaMetalMaterial("glitterMetalMtl") {
+    ["roughness"] = 0.1,
+
+    ["show_glitter"] = true,
+    ["glitter"] =  1.0,
+    ["glitter_density"] = 10.0,
+    ["glitter_randomness"] = 0.5,
+    ["glitter_space"] = "object",
+    ["glitter_color_hue_variation"] = 1,
+    ["glitter_color_A"] = Rgb(1.0, 0.0, 0.0),
+    ["glitter_size_A"] = 0.4,
+    ["glitter_roughness_A"] = 0.25,
+    ["glitter_texture_A"] = rats_assets_dir .. "/textures/star_alpha.tx",
+}
+
+glitterSkinMtl = DwaSkinMaterial("glitterSkinMtl") {
+    ["albedo"] = Rgb(1.0, 0.5, 0.5),
+
+    ["show_glitter"] = true,
+    ["glitter"] =  1.0,
+    ["glitter_density"] = 10.0,
+    ["glitter_randomness"] = 0.5,
+    ["glitter_space"] = "object",
+    ["glitter_color_hue_variation"] = 1,
+    ["glitter_style_A_frequency"] = 0.0,
+    ["glitter_style_B_frequency"] = 1.0,
+    ["glitter_color_B"] = Rgb(1.0, 0.0, 0.0),
+    ["glitter_size_B"] = 0.4,
+    ["glitter_roughness_B"] = 0.25,
+    ["glitter_texture_B"] = rats_assets_dir .. "/textures/crescent_alpha.tx",
+}
+
+underMtl = DwaSolidDielectricMaterial("underMtl") {
+    ["albedo"] = Rgb(0.2, 0.1, 0.0),
+    ["specular_model"] = 0,
+}
+
+noiseMap = NoiseMap_v2("noiseMap") {
+    ["space"] = "world",
+    ["amplitude"] = 1.0,
+    ["gain"] = 0.5,
+    ["bias"] = 0.5,
+    ["frequency_multiplier"] = 5.0,
+    ["max_level"] = 10,
+    ["lacunarity"] = 2,
+    ["smoothstep"] = Vec2(0.4, 0.6),
+    ["use_smoothstep"] = true,
+}
+
+layerMetalMtl = DwaLayerMaterial("layerMetalMtl") {
+    ["material_A"] = glitterMetalMtl,
+    ["material_B"] = underMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+}
+
+layerSkinMtl = DwaLayerMaterial("layerSkinMtl") {
+    ["material_A"] = underMtl,
+    ["material_B"] = glitterSkinMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+}
+
+layerGlitterMtl = DwaLayerMaterial("layerGlitterMtl") {
+    ["material_A"] = glitterSkinMtl,
+    ["material_B"] = glitterMetalMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+    ["fallback_glitter_space"] = "object",
+    ["fallback_glitter_texture_A"] = rats_assets_dir .. "/textures/star_alpha.tx",
+    ["fallback_glitter_texture_B"] = rats_assets_dir .. "/textures/crescent_alpha.tx",
+    ["fallback_glitter_style_A_frequency"] = 0.5,
+    ["fallback_glitter_style_B_frequency"] = 0.5,
+}
+
+envLight = EnvLight("envLight") {
+    ["node_xform"] = rotate(120, 0, 1, 0),
+    ["sample_upper_hemisphere_only"] = false,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot.exr",
+}
+
+ltSet = LightSet("ltSet") {
+    envLight
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    { sphereLeft,   "", layerMetalMtl,   ltSet},
+    { sphereCenter, "", layerGlitterMtl, ltSet},
+    { sphereRight,  "", layerSkinMtl,    ltSet},
+}

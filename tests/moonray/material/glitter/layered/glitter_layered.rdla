@@ -89,7 +89,6 @@ glitterBaseMtl = DwaBaseMaterial("glitterBaseMtl") {
 glitterMetalMtl = DwaMetalMaterial("glitterMetalMtl") {
     ["show_clearcoat"] = true,
     ["clearcoat"] = 1.0,
-    ["clearcoat_model"] = "Beckmann", -- "GGX"
     ["clearcoat_roughness"] = 0.0,
     ["clearcoat_thickness"] = 0.0,
     ["clearcoat_refractive_index"] = 1.5,
@@ -109,13 +108,11 @@ glitterMetalMtl = DwaMetalMaterial("glitterMetalMtl") {
     ["metallic_edge_color"] = Rgb(1, 1, 1),
     ["roughness"] = 0.5,
     ["specular_model"] = 0,
-
 }
 
 glitterSdMtl = DwaSolidDielectricMaterial("glitterSdMtl") {
     ["show_clearcoat"] = true,
     ["clearcoat"] = 1.0,
-    ["clearcoat_model"] = "Beckmann", -- "GGX"
     ["clearcoat_roughness"] = 0.0,
     ["clearcoat_thickness"] = 0.0,
     ["clearcoat_refractive_index"] = 1.5,
