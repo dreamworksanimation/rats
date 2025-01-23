@@ -1,4 +1,3 @@
-
 # Copyright 2023-2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
@@ -12,7 +11,8 @@
 # The following variables are defined by the RATS CTest framework and are provided
 # for use in this script:
 
-#   CANONICAL                   : filename of the canonical to be compared with the test image
+#   CANONICAL                   : filename of the canonical to be compared with the test image, needs to
+#                                   be expanded at runtime to query $RATS_CANONICAL_DIR (see below)
 #   DIFF_ARGS                   : list of arguments to pass to the diff tool (from your test's IDIFF_ARGS_* )
 #   DIFF_IMAGE                  : filename for writing a diff output image
 #   EXEC_MODE                   : scalar|vector|xpu
@@ -31,8 +31,14 @@
 # message("OIIOTOOL       : ${OIIOTOOL}")
 # message("RESULT         : ${RESULT}")
 
+if(NOT DEFINED ENV{RATS_CANONICAL_DIR})
+    message(FATAL_ERROR "RATS_CANONICAL_DIR is undefined")
+endif()
+
+file(TO_NATIVE_PATH "$ENV{RATS_CANONICAL_DIR}/${CANONICAL}" full_canonical_path)
+
 execute_process(
-    COMMAND ${IDIFFTOOL} ${DIFF_ARGS} -o ${DIFF_IMAGE} ${CANONICAL} ${RESULT}
+    COMMAND ${IDIFFTOOL} ${DIFF_ARGS} -o ${DIFF_IMAGE} ${full_canonical_path} ${RESULT}
     COMMAND_ECHO STDOUT
     RESULT_VARIABLE exit_code
 )

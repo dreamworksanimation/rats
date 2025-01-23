@@ -10,7 +10,7 @@
 #
 # Required definitions:
 #   EXEC_MODE           : used to determine which defaults to use (scalar|vector|xpu)
-#   CANONICAL           : full path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
+#   CANONICAL           : path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
 #   RESULT              : name of the image to be compared with the canonical image, eg. beauty.exr
 #   IDIFF               : full path to the openimageio 'idiff' cmd
 #
@@ -26,7 +26,9 @@ foreach(required_def EXEC_MODE CANONICAL RESULT IDIFF)
 endforeach()
 # =====================================================================================
 
-
+if(NOT DEFINED ENV{RATS_CANONICAL_DIR})
+    message(FATAL_ERROR "RATS_CANONICAL_DIR is undefined")
+endif()
 
 # Build list of arguments for the idiff cmd.  Each execution mode has a
 # set of defaults, and any user-specifed arguments are parsed here and
@@ -135,6 +137,13 @@ function(diff_images args canonical_image result_image)
     cmake_path(GET result_image EXTENSION extension)
     set(diff_image "${stem}_diff${extension}")
 
+    if(NOT EXISTS ${canonical_image})
+        message(FATAL_ERROR "canonical not found: ${canonical_image}")
+    endif()
+    if(NOT EXISTS ${result_image})
+        message(FATAL_ERROR "result not found: ${result_image}")
+    endif()
+
     execute_process(
         COMMAND ${IDIFF} ${args} -o ${diff_image} ${canonical_image} ${result_image}
         COMMAND_ECHO STDOUT
@@ -168,6 +177,8 @@ function(diff_images args canonical_image result_image)
     endif()
 endfunction()
 
+file(TO_NATIVE_PATH "$ENV{RATS_CANONICAL_DIR}/${CANONICAL}" full_canonical_path)
+
 override_idiff_args(args EXEC_MODE ${EXEC_MODE} ${IDIFF_ARGS})
-diff_images("${args}" ${CANONICAL} ${RESULT})
+diff_images("${args}" ${full_canonical_path} ${RESULT})
 

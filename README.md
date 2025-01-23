@@ -9,7 +9,7 @@ RATS is built on the CTest framework which provides many features for controllin
 ## Stages
 RATS testing is performed in a series of stages, as follows:
 1. The _canonical_ generation stage is run using a recent sanctioned release of MoonRay (generally the most recent release). The resulting rendered images are referred to as the "canonical" images,
-and are copied to a location specified during the configuration step via the RATS_CANONICAL_DIR CMake cache variable.
+and are copied to a location specified by the RATS_CANONICAL_DIR environment variable when the tests are executed.
 2. The _render_ stage is run using a pre-release candidate version of MoonRay (ie. your bug or feature branch). The resulting rendered images are generated in the build directory under each test
 (ie. the ${CMAKE_CURRENT_BINARY_DIR}).
 3. The _image diff_ stage is responsible for comparing the resulting rendered images with the previously rendered canonical images.  The diff tests use OpenImageIO's
@@ -34,7 +34,7 @@ the `-R` and `-E` `ctest` command-line arguments allow for selecting which tests
 
 ### Test labels
 Each RATS test is labeled according to the stage it is expected to run in:
-* canonical: Tests with the "canonical" label are used to render the canonical images and copy them to the directory specified by the RATS_CANONICAL_DIR CMake cache variable.
+* canonical: Tests with the "canonical" label are used to render the canonical images and copy them to the directory specified by the RATS_CANONICAL_DIR environment variable.
 * render:    Tests with the "render" label are used to render the tests and output the images to the build directory for that test (CMAKE_CURRENT_BINARY_DIR)
 * diff:      Tests with the "diff" label execute the `idiff` tool to compare the previously rendered canonical image versus the current rendered image and optionally compare their headers.
 
@@ -95,36 +95,9 @@ CTest has several other ways to choose which tests are run, such as by individua
 ## Building the RATS test suite
 The RATS tests are always built (at the time of this writing) when you build OpenMoonRay, but there are currently two configure/build-time CMake cache variables that control behavior of the tests:
 
-|CMake cache variable|required|default|purpose|
-|--------------------|--------|-------|-------|
-|RATS_CANONICAL_DIR  |yes     |""     | the path to store/fetch the canonical images |
-|RATS_RENDER_THREADS |no      |\<undefined\>| the number of threads to use during rendering.  This is passed to moonray via the -threads argument if defined, otherwise it will use all available threads |
-
-The RATS_CANONICAL_DIR can be anywhere visible to the system. It can be shared across a studio or left to manage by each individual user. The canonicals could be under version control (ie.git LFS),
-or completely unmanaged.
-
 Note that different machine configurations can result in slightly different images (ie. noise patterns) so sharing canonical images can be challenging.  Additionally, different image difference
 thresholds may be required by different machine classes. Indeed the default image difference thresholds may not work well in certain environments and may need adjusting. The details
 surrounding these issues are not covered here, but this is recognized as a potential challenge for users and area of future work.
-
-There are probably many strategies for choosing the RATS_RENDER_THREADS depending on how many parallel jobs you intend to use when running `ctest` with the `-j N` jobs argument. System resources
-such as memory, gpu availability, etc. may also factor into the decision.  For those reasons it is left to the user for experimentation.
-
-The RATS_CANONICAL_DIR and RATS_RENDER_THREADS CMake cache variables can be set on the command-line at configure time, for example:
-
-Example for setting the cache RATS variables building with cmake:
-
-```bash
-cmake -S . -B ./build -DRATS_CANONICAL_DIR=/path/to/canonicals -DRATS_RENDER_THREADS=4
-```
-
-Example for setting the RATS cache variables building with rez-build:
-
-```bash
-rez-build -- -DRATS_CANONICAL_DIR=/path/to/canonicals -DRATS_RENDER_THREADS=4
-```
-
-The cache variables can also be set using the `ccmake` or `cmake-gui` CMake configuration tools.
 
 ## Running the RATS tests
 ### Prerequisites
@@ -153,6 +126,12 @@ source <openmoonray install dir>/scripts/setup.sh
 ```
 
 You must also have the cmake executable (version 3.23+) available in your $PATH. You can check your cmake version with `cmake --version`.
+
+Lastly, you must ensure the RATS_CANONICAL_DIR environment variable is set when you run the `ctest` command.  This directory
+is where the canonical images are written to during the _canonical_ stage, and where they are read from during the _diff_ stage.
+```
+export RATS_CANONICAL_DIR=/path/to/canonicals
+```
 
 ### Generating canonical images
 Canonicals should be generated using a previously sanctioned build of openmoonray, eg. a recent release, and updated as needed as new releases are adopted.
@@ -238,4 +217,9 @@ The RATS test suite is implemented on top of CTest and this directory contains t
 * cmake/
 
 Tests are created via the `add_rats_test()` function found in the cmake/RatsTest.cmake script. See the script source for details about the available options/arguments.
+
+The scripts cmake/RenderCanonicals.cmake, cmake/CompareImages.cmake and cmake/CompareImageHeaders.cmake are invoked at test run time.
+
+There is also an example of how to create a custom diff tool for a particular test if needed (see cmake/diff.cmake).  Simply place a CMake script named diff.cmake in your test directory and it will be
+called instead of `idiff`.  See cmake/diff.cmake for documentation.
 

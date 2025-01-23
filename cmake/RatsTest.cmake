@@ -51,7 +51,6 @@ function(add_rats_test test_basename)
             NO_SCALAR           # | Execution modes to skip for this test. For example, path guiding is
             NO_VECTOR           # | currently only supported in scalar mode, so tests using path guiding may want
             NO_XPU              # | to pass: NO_VECTOR NO_XPU.
-
             SKIP_IMAGE_DIFF     # Do not generate canonical/diff/header stages for this test.
     )
 
@@ -84,6 +83,9 @@ function(add_rats_test test_basename)
             DELTAS              # Ordered list of optional delta files for the test.
                                 # example: DELTAS deltas.rdla
 
+            ENVIRONMENT         # List of definitions to be available as env vars during test runtime, for example:
+                                # ENVIRONMENT TEST_ASSETS_DIR=/some/path ANOTHER_VAR="another value"
+
             RENDER_ARGS         # List of renderer args to set/override.
             RENDER_ARGS_SCALAR  # | List of renderer args to set/override per execution mode.
             RENDER_ARGS_VECTOR  # | Example: RENDER_ARGS_XPU -scene_var pixel_samples 1 -texture_cache_size 8192
@@ -112,10 +114,7 @@ function(add_rats_test test_basename)
     endif()
 
     # configure some paths
-    set(rdl2_dso_path ${CMAKE_BINARY_DIR}/rdl2dso/)
-    set(rats_assets_dir ${PROJECT_SOURCE_DIR}/assets/)
     file(RELATIVE_PATH test_rel_path ${PROJECT_SOURCE_DIR}/tests/ ${CMAKE_CURRENT_SOURCE_DIR})
-    set(root_canonical_path ${RATS_CANONICAL_DIR}/${test_rel_path})
 
     # determine which execution modes are needed
     if(${renderer} STREQUAL "moonray")
@@ -133,16 +132,21 @@ function(add_rats_test test_basename)
         list(APPEND exec_modes default)
     endif()
 
+    # construct list of env vars to be made available at test runtime
+    set(assets_dir "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../assets")
+    cmake_path(NATIVE_PATH assets_dir NORMALIZE assets_dir)
+    set(runtime_env_vars "RATS_ASSETS_DIR=${assets_dir}")
+    list(APPEND runtime_env_vars "${ARG_ENVIRONMENT}")
+
     # add CTests
     foreach(exec_mode ${exec_modes})
         # Build render command
         if(${renderer} STREQUAL "moonray")
-            set(render_cmd $<TARGET_FILE:moonray>)
+            set(render_cmd moonray -info)
         elseif(${renderer} STREQUAL "hd_render")
-            set(render_cmd $<TARGET_FILE:hd_render>)
+            set(render_cmd hd_render)
         endif()
 
-        set(canonical_dir ${root_canonical_path}/${exec_mode})
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         string(TOUPPER ${exec_mode} exec_mode_upper)
         string(SUBSTRING ${exec_mode} 0 3 exec_mode_short)
@@ -172,10 +176,10 @@ function(add_rats_test test_basename)
         endforeach()
         if(${renderer} STREQUAL "moonray")
             list(APPEND render_cmd -exec_mode ${exec_mode})
-            list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${rats_assets_dir}]]")
-            if(NOT "$CACHE{RATS_RENDER_THREADS}" STREQUAL "")
-                list(APPEND render_cmd -threads $CACHE{RATS_RENDER_THREADS})
-            endif()
+            # TODO: Remove this and update all RDLA files to retrieve this
+            # path from the runtime environment using LUA:
+            #       rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+            list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${assets_dir}]]")
         endif()
         if(DEFINED ARG_OUTPUT)
             list(APPEND render_cmd -out ${ARG_OUTPUT})
@@ -195,16 +199,15 @@ function(add_rats_test test_basename)
             WORKING_DIRECTORY ${render_dir}
             COMMAND ${CMAKE_COMMAND}
                     "-DRENDER_CMD=${render_cmd}"
-                    "-DCANONICALS_DIR=${canonical_dir}"
+                    "-DTEST_REL_PATH=${test_rel_path}/${exec_mode}"
                     "-DCANONICALS=${ARG_CANONICALS}"
-                    -P ${PROJECT_SOURCE_DIR}/cmake/RenderCanonicals.cmake
+                    -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/RenderCanonicals.cmake
         )
         set_tests_properties(${canonical_test_name} PROPERTIES
             LABELS "canonical"
             DEPENDS "${canonical_dependencies}"
             DISABLED ${ARG_DISABLED}
-            ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
-            ENVIRONMENT RATS_ASSETS_DIR=${rats_assets_dir}
+            ENVIRONMENT "${runtime_env_vars}"
         )
 
         # Add CTest to render result
@@ -216,8 +219,7 @@ function(add_rats_test test_basename)
             LABELS "render"
             DEPENDS "${render_dependencies}"
             DISABLED ${ARG_DISABLED}
-            ENVIRONMENT RDL2_DSO_PATH=${rdl2_dso_path}
-            ENVIRONMENT RATS_ASSETS_DIR=${rats_assets_dir}
+            ENVIRONMENT "${runtime_env_vars}"
         )
 
         # Add CTest to diff against the canonical images
@@ -234,9 +236,9 @@ function(add_rats_test test_basename)
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
                                 "-DOIIOTOOL=${OIIOTOOL}"
-                                "-DCANONICAL=${canonical_dir}/${canonical}"
+                                "-DCANONICAL=${test_rel_path}/${exec_mode}/${canonical}"
                                 "-DRESULT=${canonical}"
-                                -P ${PROJECT_SOURCE_DIR}/cmake/CompareImageHeaders.cmake
+                                -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/CompareImageHeaders.cmake
                     )
                     set_tests_properties(${header_test_name} PROPERTIES
                         LABELS "diff"
@@ -253,7 +255,7 @@ function(add_rats_test test_basename)
                     add_test(NAME ${diff_test_name}
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
-                                "-DCANONICAL=${canonical_dir}/${canonical}"
+                                "-DCANONICAL=${test_rel_path}/${exec_mode}/${canonical}"
                                 "-DDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
                                 "-DDIFF_IMAGE=${diff_image_name}"
                                 "-DEXEC_MODE=${exec_mode}"
@@ -267,13 +269,13 @@ function(add_rats_test test_basename)
                     add_test(NAME ${diff_test_name}
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
-                                "-DCANONICAL=${canonical_dir}/${canonical}"
+                                "-DCANONICAL=${test_rel_path}/${exec_mode}/${canonical}"
                                 "-DDIFF_IMAGE=${diff_image_name}"
                                 "-DEXEC_MODE=${exec_mode}"
                                 "-DIDIFF=${IDIFF}"
                                 "-DIDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
                                 "-DRESULT=${canonical}"
-                                -P ${PROJECT_SOURCE_DIR}/cmake/CompareImages.cmake
+                                -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/CompareImages.cmake
                     )
                 endif() # custom diff
                 set_tests_properties(${diff_test_name} PROPERTIES

@@ -9,7 +9,7 @@
 # -------------------------------------------------------------------------------------
 #
 # Required definitions:
-#   CANONICAL           : full path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
+#   CANONICAL           : path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
 #   RESULT              : name of the result image, eg. beauty.exr
 #   OIIOTOOL            : full path to the openimageio 'oiitool' cmd
 # -------------------------------------------------------------------------------------
@@ -21,7 +21,9 @@ foreach(required_def CANONICAL RESULT OIIOTOOL)
 endforeach()
 # =====================================================================================
 
-
+if(NOT DEFINED ENV{RATS_CANONICAL_DIR})
+    message(FATAL_ERROR "RATS_CANONICAL_DIR is undefined")
+endif()
 
 # Run 'oiiotool' and try to retrieve resumeHistory metadata from header
 function(get_resume_history file output_var)
@@ -84,40 +86,48 @@ endfunction()
 
 #------------------------------------
 
+file(TO_NATIVE_PATH "$ENV{RATS_CANONICAL_DIR}/${CANONICAL}" full_canonical_path)
+
 # Execute the header/metatdata comparison
-if(EXISTS ${CANONICAL} AND EXISTS ${RESULT})
-    # first, compare the resumeHistory metadata if it exists
-    get_resume_history(${CANONICAL} canonical_history)
-    get_resume_history(${RESULT} result_history)
+if(NOT EXISTS ${full_canonical_path})
+    message(FATAL_ERROR "canonical not found: ${full_canonical_path}")
+endif()
+if(NOT EXISTS ${RESULT})
+    message(FATAL_ERROR "result not found: ${RESULT}")
+endif()
 
-    if(DEFINED canonical_history OR DEFINED result_history)
-        string(JSON same EQUAL ${canonical_history} ${result_history})
-        if(NOT same)
-            cmake_path(GET RESULT STEM stem)
-            set(json_file_1 ${stem}_canonical_resumeHistory.json)
-            set(json_file_2 ${stem}_result_resumeHistory.json)
-            file(WRITE ${json_file_1} ${canonical_history})
-            file(WRITE ${json_file_2} ${result_history})
-            message("headers have different \"resumeHistory\" metadata:")
-            message("    ${CMAKE_CURRENT_BINARY_DIR}/${json_file_1}")
-            message("    ${CMAKE_CURRENT_BINARY_DIR}/${json_file_2}")
-            message(FATAL_ERROR "")
-        endif()
-    endif()
+# first, compare the resumeHistory metadata if it exists
+get_resume_history(${full_canonical_path} canonical_history)
+get_resume_history(${RESULT} result_history)
 
-    # next, compare the remaining header information
-    get_header(${CANONICAL} canonical_header)
-    get_header(${RESULT} result_header)
-
-    if(NOT ${canonical_header} STREQUAL ${result_header})
+if(DEFINED canonical_history OR DEFINED result_history)
+    string(JSON same EQUAL ${canonical_history} ${result_history})
+    if(NOT same)
         cmake_path(GET RESULT STEM stem)
-        set(header_file_1 ${stem}_canonical_header.txt)
-        set(header_file_2 ${stem}_result_header.txt)
-        file(WRITE ${header_file_1} ${canonical_history})
-        file(WRITE ${header_file_2} ${result_history})
-        message(FATAL_ERROR "headers are different:\n")
+        set(json_file_1 ${stem}_canonical_resumeHistory.json)
+        set(json_file_2 ${stem}_result_resumeHistory.json)
+        file(WRITE ${json_file_1} ${canonical_history})
+        file(WRITE ${json_file_2} ${result_history})
+        message("headers have different \"resumeHistory\" metadata:")
+        message("    ${CMAKE_CURRENT_BINARY_DIR}/${json_file_1}")
+        message("    ${CMAKE_CURRENT_BINARY_DIR}/${json_file_2}")
+        message(FATAL_ERROR "")
     endif()
-else()
-    message(FATAL_ERROR "canonical or result not found")
+endif()
+
+# next, compare the remaining header information
+get_header(${canonical_expanded} canonical_header)
+get_header(${RESULT} result_header)
+
+if(NOT ${canonical_header} STREQUAL ${result_header})
+    cmake_path(GET RESULT STEM stem)
+    set(header_file_1 ${stem}_canonical_header.txt)
+    set(header_file_2 ${stem}_result_header.txt)
+    file(WRITE ${header_file_1} ${canonical_history})
+    file(WRITE ${header_file_2} ${result_history})
+    message("headers are different:")
+    message("    ${full_canonical_path}")
+    message("    ${RESULT}")
+    message(FATAL_ERROR "")
 endif()
 
