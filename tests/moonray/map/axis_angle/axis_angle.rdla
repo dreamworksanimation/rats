@@ -75,8 +75,10 @@ local mtl1 = DwaSolidDielectricMaterial("mtl1") {
 
 -----------------------------------------------------------
 
+local ls = LightSet("light_set")
+
 Layer("layer") {
-    {geom0, "", mtl0},
-    {geom1, "", mtl1}
+    {geom0, "", mtl0, ls},
+    {geom1, "", mtl1, ls}
 }
 

@@ -302,21 +302,20 @@ local easeOutMat = DwaEmissiveMaterial("/Scene/surfacing/easeOutMat") {
     ["emission"] = bind(easeOutMap),
 }
 
-
--- Lights --
+local ls = LightSet("light_set")
 
 Layer("/Scene/layer") {
-    {geom1, "", startEndMat},
-    {geom2, "", exponentMat},
-    {geom3, "", endIntensityMat},
-    {geom4, "", biasMat},
-    {geom5, "", symmetricMat},
-    {geom6, "", symmetricCenterMat},
-    {geom7, "", allMat},
-    {geom8, "", noneMat},
-    {geom9, "", naturalMat},
-    {geom10, "", linearMat},
-    {geom11, "", squaredMat},
-    {geom12, "", gaussianMat},
-    {geom13, "", easeOutMat},
+    {geom1, "", startEndMat, ls},
+    {geom2, "", exponentMat, ls},
+    {geom3, "", endIntensityMat, ls},
+    {geom4, "", biasMat, ls},
+    {geom5, "", symmetricMat, ls},
+    {geom6, "", symmetricCenterMat, ls},
+    {geom7, "", allMat, ls},
+    {geom8, "", noneMat, ls},
+    {geom9, "", naturalMat, ls},
+    {geom10, "", linearMat, ls},
+    {geom11, "", squaredMat, ls},
+    {geom12, "", gaussianMat, ls},
+    {geom13, "", easeOutMat, ls},
 }

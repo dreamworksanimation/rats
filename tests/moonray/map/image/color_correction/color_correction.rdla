@@ -60,9 +60,9 @@ local ccdefaults = DwaEmissiveMaterial("/Scene/surfacing/ccdefaults") {
     ["emission"] = bind(immap),
 }
 
--- Lights --
+local ls = LightSet("light_set")
 
 Layer("/Scene/layer") {
-    {lower, "", ccon},
-    {upper, "", ccdefaults},
+    {lower, "", ccon, ls},
+    {upper, "", ccdefaults, ls},
 }

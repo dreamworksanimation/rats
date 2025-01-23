@@ -81,8 +81,10 @@ local mtl3 = DwaEmissiveMaterial("/Scene/surfacing/mtl3") {
 
 -------------------------------------------------------
 
+local ls = LightSet("light_set")
+
 Layer("/Scene/layer") {
-    {boxGeom1, "", mtl1},
-    {boxGeom2, "", mtl2},
-    {boxGeom3, "", mtl3},
+    {boxGeom1, "", mtl1, ls},
+    {boxGeom2, "", mtl2, ls},
+    {boxGeom3, "", mtl3, ls},
 }
