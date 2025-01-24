@@ -4,8 +4,13 @@ on:
   push:
     branches:
       - main
-      - master
-      - release
+    paths-ignore:
+      - '**/README.md'
+      - '**.md'
+      - 'assets/**'
+      - 'tests/**'
+      - '.github/**'
+      - 'flowpipeline.yaml'
   workflow_dispatch:
 
 jobs:
