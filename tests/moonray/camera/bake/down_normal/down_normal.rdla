@@ -1,0 +1,41 @@
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+}
+
+key = EnvLight("/Scene/lighting/key") {
+   ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+normalMap = ImageNormalMap("/normalMap") {
+    ["tangent_space_normal_texture"] = rats_assets_dir.."/textures/normal_high_freq.tx",
+}
+
+sphereMtl = DwaSolidDielectricMaterial("/Scene/surfacing/sphereMtl") {
+    ["input_normal"] = normalMap,
+}
+
+sphereGeom = UsdGeometry("/Scene/geometry/sphere") {
+    ["node_xform"] = translate(0, .75, 0),
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+BakeCamera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, .75, 3),
+    ["geometry"] = sphereGeom,
+    ["mode"] = 3, -- -N
+}
+
+GeometrySet("Scene/geometrySet") {
+    sphereGeom
+}
+
+Layer("/Scene/layer") {
+    {sphereGeom, "", sphereMtl, lightSet}
+}
+
