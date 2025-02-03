@@ -107,7 +107,7 @@ For example:
 
 ```bash
 # (may be different in your environment)
-cd build/os-CentOS-7/opt_level-optdebug/refplat-vfx2020.3/gcc-6.3.x.2/amorphous-8/openvdb-8/usd_core-0.20.8.x.2
+cd build/os-rocky-9/opt_level-optdebug/refplat-vfx2023.1/gcc-11.x/amorphous-9/openvdb-10/imath-3/usd_core-0.22.5.x/zlib-1.2.11.x.1
 ```
 
 You must also be in an environment where the installed openmoonray variant binaries from your build are in your $PATH.
@@ -116,7 +116,7 @@ For example, using rez-env:
 ```bash
 # (may be different in your environment)
 export REZ_PACKAGES_PATH=/path/to/openmoonray/install:$REZ_PACKAGES_PATH
-rez-env openmoonray os-CentOS-7 opt_level-optdebug refplat-vfx2020.3 gcc-6.3.x.2 amorphous-8 openvdb-8 usd_core-0.20.8.x.2
+rez-env cmake-3.23 openmoonray refplat-vfx2023.1 gcc-11.x
 ```
 
 Another example, using a container build:
