@@ -4,7 +4,7 @@
 # This test verifies attributes of UVTransform map.
 
 add_rats_test(moonray_map_uv_transform
-    INPUTS uv_transform.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

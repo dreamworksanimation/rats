@@ -1,0 +1,391 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+-- simple scene with 4 quads, a projection map is applied
+-- to each image map shader to give the appearance that a
+-- single image is applied across all four planes
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["light_samples"] = 0,
+    ["bsdf_samples"] = 0,
+    ["max_depth"] = 0,
+    ["image_width"] = 708,
+    ["image_height"] = 400,
+}
+
+local shotCam = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = rotate(-10.0, 1, 0 , 0) *  translate(0.0, 10.0, 50.0), -- YXZ
+    ["focal"] = 50,
+}
+
+-------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-10, 1, 0, 0) *
+                     rotate(-10, 0, 1, 0),
+    ["on"] = false,
+    ["intensity"] = 12,
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+-------------------------------------------------------
+
+local uvs1 = UVTransformMap("/Scene/surfacing/uvs1") {
+    ["space"] = 6,
+    ["offset"] = Vec2(0.1, -0.2),
+}
+
+local ramp1 = RampMap("/Scene/surfacing/ramp1") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvs1),
+    ["ramp_type"] = 3,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtl1 = DwaEmissiveMaterial("/Scene/surfacing/mtl1") {
+    ["emission_color"] = bind(ramp1)
+}
+
+------------------------------------------------------------
+local uvs2 = UVTransformMap("/Scene/surfacing/uvs2") {
+    ["space"] = 6,
+    ["rotation_angle"] = 45,
+}
+
+local ramp2 = RampMap("/Scene/surfacing/ramp2") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvs2),
+    ["ramp_type"] = 3,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtl2 = DwaEmissiveMaterial("/Scene/surfacing/mtl2") {
+    ["emission_color"] = bind(ramp2)
+}
+
+-------------------------------------------------------
+local uvs3 = UVTransformMap("/Scene/surfacing/uvs3") {
+    ["space"] = 6,
+    ["scale"] = Vec2(4.0, 6.0),
+}
+
+local ramp3 = RampMap("/Scene/surfacing/ramp3") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvs3),
+    ["ramp_type"] = 3,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtl3 = DwaEmissiveMaterial("/Scene/surfacing/mtl3") {
+    ["emission_color"] = bind(ramp3)
+}
+
+-------------------------------------------------------
+local uvs4 = UVTransformMap("/Scene/surfacing/uvs4") {
+    ["space"] = 6,
+    ["offset"] = Vec2(0.1, -0.2),
+    ["rotation_angle"] = 45,
+    ["scale"] = Vec2(4.0, 6.0),
+}
+
+local ramp4 = RampMap("/Scene/surfacing/ramp4") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvs4),
+    ["ramp_type"] = 3,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtl4 = DwaEmissiveMaterial("/Scene/surfacing/mtl4") {
+    ["emission_color"] = bind(ramp4)
+}
+
+-------------------------------------------------------
+local uvs5 = UVTransformMap("/Scene/surfacing/uvs5") {
+    ["space"] = 6,
+    ["rotation_angle"] = 45,
+    ["rotation_center"] = Vec2(0.0, 0.0),
+}
+
+local ramp5 = RampMap("/Scene/surfacing/ramp5") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvs5),
+    ["ramp_type"] = 3,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtl5 = DwaEmissiveMaterial("/Scene/surfacing/mtl5") {
+    ["emission_color"] = bind(ramp5)
+}
+
+-------------------------------------------------------
+local uvs6 = UVTransformMap("/Scene/surfacing/uvs6") {
+    ["space"] = 2,
+    ["rotation_angle"] = 15,
+    ["rotation_axis"] = Vec3(1.0, -0.7, 0.0),
+}
+
+local ramp6 = RampMap("/Scene/surfacing/ramp6") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvs6),
+    ["ramp_type"] = 3,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtl6 = DwaEmissiveMaterial("/Scene/surfacing/mtl6") {
+    ["emission_color"] = bind(ramp6)
+}
+
+-------------------------------------------------------
+local uvsRender = UVTransformMap("/Scene/surfacing/uvsRender") {
+    ["space"] = 0,
+    ["offset"] = Vec2(2.5, -0.2),
+    ["rotation_angle"] = 15,
+}
+
+local rampRender = RampMap("/Scene/surfacing/rampRender") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvsRender),
+    ["ramp_type"] = 0,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtlRender = DwaEmissiveMaterial("/Scene/surfacing/mtlRender") {
+    ["emission_color"] = bind(rampRender)
+}
+
+------------------------------------------------------------
+local uvsCamera = UVTransformMap("/Scene/surfacing/uvsCamera") {
+    ["space"] = 1,
+    ["offset"] = Vec2(0.8, -0.5),
+    ["rotation_angle"] = 15,
+}
+
+local rampCamera = RampMap("/Scene/surfacing/rampCamera") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvsCamera),
+    ["ramp_type"] = 0,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtlCamera = DwaEmissiveMaterial("/Scene/surfacing/mtlCamera") {
+    ["emission_color"] = bind(rampCamera)
+}
+
+-------------------------------------------------------
+local uvsWorld = UVTransformMap("/Scene/surfacing/uvsWorld") {
+    ["space"] = 2,
+    ["offset"] = Vec2(0.8, -0.5),
+    ["rotation_angle"] = 15,
+}
+
+local rampWorld = RampMap("/Scene/surfacing/rampWorld") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvsWorld),
+    ["ramp_type"] = 0,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtlWorld = DwaEmissiveMaterial("/Scene/surfacing/mtlWorld") {
+    ["emission_color"] = bind(rampWorld)
+}
+
+-------------------------------------------------------
+local uvsScreen = UVTransformMap("/Scene/surfacing/uvsScreen") {
+    ["space"] = 3,
+    ["offset"] = Vec2(0.5, -0.2),
+    ["rotation_angle"] = 15,
+}
+
+local rampScreen = RampMap("/Scene/surfacing/rampScreen") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvsScreen),
+    ["ramp_type"] = 0,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtlScreen = DwaEmissiveMaterial("/Scene/surfacing/mtlScreen") {
+    ["emission_color"] = bind(rampScreen)
+}
+
+-------------------------------------------------------
+local uvsObject = UVTransformMap("/Scene/surfacing/uvsObject") {
+    ["space"] = 4,
+    ["offset"] = Vec2(0.5, -0.2),
+    ["rotation_angle"] = 15,
+}
+
+local rampObject = RampMap("/Scene/surfacing/rampObject") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvsObject),
+    ["ramp_type"] = 0,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtlObject = DwaEmissiveMaterial("/Scene/surfacing/mtlObject") {
+    ["emission_color"] = bind(rampObject)
+}
+
+-------------------------------------------------------
+local uvsRef = UVTransformMap("/Scene/surfacing/uvsRef") {
+    ["space"] = 5,
+    ["offset"] = Vec2(0.5, -0.2),
+    ["rotation_angle"] = 15,
+}
+
+local rampRef = RampMap("/Scene/surfacing/rampRef") {
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(uvsRef),
+    ["ramp_type"] = 0,
+    ["colors"] = {Rgb(1.0, 0.0, 0.0), Rgb(1.0, 1.0, 0.0), Rgb(0.0, 0.0, 1.0), Rgb(1.0, 0.0, 0.0)},
+    ["interpolations"] = {1, 1, 1, 1},
+    ["space"] = 2,
+}
+
+local mtlRef = DwaEmissiveMaterial("/Scene/surfacing/mtlRef") {
+    ["emission_color"] = bind(rampRef)
+}
+
+-------------------------------------------------------
+local planeGeom1 = UsdGeometry("/Scene/geometry/planeGeom1") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-2.2, 1.3, 0.0) * scale(4.0, 4.0, 4.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeom2 = UsdGeometry("/Scene/geometry/planeGeom2") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-1.0, 1.3, 0.0) * scale(4.0, 4.0, 4.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeom3 = UsdGeometry("/Scene/geometry/planeGeom3") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(0.2, 1.3, 0.0) * scale(4.0, 4.0, 4.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeom4 = UsdGeometry("/Scene/geometry/planeGeom4") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-2.2, 0.1, 0.0) * scale(4.0, 4.0, 4.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeom5 = UsdGeometry("/Scene/geometry/planeGeom5") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-1.0, 0.1, 0.0) * scale(4.0, 4.0, 4.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+------------------------------------------------------------
+
+local boxGeom1 = BoxGeometry("/Scene/geometry/boxGeom1") {
+    ["node_xform"] = translate(2.8, -0.1, 0.0) * 
+                     rotate(15, 0.0, 1.0, 0.0) * 
+                     scale(3.0, 3.0, 3.0),
+}
+
+local boxGeom2 = BoxGeometry("/Scene/geometry/boxGeom2") {
+    ["node_xform"] = translate(2.4, 1.8, -0.2) * 
+                     rotate(30, 1.0, 0.0, 0.0) * 
+                     rotate(15, 0.0, 1.0, 0.0) * 
+                     scale(3.0, 3.0, 3.0),
+}
+
+------------------------------------------------------------
+
+local planeGeomRender = UsdGeometry("/Scene/geometry/planeGeomRender") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-3.0, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeomCamera = UsdGeometry("/Scene/geometry/planeGeomCamera") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-1.8, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeomScreen = UsdGeometry("/Scene/geometry/planeGeomScreen") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-0.6, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeomWorld = UsdGeometry("/Scene/geometry/planeGeomWorld") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(0.6, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeomObject = UsdGeometry("/Scene/geometry/planeGeomObject") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(1.8, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+local planeGeomRef = UsdGeometry("/Scene/geometry/planeGeomRef") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(3.0, -1.3, 0.0) * scale(3.0, 3.0, 3.0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    planeGeom1,
+    planeGeom2,
+    planeGeom3,
+    planeGeom4,
+    planeGeom5,
+    boxGeom1,
+    boxGeom2,
+    planeGeomRender,
+    planeGeomCamera,
+    planeGeomScreen,
+    planeGeomWorld,
+    planeGeomObject,
+    planeGeomRef
+}
+
+Layer("/Scene/layer") {
+    {planeGeom1, "", mtl1, lightSet},
+    {planeGeom2, "", mtl2, lightSet},
+    {planeGeom3, "", mtl3, lightSet},
+    {planeGeom4, "", mtl4, lightSet},
+    {planeGeom5, "", mtl5, lightSet},
+    {boxGeom1, "", mtl6, lightSet},
+    {boxGeom2, "", mtl6, lightSet},
+    {planeGeomRender, "", mtlRender, lightSet},
+    {planeGeomCamera, "", mtlCamera, lightSet},
+    {planeGeomScreen, "", mtlScreen, lightSet},
+    {planeGeomWorld, "", mtlWorld, lightSet},
+    {planeGeomObject, "", mtlObject, lightSet},
+    {planeGeomRef, "", mtlRef, lightSet},
+}

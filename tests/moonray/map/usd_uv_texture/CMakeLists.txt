@@ -4,7 +4,7 @@
 # This test verifies that the UsdUVTexture is working.
 
 add_rats_test(moonray_map_usd_uv_texture
-    INPUTS usd_uv_texture.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 500,
     ["image_height"] = 300,
@@ -74,7 +76,7 @@ GeometrySet("geometrySet") {
 
 mipSelectorMap = ImageMap("mipSelectorMap") {
     ["texture"] = rats_assets_dir .. "/textures/mip_debug.exr",
-    ["wrap around"] = false,
+    ["wrap_around"] = false,
     ["mip_bias"] = -0.35,
 }
 

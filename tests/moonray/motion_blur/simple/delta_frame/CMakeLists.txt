@@ -4,7 +4,7 @@
 # This test checks the motion blur sampling with a delta in frame number
 
 add_rats_test(moonray_motion_blur_simple_delta_frame
-    INPUTS ../common/scene.rdla
+    INPUTS ../common.rdla
     DELTAS deltas.rdla
     CANONICALS scene.exr
 )

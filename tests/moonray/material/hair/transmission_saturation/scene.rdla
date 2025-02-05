@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 200,
     ["image_height"] = 200,
@@ -33,7 +35,7 @@ GeometrySet("geometryset") {
 }
 
 hairMtl = HairMaterial_v3("hairMtl") {
-    ["hair color"] = Rgb(0.04, 0.009, 0.001),
+    ["hair_color"] = Rgb(0.04, 0.009, 0.001),
     ["refractive_index"] = 1.4,
     ["transmission_azimuthal_roughness"] = 0.2,
     ["direct_transmission_saturation"] = 0.5,

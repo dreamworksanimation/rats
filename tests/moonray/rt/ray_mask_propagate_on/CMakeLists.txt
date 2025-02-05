@@ -5,7 +5,7 @@
 # Internally this is the ray mask.
 
 add_rats_test(moonray_rt_ray_mask_propagate_on
-    INPUTS ray_mask_propagate_on.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

@@ -4,7 +4,7 @@
 # This tests the aperture window, region window, pixel aspect ratio, and subviewport.
 
 add_rats_test(moonray_misc_render_window
-    INPUTS render_window.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
                result0.exr
 )

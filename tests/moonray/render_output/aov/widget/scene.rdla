@@ -1,12 +1,14 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 256,
     ["image_height"] = 256,
     ["deep_id_attribute_names"] = {"id0"},
 }
 
-local id0 = UserData("id0") {
-    ["float key"] = "id0",
-    ["float values"] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6},
+id0 = UserData("id0") {
+    ["float_key"] = "id0",
+    ["float_values"] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6},
 }
 
 Camera("/Scene/rendering/camera") {
@@ -16,11 +18,6 @@ Camera("/Scene/rendering/camera") {
     ["focal"] = 35,
     ["film_width_aperture"] = 24,
 }
-
-geoms = {}
-assignments = {}
-
--------------------------------------------------------
 
 env = EnvLight("/Scene/lighting/env") {
     ["node_xform"] = rotate(-90, 0, 1, 0),
@@ -32,55 +29,52 @@ lightSet = LightSet("/Scene/lighting/lightSet") {
     env,
 }
 
--------------------------------------------------------
-
-local planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
+planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
     ["node_xform"] = scale(1000, 1, 1000),
     ["vertex_list"] = {Vec3(-0.5, 0.0, 0.5), Vec3(0.5, 0.0, 0.5), Vec3(0.5, 0.0, -0.5), Vec3(-0.5, 0.0, -0.5)},
     ["vertices_by_index"] = {0, 1, 2, 3},
     ["face_vertex_count"] = {4},
     ["is_subd"] = false
 }
-table.insert(geoms, planeGeom)
 
-local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+geom = UsdGeometry("/Scene/geometry/geom") {
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["part_list"] = { "base", "stand", "shell_front", "shell_back", "collar", "core" },
+    ["primitive_attributes"] = {id0},
+}
+
+GeometrySet("geometrySet") {
+    planeGeom,
+    geom,
+}
+
+planeMap = ImageMap("/Scene/surfacing/planeMap") {
     ["texture"] = rats_assets_dir.."/textures/graphpaper.tx",
     ["scale"] = Vec2(500, 500),
     ["offset"] = Vec2(0.5, 0.5),
     ["wrap_around"] = true,
 }
 
-local graphpaper = RemapMap("Scene/surfacing/graphpaper") {
+graphpaper = RemapMap("Scene/surfacing/graphpaper") {
     ["input"] = bind(planeMap),
     ["output_min"] = 0.06,
     ["output_max"] = 0.78,
 }
 
-local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
     ["albedo"] = bind(graphpaper),
     ["roughness"] = 0.8,
     ["refractive_index"] = 1.4,
 }
-table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
 
-
--------------------------------------------------------
-
-local geom = UsdGeometry("/Scene/geometry/geom") {
-    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
-    ["prim_path"] = "/widget",
-    ["part_list"] = { "base", "stand", "shell_front", "shell_back", "collar", "core" },
-    ["primitive attributes"] = {id0},
-}
-table.insert(geoms, geom)
-
-local color_grid = ImageMap("/Scene/surfacing/color_grid") {
+color_grid = ImageMap("/Scene/surfacing/color_grid") {
     ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
     ["scale"] = Vec2(2, 2),
     ["wrap_around"] = true,
 }
 
-local base_mtl = DwaSolidDielectricMaterial("/Scene/surfacing/base_mtl") {
+base_mtl = DwaSolidDielectricMaterial("/Scene/surfacing/base_mtl") {
     ["albedo"] = bind(color_grid),
     ["show_clearcoat"] = true,
     ["clearcoat"] = 1,
@@ -90,26 +84,24 @@ local base_mtl = DwaSolidDielectricMaterial("/Scene/surfacing/base_mtl") {
     ["roughness"] = 0.2,
 }
 
-local core_mtl = DwaMetalMaterial("/Scene/surfacing/core_mtl") {
+core_mtl = DwaMetalMaterial("/Scene/surfacing/core_mtl") {
     ["metallic_color"] = Rgb(0.7, 0.7, 0.7),
     ["roughness"] = 0.02,
 }
-local stand_mtl = DwaSolidDielectricMaterial("/Scene/surfacing/stand_mtl") {
+stand_mtl = DwaSolidDielectricMaterial("/Scene/surfacing/stand_mtl") {
     ["albedo"] = Rgb(0.22, 0.22, 0.22),
     ["show_specular"] = false,
 }
 
-table.insert(assignments, {geom, "base",        base_mtl, lightSet})
-table.insert(assignments, {geom, "stand",       stand_mtl, lightSet})
-table.insert(assignments, {geom, "shell_front", base_mtl, lightSet})
-table.insert(assignments, {geom, "shell_back",  base_mtl, lightSet})
-table.insert(assignments, {geom, "collar",      base_mtl, lightSet})
-table.insert(assignments, {geom, "core",        core_mtl, lightSet})
-
--------------------------------------------------------
-
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("/Scene/layer")(assignments)
+Layer("layer") {
+    { planeGeom, "", planeMtl, lightSet },
+    { geom, "base",        base_mtl, lightSet },
+    { geom, "stand",       stand_mtl, lightSet },
+    { geom, "shell_front", base_mtl, lightSet },
+    { geom, "shell_back",  base_mtl, lightSet },
+    { geom, "collar",      base_mtl, lightSet },
+    { geom, "core",        core_mtl, lightSet },
+}
 
 -------------------------------------------------------
 -- 0   “beauty” (default)

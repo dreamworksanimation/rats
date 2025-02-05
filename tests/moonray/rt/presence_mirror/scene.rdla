@@ -1,0 +1,66 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+sceneVars = SceneVariables {
+    ["lights_visible_in_camera"] = true,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 10,
+    ["max_diffuse_depth"] = 10,
+    ["max_mirror_depth"] = 10,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["enable_presence_shadows"] = true,
+}
+
+shotCam = Camera("/Scene/rendering/shot_cam") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-50, 80, 49),
+    ["focal"] = 35,
+    ["film_width_aperture"] = 24,
+}
+
+RectLight("/Scene/lighting/rect") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(32.8, 32.8, 32.8) * translate(-50,99.2,45),
+    ["color"] = Rgb(1, 1, 1),
+    ["intensity"] = 0.01,
+    ["exposure"] = 5.6,
+    ["normalized"] = false,
+    ["width"] = 0.8,
+    ["height"] = 0.8,
+    ["presence_shadows"] = 1
+}
+
+lightSet = LightSet("LightSetA") {
+    RectLight("/Scene/lighting/rect"),
+}
+
+planeBottom = UsdGeometry("/Scene/geometry/bottom") {
+    ["node_xform"] = scale(100, 100, 100) * translate(-50, 0, 50),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+planeMiddle = UsdGeometry("/Scene/geometry/middle") {
+    ["node_xform"] = scale(100, 100, 100) * translate(-50, 70, 50),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometrySet") {
+    planeBottom,
+    planeMiddle,
+}
+
+mirrorMtl = DwaMetalMaterial("/Scene/surfacing/material/mirror") {
+    ["roughness"] = 0.0,
+}
+
+presenceMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/presence") {
+    ["albedo"] = Rgb(0.8, 0.8, 0.8),
+    ["presence"] = 0.5,
+}
+
+Layer("Scene/layer") {
+	{planeBottom, "", mirrorMtl, lightSet},
+	{planeMiddle, "", presenceMtl, lightSet}
+}

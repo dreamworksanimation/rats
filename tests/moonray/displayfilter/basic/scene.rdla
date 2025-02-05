@@ -1,0 +1,141 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["image_width"] = 400,
+    ["image_height"] = 400,
+    ["max_depth"] = 1,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 2.75, 24) * rotate(-20, 1, 0, 0) * rotate(-100, 0, 1, 0),
+    ["focal"] = 50,
+    ["film_width_aperture"] = 24,
+    ["near"] = 1,
+    ["far"] = 10000,
+}
+
+keyExposure = 2
+keyColor = Rgb(0.855, 0.77, 0.535)
+keyXform = translate(0, 0, 50) * rotate(-50, 1, 0, 0) * rotate(-150, 0, 1, 0)
+key_diffuse = RectLight("/Scene/lighting/key_diffuse") {
+    ["node_xform"] = keyXform,
+    ["exposure"] = keyExposure,
+    ["color"] = keyColor,
+    ["width"] = 10,
+    ["height"] = 10,
+    ["visible_glossy_reflection"] = false,
+}
+key_glossy = RectLight("/Scene/lighting/key_glossy") {
+    ["node_xform"] = keyXform,
+    ["exposure"] = keyExposure * 2,
+    ["color"] = keyColor,
+    ["width"] = 100,
+    ["height"] = 100,
+    ["visible_diffuse_reflection"] = false,
+}
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key_diffuse,
+    key_glossy,
+}
+
+geom = UsdGeometry("/Scene/geometry/geom/widget_DWA") {
+    ["node_xform"] = translate(0, -0.23, 0) * rotate(-130, 0, 1, 0),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget"
+}
+
+planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(200, 1, 200) * translate(0, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+GeometrySet("geometrySet") {
+    geom,
+    planeGeom,
+}
+
+blueMtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/blue") {
+    ["albedo"] = Rgb(0.1, 0.1, 0.6),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+grayMtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/gray") {
+    ["albedo"] = Rgb(0.217, 0.217, 0.217),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+toonMtl = DwaSolidDielectricMaterial("toon")
+{
+    ["albedo"] = Rgb(0.75, 0.015, 0.015),
+    ["roughness"] = 0.03,
+    ["specular_model"] = 0,
+}
+
+planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/graphpaper.tx",
+    ["scale"] = Vec2(40, 40),
+    ["offset"] = Vec2(0, .25),
+    ["wrap_around"] = true,
+}
+
+planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap, Rgb(0.75, 0.75, 0.75)),
+    ["show_specular"] = false,
+    ["presence"] = 0.5
+}
+
+Layer("layer") {
+    { geom, "shell_front", toonMtl, lightSet },
+    { geom, "shell_back", toonMtl, lightSet },
+    { geom, "collar", toonMtl, lightSet },
+    { geom, "stand", grayMtl, lightSet },
+    { geom, "core", blueMtl, lightSet },
+    { planeGeom, "", planeMtl, lightSet },
+}
+
+ro = RenderOutput("/output/beauty") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "beauty",
+}
+
+alpha = RenderOutput("/output/alpha") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "alpha",
+    ["channel_name"] = "Alpha",
+}
+
+depthRO = RenderOutput("/output/depth") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "depth",
+    ["math_filter"] = "min",
+}
+
+normalRO = RenderOutput("/output/normal") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "material aov",
+    ["material_aov"] = "DSS.normal"
+}
+
+albedoRO = RenderOutput("/output/albedo") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "material aov",
+    ["material_aov"] = "DSS.color"
+}
+
+glossyRO = RenderOutput("/output/glossy") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "light aov",
+    ["light_aov"] = "glossy"
+}
+
+diffuseRO = RenderOutput("/output/diffuse") {
+    ["file_name"] = "result_tmp.exr",
+    ["result"] = "light aov",
+    ["light_aov"] = "diffuse"
+}

@@ -4,7 +4,7 @@
 # This tests roughness properties of the specular lobe wrt. scaling differentials.
 
 add_rats_test(moonray_differentials_glossy_roughness
-    INPUTS glossy_roughness.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

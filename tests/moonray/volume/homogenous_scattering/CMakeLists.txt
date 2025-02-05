@@ -4,7 +4,7 @@
 # Tests volume homogenous scattering.
 
 add_rats_test(moonray_volume_homogenous_scattering
-    INPUTS homogenous_scattering.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

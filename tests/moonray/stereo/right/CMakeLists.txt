@@ -4,7 +4,7 @@
 # Tests camera stereo right view.
 
 add_rats_test(moonray_stereo_right
-    INPUTS stereo_right.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

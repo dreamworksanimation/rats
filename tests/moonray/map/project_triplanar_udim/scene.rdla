@@ -1,14 +1,14 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["pixel_samples"] = 8,
     ["image_width"] = 256,
     ["image_height"] = 128,
 }
 
-local shotCam = Camera("/Scene/rendering/camera") {
-    ["node xform"] = translate(0, 0, 5),
+shotCam = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 5),
 }
-
--------------------------------------------------------
 
 key = RectLight("/Scene/lighting/key") {
     ["node_xform"] = rotate(-45, 1, 0, 0) * rotate(-45, 0, 1, 0) * translate(7, 7, -5),
@@ -20,19 +20,36 @@ key = RectLight("/Scene/lighting/key") {
 lightSet = LightSet("lightSet") { key, }
 
 
--------------------------------------------------------
-
-geoms = {}
-assignments = {}
-
--------------------------------------------------------
-
-local projGeom = BoxGeometry("projGeom") {
+projGeom = BoxGeometry("projGeom") {
 }
 
-local projTriMap1 = ProjectTriplanarUdimMap("/Scene/surfacing/projTriMap1") {
+geom1 = UsdGeometry("geom1") {
+    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = translate(-2, 0, -3),
+}
+
+geom2 = UsdGeometry("geom2") {
+    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = translate(0, 0, -3),
+}
+
+geom3 = UsdGeometry("geom3") {
+    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = rotate(45, 1, 0, 0) * rotate(45, 0, 1, 0) * translate(2, 0, -3),
+}
+
+GeometrySet("geometrySet") {
+    geom1,
+    geom2,
+    geom3,
+}
+
+projTriMap1 = ProjectTriplanarUdimMap("/Scene/surfacing/projTriMap1") {
    ["projector"] = projGeom,
-   ["use correct uv"] = true,
+   ["use_correct_uv"] = true,
    ["x_scale"] = Vec2(0.8, 0.8),
    ["y_scale"] = Vec2(0.8, 0.8),
    ["y_rotation"] = 45.0,
@@ -40,80 +57,52 @@ local projTriMap1 = ProjectTriplanarUdimMap("/Scene/surfacing/projTriMap1") {
    ["z_rotation"] = 30.0,
 }
 
-local projImageMap1 = ImageMap("/Scene/surfacing/projImageMap1") {
+projImageMap1 = ImageMap("/Scene/surfacing/projImageMap1") {
    ["texture"] = rats_assets_dir .. "/textures/udim/rgb_checker_black_<UDIM>.tx",
-   ["texture coordinates"] = 2, -- input texture coordinates
-   ["input texture coordinates"] = bind(projTriMap1),
-   ["wrap around"] = true,
+   ["texture_coordinates"] = 2, -- input texture coordinates
+   ["input_texture_coordinates"] = bind(projTriMap1),
+   ["wrap_around"] = true,
 }
 
-local mtl1 = DwaEmissiveMaterial("mtl1") {
+mtl1 = DwaEmissiveMaterial("mtl1") {
    ["emission"] = bind(projImageMap1, Rgb(1,1,1)),
 }
 
-local projTriMap2 = ProjectTriplanarUdimMap("/Scene/surfacing/projTriMap2") {
+projTriMap2 = ProjectTriplanarUdimMap("/Scene/surfacing/projTriMap2") {
    ["projector"] = projGeom,
-   ["use correct uv"] = true,
+   ["use_correct_uv"] = true,
 }
 
-local projImageMap2 = ImageMap("/Scene/surfacing/projImageMap2") {
+projImageMap2 = ImageMap("/Scene/surfacing/projImageMap2") {
    ["texture"] = rats_assets_dir .. "/textures/udim/rgb_checker_black_<UDIM>.tx",
-   ["texture coordinates"] = 2, -- input texture coordinates
-   ["input texture coordinates"] = bind(projTriMap2),
-   ["wrap around"] = true,
+   ["texture_coordinates"] = 2, -- input texture coordinates
+   ["input_texture_coordinates"] = bind(projTriMap2),
+   ["wrap_around"] = true,
 }
 
-local mtl2 = DwaEmissiveMaterial("mtl2") {
+mtl2 = DwaEmissiveMaterial("mtl2") {
    ["emission"] = bind(projImageMap2, Rgb(1,1,1)),
 }
 
-local projTriMap3 = ProjectTriplanarUdimMap("/Scene/surfacing/projTriMap3") {
+projTriMap3 = ProjectTriplanarUdimMap("/Scene/surfacing/projTriMap3") {
    ["projector"] = projGeom,
-   ["use correct uv"] = true,
+   ["use_correct_uv"] = true,
    ["use_reference_space"] = true,
 }
 
-local projImageMap3 = ImageMap("/Scene/surfacing/projImageMap3") {
+projImageMap3 = ImageMap("/Scene/surfacing/projImageMap3") {
    ["texture"] = rats_assets_dir .. "/textures/udim/rgb_checker_black_<UDIM>.tx",
-   ["texture coordinates"] = 2, -- input texture coordinates
-   ["input texture coordinates"] = bind(projTriMap3),
-   ["wrap around"] = true,
+   ["texture_coordinates"] = 2, -- input texture coordinates
+   ["input_texture_coordinates"] = bind(projTriMap3),
+   ["wrap_around"] = true,
 }
 
-local mtl3 = DwaEmissiveMaterial("mtl3") {
+mtl3 = DwaEmissiveMaterial("mtl3") {
    ["emission"] = bind(projImageMap3, Rgb(1,1,1)),
 }
 
--------------------------------------------------------
-
-local geom1 = UsdGeometry("geom1") {
-    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
-    ["prim_path"] = "/sphere",
-    ["node_xform"] = translate(-2, 0, -3),
+Layer("layer") {
+    { geom1, "", mtl1, lightSet },
+    { geom2, "", mtl2, lightSet },
+    { geom3, "", mtl3, lightSet },
 }
-
-local geom2 = UsdGeometry("geom2") {
-    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
-    ["prim_path"] = "/sphere",
-    ["node_xform"] = translate(0, 0, -3),
-}
-
-local geom3 = UsdGeometry("geom3") {
-    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
-    ["prim_path"] = "/sphere",
-    ["node_xform"] = rotate(45, 1, 0, 0) * rotate(45, 0, 1, 0) * translate(2, 0, -3),
-}
-
-table.insert(geoms, geom1)
-table.insert(geoms, geom2)
-table.insert(geoms, geom3)
-
-table.insert(assignments, {geom1, "", mtl1, lightSet})
-table.insert(assignments, {geom2, "", mtl2, lightSet})
-table.insert(assignments, {geom3, "", mtl3, lightSet})
-
--------------------------------------------------------
-
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("/Scene/layer")(assignments)
-

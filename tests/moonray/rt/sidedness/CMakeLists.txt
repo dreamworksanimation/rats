@@ -4,7 +4,7 @@
 # Tests single and double-sided geometry.
 
 add_rats_test(moonray_rt_sidedness
-    INPUTS sidedness.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

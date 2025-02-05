@@ -5,6 +5,6 @@
 # the torus (change roughness_clamping_factor to 0.0 to see fireflies)
 
 add_rats_test(moonray_sampling_roughness_clamping1
-    INPUTS roughness_clamping1.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )

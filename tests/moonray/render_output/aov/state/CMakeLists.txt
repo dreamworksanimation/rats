@@ -4,7 +4,7 @@
 # This tests the ability of the RenderOutput objects to output state aovs.
 
 add_rats_test(moonray_render_output_aov_state
-    INPUTS aov_state.rdla
+    INPUTS scene.rdla
     CANONICALS result0.exr
 )
 

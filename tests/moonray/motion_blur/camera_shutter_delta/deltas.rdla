@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 Camera("/Scene/rendering/camera") {
     ["mb_shutter_open"] = 0,
     ["mb_shutter_close"] = 1,

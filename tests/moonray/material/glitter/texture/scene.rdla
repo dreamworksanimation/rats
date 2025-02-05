@@ -1,15 +1,13 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 256,
     ["image_height"] = 256,
 }
 
-local shotCam = Camera("/Scene/rendering/camera") {
+shotCam = Camera("/Scene/rendering/camera") {
     ["node_xform"] = translate(0, 0, 18),
 }
-
--------------------------------------------------------
-
--- Lights --
 
 key = RectLight("/Scene/lighting/key") {
     ["node_xform"] = translate(0, 0, 10) * rotate(-30, 1, 0, 0) * rotate(30, 0, 1, 0),
@@ -27,20 +25,15 @@ lightSet = LightSet("lightSet") {
     dome
 }
 
--- Geometry --
-
-geoms = {}
-assignments = {}
-
-local geom = UsdGeometry("geom") {
+geom = UsdGeometry("geom") {
     ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
     ["node_xform"] = rotate(45, 1, 0, 0) * translate(0, -2, -0),
 }
 
-table.insert(geoms, geom)
-
--- Materials --
+GeometrySet("geometrySet") {
+    geom,
+}
 
 mtl = DwaBaseMaterial("mtl") {
     ["glitter_color_A"] = Rgb(0.65, 0.45, 0.125),
@@ -63,9 +56,6 @@ mtl = DwaBaseMaterial("mtl") {
     ["show_diffuse"] = false,
 }
 
--------------------------------------------------------
-
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("/Scene/layer") {
-    {geom, "", mtl, lightSet},
+Layer("layer") {
+    { geom, "", mtl, lightSet },
 }

@@ -1,0 +1,53 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+
+SceneVariables {
+    ["camera"] = PerspectiveCamera("/obj/shot_cam"),
+    ["image_width"] = 400,
+    ["image_height"] = 400,
+}
+
+PerspectiveCamera("/obj/shot_cam") {
+    ["node_xform"] = Mat4(-0.223605, 0.00981184, 0.97463, 0, 
+                           0.317736, 0.946059, 0.0633725, 0, 
+                          -0.921436, 0.323846, -0.214661, 0, 
+                          -725.871, 65.7624, -229.216, 1),
+}
+
+plane = UsdGeometry("/obj/plane") {
+    ["node_xform"] = scale(1500, 1500, 1500), 
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["mesh_resolution"] = 280,
+    ["subd_type"] = 2,
+    ["adaptive_error"] = 4,
+}
+
+GeometrySet("/Scene/geoset") {
+    plane,
+}
+
+WireframeMap("/shop/map") {
+    ["line_width"] = 0.01,
+    ["line_color"] = Rgb(1.0, 1.0, 1.0),
+    ["fill_color"] = Rgb(0.0, 0.0, 0.0),
+    ["raster"] = false,
+}
+
+DwaBaseMaterial("/shop/mtl") {
+    ["show_emission"] = true,
+    ["emission"] = Rgb(10, 10, 10),
+    ["presence"] = bind(WireframeMap("/shop/map")),
+}
+
+SphereLight("sphere_light") {
+}
+
+LightSet("/Scene/lightset") {
+    SphereLight("sphere_light"),
+}
+
+Layer("/Scene/layer") {
+    {plane, {""}, DwaBaseMaterial("/shop/mtl"), LightSet("/Scene/lightset")},
+}
+

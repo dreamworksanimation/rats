@@ -5,7 +5,7 @@
 # A noise pattern is remapped in different ways with grayscale and per-channel controls.
 
 add_rats_test(moonray_map_remap
-    INPUTS remap.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

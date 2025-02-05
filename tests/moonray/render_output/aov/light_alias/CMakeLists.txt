@@ -4,8 +4,8 @@
 # This tests the ability of the RenderOutput objects to output light aovs via lpe aliases.
 
 add_rats_test(moonray_render_output_aov_light_alias
-    INPUTS ../common/aov_common.rdla
-           aov_light_alias.rdla
+    INPUTS ../common.rdla
+           scene.rdla
     CANONICALS result0.exr
 )
 

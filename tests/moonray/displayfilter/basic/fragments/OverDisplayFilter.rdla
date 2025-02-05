@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 local ro = RenderOutput("/output/beauty") {}
 local glossyRO = RenderOutput("/output/glossy") {}
 local alpha = RenderOutput("/output/alpha") {}

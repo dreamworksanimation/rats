@@ -4,7 +4,7 @@
 # This tests DwaLayer with respect to layering diffuse
 
 add_rats_test(moonray_material_dwalayer_diffuse
-    INPUTS dwalayer_diffuse.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

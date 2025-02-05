@@ -4,7 +4,7 @@
 # This tests defaults properties of the base material
 
 add_rats_test(moonray_material_dwabase_defaults
-    INPUTS dwabase_defaults.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

@@ -5,7 +5,7 @@
 
 add_rats_test(moonray_camera_deltas
     INPUTS deltas.rdla
-    DELTAS deltas_deltas.rdla
+    DELTAS scene.rdla
     CANONICALS
         scene.exr
 )

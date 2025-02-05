@@ -5,7 +5,7 @@
 # Tests that reflective objects with presence render correcty.
 
 add_rats_test(moonray_rt_presence_mirror
-    INPUTS presence_mirror.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

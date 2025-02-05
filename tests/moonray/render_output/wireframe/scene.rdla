@@ -1,0 +1,59 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+   ["image_width"] = 256,
+   ["image_height"] = 256,
+   ["max_depth"] = 0,
+   ["pixel_samples"] = 8,
+}
+
+UsdGeometry("/widget") {
+   ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+   ["prim_path"] = "/widget",
+   ["node_xform"] = scale(0.3, 0.3, 0.3)
+}
+
+UsdGeometry("/floor") {
+   ["stage"] = rats_assets_dir.."/models/plane.usdc",
+   ["prim_path"] = "/plane",
+   ["node_xform"] = scale(8, 8, 8),
+}
+
+UsdGeometry("/curves") {
+   ["stage"] = rats_assets_dir.."/models/curves.usdc",
+   ["prim_path"] = "/curve_0",
+   ["node_xform"] = scale(0.3, 0.3, 0.3)
+}
+
+GeometrySet("/geometrySet") {
+   UsdGeometry("/widget"),
+   UsdGeometry("/floor"),
+   UsdGeometry("/curves"),
+}
+
+DwaSolidDielectricMaterial("/baseMaterial") {
+}
+
+EnvLight("/envlight") {
+}
+
+LightSet("/lightset") {
+    EnvLight("/envlight"),
+}
+
+Layer("/layer") {
+    {UsdGeometry("/widget"), "", DwaSolidDielectricMaterial("/baseMaterial"), LightSet("/lightset")},
+    {UsdGeometry("/floor"), "", DwaSolidDielectricMaterial("/baseMaterial"), LightSet("/lightset")},
+    {UsdGeometry("/curves"), "", DwaSolidDielectricMaterial("/baseMaterial"), LightSet("/lightset")},
+}
+
+Camera("/camera") {
+   ["node_xform"] = translate(0, 1, 5) * rotate(-5, 1, 0, 0),
+}
+
+-- wireframe
+RenderOutput("/output/wire") {
+   ["file_name"] = "wireframe.exr",
+   ["result"] = 6 -- "wireframe"
+}
+

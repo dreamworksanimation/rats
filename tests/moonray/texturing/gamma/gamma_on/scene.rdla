@@ -1,0 +1,6 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+
+floorMap = ImageMap("/Scene/surfacing/color_grid") {
+    ["gamma"] = 1,
+}

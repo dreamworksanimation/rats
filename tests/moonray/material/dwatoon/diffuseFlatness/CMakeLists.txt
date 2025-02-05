@@ -4,7 +4,7 @@
 # This tests diffuse flatness on the DwaToonMaterial
 
 add_rats_test(moonray_material_dwatoon_diffuseFlatness
-    INPUTS dwatoon_diffuseFlatness.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

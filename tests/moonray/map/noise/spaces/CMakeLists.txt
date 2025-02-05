@@ -4,8 +4,8 @@
 # This tests the noise map shader space transforms
 
 add_rats_test(moonray_map_noise_spaces
-    INPUTS spaces.rdla
-           ../noise_common.rdla
+    INPUTS scene.rdla
+           ../common.rdla
     CANONICALS scene.exr
 )
 

@@ -1,0 +1,158 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["bssrdf_samples"] = 2,
+    ["image_width"] = 600,
+    ["image_height"] = 300,
+    ["max_depth"] = 2,  -- Int
+    ["max_subsurface_per_path"] = 2,  -- Int
+    ["max_diffuse_depth"] = 2,  -- Int
+    ["max_glossy_depth"] = 0,  -- Int
+    ["max_mirror_depth"] = 0,  -- Int
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 3.5, 25) * rotate(-10, 1, 0, 0),
+}
+
+------------------ Lights --------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["exposure"] = 0.0,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+local lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------- Geometry -----------------------
+
+local geom = UsdGeometry("/Scene/geometry/geom/widget_DWA") {
+    ["node_xform"] = translate(4, -0.28, -3) * rotate(-35, 0, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+local geom2 = UsdGeometry("/Scene/geometry/geom/widget_DWA2") {
+    ["node_xform"] = translate(4, -0.28, -3) * rotate(-35, 0, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+local geom3 = UsdGeometry("/Scene/geometry/geom/widget_DWA3") {
+    ["node_xform"] = translate(-4, -0.28, 3) * rotate(-35, 0, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+local geom4 = UsdGeometry("/Scene/geometry/geom/widget_DWA4") {
+    ["node_xform"] = translate(-4, -0.28, 3) * rotate(-35, 0, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+--------------------- Materials -------------------------------
+
+local tx1 = ImageNormalMap("/Scene/surfacing/map/tx1") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/chesterfield.tx",
+    ["scale"] = Vec2(3, 3),
+}
+
+local tx2 = ImageNormalMap("/Scene/surfacing/map/tx2") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/metal_anti_slip.tx",
+    ["scale"] = Vec2(7, 7),
+}
+
+local solidDielectric = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/sd") {
+    ["bssrdf"] = "random walk", 
+    ["show_specular"] = false,
+    ["albedo"] = Rgb(0.6, 0.4, 0.3),
+    ["roughness"] = 0.55,
+    ["specular_model"] = 0,
+    ["refractive_index"] = 1.4,
+    ["scattering_radius"] = 0.2,
+    ["scattering_color"] = Rgb(1.0, 0.4, 0.4),
+    ["input_normal"] = tx1,
+    ["enable_sss_input_normal"] = true
+}
+
+local solidDielectric2 = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/sd2") {
+    ["bssrdf"] = "random walk", 
+    ["show_specular"] = false,
+    ["albedo"] = Rgb(0.6, 0.4, 0.3),
+    ["roughness"] = 0.55,
+    ["specular_model"] = 0,
+    ["refractive_index"] = 1.4,
+    ["scattering_radius"] = 0.1,
+    ["scattering_color"] = Rgb(1.0, 0.4, 0.4),
+    ["input_normal"] = tx1,
+    ["enable_sss_input_normal"] = false
+}
+
+local refractive = DwaRefractiveMaterial("/Scene/surfacing/refrac") {
+    ["specular_model"] = 0,
+}
+
+local skin = ImageMap("/Scene/surfacing/map/skin") {
+    ["texture"] = rats_assets_dir .. "/textures/skin.tx",
+    ["scale"] = Vec2(4, 3),
+}
+
+local skin = DwaSkinMaterial("/Scene/surfacing/mtl") {
+    ["show_diffuse"] = true,
+    ["show_specular"] = false,
+    ["albedo"] = bind(skin, Rgb(1.0, 1.0, 1.0)),
+    ["roughness"] = 0.6,
+    ["refractive_index"] = 1.5,
+    ["moisture_roughness"] = 0.01,
+    ["moisture_model"] = 0,
+    ["moisture_refractive_index"] = 1.4,
+    ["scattering_radius"] = 0.001,
+    ["input_normal"] = tx2,
+    ["enable_sss_input_normal"] = true
+}
+
+local mask = ImageMap("/Scene/surfacing/mask") {
+    ["texture"] = rats_assets_dir .. "/textures/splat.tx",
+    ["scale"] = Vec2(2, 2),
+}
+
+local mtlLayer = DwaLayerMaterial("/Scene/surfacing/layer") {
+    ["material_A"] = skin,
+    ["material_B"] = solidDielectric,
+    ["mask"] = bind(mask, 1.0),
+    ["fallback_bssrdf"] = 2,
+}
+
+local mtlLayer2 = DwaLayerMaterial("/Scene/surfacing/layer2") {
+    ["material_A"] = mtlLayer,
+    ["material_B"] = refractive,
+    ["mask"] = 0.5,
+    ["fallback_specular_model"] = 0,
+}
+
+-----------------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    geom,
+    geom2,
+    geom3,
+    geom4,
+}
+
+Layer("/Scene/layer") {
+    {geom, "shell_front", mtlLayer, lightSet},
+    {geom, "shell_back", mtlLayer, lightSet},
+    {geom, "collar", mtlLayer, lightSet},
+    {geom2, "stand", mtlLayer2, lightSet},
+    {geom2, "core", mtlLayer2, lightSet},
+
+    {geom3, "shell_front", solidDielectric, lightSet},
+    {geom3, "shell_back", solidDielectric, lightSet},
+    {geom3, "collar", solidDielectric, lightSet},
+    {geom4, "stand", solidDielectric2, lightSet},
+    {geom4, "core", solidDielectric2, lightSet},
+}
+

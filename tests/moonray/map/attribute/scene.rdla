@@ -1,7 +1,9 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["image width"] = 250,
-    ["image height"] = 250,
-    ["pixel samples"] = 2,
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+    ["pixel_samples"] = 2,
 }
 
 Camera("/Scene/camera") {
@@ -108,60 +110,60 @@ GeometrySet("geometryset") {
 }
 
 attrHeight = AttributeMap("attrHeight") {
-    ["primitive attribute name"] = "height",
-    ["primitive attribute type"] = "float",
+    ["primitive_attribute_name"] = "height",
+    ["primitive_attribute_type"] = "float",
 }
 
 attrXy = AttributeMap("attrXy") {
-    ["primitive attribute name"] = "xy",
-    ["primitive attribute type"] = "vec2f",
+    ["primitive_attribute_name"] = "xy",
+    ["primitive_attribute_type"] = "vec2f",
 }
 
 attrVec = AttributeMap("attrVec") {
-    ["primitive attribute name"] = "vec",
-    ["primitive attribute type"] = "vec3f",
+    ["primitive_attribute_name"] = "vec",
+    ["primitive_attribute_type"] = "vec3f",
 }
 
 attrCd = AttributeMap("attrCd") {
-    ["primitive attribute name"] = "displayColor",
-    ["primitive attribute type"] = "rgb",
+    ["primitive_attribute_name"] = "displayColor",
+    ["primitive_attribute_type"] = "rgb",
 }
 
 attrPosition = AttributeMap("attrPosition") {
-    ["map type"] = "position",
+    ["map_type"] = "position",
 }
 
 attrSt = AttributeMap("attrSt") {
-    ["map type"] = "texture st",
+    ["map_type"] = "texture st",
 }
 
 attrN = AttributeMap("attrN") {
-    ["map type"] = "shading normal",
+    ["map_type"] = "shading normal",
 }
 
 attrNg = AttributeMap("attrNg") {
-    ["map type"] = "geometric normal",
+    ["map_type"] = "geometric normal",
 }
 
 attrdPds = AttributeMap("attrdPds") {
-    ["map type"] = "dpds",
+    ["map_type"] = "dpds",
 }
 
 attrdPdt = AttributeMap("attrdPdt") {
-    ["map type"] = "dpdt",
+    ["map_type"] = "dpdt",
 }
 
 attrdNds = AttributeMap("attrdNds") {
-    ["map type"] = "dnds",
+    ["map_type"] = "dnds",
 }
 
 attrdNdt = AttributeMap("attrdNdt") {
-    ["map type"] = "dndt",
+    ["map_type"] = "dndt",
 }
 
 attrDefault = AttributeMap("attrDefault") {
-    ["primitive attribute name"] = "attr_not_exist",
-    ["default value"] = Rgb(1, 0, 0),
+    ["primitive_attribute_name"] = "attr_not_exist",
+    ["default_value"] = Rgb(1, 0, 0),
 }
 
 mtlHeight = DwaEmissiveMaterial("mtlHeight") {

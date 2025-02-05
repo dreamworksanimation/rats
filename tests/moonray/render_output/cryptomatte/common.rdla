@@ -1,38 +1,37 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 sceneVars = SceneVariables {
-    ["lights visible in camera"] = true,
-    ["pixel samples"] = 2,
-    ["max depth"] = 0,
-    ["light samples"] = 1,
-    ["bsdf samples"] = 1,
-    ["image width"] = 256,
-    ["image height"] = 256,
-    ["enable presence shadows"] = true,
+    ["lights_visible_in_camera"] = true,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 0,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["enable_presence_shadows"] = true,
     ["deep_id_attribute_names"] = {"id0"},
 }
 
-local id0 = UserData("id0") {
-    ["float key"] = "id0",
+id0 = UserData("id0") {
+    ["float_key"] = "id0",
 }
 
 ROOM_WIDTH=5
 ROOM_HEIGHT=5
 ROOM_DEPTH=5
 
-local id0 = UserData("id0") {
-    ["float key"] = "id0",
-    ["float values"] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6},
+id0 = UserData("id0") {
+    ["float_key"] = "id0",
+    ["float_values"] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6},
 }
 
 shotCam = Camera("/Scene/rendering/shot_cam") {
-    ["node xform"] = translate(0, 0, ROOM_DEPTH),
+    ["node_xform"] = translate(0, 0, ROOM_DEPTH),
     ["focal"] = 20,
 }
 
-geoms = {}
-assignments = {}
-
 rectLight = RectLight("/Scene/lighting/rect") {
-    ["node xform"] = rotate(-90, 1, 0, 0) * translate(0, ROOM_HEIGHT/2, 0),
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0, ROOM_HEIGHT/2, 0),
     ["on"] = true,
     ["color"] = Rgb(1, 1, 1),
     ["intensity"] = 1,
@@ -40,7 +39,7 @@ rectLight = RectLight("/Scene/lighting/rect") {
     ["normalized"] = false,
     ["width"] = 0.8,
     ["height"] = 0.8,
-    ["presence shadows"] = 1,
+    ["presence_shadows"] = 1,
 }
 
 lightSet = LightSet("LightSetA") {
@@ -48,60 +47,64 @@ lightSet = LightSet("LightSetA") {
 }
 
 -- Geometry --
-local planeBack = UsdGeometry("/Scene/geometry/back") {
-    ["node xform"] = rotate(90, 1, 0, 0) * scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(0, 0, -ROOM_DEPTH/2),
+planeBack = UsdGeometry("/Scene/geometry/back") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(0, 0, -ROOM_DEPTH/2),
     ["stage"] = rats_assets_dir.."/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
-table.insert(geoms, planeBack)
 
-local planeBottom = UsdGeometry("/Scene/geometry/bottom") {
-    ["node xform"] = scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(0, -ROOM_HEIGHT/2, 0),
+planeBottom = UsdGeometry("/Scene/geometry/bottom") {
+    ["node_xform"] = scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(0, -ROOM_HEIGHT/2, 0),
     ["stage"] = rats_assets_dir.."/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
-table.insert(geoms, planeBottom)
 
-local planeTop = UsdGeometry("/Scene/geometry/top") {
-    ["node xform"] = scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(0, ROOM_HEIGHT/2, 0),
+planeTop = UsdGeometry("/Scene/geometry/top") {
+    ["node_xform"] = scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(0, ROOM_HEIGHT/2, 0),
     ["stage"] = rats_assets_dir.."/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
-table.insert(geoms, planeTop)
 
-local planeLeft = UsdGeometry("/Scene/geometry/left") {
-    ["node xform"] = rotate(90, 0, 0, 1) * scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(ROOM_WIDTH/2, 0, 0),
+planeLeft = UsdGeometry("/Scene/geometry/left") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(ROOM_WIDTH/2, 0, 0),
     ["stage"] = rats_assets_dir.."/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
-table.insert(geoms, planeLeft)
 
-local planeRight = UsdGeometry("/Scene/geometry/right") {
-    ["node xform"] = rotate(-90, 0, 0, 1) * scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(-ROOM_WIDTH/2, 0, 0),
+planeRight = UsdGeometry("/Scene/geometry/right") {
+    ["node_xform"] = rotate(-90, 0, 0, 1) * scale(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH) * translate(-ROOM_WIDTH/2, 0, 0),
     ["stage"] = rats_assets_dir.."/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
-table.insert(geoms, planeRight)
 
--- Materials --
+GeometrySet("geometrySet") {
+    planeBack,
+    planeBottom,
+    planeTop,
+    planeLeft,
+    planeRight,
+}
 
-local whiteMtl = DwaBaseMaterial("/Scene/surfacing/material/white") {
+
+whiteMtl = DwaBaseMaterial("/Scene/surfacing/material/white") {
     ["albedo"] = Rgb(0.6, 0.55, 0.4),
 }
 
-local leftMtl = DwaBaseMaterial("/Scene/surfacing/material/left") {
+leftMtl = DwaBaseMaterial("/Scene/surfacing/material/left") {
     ["albedo"] = Rgb(0.7, 0.1, 0.08),
 }
 
-local rightMtl = DwaBaseMaterial("/Scene/surfacing/material/right") {
+rightMtl = DwaBaseMaterial("/Scene/surfacing/material/right") {
     ["albedo"] = Rgb(0.2, 0.4, 0.7),
 }
 
-table.insert(assignments, {planeBack, "", whiteMtl, lightSet})
-table.insert(assignments, {planeBottom, "", whiteMtl, lightSet})
-table.insert(assignments, {planeTop, "", whiteMtl, lightSet})
-table.insert(assignments, {planeLeft, "", leftMtl, lightSet})
-table.insert(assignments, {planeRight, "", rightMtl, lightSet})
+Layer("layer") {
+    { planeBack, "", whiteMtl, lightSet },
+    { planeBottom, "", whiteMtl, lightSet },
+    { planeTop, "", whiteMtl, lightSet },
+    { planeLeft, "", leftMtl, lightSet },
+    { planeRight, "", rightMtl, lightSet },
+}
 
 RenderOutput("cryptomatte") {
     ["result"] = "cryptomatte",

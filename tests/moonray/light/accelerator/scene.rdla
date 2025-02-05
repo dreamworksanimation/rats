@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 200,
     ["image_height"] = 200,
@@ -50,7 +52,7 @@ end
 
 lightSet = LightSet("lgts")(lights)
 
-layer = Layer("defaultLayer") {
+Layer("defaultLayer") {
     { cube,  "", mtlCube,  lightSet },
     { floor, "", mtlFloor, lightSet }
 }

@@ -4,7 +4,7 @@
 # This tests normal-mapping
 
 add_rats_test(moonray_map_normal
-    INPUTS normal.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

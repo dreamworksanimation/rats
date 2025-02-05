@@ -1,14 +1,14 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["pixel_samples"] = 8,
     ["image_width"] = 256,
     ["image_height"] = 256,
 }
 
-local shotCam = Camera("/Scene/rendering/camera") {
+shotCam = Camera("/Scene/rendering/camera") {
     ["node_xform"] = translate(0, 0, 18),
 }
-
--------------------------------------------------------
 
 key = RectLight("/Scene/lighting/key") {
     ["node_xform"] = translate(0, 0, 10) * rotate(-30, 1, 0, 0) * rotate(30, 0, 1, 0),
@@ -17,25 +17,30 @@ key = RectLight("/Scene/lighting/key") {
     ["height"] = 4,
 }
 
-dome = EnvLight("dome") { ["exposure"] = -7, }
+dome = EnvLight("dome") {
+    ["exposure"] = -7,
+}
 
-lightSet = LightSet("lightSet") { key, dome }
+lightSet = LightSet("lightSet") {
+    key, dome
+}
 
+geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node_xform"] = rotate(45, 1, 0, 0) * translate(0, -2, -0),
+}
 
--------------------------------------------------------
+GeometrySet("geometrySet") {
+    geom,
+}
 
-geoms = {}
-assignments = {}
-
--------------------------------------------------------
-
-local mtl = DwaBaseMaterial("mtl") {
+mtl = DwaBaseMaterial("mtl") {
     ["glitter_randomness"] = 1.0,
     ["glitter_seed"] = 3,
     ["glitter"] = 1.0,
     ["glitter_density"] = 10.0,
     ["glitter_space"] = "object",
-    ----------------------------------
     ["glitter_style_A_frequency"] = 0.5,
     ["glitter_style_B_frequency"] = 0.5,
     ["glitter_roughness_A"] = 0.11,
@@ -49,20 +54,6 @@ local mtl = DwaBaseMaterial("mtl") {
     ["show_diffuse"] = false,
 }
 
--------------------------------------------------------
-
-local geom = UsdGeometry("geom") {
-    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
-    ["prim_path"] = "/widget",
-    ["node_xform"] = rotate(45, 1, 0, 0) * translate(0, -2, -0),
+Layer("layer") {
+    { geom, "", mtl, lightSet },
 }
-
-table.insert(geoms, geom)
-
-table.insert(assignments, {geom, "", mtl, lightSet})
-
--------------------------------------------------------
-
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("/Scene/layer")(assignments)
-

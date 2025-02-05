@@ -4,7 +4,7 @@
 # This tests the switch float map shader
 
 add_rats_test(moonray_map_switch_float
-    INPUTS switch_float.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

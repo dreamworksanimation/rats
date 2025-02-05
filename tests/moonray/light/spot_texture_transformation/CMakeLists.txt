@@ -4,7 +4,7 @@
 # This test exercises texture transformation controls for a spotlight.
 
 add_rats_test(moonray_light_spot_texture_transformation
-    INPUTS spot_texture_transformation.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

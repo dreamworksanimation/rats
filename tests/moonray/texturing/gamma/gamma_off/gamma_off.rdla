@@ -1,4 +1,0 @@
-
-floorMap = ImageMap("/Scene/surfacing/color_grid") {
-    ["gamma"] = 0,
-}

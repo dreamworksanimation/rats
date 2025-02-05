@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 sceneVars = SceneVariables {
     ["lights_visible_in_camera"] = true,
     ["image_width"] = 256,
@@ -24,26 +26,26 @@ lightSet = LightSet("LightSetA") {
     RectLight("/Scene/lighting/rect"),
 }
 
-local chromeMtl = DwaMetalMaterial("/Scene/surfacing/material/chrome") {
+ chromeMtl = DwaMetalMaterial("/Scene/surfacing/material/chrome") {
     ["metallic_color"] = Rgb(0.6, 0.6, 0.6),
     ["roughness"] = 0.05,
 }
 
-local whiteMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/white") {
+ whiteMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/white") {
     ["albedo"] = Rgb(0.6, 0.55, 0.4),
     ["roughness"] = 0.5,
 }
 
-local grayMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/gray") {
+ grayMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/gray") {
     ["albedo"] = Rgb(0.22, 0.22, 0.22),
     ["roughness"] = 0.95,
 }
-local leftMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/left") {
+ leftMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/left") {
     ["albedo"] = Rgb(0.7, 0.1, 0.08),
     ["roughness"] = 0.5,
     ["specular"] = 0.2,
 }
-local rightMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/right") {
+ rightMtl = DwaSolidDielectricMaterial("/Scene/surfacing/material/right") {
     ["albedo"] = Rgb(0.2, 0.4, 0.7),
     ["roughness"] = 0.5,
     ["specular"] = 0.2,
@@ -59,56 +61,54 @@ function make_plane_xz(name, xform)
     }
 end
 
-local planeBack = make_plane_xz("/Scene/geometry/back", rotate(-90, 0, 0, 1) * rotate(90, 0, 1, 0) * scale(3.048, 3.048, 1) * translate(-1.524, 1.524, 3.048))
-table.insert(geoms, planeBack)
+planeBack = make_plane_xz("/Scene/geometry/back", rotate(-90, 0, 0, 1) * rotate(90, 0, 1, 0) * scale(3.048, 3.048, 1) * translate(-1.524, 1.524, 3.048))
+planeBottom = make_plane_xz("/Scene/geometry/bottom", scale(3.048, 3.048, 3.048) * translate(-1.524, 0, 1.524))
+planeTop = make_plane_xz("/Scene/geometry/top", rotate(-180, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(-1.524, 3.048, 1.524))
+planeLeft = make_plane_xz("/Scene/geometry/left", rotate(90, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(0, 1.524, 1.524))
+planeRight = make_plane_xz("/Scene/geometry/right", rotate(-90, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(-3.048, 1.524, 1.524))
 
-local planeBottom = make_plane_xz("/Scene/geometry/bottom", scale(3.048, 3.048, 3.048) * translate(-1.524, 0, 1.524))
-table.insert(geoms, planeBottom)
-
-local planeTop = make_plane_xz("/Scene/geometry/top", rotate(-180, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(-1.524, 3.048, 1.524))
-table.insert(geoms, planeTop)
-
-local planeLeft = make_plane_xz("/Scene/geometry/left", rotate(90, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(0, 1.524, 1.524))
-table.insert(geoms, planeLeft)
-
-local planeRight = make_plane_xz("/Scene/geometry/right", rotate(-90, 0, 0, 1) * scale(3.048, 3.048, 3.048) * translate(-3.048, 1.524, 1.524))
-table.insert(geoms, planeRight)
-
-local cube1 = BoxGeometry("/Scene/geometry/cube1") {
+cube1 = BoxGeometry("/Scene/geometry/cube1") {
     ["node_xform"] = rotate(70, 0, 1, 0) * scale(1.0, 2.0, 1.0) * translate(-1.0, 0.75, 1.9),
 }
-table.insert(geoms, cube1)
 
-local cube2 = BoxGeometry("/Scene/geometry/cube2") {
+cube2 = BoxGeometry("/Scene/geometry/cube2") {
     ["node_xform"] = rotate(10, 0, 1, 0) * scale(1, 1, 1) * translate(-2.15, 0.5, 0.9),
 }
-table.insert(geoms, cube2)
 
-local sphere = SphereGeometry("/Scene/geometry/sphere") {
+sphere = SphereGeometry("/Scene/geometry/sphere") {
     ["node_xform"] = scale(0.27, 0.27, 0.27) * translate(-1.0, 1.97, 2),
 }
-table.insert(geoms, sphere)
 
-local widget = UsdGeometry("/Scene/geometry/widget") {
+widget = UsdGeometry("/Scene/geometry/widget") {
     ["node_xform"] = rotate(190, 0, 1, 0) * scale(0.06, 0.06, 0.06) * translate(-2.15, 0.99, 1),
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
 }
-table.insert(geoms, widget)
--- Materials --
 
-table.insert(assignments, {sphere, "", chromeMtl, lightSet})
-table.insert(assignments, {planeBack, "", whiteMtl, lightSet})
-table.insert(assignments, {planeBottom, "", whiteMtl, lightSet})
-table.insert(assignments, {planeTop, "", whiteMtl, lightSet})
-table.insert(assignments, {planeLeft, "", leftMtl, lightSet})
-table.insert(assignments, {planeRight, "", rightMtl, lightSet})
-table.insert(assignments, {cube1, "", whiteMtl, lightSet})
-table.insert(assignments, {cube2, "", whiteMtl, lightSet})
-table.insert(assignments, {widget, "", grayMtl, lightSet})
+GeometrySet("Scene/geometrySet") {
+    planeBack,
+    planeBottom,
+    planeTop,
+    planeLeft,
+    planeRight,
+    cube1,
+    cube2,
+    sphere,
+    widget,
+}
 
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("Scene/layer")(assignments)
+Layer("layer") {
+    { sphere, "", chromeMtl, lightSet },
+    { planeBack, "", whiteMtl, lightSet },
+    { planeBottom, "", whiteMtl, lightSet },
+    { planeTop, "", whiteMtl, lightSet },
+    { planeLeft, "", leftMtl, lightSet },
+    { planeRight, "", rightMtl, lightSet },
+    { cube1, "", whiteMtl, lightSet },
+    { cube2, "", whiteMtl, lightSet },
+    { widget, "", grayMtl, lightSet },
+}
+
 RenderOutput("/scene/AOV/Beauty") {
     ["channel_format"] = 1,
     ["compression"] = 9,

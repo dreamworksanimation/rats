@@ -4,7 +4,7 @@
 # This tests the iridescence ramp color controls
 
 add_rats_test(moonray_material_dwabase_iridescence_ramp
-    INPUTS dwabase_iridescence_ramp.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

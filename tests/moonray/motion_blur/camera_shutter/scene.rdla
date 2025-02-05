@@ -1,19 +1,20 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 Camera("/Scene/rendering/camera") {
     ["mb_shutter_open"] = -1,
     ["mb_shutter_close"] = 0,
 }
-
--------------------------------------------------------
 
 torus = UsdGeometry("/Scene/geometry/torus") {
     ["node_xform"] = translate(0, 1.5, 0),
     ["stage"] = rats_assets_dir .. "/models/torus_mb.usdc",
     ["prim_path"] = "/torus",
 }
-table.insert(geoms, torus)
-table.insert(assignments, {torus, "", torusMtl, lightSet})
 
--------------------------------------------------------
+GeometrySet("geometrySet") {
+    torus,
+}
 
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("/Scene/layer")(assignments)
+Layer("layer") {
+    { torus, "", torusMtl, lightSet },
+}

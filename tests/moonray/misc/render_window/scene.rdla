@@ -1,0 +1,119 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 3,
+    ["aperture_window"] = {0, 0, 256, 256 },
+    ["region_window"] = { -40, 0, 256, 200 },
+    ["sub_viewport"] = { 50, 50, 500, 500},
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = rotate(5, 0, 1, 0) * 
+                     rotate(-28, 1, 0, 0) * 
+                     translate(3.5, 18.4, 33.7),
+    ["pixel_aspect_ratio"] = 1.5,
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.1,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 270) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 5,
+    ["normalized"] = false,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 80,
+    ["height"] = 80,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+-------------------------------------------------------
+
+sphere1 = SphereGeometry("/Scene/geometry/sphere1") {
+    ["node_xform"] = rotate(120, 1, 0, 0) * 
+                     rotate(10, 0, 0, 1) * 
+                     scale(4, 4, 4) * 
+                     translate(-6, 4, 6),
+}
+
+sphere2 = SphereGeometry("/Scene/geometry/sphere2") {
+    ["node_xform"] = rotate(70, 0, 1, 0) * 
+                     rotate(170, 1, 0, 0) * 
+                     rotate(20, 0, 0, 1) * 
+                     translate(6, 4, 6),
+    ["radius"] = 4,
+    ["zmin"] = -2,
+    ["zmax"] = 3.8,
+    ["phi_max"] = 180,
+}
+
+wall = RdlMeshGeometry("/Scene/geometry/wall") {
+    ["vertex_list"] = {Vec3(-20,  20, -2), Vec3(-20,  0, -2), Vec3(-20,  0,  20),
+                       Vec3( 20,  0,   20), Vec3(20,  0, -2), Vec3( 20,  20, -2)},
+    ["vertices_by_index"] = {0, 1, 4, 5,
+                             1, 2, 3, 4},
+    ["face_vertex_count"] = {4, 4},
+    ["is_subd"] = false,
+    ["smooth_normal"] = false,
+}
+
+GeometrySet("/Scene/geometryset") {
+    sphere1,
+    sphere2,
+    wall
+}
+
+-------------------------------------------------------
+
+planeMap1 = ImageMap("/Scene/surfacing/planeMap1") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(3, 3),
+    ["saturation_enabled"] = true,
+    ["saturation"] = Rgb(2, 2, 2),
+}
+
+planeMap2 = ImageMap("/Scene/surfacing/planeMap2") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(2, 2),
+    ["saturation_enabled"] = true,
+    ["saturation"] = Rgb(2, 2, 2),
+    ["offset"] = Vec2(0, 0.5),
+}
+
+baseMat1 = DwaBaseMaterial("/Scene/surfacing/base1") {
+    ["albedo"] = bind(planeMap1, Rgb(1, 1, 1)),
+    ["specular"] = 0.0,
+}
+
+baseMat2 = DwaBaseMaterial("/Scene/surfacing/base2") {
+    ["albedo"] = bind(planeMap2, Rgb(1, 1, 1)),
+    ["specular"] = 0.0,
+}
+
+wallMat = DwaBaseMaterial("/Scene/surfacing/wall") {}
+
+--------------------------------------------------------
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {sphere1, "", baseMat1, lightSet},
+    {sphere2, "", baseMat2, lightSet},
+    {wall, "", wallMat, lightSet}
+}
+
+RenderOutput("/Scene/output/beauty") {
+    ["result"] = 0,
+    ["file_name"] = "result0.exr"
+}

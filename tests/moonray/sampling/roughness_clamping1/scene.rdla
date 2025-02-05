@@ -1,0 +1,98 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 500,
+    ["image_height"] = 500,
+    ["pixel_samples"] = 2,
+    ["bsdf_samples"] = 2,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 3,
+    ["russian_roulette_threshold"] = 0.0001,
+    ["sample_clamping_value"] = 0,
+    ["roughness_clamping_factor"] = 1.0,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 7) *
+                     rotate(-35, 1, 0, 0) *
+                     translate(0, 0.5, 0),
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["exposure"] = 0.0,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 12,
+    ["exposure"] = 0.0,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 5,
+    ["height"] = 5,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+-------------------------------------------------------
+
+local plane_width = 40
+local plane_depth = 40
+local checker_size = 4.0
+
+planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(0.5 * plane_width, 1, 0.5 * plane_depth),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(plane_width / checker_size, plane_depth / checker_size),
+    ["offset"] = Vec2(-0.5 * plane_width / checker_size,
+                      -0.5 * plane_depth / checker_size),
+    ["wrap_around"] = true,
+    ["saturation_enabled"] = true,
+    ["saturation"] = Rgb(0.5, 0.5, 0.5),
+}
+
+planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap, Rgb(0.1, 0.1, 0.1)),
+    ["roughness"] = 0.1,
+}
+
+-------------------------------------------------------
+
+geom = UsdGeometry("/Scene/geometry/geom") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(2, 2, 2) * translate(0, 1.45, 0),
+    ["stage"] = rats_assets_dir .. "/models/torus.usdc",
+    ["prim_path"] = "/torus",
+}
+
+mtl = DwaBaseMaterial("/Scene/surfacing/mtl") {
+    ["anisotropy"] = 0.5,
+    ["albedo"] = Rgb(0, 0, 0),
+    ["metallic"] = 1,
+    ["metallic_color"] = Rgb(0.319, 0.06, 0.0),
+    ["roughness"] = 0.5,
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    geom,
+    planeGeom
+}
+
+Layer("/Scene/layer") {
+    {geom, "", mtl, lightSet},
+    {planeGeom, "", planeMtl, lightSet}
+}

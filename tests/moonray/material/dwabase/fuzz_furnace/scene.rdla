@@ -1,0 +1,115 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 250,
+    ["max_depth"] = 9,
+    ["lights_visible_in_camera"] = true,
+    ["russian_roulette_threshold"] = 0,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 30),
+    ["focal"] = 50,
+}
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.22,
+    ["visible_in_camera"] = 1,  -- Int, enumerable (use default)
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+---- make 8 spheres, 2 by 4
+local i = 1
+for y =  2,-2,-4 do -- 4 rows, 4 units apart
+for x = -6,6,4 do -- 4 columns, 4 units apart
+    local geom = SphereGeometry("geom"..i) {
+        ["node_xform"] = translate(x, y, 0),
+    }
+    table.insert(geoms, geom)
+    i = i + 1
+    -- print(i, x, y)
+end
+end
+
+local doCaustics = true
+local fuzzON = true
+
+local metal = DwaMetalMaterial("metal") {
+    ["show_fuzz"] = fuzzON,
+    ["fuzz_coverage"] = 0.9,
+    ["roughness"] = 0.001,
+    ["specular_model"] = 0,
+    ["casts_caustics"] = doCaustics,
+}
+local sd_clearcoat = DwaSolidDielectricMaterial("sd_clearcoat") {
+    ["show_fuzz"] = fuzzON,
+    ["fuzz_coverage"] = 0.1,
+    ["roughness"] = 0.1,
+    ["specular_model"] = 0,
+    ["show_clearcoat"] = true,
+    ["clearcoat_roughness"] = 0.01,
+    ["casts_caustics"] = doCaustics,
+}
+local refractive = DwaRefractiveMaterial("refractive") {
+    ["show_fuzz"] = fuzzON,
+    ["fuzz_coverage"] = 1,
+    ["roughness"] = 0.001,
+    ["specular_model"] = 0,
+    ["casts_caustics"] = doCaustics,
+}
+local skin = DwaSkinMaterial("skin") {
+    ["show_fuzz"] = fuzzON,
+    ["scattering_radius"] = 1.0,
+    ["roughness"] = 0.001,
+    ["specular_model"] = 0,
+    ["show_moisture"] = true,
+    ["moisture_roughness"] = 0.001,
+    ["moisture_model"] = 0,
+    ["casts_caustics"] = doCaustics,
+}
+local fabric = DwaFabricMaterial("fabric") {
+    ["show_fuzz"] = fuzzON,
+    ["fuzz_coverage"] = 0.2,
+    ["fabric_diffuse_scattering"] = 0.5,
+    ["casts_caustics"] = doCaustics,
+}
+local velvet = DwaVelvetMaterial_v2("velvet_v2") {
+    ["show_fuzz"] = fuzzON,
+    ["fuzz_coverage"] = 0.6,
+    ["casts_caustics"] = doCaustics,
+}
+
+local lyr1 = DwaLayerMaterial("layer3") {
+    ["material_A"] = fabric,
+    ["material_B"] = velvet,
+    ["mask"] = 0.5,
+}
+local lyr2 = DwaLayerMaterial("layer4") {
+    ["material_A"] = velvet,
+    ["material_B"] = skin,
+    ["mask"] = 0.5,
+}
+
+local mtls = {
+    metal,      sd_clearcoat,       refractive,     skin,
+    fabric,     velvet,             lyr1,           lyr2,
+}
+
+for i,v in ipairs(mtls) do
+    table.insert(assignments, {SphereGeometry("geom"..i), "",  mtls[i], lightSet})
+end
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)

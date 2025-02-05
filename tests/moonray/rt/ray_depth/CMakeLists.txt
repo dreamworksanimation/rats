@@ -4,7 +4,7 @@
 # Tests the maximum depth limiter.
 
 add_rats_test(moonray_rt_ray_depth
-    INPUTS ray_depth.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

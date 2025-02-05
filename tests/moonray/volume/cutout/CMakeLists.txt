@@ -5,7 +5,7 @@
 # One of the volumes is cutout.
 
 add_rats_test(moonray_volume_cutout
-    INPUTS cutout.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

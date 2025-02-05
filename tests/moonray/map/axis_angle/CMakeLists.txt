@@ -5,7 +5,7 @@
 # about a world space and object space axis.
 
 add_rats_test(moonray_map_axis_angle
-    INPUTS axis_angle.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

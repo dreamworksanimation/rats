@@ -1,0 +1,69 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables{
+    ["image_width"] = 512,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 2,
+    ["lights_visible_in_camera"] = true,
+}
+
+Camera("camera") {
+    ["node_xform"] = translate(0.0, 1, 10) * rotate(-10, 1, 0, 0),
+}
+
+UsdGeometry("floorB") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(16, 1, 4),
+}
+
+UsdGeometry("sheetB") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(0, 0.5, 0) * scale(5, 2.3, 1) * translate(0, 0, 1.5),
+}
+
+geoms = GeometrySet("geomset") {
+    UsdGeometry("floorB"),
+    UsdGeometry("sheetB"),
+}
+
+ImageMap("transmission1") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+DwaSolidDielectricMaterial("floorMtlB") {
+    ["albedo"] = Rgb(0.18, 0.18, 0.18),
+}
+
+DwaRefractiveMaterial("transmission1Mtl") {
+    ["roughness"] = 0.0,
+    ["refractive_index"] = 1.0,
+    ["transmission_color"] = bind(ImageMap("transmission1"), Rgb(1, 1, 1)),
+}
+
+envlight = EnvLight("envlight") {
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+    ["node_xform"] = rotate(90, 1, 0, 0),
+}
+
+rectLight = RectLight("rectlight") {
+    ["node_xform"] = translate(0.0, 0.0, 100) *
+                     rotate(-40, 1, 0, 0) *
+                     rotate(-45, 0, 1, 0),
+    ["intensity"] = 30,
+    ["exposure"] = 0,
+    ["width"] = 4,
+    ["height"] = 4,
+}
+
+rig = LightSet("rig") {
+    envlight,
+    rectLight,
+}
+
+Layer("layer") {
+    { UsdGeometry("floorB"), "", DwaSolidDielectricMaterial("floorMtlB"), rig},
+    { UsdGeometry("sheetB"), "", DwaRefractiveMaterial("transmission1Mtl"), rig},
+}
+

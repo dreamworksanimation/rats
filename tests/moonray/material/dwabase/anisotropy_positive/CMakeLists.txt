@@ -5,7 +5,7 @@
 # Cook-Torrance with Beckmann distribution using positive values
 
 add_rats_test(moonray_material_dwabase_anisotropy_positive
-    INPUTS dwabase_anisotropy_positive.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

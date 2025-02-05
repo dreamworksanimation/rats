@@ -4,7 +4,7 @@
 # This tests default properties of the dwaskin material
 
 add_rats_test(moonray_material_dwaskin_defaults
-    INPUTS dwaskin_defaults.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

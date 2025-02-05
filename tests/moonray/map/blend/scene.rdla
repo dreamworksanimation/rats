@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 370,
     ["image_height"] = 250,
@@ -66,41 +68,41 @@ nmap = NoiseWorleyMap_v2("nmap") {
 }
 
 blendDefaults = BlendMap("blendDefaults") {
-    ["color A"] = bind(immap), 
-    ["color B"] = bind(chmap),
+    ["color_A"] = bind(immap), 
+    ["color_B"] = bind(chmap),
 }
 
 blendCubic = BlendMap("blendCubic") {
-    ["color A"] = bind(immap), 
-    ["color B"] = bind(chmap),
-    ["blend type"] = 1,
-    ["blend amount"] = bind(nmap), --0.8,
+    ["color_A"] = bind(immap), 
+    ["color_B"] = bind(chmap),
+    ["blend_type"] = 1,
+    ["blend_amount"] = bind(nmap), --0.8,
 }
 
 blendAmount = BlendMap("blendAmount") {
-    ["color A"] = bind(immap), 
-    ["color B"] = bind(chmap),
-    ["blend amount"] = bind(nmap), --0.8,
+    ["color_A"] = bind(immap), 
+    ["color_B"] = bind(chmap),
+    ["blend_amount"] = bind(nmap), --0.8,
 }
 
 blendThreshold = BlendMap("blendThreshold") {
-    ["color A"] = bind(immap), 
-    ["color B"] = bind(chmap),
-    ["blend amount"] = 0.1,
-    ["threshold max"] = 0.5,
+    ["color_A"] = bind(immap), 
+    ["color_B"] = bind(chmap),
+    ["blend_amount"] = 0.1,
+    ["threshold_max"] = 0.5,
 }
 
 blendIn = BlendMap("blendIn") {
-    ["color A"] = bind(immap), 
-    ["color B"] = bind(chmap),
-    ["blend amount"] = 0.8,
+    ["color_A"] = bind(immap), 
+    ["color_B"] = bind(chmap),
+    ["blend_amount"] = 0.8,
 }
 
 blendBad = BlendMap("blendBad") {
-    ["color A"] = bind(immap), 
-    ["color B"] = bind(chmap),
-    ["blend amount"] = -0.5,
-    ["threshold min"] = -0.8,
+    ["color_A"] = bind(immap), 
+    ["color_B"] = bind(chmap),
+    ["blend_amount"] = -0.5,
+    ["threshold_min"] = -0.8,
 }
 
 blendDefaultsMtl = DwaEmissiveMaterial("blendDefaultsMtl") {

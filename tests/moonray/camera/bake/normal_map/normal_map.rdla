@@ -21,7 +21,7 @@ sphereMtl = DwaSolidDielectricMaterial("/Scene/surfacing/sphereMtl") {
 }
 
 sphereGeom = UsdGeometry("/Scene/geometry/sphere") {
-    ["node xform"] = translate(0, .75, 0),
+    ["node_xform"] = translate(0, .75, 0),
     ["stage"] = rats_assets_dir.."/models/sphere.usdc",
     ["prim_path"] = "/sphere",
 }

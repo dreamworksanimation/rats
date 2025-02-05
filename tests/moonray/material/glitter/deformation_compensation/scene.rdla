@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 300,
     ["image_height"] = 150,
@@ -9,9 +11,9 @@ Camera("/Scene/rendering/camera") {
 }
 
 env = EnvLight("env") {
-    ["node xform"] = rotate(45, 0, 1, 0),
+    ["node_xform"] = rotate(45, 0, 1, 0),
     ["intensity"] = 0.6,
-	["sample upper hemisphere only"] = false,
+	["sample_upper_hemisphere_only"] = false,
     ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
 }
 

@@ -4,7 +4,7 @@
 # This tests extending the ramp on DwaToonMaterial, in conjunction with prevent_light_culling
 
 add_rats_test(moonray_material_dwatoon_extend_ramp
-    INPUTS dwatoon_extend_ramp.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

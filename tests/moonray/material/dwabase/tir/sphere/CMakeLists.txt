@@ -4,7 +4,7 @@
 # This tests total internal reflection
 
 add_rats_test(moonray_material_dwabase_tir_sphere
-    INPUTS dwabase_tir_sphere.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

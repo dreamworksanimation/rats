@@ -1,0 +1,96 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 3,
+    ["max_depth"] = 12,
+    ["image_width"] = 400,
+    ["image_height"] = 250,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 1.0, 10) * rotate(-10, 1, 0, 0),
+    ["focal"] = 50,
+}
+
+----------------------- Lights ----------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+----------------------- Geometry -----------------------
+
+sphereLGeom = SphereGeometry("/Scene/geometry/sphereLGeom") {
+    ["node_xform"] = translate(-1.2, 1.0, 0),
+}
+
+sphereMGeom = SphereGeometry("/Scene/geometry/sphereMGeom") {
+    ["node_xform"] = translate(1.2, 1.0, 0),
+}
+
+planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(18, 1, 10),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+---------------------- Materials ------------------------
+
+sphereLRedMtl = DwaBaseMaterial("/Scene/surfacing/sphereLRedMtl") {
+    ["albedo"] = Rgb(0.5, 0, 0),
+    ["emission"] = Rgb(0.5, 0, 0),
+    ["show_specular"] = false,
+}
+
+sphereLBlueMtl = DwaBaseMaterial("/Scene/surfacing/sphereLBlueMtl") {
+    ["albedo"] = Rgb(0, 0, 0.5),
+    ["emission_color"] = Rgb(0, 0, 0.5),
+    ["show_specular"] = false,
+}
+
+sphereLGreenMtl = DwaBaseMaterial("/Scene/surfacing/sphereLGreenMtl") {
+    ["albedo"] = Rgb(0, 0.5, 0),
+    ["metallic"] = 1.0,
+    ["show_emission"] = false,
+    ["roughness"] = 0.1,
+}
+
+sphereLMtl = RaySwitchMaterial("/Scene/surfacing/sphereLMtl") {
+    ["default_material"] = sphereLRedMtl,
+    ["camera_ray_material"] = sphereLGreenMtl,
+    ["indirect_diffuse_ray_material"] = sphereLBlueMtl,
+    ["indirect_mirror_ray_material"] = sphereLRedMtl,
+    ["indirect_glossy_ray_material"] = sphereLBlueMtl,
+}
+
+sphereMMtl = DwaBaseMaterial("/Scene/surfacing/sphereMMtl") {
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.5, 0.5),
+    ["roughness"] = 0.0,
+    ["anisotropy"] = 0.0,
+}
+
+planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = Rgb(0.18, 0.18, 0.18),
+    ["show_specular"] = false,
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    planeGeom,
+    sphereLGeom,
+    sphereMGeom
+}
+
+Layer("/Scene/layer") {
+    {planeGeom, "", planeMtl, lightSet},
+    {sphereLGeom, "", sphereLMtl, lightSet},
+    {sphereMGeom, "", sphereMMtl, lightSet}
+}

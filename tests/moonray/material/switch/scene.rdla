@@ -1,0 +1,86 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 600,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 3,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 1.0, 10) * rotate(-10, 1, 0, 0),
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+sphereLGeom = SphereGeometry("/Scene/geometry/sphereLGeom") {
+    ["node_xform"] = rotate(180, 0, 1, 0) * translate(-2.6, 1.0, 0),
+}
+
+sphereMGeom = SphereGeometry("/Scene/geometry/sphereMGeom") {
+    ["node_xform"] = rotate(180, 0, 1, 0) * translate(0, 1.0, 0),
+}
+
+sphereRGeom = SphereGeometry("/Scene/geometry/sphereRGeom") {
+    ["node_xform"] = rotate(180, 0, 1, 0) * translate(2.6, 1.0, 0),
+}
+
+--------------------------------------------------------
+
+mtl0 = DwaSolidDielectricMaterial("mtl0") {
+    ["specular_model"] = 0,
+}
+
+mtl1 = DwaRefractiveMaterial("mtl1") {
+    ["specular_model"] = 0,
+}
+
+mtl2 = DwaMetalMaterial("mtl2") {
+    ["specular_model"] = 0,
+}
+
+switchMtl0 = SwitchMaterial("switchMtl0") {
+    ["choice"] = 0,
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+}
+
+switchMtl1 = SwitchMaterial("switchMtl1") {
+    ["choice"] = 1,
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+}
+
+switchMtl2 = SwitchMaterial("switchMtl2") {
+    ["choice"] = 2,
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+}
+
+----------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    sphereLGeom,
+    sphereMGeom,
+    sphereRGeom
+}
+
+Layer("/Scene/layer") {
+    {sphereLGeom, "", switchMtl0, lightSet},
+    {sphereMGeom, "", switchMtl1, lightSet},
+    {sphereRGeom, "", switchMtl2, lightSet},
+}

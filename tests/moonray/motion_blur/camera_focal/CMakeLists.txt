@@ -4,8 +4,8 @@
 # Tests motion-blur due to changing camera focal length
 
 add_rats_test(moonray_motion_blur_camera_focal
-    INPUTS ../common/motion_blur_common.rdla
-           motion_blur_camera_focal.rdla
+    INPUTS ../common.rdla
+           scene.rdla
     CANONICALS scene.exr
 )
 

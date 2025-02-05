@@ -1,0 +1,86 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["lights_visible_in_camera"] = true,
+    ["pixel_samples"] = 1,
+    ["light_samples"] = 4,
+    ["bsdf_samples"] = 4,
+    ["max_depth"] = 0,
+    ["russian_roulette_threshold"] = 0.0001,
+    ["image_width"] = 400,
+    ["image_height"] = 400
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = Mat4(1, 0, 0, 0, 0, 0.999256, -0.0385791, 0, 0, 0.0385791, 0.999256, 0, 0, 4.76459, 7.7481, 1),
+    ["near"] = 0.01,
+}
+
+-- Geometry --
+
+UsdGeometry("/Scene/geometry/widget") {
+    ["node_xform"] = scale(0.4, 0.4, 0.4) * translate(0, 0, -7),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = Mat4(20, 0, 0, 0, 0, 20, 0, 0, 0, 0, 20, 0, 0, 0, 0, 1),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/wall") {
+    ["node_xform"] = Mat4(20, 0, 0, 0, 0, 0, 1, 0, 0, -10, 0, 0, 0, 5, -10, 1),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometryset") {
+    UsdGeometry("/Scene/geometry/widget"),
+    UsdGeometry("/Scene/geometry/floor"),
+    UsdGeometry("/Scene/geometry/wall"),
+}
+
+-- Materials --
+
+DwaSolidDielectricMaterial("/Scene/surfacing/floor") {
+    ["show_specular"] = false,
+}
+
+DwaSolidDielectricMaterial("/Scene/surfacing/object_widget") {
+    ["albedo"] = Rgb(0.2, 0.2, 0.2),
+    ["roughness"] = 0.14,
+}
+
+-- Lights --
+
+spot = SpotLight("/Scene/lighting/spot") {
+    ["node_xform"] = Mat4(-0.0291956, 0, 0.999573, 0, 0.999573, -4.37114e-08, 0.0291956, 0, 4.36928e-08, 1, 1.27618e-09, 0, 0, 9, -8, 1),
+    ["intensity"] = 0.1,
+    ["lens_radius"] = 1.9,
+    ["inner_cone_angle"] = 0,
+    ["outer_cone_angle"] = 60,
+    ["angle_falloff_type"] = "ease out",
+    ["focal_plane_distance"] = 9,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+
+    ["texture_rotation"] = 10,
+    ["texture_translation"] = Vec2(0.25, 0.25),
+    ["texture_coverage"] = Vec2(0.5, 0.5),
+    ["texture_reps_u"] = 3,
+    ["texture_reps_v"] = 3,
+    ["texture_mirror_u"] = true,
+    ["texture_mirror_v"] = true,
+    ["texture_border_color"] = Rgb(0, 0, 1),
+}
+
+LightSet("LightSetA") {
+    spot,
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {UsdGeometry("/Scene/geometry/widget"), "", DwaSolidDielectricMaterial("/Scene/surfacing/object_widget"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/floor"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/wall"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+}

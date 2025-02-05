@@ -4,7 +4,7 @@
 # This tests the basic ability of the RenderOutput object to produce output.
 
 add_rats_test(moonray_render_output_basic
-    INPUTS render_output_basic.rdla
+    INPUTS scene.rdla
     CANONICALS result0.exr
                result1.exr
 )

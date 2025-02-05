@@ -1,0 +1,10 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+
+OrthographicCamera("/Scene/rendering/camera") {
+    ["node_xform"] = Mat4(1, 0, 0, 0, 0, 0.896479, -0.443087, 0, 0, 0.443087, 0.896479, 0, 0, 21.2076, 34.2088, 1),
+    ["film_width_aperture"] = 35,
+    ["dof"] = true,
+    ["dof_aperture"] = 0.056,
+    ["dof_focus_distance"] = 40,
+}

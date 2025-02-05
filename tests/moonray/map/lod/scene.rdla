@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 250,
     ["image_height"] = 250,
@@ -54,7 +56,7 @@ lodMap2 = LODMap("lodMap2") {
 lodMap3 = LODMap("lodMap3") {
     ["mode"] = "camera distance",
     ["start"] = 1,
-    ["stop"]  = 100
+    ["stop"] = 100
 }
 
 lodMap4 = LODMap("lodMap4") {

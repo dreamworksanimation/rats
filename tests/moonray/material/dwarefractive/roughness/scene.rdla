@@ -1,0 +1,113 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["bsdf_samples"] = 3,
+    ["max_depth"] = 3,
+    ["image_width"] = 960,
+    ["image_height"] = 125,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0.75, 120) * rotate(-30, 1, 0, 0),
+    ["focal"] = 100,
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 12,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+-------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+local posMin = -13
+local posMax = 13
+
+local roughnessMin = 0.0
+local roughnessMax = 1.0
+
+local numCol = 11
+for col = 1, numCol do
+    local ratio = (col - 1) / (numCol - 1)
+
+    local posX = posMin + (posMax - posMin) * ratio        
+
+    local roughness = 0.1
+
+    -- Linear wedge of roughness
+    roughness = roughnessMin + (roughnessMax - roughnessMin) * ratio
+
+    -- Arbitrarily apply roughness^2
+    --roughness = roughnessMin + (math.sqrt(roughnessMax) - roughnessMin) * ratio
+    --roughness = roughness * roughness
+
+    -- Arbitrarily apply roughness / 2
+    --roughness = roughnessMin + (roughnessMax - roughnessMin) * ratio
+    --roughness = roughness / 2
+
+    -- Arbitrarily apply sqrt(roughness)
+    --roughness = roughnessMin + ((roughnessMax * roughnessMax) - roughnessMin) * ratio
+    --roughness = math.sqrt(roughness)
+
+    posZ = 0
+
+    local geom = SphereGeometry("/Scene/geometry/geom" .. col) {
+        ["node_xform"] = translate(posX, 1, posZ),
+    }
+    table.insert(geoms, geom)
+
+    local mtl = DwaRefractiveMaterial("/Scene/surfacing/mtl" .. col) {
+        -- bronze
+        ["roughness"] = roughness,
+        ["specular_model"] = 0,
+    }
+    table.insert(assignments, {geom, "", mtl, lightSet})
+end
+
+-------------------------------------------------------
+
+local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(30, 1, 20),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+table.insert(geoms, planeGeom)
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(7, 4),
+    ["offset"] = Vec2(0, .25),
+    ["wrap_around"] = true,
+}
+
+local planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["show_diffuse"] = true,
+    ["albedo"] = bind(planeMap),
+    ["show_specular"] = false,
+}
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)

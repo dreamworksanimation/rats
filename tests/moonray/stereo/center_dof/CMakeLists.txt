@@ -4,7 +4,7 @@
 # Tests camera stereo center view with dof.
 
 add_rats_test(moonray_stereo_center_dof
-    INPUTS stereo_center_dof.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

@@ -4,7 +4,7 @@
 # Tests random maps
 
 add_rats_test(moonray_map_random
-    INPUTS random.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

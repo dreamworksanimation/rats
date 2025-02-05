@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["pixel_samples"] = 4,
     ["light_samples"] = 1,

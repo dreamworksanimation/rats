@@ -1,0 +1,80 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 3,
+}
+
+--------------------------------------------------------------------
+------ Set up the camera with a medium material and geometry -------
+--------------------------------------------------------------------
+
+waterMat = DwaRefractiveMaterial("water_mat") {
+    ["refractive_index"] = 1.33,
+    ["roughness"] = 0.001,
+    ["priority"] = 2,
+    ["transmission_color"] = Rgb(0.2, 0.5, 0.6),
+    ["casts_caustics"] = true
+}
+
+waterBox = BoxGeometry("water_box") {
+    ["node_xform"] = scale(10.0, 5.0, 10.0) * translate(0.0, -2.5, 0.0),
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 4.9),
+    ["medium_material"] = waterMat,
+    ["medium_geometry"] = waterBox
+}
+
+DwaSolidDielectricMaterial("red_plastic") {
+    ["albedo"] = Rgb(1.0, 0.0, 0.0),
+    ["roughness"] = 0.0,
+    ["priority"] = 2
+}
+
+UsdGeometry("air_bubble") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = scale(0.2, 0.2, 0.2) * translate(0.0, -0.5, 0.0),
+    ["reverse_normals"] = true,
+}
+
+UsdGeometry("water_bubble") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(0.7, 0.0, -0.3),
+}
+
+UsdGeometry("red_ball") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = scale(0.4, 0.4, 0.4) * translate(-1.5, -0.1, -1.0),
+}
+
+GeometrySet("/Scene/geoset") {
+    UsdGeometry("air_bubble"),
+    UsdGeometry("water_bubble"),
+    BoxGeometry("water_box"),
+    UsdGeometry("red_ball")
+}
+
+EnvLight("EnvLight1") {
+    ["exposure"] = -1.0,
+    ["intensity"] = 2.0,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+    ["visible_in_camera"] = 1,
+}
+
+LightSet("lightset1") {
+    EnvLight("EnvLight1"), 
+}
+
+Layer("/Scene/layer") {
+    {UsdGeometry("air_bubble"), "", DwaRefractiveMaterial("water_mat"), LightSet("lightset1")},
+    {UsdGeometry("water_bubble"), "", DwaRefractiveMaterial("water_mat"), LightSet("lightset1")},
+    {BoxGeometry("water_box"), "", DwaRefractiveMaterial("water_mat"), LightSet("lightset1")},
+    {UsdGeometry("red_ball"), "", DwaSolidDielectricMaterial("red_plastic"), LightSet("lightset1")},
+}
+

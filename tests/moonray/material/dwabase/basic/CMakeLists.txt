@@ -4,7 +4,7 @@
 # This tests all the properties of the dwabase material
 
 add_rats_test(moonray_material_dwabase_basic
-    INPUTS dwabase_basic.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

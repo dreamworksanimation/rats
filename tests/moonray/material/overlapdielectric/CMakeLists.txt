@@ -4,7 +4,7 @@
 # This tests overlapping dielectric material priority and IOR tracking.
 
 add_rats_test(moonray_material_overlapdielectric
-    INPUTS material_overlapdielectric.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

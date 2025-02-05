@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 500,
     ["image_height"] = 350,
@@ -352,7 +354,7 @@ rampRender = RampMap("rampRender") {
 }
 
 rampCam = Camera("rampCam") {
-   ["node xform"] = translate(-10, 10, 10.75) * rotate(30, 0, 0, 1),
+   ["node_xform"] = translate(-10, 10, 10.75) * rotate(30, 0, 0, 1),
 }
 
 rampCamera = RampMap("rampCamera") {

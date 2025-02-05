@@ -7,7 +7,7 @@
 # Tests that once we have reached max presence depth, the presence is always 1.
 
 add_rats_test(moonray_rt_presence_max_depth
-    INPUTS presence_max_depth.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

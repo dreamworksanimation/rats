@@ -4,7 +4,7 @@
 # This tests diffuse transmission.
 
 add_rats_test(moonray_material_dwasoliddielectric_diffuseTransmission
-    INPUTS dwasoliddielectric_diffuseTransmission.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

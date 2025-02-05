@@ -1,0 +1,74 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["max_depth"] = 3,
+}
+
+floor = UsdGeometry("/Scene/geometry/floor") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(50, 1, 50),
+}
+
+wall = UsdGeometry("/Scene/geometry/wall") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = rotate(-75, 1, 0, 0)*scale(20, 20, 20)*translate(0, 2, -8),
+}
+
+sphere0 = SphereGeometry("/Scene/geometry/sphere0") {
+    ["node_xform"] = scale(1.5, 1.5, 1.5) * rotate(-70, 1, 0, 0) * translate(-2, 2, 0),
+    ["zmax"] = 0.6,
+    ["side_type"] = 0,
+}
+
+sphere1 = SphereGeometry("/Scene/geometry/sphere1") {
+    ["node_xform"] = scale(1.5, 1.5, 1.5) * rotate(-70, 1, 0, 0) * translate(2, 2, 0),
+    ["zmax"] = 0.6,
+    ["side_type"] = 1,
+}
+
+checker = ImageMap("/Scene/surfacing/checker") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx"
+}
+
+floorMat = DwaSolidDielectricMaterial("/Scene/surfacing/floorMat") {
+    ["albedo"] = Rgb(0.9, 0.9, 0.9),
+}
+
+wallMat = DwaSolidDielectricMaterial("/Scene/surfacing/wallMat") {
+    ["albedo"] = Rgb(0.9, 0.9, 0.9),
+}
+
+sphereMat = DwaSolidDielectricMaterial("/Scene/surfacing/sphereMat") {
+    ["albedo"] = Rgb(0.9, 0.9, 0),
+}
+
+spot_light = SpotLight("/Scene/lighting/spot") {
+    ["node_xform"] = rotate(-90, 0, 1, 0) * rotate(-45, 0, 0, 1) * translate(-60, 60, 0); 
+    ["intensity"] = 8,
+}
+
+geoms = GeometrySet("/Scene/geometry/all") {
+    floor,
+    wall,
+    sphere0,
+    sphere1,
+}
+
+rig = LightSet("/Scene/lighting/rig") {
+    spot_light
+}
+
+layer = Layer("/Scene/rendering/all") {
+    {floor, "", floorMat, rig},
+    {wall, "", wallMat, rig},
+    {sphere0, "", sphereMat, rig},
+    {sphere1, "", sphereMat, rig},
+}
+
+shot_cam = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 2, 10) * rotate(-10, 1, 0, 0)
+}

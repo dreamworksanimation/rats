@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 256,
     ["image_height"] = 213,
@@ -12,10 +14,6 @@ Camera("/Scene/rendering/camera") {
     ["film_width_aperture"] = 24,
 }
 
-geoms = {}
-assignments = {}
-
--------------------------------------------------------
 
 env = EnvLight("/Scene/lighting/env") {
     ["node_xform"] = rotate(-90, 0, 1, 0),
@@ -27,49 +25,43 @@ lightSet = LightSet("/Scene/lighting/lightSet") {
     env,
 }
 
--------------------------------------------------------
-
-local planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
+planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
     ["node_xform"] = scale(20, 1, 20),
     ["vertex_list"] = {Vec3(-0.5, 0.0, 0.5), Vec3(0.5, 0.0, 0.5), Vec3(0.5, 0.0, -0.5), Vec3(-0.5, 0.0, -0.5)},
     ["vertices_by_index"] = {0, 1, 2, 3},
     ["face_vertex_count"] = {4},
     ["is_subd"] = false
 }
-table.insert(geoms, planeGeom)
 
-local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+geom = SphereGeometry("/Scene/geometry/geom") {
+    ["node_xform"] = translate(0, 1, 0),
+}
+
+GeometrySet("geometrySet") {
+    planeGeom,
+    geom,
+}
+
+planeMap = ImageMap("/Scene/surfacing/planeMap") {
     ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
     ["scale"] = Vec2(5, 5),
     ["wrap_around"] = true,
 }
 
-local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
     ["albedo"] = bind(planeMap),
     ["roughness"] = 0.4,
 }
-table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
 
-
--------------------------------------------------------
-
-local geom = SphereGeometry("/Scene/geometry/geom") {
-    ["node_xform"] = translate(0, 1, 0),
-}
-table.insert(geoms, geom)
-
-local mtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl") {
+mtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl") {
     ["albedo"] = Rgb(0.319, 0.06, 0.0),
     ["roughness"] = 0.2,
 }
-table.insert(assignments, {geom, "", mtl, lightSet})
 
--------------------------------------------------------
-
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("/Scene/layer")(assignments)
-
--------------------------------------------------------
+Layer("layer") {
+    { planeGeom, "", planeMtl, lightSet },
+    { geom, "", mtl, lightSet },
+}
 
 RenderOutput("/output/alpha") {
    ["result"] = "alpha",

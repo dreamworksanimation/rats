@@ -1,0 +1,119 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+-- diffuse color
+RenderOutput("/output/diffuse_color") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "D.color", 
+}
+
+-- diffuse albedo
+RenderOutput("/output/diffuse_albedo") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "D.albedo", 
+}
+
+-- glossy color
+RenderOutput("/output/glossy_color") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "G.color", 
+}
+
+-- glossy albedo
+RenderOutput("/output/glossy_albedo") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "G.albedo", 
+}
+
+-- mirror color
+RenderOutput("/output/mirror_color") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "M.color", 
+}
+
+-- mirror albedo
+RenderOutput("/output/mirror_albedo") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "M.albedo", 
+}
+
+-- reflection color
+RenderOutput("/output/reflection_color") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "R.color",
+}
+
+-- reflection albedo
+RenderOutput("/output/reflection_albedo") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "R.albedo",
+}
+
+-- emission
+RenderOutput("/output/emission") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "emission", 
+   ["channel_name"] = "emission",
+}
+
+-- subsurface albedo
+RenderOutput("/output/subsurface") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "SS.albedo",
+}
+
+-- subsurface color
+RenderOutput("/output/subsurface_color") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "SS.color"
+}
+
+
+-- diffuse + subsurface albedo
+RenderOutput("/output/diff_sss_albedo") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "DSS.albedo",
+}
+
+-- diffuse + subsurface color
+RenderOutput("/output/diff_sss_color") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "DSS.color",
+}
+
+-- diffuse matte
+RenderOutput("/output/diff_matte") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "D.matte",
+   ["channel_name"] = "A",
+}
+
+-- diffuse + subsurface matte
+RenderOutput("/output/diff_sss_matte") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["material_aov"] = "DSS.matte",
+}
+
+-- diffuse color with LPE
+RenderOutput("/output/diffuse_color_LPE") {
+   ["file_name"] = "result0.exr",
+   ["result"] = 7, -- material aov
+   ["lpe"] = "C<RD>",
+   ["material_aov"] = "D.color",
+   ["channel_name"] = "D.color_LPE"
+}
+

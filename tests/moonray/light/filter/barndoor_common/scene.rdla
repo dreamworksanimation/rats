@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 -- Tests (left to right) Cylinder, Disk, Mesh, Distant+Env, Rect, Sphere, and Spot lights
 -- Distant and Env filters overlap because those lights are always at render origin and therefore
 --  locked to the camera center.

@@ -1,0 +1,224 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["bsdf_samples"] = 3,
+    ["max_depth"] = 2,
+    ["image_width"] = 250,
+    ["image_height"] = 250,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 40) * rotate(-10, 1, 0, 0),
+    ["focal"] = 100,
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_in_camera"] = 1,
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 12,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 50,
+    ["height"] = 50,
+    ["visible_in_camera"] = 1,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+--------- MAPS -------------
+local bubbleNoiseMap = NoiseMap_v2("/Scene/geometry/bubbleNoiseMap") {
+    ["max_level"] = 5,
+    ["frequency_multiplier"] = 1.0,
+    ["space"] = 4,
+}
+
+local oilNoiseMap = NoiseMap_v2("/Scene/geometry/oilNoiseMap") {
+    ["max_level"] = 4,
+    ["frequency_multiplier"] = bind(bubbleNoiseMap), --1.0,
+    ["space"] = 4,
+}
+
+---------- GEOMETRY ----------
+local sphere1 = SphereGeometry("/Scene/geometry/sphere1") {
+    ["node_xform"] = translate(-3, 3, 0),
+}
+
+local sphere2 = SphereGeometry("/Scene/geometry/sphere2") {
+    ["node_xform"] = translate(0, 3, 0),
+}
+
+local sphere3 = SphereGeometry("/Scene/geometry/sphere3") {
+    ["node_xform"] = translate(3, 3, 0),
+    ["side_type"] = 0,
+}
+
+local sphere4 = SphereGeometry("/Scene/geometry/sphere4") {
+    ["node_xform"] = translate(-3, 0, 0),
+}
+
+local sphere5 = SphereGeometry("/Scene/geometry/sphere5") {
+    ["node_xform"] = translate(0, 0, 0),
+}
+
+local sphere6 = SphereGeometry("/Scene/geometry/sphere6") {
+    ["node_xform"] = translate(3, 0, 0),
+    ["side_type"] = 0,
+}
+
+local sphere7 = SphereGeometry("/Scene/geometry/sphere7") {
+    ["node_xform"] = translate(-3, -3, 0),
+}
+
+local sphere8 = SphereGeometry("/Scene/geometry/sphere8") {
+    ["node_xform"] = translate(0, -3, 0),
+}
+
+local sphere9 = SphereGeometry("/Scene/geometry/sphere9") {
+    ["node_xform"] = translate(3, -3, 0),
+    ["side_type"] = 0,
+}
+
+----------- MATERIALS ------------
+local primSecMtl = DwaBaseMaterial("/Scene/surfacing/primSecMtl") {
+    ["iridescence"] = 1,
+    ["iridescence_thickness"] = 5,
+    ["iridescence_primary_color"] = Rgb(0.0, 1.0, 0.0),
+    ["iridescence_secondary_color"] = Rgb(1.0, 0.0, 1.0),
+    ["iridescence_flip_hue_direction"] = false,
+    ["roughness"] = 0,
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+}
+
+local primSecFlipMtl = DwaBaseMaterial("/Scene/surfacing/primSecFlipMtl") {
+    ["iridescence"] = 1,
+    ["iridescence_thickness"] = 5,
+    ["iridescence_primary_color"] = Rgb(0.0, 1.0, 0.0),
+    ["iridescence_secondary_color"] = Rgb(1.0, 0.0, 1.0),
+    ["iridescence_flip_hue_direction"] = true,
+    ["roughness"] = 0,
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+}
+
+local secPrimMtl = DwaBaseMaterial("/Scene/surfacing/secPrimMtl") {
+    ["iridescence"] = 1,
+    ["iridescence_thickness"] = 5,
+    ["iridescence_primary_color"] = Rgb(1.0, 0.0, 1.0),
+    ["iridescence_secondary_color"] = Rgb(0.0, 1.0, 0.0),
+    ["iridescence_flip_hue_direction"] = false,
+    ["roughness"] = 0,
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+}
+
+local secPrimFlipMtl = DwaBaseMaterial("/Scene/surfacing/secPrimFlipMtl") {
+    ["iridescence"] = 1,
+    ["iridescence_thickness"] = 5,
+    ["iridescence_primary_color"] = Rgb(1.0, 0.0, 1.0),
+    ["iridescence_secondary_color"] = Rgb(0.0, 1.0, 0.0),
+    ["iridescence_flip_hue_direction"] = true,
+    ["roughness"] = 0,
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+}
+
+local defaultsMtl = DwaBaseMaterial("/Scene/surfacing/defaultsMtl") {
+    ["iridescence"] = 1,
+    ["roughness"] = 0.25,
+    ["specular_model"] = 0,
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+}
+
+local expMtl = DwaBaseMaterial("/Scene/surfacing/expMtl") {
+    ["iridescence"] = 1,
+    ["iridescence_thickness"] = 1,
+    ["iridescence_exponent"] = 4.0,
+    ["iridescence_primary_color"] = Rgb(1.0, 0.0, 1.0),
+    ["iridescence_secondary_color"] = Rgb(0.0, 1.0, 0.0),
+    ["roughness"] = 0.1,
+    ["specular_model"] = 0,
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+}
+
+local attMtl = DwaBaseMaterial("/Scene/surfacing/attMtl") {
+    ["iridescence"] = 1,
+    ["iridescence_primary_color"] = Rgb(1.0, 0.0, 1.0),
+    ["iridescence_secondary_color"] = Rgb(0.0, 1.0, 0.0),
+    ["iridescence_at_0_incidence"] = 0.5,
+    ["roughness"] = 0.1,
+    ["specular_model"] = 0,
+    ["show_diffuse"] = false,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+}
+
+local bubbleMtl = DwaBaseMaterial("/Scene/surfacing/bubbleMtl") {
+    ["iridescence"] = 1,
+    ["iridescence_thickness"] = bind(bubbleNoiseMap, 3),
+    ["iridescence_exponent"] = 1.0,
+    ["iridescence_at_0_incidence"] = 0.8,
+    ["show_diffuse"] = false,
+    ["roughness"] = 0.0,
+    ["casts_caustics"] = true,
+    ["show_transmission"] = true,
+    ["transmission"] = 1,
+}
+
+local oilMtl = DwaBaseMaterial("/Scene/surfacing/oilMtl") {
+    ["iridescence"] = 1,
+    ["iridescence_thickness"] = bind(oilNoiseMap, 5.0),
+    ["iridescence_exponent"] = 1,
+    ["iridescence_at_0_incidence"] = 0.8,
+    ["roughness"] = 0.05,
+    ["specular_model"] = 0,
+    ["show_diffuse"] = false,
+    ["metallic"] = 1,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+}
+
+-------------------------------------------------------
+GeometrySet("Scene/geometrySet") {
+    sphere1,
+    sphere2,
+    sphere3,
+    sphere4,
+    sphere5,
+    sphere6,
+    sphere7,
+    sphere8,
+    sphere9,
+}
+Layer("/Scene/layer") {
+    {sphere1, "", primSecMtl, lightSet},
+    {sphere2, "", primSecFlipMtl, lightSet},
+    {sphere4, "", secPrimMtl, lightSet},
+    {sphere5, "", secPrimFlipMtl, lightSet},
+    {sphere3, "", defaultsMtl, lightSet},
+    {sphere6, "", expMtl, lightSet},
+    {sphere9, "", attMtl, lightSet},
+    {sphere8, "", bubbleMtl, lightSet},
+    {sphere7, "", oilMtl, lightSet}
+}
+

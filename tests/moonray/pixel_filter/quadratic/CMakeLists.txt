@@ -5,7 +5,7 @@
 
 add_rats_test(moonray_pixel_filter_quadratic
     INPUTS ../common.rdla
-           pixel_filter_quadratic.rdla
+           scene.rdla
     CANONICALS scene.exr
 )
 

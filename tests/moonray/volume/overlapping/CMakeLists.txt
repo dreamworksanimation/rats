@@ -4,7 +4,7 @@
 # Tests overlapping volumes.
 
 add_rats_test(moonray_volume_overlapping
-    INPUTS overlapping.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

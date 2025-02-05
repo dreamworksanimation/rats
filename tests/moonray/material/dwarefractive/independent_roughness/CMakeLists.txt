@@ -4,7 +4,7 @@
 # This tests the independent transmission roughnesses on the refractive lobe.
 
 add_rats_test(moonray_material_dwarefractive_independent_roughness
-    INPUTS dwarefractive_independent_roughness.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

@@ -1,14 +1,16 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["image width"] = 600,
-    ["image height"] = 100,
+    ["image_width"] = 600,
+    ["image_height"] = 100,
 }
 
 Camera("camera") {
-    ["node xform"] = translate(7.0, 0.0, 66.0),
+    ["node_xform"] = translate(7.0, 0.0, 66.0),
 }
 
 key = RectLight("key") {
-    ["node xform"] = translate(0.0, 0.0, 100.0) *
+    ["node_xform"] = translate(0.0, 0.0, 100.0) *
                      rotate(-40, 1, 0, 0) *
                      rotate(-60, 0, 1, 0),
     ["intensity"] = 20.0,
@@ -17,13 +19,13 @@ key = RectLight("key") {
 }
 
 sphereLight1 = SphereLight("sphereLight1") {
-    ["node xform"] = translate(22.0, 0.0, 0.0),
+    ["node_xform"] = translate(22.0, 0.0, 0.0),
     ["intensity"] = 1.5,
     ["normalized"] = false,
 }
 
 sphereLight2 = SphereLight("sphereLight2") {
-    ["node xform"] = translate(29.0, 0.0, 0.0),
+    ["node_xform"] = translate(29.0, 0.0, 0.0),
     ["intensity"] = 1.0,
     ["normalized"] = false,
 }
@@ -35,87 +37,87 @@ lightSet = LightSet("lightSet") {
 }
 
 tri1 = RdlMeshGeometry("tri1") {
-    ["node xform"] = scale(0.5, 0.5, 0.5) *
+    ["node_xform"] = scale(0.5, 0.5, 0.5) *
                      translate(-17.5, -2.5, 0.0),
-    ["vertex list"] = { Vec3( 0.0,  0.0,  0.0),
+    ["vertex_list"] = { Vec3( 0.0,  0.0,  0.0),
                         Vec3( 0.0, 10.0,  0.0),
                         Vec3(10.0, 10.0,  0.0),
                         Vec3(10.0,  0.0,  0.0), },
-    ["vertices by index"] = { 0, 1, 2, 2, 3, 0 },
-    ["face vertex count"] = { 3, 3 },
-    ["uv list"] = { Vec2(0.0, 0.0),
+    ["vertices_by_index"] = { 0, 1, 2, 2, 3, 0 },
+    ["face_vertex_count"] = { 3, 3 },
+    ["uv_list"] = { Vec2(0.0, 0.0),
                     Vec2(0.0, 1.0),
                     Vec2(1.0, 1.0),
                     Vec2(1.0, 1.0),
                     Vec2(1.0, 0.0),
                     Vec2(0.0, 0.0), },
-    ["side type"] = "force single-sided",
-    ["reverse normals"] = true,
+    ["side_type"] = "force single-sided",
+    ["reverse_normals"] = true,
     ["smooth_normal"] = false,
-    ["is subd"] = false,
+    ["is_subd"] = false,
 }
 
 tri2 = RdlMeshGeometry("tri2") {
-    ["node xform"] = scale(0.5, 0.5, 0.5) *
+    ["node_xform"] = scale(0.5, 0.5, 0.5) *
                      translate(-10, -2.5, 0.0),
-    ["vertex list"] = { Vec3( 0.0,  0.0,  0.0),
+    ["vertex_list"] = { Vec3( 0.0,  0.0,  0.0),
                         Vec3( 0.0, 10.0,  0.0),
                         Vec3(10.0, 10.0,  0.0),
                         Vec3(10.0,  0.0,  0.0), },
-    ["vertices by index"] = { 0, 1, 2, 2, 3, 0 },
-    ["face vertex count"] = { 3, 3 },
-    ["uv list"] = { Vec2(0.0, 0.0),
+    ["vertices_by_index"] = { 0, 1, 2, 2, 3, 0 },
+    ["face_vertex_count"] = { 3, 3 },
+    ["uv_list"] = { Vec2(0.0, 0.0),
                     Vec2(0.0, 1.0),
                     Vec2(1.0, 1.0),
                     Vec2(1.0, 1.0),
                     Vec2(1.0, 0.0),
                     Vec2(0.0, 0.0), },
-    ["side type"] = "force single-sided",
-    ["reverse normals"] = true,
-    ["is subd"] = true,
-	["subd resolution"] = 8,
+    ["side_type"] = "force single-sided",
+    ["reverse_normals"] = true,
+    ["is_subd"] = true,
+	["subd_resolution"] = 8,
 }
 
 pentagon = RdlMeshGeometry("pentagon") {
-    ["node xform"] = scale(0.4, 0.4, 0.4) *
+    ["node_xform"] = scale(0.4, 0.4, 0.4) *
                      translate(-2.0, -2.5, 0.0),
-    ["vertex list"] = { Vec3( 0.0,   0.0,  0.0),
+    ["vertex_list"] = { Vec3( 0.0,   0.0,  0.0),
                         Vec3( 0.0,  10.0,  0.0),
                         Vec3( 5.0,  15.0,  0.0),
                         Vec3(10.0,  10.0,  0.0),
                         Vec3(10.0,   0.0,  0.0), },
-    ["vertices by index"] = { 0, 1, 2, 3, 4 },
-    ["face vertex count"] = { 5 },
-    ["uv list"] = { Vec2(0.0, 0.0), 
+    ["vertices_by_index"] = { 0, 1, 2, 3, 4 },
+    ["face_vertex_count"] = { 5 },
+    ["uv_list"] = { Vec2(0.0, 0.0), 
                     Vec2(0.0, 0.66),
                     Vec2(0.5, 1.0),
                     Vec2(1.0, 0.66),
                     Vec2(1.0, 0.0), },
-    ["normal list"] = { Vec3(0.0, 0.0, -1.0),
+    ["normal_list"] = { Vec3(0.0, 0.0, -1.0),
                         Vec3(0.0, 0.0, -1.0),
                         Vec3(0.0, 0.0, -1.0),
                         Vec3(0.0, 0.0, -1.0),
                         Vec3(0.0, 0.0, -1.0) },
-    ["side type"] = "force single-sided",
-    ["reverse normals"] = true,
-    ["is subd"] = false,
+    ["side_type"] = "force single-sided",
+    ["reverse_normals"] = true,
+    ["is_subd"] = false,
 }
 
 quad1 = RdlMeshGeometry("quad1") {
-    ["node xform"] = scale(0.25, 0.25, 0.25) *
+    ["node_xform"] = scale(0.25, 0.25, 0.25) *
                      rotate(90.0, 0, 0, 1) *
                      rotate(20.0, 1, 0, 0) *
                      rotate(200.0, 0, 1, 0) *
                      translate(5.0, 1.0, 0.0),
-    ["vertex list"] = { Vec3(-10.0, 20.0, -2.0),
+    ["vertex_list"] = { Vec3(-10.0, 20.0, -2.0),
                         Vec3(-10.0,  0.0, -2.0),
                         Vec3(-10.0,  0.0, 20.0),
                         Vec3( 10.0,  0.0, 20.0),
                         Vec3( 10.0,  0.0, -2.0),
                         Vec3( 10.0, 20.0, -2.0), },
-    ["vertices by index"] = {0, 1, 4, 5, 1, 2, 3, 4},
-    ["face vertex count"] = {4, 4},
-    ["uv list"] = { Vec2(0.0, 1.0),
+    ["vertices_by_index"] = {0, 1, 4, 5, 1, 2, 3, 4},
+    ["face_vertex_count"] = {4, 4},
+    ["uv_list"] = { Vec2(0.0, 1.0),
                     Vec2(0.0, 0.0),
                     Vec2(1.0, 0.0),
                     Vec2(1.0, 1.0),
@@ -123,51 +125,51 @@ quad1 = RdlMeshGeometry("quad1") {
                     Vec2(0.0, 1.0),
                     Vec2(1.0, 1.0),
                     Vec2(1.0, 0.0), },
-    ["side type"] = "force single-sided",
-    ["reverse normals"] = true,
-    ["is subd"] = true,
-	["subd resolution"] = 8,
+    ["side_type"] = "force single-sided",
+    ["reverse_normals"] = true,
+    ["is_subd"] = true,
+	["subd_resolution"] = 8,
 }
 
 quad2 = RdlMeshGeometry("quad2") {
-    ["node xform"] = scale(0.25, 0.25, 0.25) *
+    ["node_xform"] = scale(0.25, 0.25, 0.25) *
                      rotate(90.0, 0, 0, 1) *
                      rotate(200.0, 0, 1, 0) *
                      translate(13.0, 0.0, 0.0),
-    ["vertex list"] = { Vec3(-10.0, 20.0, -2.0),
+    ["vertex_list"] = { Vec3(-10.0, 20.0, -2.0),
                         Vec3(-10.0,  0.0, -2.0),
                         Vec3(-10.0,  0.0, 20.0),
                         Vec3( 10.0,  0.0, 20.0),
                         Vec3( 10.0,  0.0, -2.0),
                         Vec3( 10.0, 20.0, -2.0), },
-    ["vertices by index"] = {0, 1, 4, 5, 1, 2, 3, 4},
-    ["face vertex count"] = {4, 4},
-    ["side type"] = "force single-sided",
-    ["reverse normals"] = true,
-    ["is subd"] = false,
+    ["vertices_by_index"] = {0, 1, 4, 5, 1, 2, 3, 4},
+    ["face_vertex_count"] = {4, 4},
+    ["side_type"] = "force single-sided",
+    ["reverse_normals"] = true,
+    ["is_subd"] = false,
     ["smooth_normal"] = false,
 }
 
 box = BoxGeometry("box") {
-    ["node xform"] = rotate(100.0, 0, 1, 0) *
+    ["node_xform"] = rotate(100.0, 0, 1, 0) *
                      rotate(20.0, 0, 0, 1) *
                      translate(22.0, 0.0, 0.0),
     ["size"] = Vec3(4.0, 4.0, 4.0),
-    ["side type"] = "force single-sided",
-    ["reverse normals"] = true;
+    ["side_type"] = "force single-sided",
+    ["reverse_normals"] = true;
 }
 
 sphere = SphereGeometry("sphere") {
-    ["node xform"] = rotate(60.0, 0, 1, 0) *
+    ["node_xform"] = rotate(60.0, 0, 1, 0) *
                      rotate(170.0, 1, 0, 0) *
                      rotate(20.0, 0, 0, 1) *
                      translate(29.0, 0.0, 0.0),
     ["radius"] = 3.0,
     ["zmin"] = -1.0,
     ["zmax"] = 2.8,
-    ["phi max"] = 250.0,
-    ["side type"] = "force single-sided",
-    ["reverse normals"] = true
+    ["phi_max"] = 250.0,
+    ["side_type"] = "force single-sided",
+    ["reverse_normals"] = true
 }
 
 GeometrySet("geometryset") {
@@ -181,7 +183,7 @@ GeometrySet("geometryset") {
 }
 
 attrMap = AttributeMap("attrMap") {
-    ["map type"] = "texture st",
+    ["map_type"] = "texture st",
 }
 
 mtl = DwaSolidDielectricMaterial("mtl") {

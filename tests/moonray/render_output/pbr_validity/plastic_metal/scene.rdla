@@ -1,0 +1,135 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 3,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["russian_roulette_threshold"] = 0,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 3.1, 14) * rotate(-10, 1, 0, 0),
+}
+
+--------------------------------------------------------
+
+envlight = EnvLight("/env") { 
+    ["node_xform"] = rotate(10, 0, 1, 0),
+    ["intensity"] = 3,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr"
+}
+
+local lightSet = LightSet("/lightset") { envlight }
+
+--------------------------------------------------------
+
+local geom = UsdGeometry("/Scene/geometry/geom/widget_DWA") {
+    ["node_xform"] = translate(0,-0.28,0) * rotate(-35, 0, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+local tx1 = ImageMap("/Scene/surfacing/map/tx1") {
+    ["texture"] = rats_assets_dir .. "/textures/splat.tx",
+    ["scale"] = Vec2(3, 3),
+    ["gamma"] = 0,
+}
+
+local remap = RemapMap("/Scene/surfacing/map/remap1") {
+    ["input"] = bind(tx1),
+    ["input_min"] = 1,  -- Float
+    ["input_max"] = 0,  -- Float
+    ["output_min"] = 0.15,  -- Float
+    ["output_max"] = 0.45,  -- Float
+    ["midpoint_bias"] = 0.5,  -- Float
+    ["clamp"] = true,  -- Bool
+    ["clamp_min"] = 0,  -- Float
+    ["clamp_max"] = 1,  -- Float
+}
+
+local mtl1 = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/mymtl1") {
+    ["albedo"] = Rgb(0.7, 0.04, 0.3),
+    ["roughness"] = bind(remap, 1.0),
+    ["specular_model"] = 0,
+    ["scattering_radius"] = 0.45,
+    ["scattering_color"] = Rgb(1.0, 0.3, 0.1),
+    ["refractive_index"] = 1.5
+}
+
+local mtl2 = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/mymtl2") {
+    ["albedo"] = Rgb(0.95, 0.5, 0.05),
+    ["roughness"] = bind(remap, 1.0),
+    ["specular_model"] = 0,
+    ["scattering_radius"] = 0.45,
+    ["scattering_color"] = Rgb(1.0, 0.3, 0.1),
+    ["refractive_index"] = 1.70
+}
+
+local mtl3 = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/mymtl3") {
+    ["albedo"] = Rgb(0.002, 0.002, 0.002),
+    ["roughness"] = bind(remap, 1.0),
+    ["specular_model"] = 0,
+    ["scattering_radius"] = 0.0, -- SSS does not work with CC in vectorized!!! FIX this!!
+    ["scattering_color"] = Rgb(1.0, 0.3, 0.1),
+    ["refractive_index"] = 1.2,
+    ["show_clearcoat"] = true,
+    ["clearcoat_refractive_index"] = 1.45,
+    ["clearcoat_model"] = 0,
+}
+
+local metalMtl1 = DwaMetalMaterial("/Scene/surfacing/mtl/inside1") {
+    ["metallic_color"] = Rgb(0.55, 0.32, 0.30),
+    ["metallic_edge_color"] = Rgb(0.65, 0.42, 0.40),
+    ["show_clearcoat"] = true,
+    ["clearcoat_refractive_index"] = 1.31,
+    ["clearcoat_roughness"] = 0.2,
+    ["specular_model"] = 0,
+    ["clearcoat_model"] = 0,
+}
+
+local metalMtl2 = DwaMetalMaterial("/Scene/surfacing/mtl/inside2") {
+    ["metallic_color"] = Rgb(0.55, 0.32, 0.30),
+    ["metallic_edge_color"] = Rgb(0.65, 0.42, 0.40),
+    ["show_clearcoat"] = true,
+    ["clearcoat_refractive_index"] = 1.8,
+    ["clearcoat_roughness"] = 0.2,
+    ["specular_model"] = 0,
+    ["clearcoat_model"] = 0,
+}
+
+-----------------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    geom
+}
+
+Layer("/Scene/layer") {
+    {geom, "shell_front", mtl1, lightSet},
+    {geom, "shell_back", mtl2, lightSet},
+    {geom, "collar", mtl3, lightSet},
+    {geom, "stand", metalMtl1, lightSet},
+    {geom, "core", metalMtl2, lightSet},
+}
+
+------------------------------------------------------------------
+
+local pbrValidityAov = RenderOutput("/Scene/lighting/pbr_validity_aov_albedo") {
+    ["result"] = 7,
+    ["material_aov"] = "'diffuse'.DSS.pbr_validity",
+    ["file_name"] = "result0.exr",
+    ["channel_name"] = "albedo validity"
+}
+
+local pbrValidityAovSpec = RenderOutput("/Scene/lighting/pbr_validity_aov_spec") {
+    ["result"] = 7,
+    ["material_aov"] = "'specular'.pbr_validity",
+    ["file_name"] = "result0.exr",
+    ["channel_name"] = "specular validity"
+}
+
+local pbrValidityAovCc = RenderOutput("/Scene/lighting/pbr_validity_aov_cc") {
+    ["result"] = 7,
+    ["material_aov"] = "'outer specular'.pbr_validity",
+    ["file_name"] = "result0.exr",
+    ["channel_name"] = "outer specular validity"
+}

@@ -4,7 +4,7 @@
 # This tests DwaLayer with respect to energy conservation
 
 add_rats_test(moonray_material_dwalayer_furnace
-    INPUTS dwalayer_furnace.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

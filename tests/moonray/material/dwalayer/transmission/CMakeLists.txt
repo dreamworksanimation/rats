@@ -4,7 +4,7 @@
 # This tests DwaLayer with respect to layering transmission
 
 add_rats_test(moonray_material_dwalayer_transmission
-    INPUTS dwalayer_transmission.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

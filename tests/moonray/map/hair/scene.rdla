@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 370,
     ["image_height"] = 250,
@@ -64,7 +66,7 @@ hairColumnMap = HairColumnMap("hairColumnMap") { }
 imgMap = ImageMap("imgMap") {
     ["texture"] = rats_assets_dir .. "/textures/dif_hair_column.tx",
     ["texture_coordinates"] = "input texture coordinates",
-    ["input_texture coordinates"] = bind(hairColumnMap),
+    ["input_texture_coordinates"] = bind(hairColumnMap),
     ["wrap_around"] = false,
 }
 

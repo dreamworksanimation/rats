@@ -4,7 +4,7 @@
 # This tests the UsePrimvarReader_float2 map
 
 add_rats_test(moonray_map_usd_primvarreader_float2
-    INPUTS usd_primvarreader_float2.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

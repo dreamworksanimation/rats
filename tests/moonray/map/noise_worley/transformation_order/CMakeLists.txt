@@ -4,8 +4,8 @@
 # This tests the transforms and their order
 
 add_rats_test(moonray_map_noise_worley_transformation_order
-    INPUTS transformation_order.rdla
-           ../noise_worley_common.rdla
+    INPUTS scene.rdla
+           ../common.rdla
     CANONICALS scene.exr
 )
 

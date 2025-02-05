@@ -1,11 +1,13 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["image width"] = 250,
-    ["image height"] = 550,
-    ["pixel samples"] = 2,
+    ["image_width"] = 250,
+    ["image_height"] = 550,
+    ["pixel_samples"] = 2,
 }
 
 shotCam = Camera("camera") {
-    ["node xform"] = translate(0, 0, 60),
+    ["node_xform"] = translate(0, 0, 60),
     ["focal"] = 100,
 }
 
@@ -49,7 +51,7 @@ for row = 1, numRow do
         end
 
         geom = UsdGeometry("geom" .. row .. "-" .. col) {
-            ["node xform"] = nodeXform,
+            ["node_xform"] = nodeXform,
             ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
             ["prim_path"] = "/sphere",
         }
@@ -57,14 +59,14 @@ for row = 1, numRow do
 
         projTriMap = ProjectTriplanarMap("projTriMap-" .. row .. "-" .. col) {
            ["projector"] = projGeom1,
-           ["use reference space"] = true,
-           ["number of textures"] = "six",
-           ["positive x texture"] = tx_px,
-           ["positive y texture"] = tx_py,
-           ["positive z texture"] = tx_pz,
-           ["negative x texture"] = tx_nx,
-           ["negative y texture"] = tx_ny,
-           ["negative z texture"] = tx_nz,
+           ["use_reference_space"] = true,
+           ["number_of_textures"] = "six",
+           ["positive_x_texture"] = tx_px,
+           ["positive_y_texture"] = tx_py,
+           ["positive_z_texture"] = tx_pz,
+           ["negative_x_texture"] = tx_nx,
+           ["negative_y_texture"] = tx_ny,
+           ["negative_z_texture"] = tx_nz,
         }
 
         mtl = DwaEmissiveMaterial("mtl-" .. row .. "-" .. col) {

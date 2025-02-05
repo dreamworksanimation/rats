@@ -4,6 +4,6 @@
 # This tests the texture filter scale with a text texture
 
 add_rats_test(moonray_texturing_text
-    INPUTS texturing_text.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )

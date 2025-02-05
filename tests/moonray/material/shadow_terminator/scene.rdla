@@ -1,0 +1,53 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+-- Scene: 
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["shadow_terminator_fix"] = 1, --  <-- testing
+    ["image_width"] = 680,
+    ["image_height"] = 500,
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = translate(0,1,8.5),
+}
+
+---------------------------------------------------------
+
+key = DistantLight("/obj/shdw_term_key") {
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0, 10, 0), 
+    ["exposure"] = 1,
+}
+
+lightset = LightSet("/Scene/lightset/1") {
+    key,
+}
+---------------------------------------------------------
+
+sphere = SphereGeometry("/obj/shdw_term_abc") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(3, 3, 3),
+}
+
+GeometrySet("/Scene/geoset") {
+    sphere,
+}
+
+---------------------------------------------------------
+
+nmlMap = ImageNormalMap("/mat/ImageNormalMap1") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/snow1_nml.tx",
+    ["rotation_angle"] = 270.0,
+    ["scale"] = Vec2(3, 3),
+}
+
+mtl = DwaBaseMaterial("/mat/DwaBaseMaterial1") {
+    ["albedo"] = Rgb(0.75, 0.75, 0.75),
+    ["input_normal"] = nmlMap,
+    ["specular_model"] = 0,
+}
+
+---------------------------------------------------------
+
+Layer("/Scene/layer") {
+    {sphere, "", mtl, lightset},
+}

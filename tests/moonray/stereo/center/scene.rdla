@@ -1,0 +1,80 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 4,
+    ["image_width"] = 512,
+    ["image_height"] = 256,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0.0, 50)
+                   * rotate(-10, 1, 0, 0)
+                   * rotate(90, 0, 1, 0),
+    ["focal"] = 50,
+    ["stereo_view"] = 0, -- center
+    ["stereo_interocular_distance"] = 6.3,
+    ["stereo_convergence_distance"] = 50,
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 20,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+mtl = DwaSolidDielectricMaterial("/Scene/surfacing/mtl") {
+}
+
+geoms = {}
+assignments = {}
+
+local posMin = -20
+local posMax = 20
+
+local posZMin = 10
+local posZMax = -10
+
+local numCol = 11
+for col = 1, numCol do
+    local ratio = (col - 1) / (numCol - 1)
+
+    local posX = posMin + (posMax - posMin) * ratio
+    local posZ = posZMin + (posZMax - posZMin) * ratio
+
+    local geom = UsdGeometry("/Scene/geometry/geom" .. col) {
+        ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+	["prim_path"] = "/sphere",
+        ["node_xform"] = translate(posX, 1, posZ),
+    }
+    table.insert(geoms, geom)
+
+    table.insert(assignments, {geom, "", mtl, lightSet})
+end
+
+planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(50, 1, 25),
+}
+table.insert(geoms, planeGeom)
+
+planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap),
+}
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)
+

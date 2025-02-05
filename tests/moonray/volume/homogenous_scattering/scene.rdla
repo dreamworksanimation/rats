@@ -1,0 +1,84 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 512,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 1,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = Mat4(0.870462, 0.126832, 0.475615, 0,
+                          0.306214, 0.616983, -0.724958, 0,
+                          -0.385393, 0.776685, 0.49822, 0,
+                          -6.12066, 10.5025, 5.90881, 1),
+}
+
+plane = UsdGeometry("/Scene/geometry/plane") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(40, 40, 40),
+}
+
+sphere1 = UsdGeometry("/Scene/geometry/sphere1") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = translate(-3, 1, 0),
+}
+
+sphere2 = UsdGeometry("/Scene/geometry/sphere2") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = translate(0, 1, 0),
+}
+
+sphere3 = UsdGeometry("/Scene/geometry/sphere3") {
+    ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+    ["node_xform"] = translate(3, 1, 0),
+}
+
+GeometrySet("geometryset") {
+    plane,
+    sphere1,
+    sphere2,
+    sphere3,
+}
+
+planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = Rgb(0.5, 0.5, 0.5),
+}
+
+baseVol1 = BaseVolume("/Scene/surfacing/baseVol1") {
+    ["attenuation_color"] = Rgb(1, 1, 1),
+    ["diffuse_color"] = Rgb(1, 0, 0),
+}
+
+baseVol2 = BaseVolume("/Scene/surfacing/baseVol2") {
+    ["attenuation_color"] = Rgb(1, 1, 1),
+    ["diffuse_color"] = Rgb(0, 1, 0),
+}
+
+baseVol3 = BaseVolume("/Scene/surfacing/baseVol3") {
+    ["attenuation_color"] = Rgb(1, 1, 1),
+    ["diffuse_color"] = Rgb(0, 0, 1),
+}
+
+key = SphereLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(100, 100, 100),
+    ["radius"] = 10,
+    ["intensity"] = 500,
+    ["color"] = Rgb(1.0, 1.0, 1.0),
+    ["normalized"] = false,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {plane, "", planeMtl, lightSet},
+    {sphere1, "", lightSet, baseVol1},
+    {sphere2, "", lightSet, baseVol2},
+    {sphere3, "", lightSet, baseVol3},
+}
+

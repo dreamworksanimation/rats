@@ -4,8 +4,8 @@
 # This tests the noise map features
 
 add_rats_test(moonray_map_noise_features
-    INPUTS features.rdla
-           ../noise_common.rdla
+    INPUTS scene.rdla
+           ../common.rdla
     CANONICALS scene.exr
 )
 

@@ -1,8 +1,10 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["image width"] = 300,
-    ["image height"] = 200,
-    ["pixel samples"] = 4,
-    ["lights visible in camera"] = true,
+    ["image_width"] = 300,
+    ["image_height"] = 200,
+    ["pixel_samples"] = 4,
+    ["lights_visible_in_camera"] = true,
 }
 
 Camera("camera") {
@@ -10,7 +12,7 @@ Camera("camera") {
 }
 
 key1 = RectLight("key1") {
-    ["node xform"] = rotate(90, 0, 1, 0) * translate(100, 0, 0),
+    ["node_xform"] = rotate(90, 0, 1, 0) * translate(100, 0, 0),
     ["intensity"] = 2,
     ["normalized"] = false,
     ["color"] = Rgb(0.1, 0, 0),
@@ -19,7 +21,7 @@ key1 = RectLight("key1") {
 }
 
 key2 = RectLight("key2") {
-    ["node xform"] = rotate(90, 0, 1, 0) * translate(99.99, 0, 0),
+    ["node_xform"] = rotate(90, 0, 1, 0) * translate(99.99, 0, 0),
     ["intensity"] = 2,
     ["normalized"] = false,
     ["color"] = Rgb(0, 0, 0.2),
@@ -28,7 +30,7 @@ key2 = RectLight("key2") {
 }
 
 key3 = RectLight("key3") {
-    ["node xform"] = rotate(-90, 0, 1, 0) * translate(-100, 0, 0),
+    ["node_xform"] = rotate(-90, 0, 1, 0) * translate(-100, 0, 0),
     ["intensity"] = 2,
     ["normalized"] = false,
     ["color"] = Rgb(0, 1, 0),
@@ -37,7 +39,7 @@ key3 = RectLight("key3") {
 }
 
 key4 = RectLight("key4") {
-    ["node xform"] = rotate(-90, 0, 1, 0) * translate(-99.9, 0, 0),
+    ["node_xform"] = rotate(-90, 0, 1, 0) * translate(-99.9, 0, 0),
     ["intensity"] = 2,
     ["normalized"] = false,
     ["color"] = Rgb(10, 5, 0),
@@ -46,7 +48,7 @@ key4 = RectLight("key4") {
 }
 
 key5 = RectLight("key5") {
-    ["node xform"] = rotate(-90, 1, 0, 0) * translate(0, 200, 0),
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0, 200, 0),
     ["normalized"] = false,
     ["color"] = Rgb(1, 0.5, 0),
     ["width"] = 100,
@@ -54,7 +56,7 @@ key5 = RectLight("key5") {
 }
 
 key6 = RectLight("key6") {
-    ["node xform"] = rotate(-90, 1, 0, 0) * translate(0, 199.99, 0),
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(0, 199.99, 0),
     ["normalized"] = false,
     ["color"] = Rgb(0, 5, 10),
     ["width"] = 50,
@@ -66,7 +68,7 @@ lightSet = LightSet("lightSet") {
 }
 
 sphere1 = SphereGeometry("sphere1") {
-    ["node xform"] = rotate(120, 1, 0, 0) * rotate(10, 0, 0, 1) *
+    ["node_xform"] = rotate(120, 1, 0, 0) * rotate(10, 0, 0, 1) *
                      translate(-6, 4, 6),
     ["radius"] = 4,
     ["zmin"] = -4,
@@ -74,25 +76,25 @@ sphere1 = SphereGeometry("sphere1") {
 }
 
 sphere2 = SphereGeometry("sphere2") {
-    ["node xform"] = rotate(70, 0, 1, 0) * rotate(170, 1, 0, 0) *
+    ["node_xform"] = rotate(70, 0, 1, 0) * rotate(170, 1, 0, 0) *
                      rotate(20, 0, 0, 1) * translate(6, 4, 6),
     ["radius"] = 4,
     ["zmin"] = -2,
     ["zmax"] = 3.8,
-    ["phi max"] = 180,
+    ["phi_max"] = 180,
 }
 
 wall = RdlMeshGeometry("wall") {
-    ["vertex list"] = { Vec3(-20, 20, -2),
+    ["vertex_list"] = { Vec3(-20, 20, -2),
                         Vec3(-20,  0, -2),
                         Vec3(-20,  0,  20),
                         Vec3( 20,  0,  20),
                         Vec3( 20,  0, -2),
                         Vec3( 20, 20, -2)
                     },
-    ["vertices by index"] = {0, 1, 4, 5, 1, 2, 3, 4},
-    ["face vertex count"] = {4, 4},
-    ["is subd"] = false,
+    ["vertices_by_index"] = {0, 1, 4, 5, 1, 2, 3, 4},
+    ["face_vertex_count"] = {4, 4},
+    ["is_subd"] = false,
     ["smooth_normal"] = false,
 }
 

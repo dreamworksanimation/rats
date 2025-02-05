@@ -1,15 +1,17 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 -- Tests the 'cookie' light filter.
 
 SceneVariables {
-    ["lights visible in camera"] = true,
-    ["pixel samples"] = 2,
-    ["max depth"] = 0,
-    ["image width"] = 480,
-    ["image height"] = 270,
+    ["lights_visible_in_camera"] = true,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 0,
+    ["image_width"] = 480,
+    ["image_height"] = 270,
 }
 
 Camera("/Scene/rendering/camera") {
-    ["node xform"] = Mat4(1, 0, 0, 0,
+    ["node_xform"] = Mat4(1, 0, 0, 0,
                           0, 1, 0, 0,
                           0, 0, 1, 0,
                           0, 2, 5, 1),
@@ -76,17 +78,17 @@ CookieLightFilter("/Scene/lighting/cookie") {
 }
 
 SpotLight("/Scene/lighting/spot") {
-    ["node xform"] = Mat4(-0.0291956, 0, 0.999573, 0,
+    ["node_xform"] = Mat4(-0.0291956, 0, 0.999573, 0,
                            0.999573, 0, 0.0291956, 0,
                            0, 1, 0, 0,
                            0, 9, -8, 1),
     ["color"] = Rgb(1, 1, 1),
     ["intensity"] = 0.1,
-    ["lens radius"] = 1.4,
-    ["inner cone angle"] = 0,
-    ["outer cone angle"] = 60,
-    ["angle falloff type"] = "linear",
-    ["light filters"] = {CookieLightFilter("/Scene/lighting/cookie")},
+    ["lens_radius"] = 1.4,
+    ["inner_cone_angle"] = 0,
+    ["outer_cone_angle"] = 60,
+    ["angle_falloff_type"] = "linear",
+    ["light_filters"] = {CookieLightFilter("/Scene/lighting/cookie")},
 }
 
 LightSet("LightSetA") {

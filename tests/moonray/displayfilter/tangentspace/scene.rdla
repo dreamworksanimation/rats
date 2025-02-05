@@ -1,0 +1,85 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 400,
+}
+
+key = EnvLight("/Scene/lighting/key") {
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
+    ["visible_in_camera"] = 1
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+sphereGeom = UsdGeometry("/Scene/geometry/sphere") {
+   ["node_xform"] = translate(0, .75, 0),
+   ["stage"] = rats_assets_dir.."/models/sphere.usdc",
+   ["prim_path"] = "/sphere",
+}
+
+GeometrySet("geometrySet") {
+    sphereGeom,
+}
+
+BakeCamera("/Scene/rendering/camera") {
+   ["node_xform"] = translate(0, .75, 3),
+   ["geometry"] = sphereGeom,
+   ["mode"] = 3, -- -N
+   ["bias"] = .001,
+   ["near"] = .0001,
+   ["far"] = 1,
+}
+
+normalMap = ImageNormalMap("/normalMap") {
+   ["tangent_space_normal_texture"] = rats_assets_dir.."/textures/metal_anti_slip.tx",
+}
+
+sphereMtl = DwaSolidDielectricMaterial("/Scene/surfacing/sphereMtl") {
+   ["roughness"] = 0,
+   ["show_diffuse"] = false,
+   ["input_normal"] = normalMap,
+   ["input_normal_dial"] = 1.0
+}
+
+Layer("layer") {
+    { sphereGeom, "", sphereMtl, lightSet },
+}
+
+--------------------------------------
+-- Tangent Space Display Filter
+--------------------------------------
+
+NMapBuf = RenderOutput("/NormalMapped") {
+    ["file_name"] = "render_tmp.exr",
+    ["result"] = 7, -- material aov
+    ["material_aov"] = "normal"
+}
+
+NBuf = RenderOutput("/NormalsBase") {
+    ["file_name"] = "render_tmp.exr",
+    ["result"] = 7, -- material aov
+    ["material_aov"] = "N"
+}
+
+dPdsBuf = RenderOutput("/dPds") {
+    ["file_name"] = "render_tmp.exr",
+    ["result"] = 7, -- material aov
+    ["material_aov"] = "dPds"
+}
+
+tangents = TangentSpaceDisplayFilter("/display/tangents") {
+    ["normal_map_output"] = true, -- want a [0,1] encoding (default true)    
+    ["input"] = NMapBuf,          -- transforming this 
+    ["N"] = NBuf,                 -- using a basis constructed from this
+    ["dPds"] = dPdsBuf,           -- and this 
+}
+
+RenderOutput("/output/tangents") {
+    ["file_name"] = "tangents.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = tangents,
+    ["channel_name"] = "Nt"
+}

@@ -5,7 +5,7 @@
 # (refractive index, thickness, attenuation color, normal)
 
 add_rats_test(moonray_material_dwabase_clearcoat_attribute_wedges
-    INPUTS dwabase_clearcoat_attribute_wedges.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

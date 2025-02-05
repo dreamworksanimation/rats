@@ -1,0 +1,86 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["image_width"] = 400,
+    ["image_height"] = 400,
+}
+
+Camera("cam") {
+    ["node_xform"] = translate(0, 1, 54),
+    ["focal"] = 50,
+}
+
+-------------------------------------------------------
+
+local geom0 = UsdGeometry("geom0") {
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node_xform"] = translate(-6, 0, 0) * rotate(30, 1, 0, 0),
+}
+local geom1 = UsdGeometry("geom1") {
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node_xform"] = translate(6, 0, 0) * rotate(30, 1, 0, 0),
+}
+
+GeometrySet("geometry") {
+    geom0,
+    geom1
+}
+
+-------------------------------------------------------
+
+local attrmap = AttributeMap("attrmap") {
+    ["map_type"] = 3,
+}
+
+local constant = ConstantColorMap("constant") {
+    ["color_value"] = Rgb(0, 1, 0),
+}
+
+-- rotate about world space
+-- shading normals should remain perpendicular to screen
+local axisanglemap0 = AxisAngleMap("axisanglemap0") {
+    ["input_vector"] = bind(attrmap),
+    ["input_space"] = 0,
+    ["rotation_axis"] = Vec3(0,1,0),
+    ["axis_space"] = 2,
+    ["angle"] = 50,
+    ["output_space"] = 0,
+}
+
+-- rotate about object space
+-- shading normals should be tilted relative to rotated object 
+local axisanglemap1 = AxisAngleMap("axisanglemap1") {
+    ["input_vector"] = bind(attrmap),
+    ["input_space"] = 0,
+    ["rotation_axis"] = Vec3(0,1,0),
+    ["axis_space"] = 4,
+    ["angle"] = 50,
+    ["output_space"] = 0,
+}
+
+local mtl0 = DwaSolidDielectricMaterial("mtl0") {
+    ["show_diffuse"] = false,
+    ["show_specular"] = false,
+    ["show_emission"] = true,
+    ["emission"] = bind(axisanglemap0, Rgb(1,1,1)),
+}
+
+local mtl1 = DwaSolidDielectricMaterial("mtl1") {
+    ["show_diffuse"] = false,
+    ["show_specular"] = false,
+    ["show_emission"] = true,
+    ["emission"] = bind(axisanglemap1, Rgb(1,1,1)),
+}
+
+-----------------------------------------------------------
+
+local ls = LightSet("light_set")
+
+Layer("layer") {
+    {geom0, "", mtl0, ls},
+    {geom1, "", mtl1, ls}
+}
+

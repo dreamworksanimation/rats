@@ -4,7 +4,7 @@
 # Tests the volume instancing functionality.
 
 add_rats_test(moonray_volume_instancing
-    INPUTS instancing.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

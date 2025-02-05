@@ -1,0 +1,85 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["lights_visible_in_camera"] = true,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 0,
+    ["russian_roulette_threshold"] = 0.0001,
+    ["image_width"] = 500,
+    ["image_height"] = 300,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = Mat4(0.804478, 0, 0.593982, 0, -0.0198247, 0.999443, 0.0268502, 0, -0.593652, -0.033376, 0.80403, 0, -8.92273, 1.60227, 2.70822, 1),
+    ["near"] = 0.01,
+}
+
+-- Geometry --
+
+UsdGeometry("/Scene/geometry/widget") {
+    ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(0, 0, -7),
+    ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = Mat4(20, 0, 0, 0, 0, 20, 0, 0, 0, 0, 20, 0, 0, 0, 0, 1),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/wall") {
+    ["node_xform"] = Mat4(20, 0, 0, 0, 0, 0, 1, 0, 0, -10, 0, 0, 0, 5, -10, 1),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometryset") {
+    UsdGeometry("/Scene/geometry/widget"),
+    UsdGeometry("/Scene/geometry/floor"),
+    UsdGeometry("/Scene/geometry/wall"),
+}
+
+-- Materials --
+
+DwaBaseMaterial("/Scene/surfacing/floor") {
+    ["albedo"] = Rgb(0.6, 0.55, 0.4),
+    ["roughness"] = 1,
+    ["specular_model"] = 0,
+}
+
+DwaBaseMaterial("/Scene/surfacing/object_widget") {
+    ["albedo"] = Rgb(0.2, 0.2, 0.2),
+    ["specular_model"] = 0,
+    ["roughness"] = 0.14,
+}
+
+-- Lights --
+
+RectLight("/Scene/lighting/rect") {
+	["node_xform"] = rotate(90, 0, 1, 0) * rotate(90, 0, 0, 1) * translate(-1, 4, -8),
+    ["color"] = Rgb(0.8, 0.2, 0.2),
+    ["exposure"] = 3,
+    ["normalized"] = false,
+    ["height"] = 5,
+    ["spread"] = 0.4,
+}
+
+DiskLight("/Scene/lighting/disk") {
+    ["node_xform"] = rotate(90, 0, 1, 0) * rotate(90, 0, 0, 1) * translate(2, 4, -7.5),
+    ["color"] = Rgb(0.2, 0.2, 0.8),
+    ["exposure"] = 3,
+    ["normalized"] = false,
+    ["spread"] = 0.7,
+}
+
+LightSet("LightSetA") {
+    RectLight("/Scene/lighting/rect"),
+    DiskLight("/Scene/lighting/disk")
+}
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {UsdGeometry("/Scene/geometry/widget"), "", DwaBaseMaterial("/Scene/surfacing/object_widget"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/floor"), "", DwaBaseMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/wall"), "", DwaBaseMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+}

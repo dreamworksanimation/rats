@@ -5,7 +5,7 @@
 # with Beckmann distribution using negative values
 
 add_rats_test(moonray_material_dwabase_anisotropy_negative
-    INPUTS dwabase_anisotropy_negative.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

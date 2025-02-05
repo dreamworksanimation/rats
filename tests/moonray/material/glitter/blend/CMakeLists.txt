@@ -4,7 +4,7 @@
 # Test the blending algorithm of glitter material
 
 add_rats_test(moonray_material_glitter_blend
-    INPUTS glitter_blend.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

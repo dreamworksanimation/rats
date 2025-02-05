@@ -1,0 +1,56 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 0,
+    ["russian_roulette_threshold"] = 0.0,
+    ["image_width"] = 500,
+    ["image_height"] = 350,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, -0.04, 1.2),
+    ["near"] = 0.5,
+}
+
+------------------------------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 10) * rotate(-45, 1, 0, 0),
+    ["intensity"] = 250,
+    ["normalized"] = false,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+------------------------------------------------------------------------------
+
+local floorGeom = UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = scale(1, 1, 0.732579) * rotate(-130, 1, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+local floorMap = ImageMap("/Scene/surfacing/text") {
+    ["texture"] = rats_assets_dir .. "/textures/text-ure.tx",
+}
+
+local floorMtl = DwaBaseMaterial("/Scene/surfacing/floor") {
+    ["albedo"] = bind(floorMap, Rgb(1, 1, 1)),
+    ["specular"] = 0,
+}
+
+------------------------------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    floorGeom
+}
+
+Layer("/Scene/layer") {
+    {floorGeom, "", floorMtl, lightSet}
+}

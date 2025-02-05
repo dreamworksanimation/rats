@@ -4,7 +4,7 @@
 # This tests DwaLayer with respect to layering dielectric specular
 
 add_rats_test(moonray_material_dwalayer_dielectric_specular
-    INPUTS dwalayer_dielectric_specular.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

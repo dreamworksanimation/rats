@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["pixel_samples"] = 8,
     ["image_width"] = 256,
@@ -12,46 +14,40 @@ Camera("cam") {
 lightSet = LightSet("lights") {
 }
 
--------------------------------------------------------
-
-geoms = {}
-assignments = {}
-
-local geom0 = UsdGeometry("geom0") {
+geom0 = UsdGeometry("geom0") {
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
     ["node_xform"] = translate(-6, 4, 0) * rotate(20, 1, 0, 0),
 }
-local geom1 = UsdGeometry("geom1") {
+geom1 = UsdGeometry("geom1") {
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
     ["node_xform"] = translate(6, 4, 0) * rotate(20, 1, 0, 0),
 }
-local geom2 = UsdGeometry("geom2") {
+geom2 = UsdGeometry("geom2") {
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
     ["node_xform"] = translate(-6, -6, 3) * rotate(10, 1, 0, 0),
 }
-local geom3 = UsdGeometry("geom3") {
+geom3 = UsdGeometry("geom3") {
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget",
     ["node_xform"] = translate(6, -6, 3) * rotate(10, 1, 0, 0),
 }
-table.insert(geoms, geom0)
-table.insert(geoms, geom1)
-table.insert(geoms, geom2)
-table.insert(geoms, geom3)
 
-local ref = BoxGeometry("box") {
+ref = BoxGeometry("box") {
     ["node_xform"] = translate(2, 10, 9),
 }
-table.insert(geoms, ref)
 
+GeometrySet("geometry") {
+    geom0,
+    geom1,
+    geom2,
+    geom3,
+    ref,
+}
 
-
-
-
-local directional0 = DirectionalMap("directional0") {
+directional0 = DirectionalMap("directional0") {
     ["prime_direction"] = 2,    -- "axis of object"
     ["polarity"] = 1,
     ["color_a"] = Rgb(1,0,0),
@@ -60,7 +56,7 @@ local directional0 = DirectionalMap("directional0") {
     ["bias"] = 0.1,
 }
 
-local directional1 = DirectionalMap("directional1") {
+directional1 = DirectionalMap("directional1") {
     ["prime_direction"] = 3,    -- "look-at object"
     ["polarity"] = 1,
     ["color_a"] = Rgb(1,0,0),
@@ -69,7 +65,7 @@ local directional1 = DirectionalMap("directional1") {
     ["bias"] = 0.1,
 }
 
-local directional2 = DirectionalMap("directional2") {
+directional2 = DirectionalMap("directional2") {
     ["prime_direction"] = 0,    -- "observer direction"
     ["polarity"] = 1,
     ["color_a"] = Rgb(1,0,0),
@@ -77,7 +73,7 @@ local directional2 = DirectionalMap("directional2") {
     ["bias"] = 0.1,
 }
 
-local directional3 = DirectionalMap("directional3") {
+directional3 = DirectionalMap("directional3") {
     ["prime_direction"] = 1,    -- "custom direction"
     ["polarity"] = 1,
     ["color_a"] = Rgb(1,0,0),
@@ -86,57 +82,46 @@ local directional3 = DirectionalMap("directional3") {
     ["bias"] = 0.1,
 }
 
-
-
-
-local mtl0 = DwaSolidDielectricMaterial("mtl0") {
+mtl0 = DwaSolidDielectricMaterial("mtl0") {
     ["show_diffuse"] = false,
     ["show_specular"] = false,
     ["show_emission"] = true,
     ["emission"] = bind(directional0, Rgb(1,1,1)),
 }
 
-local mtl1 = DwaSolidDielectricMaterial("mtl1") {
+mtl1 = DwaSolidDielectricMaterial("mtl1") {
     ["show_diffuse"] = false,
     ["show_specular"] = false,
     ["show_emission"] = true,
     ["emission"] = bind(directional1, Rgb(1,1,1)),
 }
 
-local mtl2 = DwaSolidDielectricMaterial("mtl2") {
+mtl2 = DwaSolidDielectricMaterial("mtl2") {
     ["show_diffuse"] = false,
     ["show_specular"] = false,
     ["show_emission"] = true,
     ["emission"] = bind(directional2, Rgb(1,1,1)),
 }
 
-local mtl3 = DwaSolidDielectricMaterial("mtl3") {
+mtl3 = DwaSolidDielectricMaterial("mtl3") {
     ["show_diffuse"] = false,
     ["show_specular"] = false,
     ["show_emission"] = true,
     ["emission"] = bind(directional3, Rgb(1,1,1)),
 }
 
-
-
-
-
-local white = DwaSolidDielectricMaterial("white") {
+white = DwaSolidDielectricMaterial("white") {
     ["show_diffuse"] = false,
     ["show_specular"] = false,
     ["show_emission"] = true,
     ["emission"] = Rgb(1,1,1),
 }
 
-
-
-
-table.insert(assignments, {geom0, "", mtl0, lightSet})
-table.insert(assignments, {geom1, "", mtl1, lightSet})
-table.insert(assignments, {geom2, "", mtl2, lightSet})
-table.insert(assignments, {geom3, "", mtl3, lightSet})
-table.insert(assignments, {ref, "", white, lightSet})
-
-GeometrySet("geometry")(geoms)
-Layer("layer")(assignments)
+Layer("layer") {
+    { geom0, "", mtl0, lightSet },
+    { geom1, "", mtl1, lightSet },
+    { geom2, "", mtl2, lightSet },
+    { geom3, "", mtl3, lightSet },
+    { ref, "", white, lightSet },
+}
 

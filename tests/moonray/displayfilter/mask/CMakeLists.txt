@@ -4,7 +4,7 @@
 # Description: Tests the chaining functionality of display filters.
 
 add_rats_test(moonray_displayfilter_mask
-    INPUTS displayfilter_mask.rdla
+    INPUTS scene.rdla
     CANONICALS
         mask.exr
         multiply_cc.exr

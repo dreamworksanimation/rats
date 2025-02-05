@@ -4,7 +4,7 @@
 # This tests roughnesses on the Beckmann
 
 add_rats_test(moonray_material_dwametal_roughness_beckmann
-    INPUTS dwametal_roughness_beckmann.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

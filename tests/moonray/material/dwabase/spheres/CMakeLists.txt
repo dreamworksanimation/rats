@@ -4,7 +4,7 @@
 # This test verifies reflective properties of materials.
 
 add_rats_test(moonray_material_dwabase_spheres
-    INPUTS dwabase_spheres.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

@@ -7,7 +7,7 @@
 
 add_rats_test(moonray_texturing_gamma_gamma_on
     INPUTS ../common.rdla
-           gamma_on.rdla
+           scene.rdla
     CANONICALS scene.exr
 )
 

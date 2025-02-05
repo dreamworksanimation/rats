@@ -4,7 +4,7 @@
 # This tests the shadow terminator fix.
 
 add_rats_test(moonray_material_shadow_terminator
-    INPUTS material_shadow_terminator.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

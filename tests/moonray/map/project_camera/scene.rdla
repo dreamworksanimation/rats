@@ -1,41 +1,43 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["image width"] = 300,
-    ["image height"] = 300,
-    ["pixel samples"] = 4,
+    ["image_width"] = 300,
+    ["image_height"] = 300,
+    ["pixel_samples"] = 4,
 }
 
 shotCam = Camera("camera") {
-    ["node xform"] = translate(0, 0.0, 5),
+    ["node_xform"] = translate(0, 0.0, 5),
 }
 
 lightSet = LightSet("/Scene/lighting/lightSet") { }
 
 planeGeom1 = UsdGeometry("planeGeom1") {
-    ["node xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-1, 1, 0),
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-1, 1, 0),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 planeGeom2 = UsdGeometry("planeGeom2") {
-    ["node xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(1, 1, -0.25),
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(1, 1, -0.25),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 planeGeom3 = UsdGeometry("planeGeom3") {
-    ["node xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-0.5, -0.5, 0.5),
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-0.5, -0.5, 0.5),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
 
 planeGeom4 = UsdGeometry("planeGeom4") {
-    ["node xform"] = scale(1.8, 1.8, 1) * translate(1, -1, -1),
+    ["node_xform"] = scale(1.8, 1.8, 1) * translate(1, -1, -1),
     ["stage"] = rats_assets_dir .. "/models/plane_xy_unit_ref.usdc",
     ["prim_path"] = "/plane",
 }
 
 planeGeom5 = UsdGeometry("planeGeom5") {
-    ["node xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-1, -1, -1.5),
+    ["node_xform"] = rotate(-90, 1, 0, 0) * scale(1.8, 1.8, 1) * translate(-1, -1, -1.5),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
@@ -49,27 +51,27 @@ GeometrySet("geomset") {
 }
 
 projCam1 = Camera("/projCam1") {
-   ["node xform"] = translate(-1, 1, 8.75),
+   ["node_xform"] = translate(-1, 1, 8.75),
    ["focal"] = 150,
 }
 
 projCam2 = Camera("projCam2") {
-   ["node xform"] = translate(1, 1, 8.75),
+   ["node_xform"] = translate(1, 1, 8.75),
    ["focal"] = 140,
 }
 
 projCam3 = Camera("projCam3") {
-   ["node xform"] = translate(-0.5, -0.5, 8.75),
+   ["node_xform"] = translate(-0.5, -0.5, 8.75),
    ["focal"] = 130,
 }
 
 projCam4 = Camera("projCam4") {
-   ["node xform"] = translate(0, 0, 4.0),
+   ["node_xform"] = translate(0, 0, 4.0),
    ["focal"] = 120,
 }
 
 projCam5 = Camera("projCam5") {
-   ["node xform"] = translate(1, -1.0, 16.75) * rotate(180, 0, 1, 0),
+   ["node_xform"] = translate(1, -1.0, 16.75) * rotate(180, 0, 1, 0),
    ["focal"] = 130,
 }
 

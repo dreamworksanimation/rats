@@ -4,7 +4,7 @@
 # This tests moisture component (second specular lobe) of the dwaskin material
 
 add_rats_test(moonray_material_dwaskin_moisture
-    INPUTS dwaskin_moisture.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

@@ -1,0 +1,22 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+
+planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["roughness"] = 0.3,
+}
+
+mtl = DwaBaseMaterial("/Scene/surfacing/mtl") {
+    ["roughness"] = 0.1,
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    geom,
+    planeGeom
+}
+
+Layer("/Scene/layer") {
+    {geom, "", mtl, lightSet},
+    {planeGeom, "", planeMtl, lightSet}
+}

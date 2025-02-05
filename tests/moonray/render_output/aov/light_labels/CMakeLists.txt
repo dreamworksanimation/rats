@@ -4,8 +4,8 @@
 # This tests the ability of the RenderOutput objects to output light aovs with labels.
 
 add_rats_test(moonray_render_output_aov_light_labels
-    INPUTS ../common/aov_common.rdla
-           aov_light_labels.rdla
+    INPUTS ../common.rdla
+           scene.rdla
     CANONICALS result0.exr
 )
 

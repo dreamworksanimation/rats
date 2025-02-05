@@ -4,7 +4,7 @@
 # Tests the basevolume ramp functionality.
 
 add_rats_test(moonray_volume_bv_ramp
-    INPUTS bv_ramp.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

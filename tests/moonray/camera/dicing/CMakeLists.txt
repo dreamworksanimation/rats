@@ -5,7 +5,7 @@
 # dicing camera's frustum.
 
 add_rats_test(moonray_camera_dicing
-    INPUTS dicing.rdla
+    INPUTS scene.rdla
     CANONICALS
         wireframe.exr
 )

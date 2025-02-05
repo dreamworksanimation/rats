@@ -4,7 +4,7 @@
 # Tests using a volume as a map binding.
 
 add_rats_test(moonray_volume_map_binding
-    INPUTS map_binding.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

@@ -6,7 +6,7 @@
 # is contained in its own sidecar rdla file. 
 
 add_rats_test(moonray_displayfilter_basic
-    INPUTS displayfilter_basic.rdla
+    INPUTS scene.rdla
            fragments/BlendDisplayFilter.rdla
            fragments/ClampDisplayFilter.rdla
            fragments/ColorCorrectDisplayFilter.rdla

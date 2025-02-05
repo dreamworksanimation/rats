@@ -4,8 +4,8 @@
 # This tests rotation order
 
 add_rats_test(moonray_map_noise_rotation_order
-    INPUTS rotation_order.rdla
-           ../noise_common.rdla
+    INPUTS scene.rdla
+           ../common.rdla
     CANONICALS scene.exr
 )
 

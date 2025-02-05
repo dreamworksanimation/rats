@@ -1,0 +1,7 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+
+SceneVariables {
+    ["pixel_filter_width"] = 2.5,
+    ["pixel_filter"] = 2,
+}

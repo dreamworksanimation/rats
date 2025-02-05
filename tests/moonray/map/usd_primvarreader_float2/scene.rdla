@@ -1,0 +1,43 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 3,
+    ["image_width"] = 200,
+    ["image_height"] = 200,
+}
+
+PerspectiveCamera("cam") {
+    ["near"] = 0.1,
+    ["node_xform"] = translate(0, 0, 2),
+}
+
+lightSet = LightSet("lightSet") { }
+
+planeGeom = UsdGeometry("planeGeom") {
+    ["node_xform"] = rotate(90, 1, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometryset") {
+    planeGeom
+}
+
+uvAttr = UsdPrimvarReader_float2("uvAttr") {
+    ["varname"] = "st",
+}
+
+imageMap = ImageMap("imageMap") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+    ["wrap_around"] = false,
+    ["texture_coordinates"] = "input texture coordinates",
+    ["input_texture_coordinates"] = bind(uvAttr),
+}
+
+emitMtl = DwaEmissiveMaterial("emitMtl") {
+    ["emission_color"] = bind(imageMap),
+}
+
+Layer("layer") {
+    {planeGeom, "", emitMtl, lightSet},
+}

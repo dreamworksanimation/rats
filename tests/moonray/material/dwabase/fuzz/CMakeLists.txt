@@ -4,7 +4,7 @@
 # This tests Fuzz on DwaBase material
 
 add_rats_test(moonray_material_dwabase_fuzz
-    INPUTS dwabase_fuzz.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

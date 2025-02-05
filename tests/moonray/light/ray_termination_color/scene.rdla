@@ -1,11 +1,13 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["image width"] = 500,
-    ["image height"] = 200,
-    ["lights visible in camera"] = true,
+    ["image_width"] = 500,
+    ["image_height"] = 200,
+    ["lights_visible_in_camera"] = true,
 }
 
 Camera("camera") {
-    ["node xform"] = translate(0, 1, 8),
+    ["node_xform"] = translate(0, 1, 8),
 }
 
 env = EnvLight("env") {
@@ -40,19 +42,19 @@ lightSet3 = LightSet("lightSet3") {
 }
 
 geom1 = UsdGeometry("geom1") {
-    ["node xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25) * translate(2, 0, 0),
+    ["node_xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25) * translate(2, 0, 0),
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget"
 }
 
 geom2 = UsdGeometry("geom2") {
-    ["node xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25),
+    ["node_xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25),
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget"
 }
 
 geom3 = UsdGeometry("geom3") {
-    ["node xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25) * translate(-2, 0, 0),
+    ["node_xform"] = rotate(30, 0, 1, 0) * scale(0.25, 0.25, 0.25) * translate(-2, 0, 0),
     ["stage"] = rats_assets_dir.."/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget"
 }
@@ -75,7 +77,7 @@ Layer("layer") {
 }
 
 RenderOutput("rayTermination") {
-   ["file name"] = "result0.exr",
+   ["file_name"] = "result0.exr",
    ["result"] = "light aov",
-   ["light aov"] = "C[DSG]+['rayTermination1''rayTermination2']", 
+   ["light_aov"] = "C[DSG]+['rayTermination1''rayTermination2']", 
 }

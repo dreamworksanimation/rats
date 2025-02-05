@@ -4,7 +4,7 @@
 # This tests normal-mapping with anisotropic bsdf
 
 add_rats_test(moonray_map_normal_aniso
-    INPUTS normal_aniso.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

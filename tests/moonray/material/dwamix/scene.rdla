@@ -1,0 +1,182 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["bssrdf_samples"] = 1,
+    ["max_depth"] = 1,
+    ["image_width"] = 500,
+    ["image_height"] = 400,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(4.0, 5.0, 37) * rotate(-10, 1, 0, 0),
+    ["focal"] = 50,
+}
+
+------------------------ LIGHTS -----------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+----------------------- GEOMETRY -----------------------------
+
+cylinder1Geom = UsdGeometry("/Scene/geometry/cylinder1Geom") {
+    ["node_xform"] = scale(2, 13.5, 2) * rotate(-90, 0, 0, 1) * translate(3.75, 9.5, -4),
+    ["stage"] = rats_assets_dir .. "/models/cylinder.usdc",
+    ["prim_path"] = "/cylinder"
+}
+
+cylinder2Geom = UsdGeometry("/Scene/geometry/cylinder2Geom") {
+    ["node_xform"] = scale(2, 13.5, 2) * rotate(-90, 0, 0, 1) * translate(3.75, 7, -4),
+    ["stage"] = rats_assets_dir .. "/models/cylinder.usdc",
+    ["prim_path"] = "/cylinder"
+}
+
+cylinder3Geom = UsdGeometry("/Scene/geometry/cylinder3Geom") {
+    ["node_xform"] = scale(2, 13.5, 2) * rotate(-90, 0, 0, 1) * translate(3.75, 4.5, -4),
+    ["stage"] = rats_assets_dir .. "/models/cylinder.usdc",
+    ["prim_path"] = "/cylinder"
+}
+
+cylinder4Geom = UsdGeometry("/Scene/geometry/cylinder4Geom") {
+    ["node_xform"] = scale(2, 13.5, 2) * rotate(-90, 0, 0, 1) * translate(3.75, 2, -4),
+    ["stage"] = rats_assets_dir .. "/models/cylinder.usdc",
+    ["prim_path"] = "/cylinder"
+}
+
+sphere0Geom = SphereGeometry("/Scene/geometry/sphere0Geom") { ["node_xform"] = translate(-2.5, 0.0, 0.0), }
+sphere1Geom = SphereGeometry("/Scene/geometry/sphere1Geom") { ["node_xform"] = translate( 0.0, 0.0, 0.0), }
+sphere2Geom = SphereGeometry("/Scene/geometry/sphere2Geom") { ["node_xform"] = translate( 2.5, 0.0, 0.0), }
+sphere3Geom = SphereGeometry("/Scene/geometry/sphere3Geom") { ["node xform"] = translate( 5.0, 0.0, 0.0), }
+sphere4Geom = SphereGeometry("/Scene/geometry/sphere4Geom") { ["node xform"] = translate( 7.5, 0.0, 0.0), }
+sphere5Geom = SphereGeometry("/Scene/geometry/sphere5Geom") { ["node xform"] = translate(10.0, 0.0, 0.0), }
+
+------------------------ MATERIALS --------------------------
+
+grad = GradientMap("grad") {
+    ["start"] = Vec3(0,0,0),
+    ["end"] = Vec3(0,1,0),
+    ["falloff_type"] = 2,
+    ["space"] = 6,
+}
+
+remap = RemapMap("remap") {
+    ["input"] = bind(grad),
+    ["output_max"] = 5,
+    ["clamp_max"] = 5,
+}
+
+mtl0 = DwaSolidDielectricMaterial("mtl0") {
+    ["albedo"] = Rgb(0.8,0.02,0.02),
+    ["roughness"] = 0.15,
+}
+
+mtl1 = DwaMetalMaterial("mtl1") {
+    ["metallic_color"] = Rgb(0.5,0.5,0.55),
+    ["roughness"] = 0.15,
+}
+
+mtl2 = DwaSkinMaterial("mtl2") {
+    ["albedo"] = Rgb(0.4,0.3,0.2),
+    ["roughness"] = 0.4,
+    ["scattering_radius"] = 0.05,
+    ["scattering_color"] = Rgb(0.4, 0.1, 0.1),
+}
+
+mtl3 = DwaToonMaterial("mtl3") {
+    ["albedo"] = Rgb(0.2,0.3,0.9),
+    ["roughness"] = 0.8,
+    ["diffuse_flatness"] = 0.9,
+}
+
+mtl4 = DwaFabricMaterial("mtl4") {
+    ["albedo"] = Rgb(0.01,0.05,0.02),
+    ["warp_color"] = Rgb(0.01,0.05,0.02),
+    ["warp_roughness"] = 0.5,
+}
+
+mtl5 = DwaRefractiveMaterial("mtl5") {
+    ["roughness"] = 0,
+}
+
+-- test defaults, linear blending
+mixMtl1 = DwaMixMaterial("mixMtl1") {
+    ["mix"] = bind(grad, 1.0),
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+    ["material3"] = mtl3,
+    ["material4"] = mtl4,
+    ["material5"] = mtl5,
+}
+
+-- test smooth interpolation
+mixMtl2 = DwaMixMaterial("mixMtl2") {
+    ["mix"] = bind(grad, 1.0),
+    ["mix_interpolation"] = 3, -- smooth
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+    ["material3"] = mtl3,
+    ["material4"] = mtl4,
+    ["material5"] = mtl5,
+}
+
+-- test remap OFF, and nearest interpolation
+mixMtl3 = DwaMixMaterial("mixMtl3") {
+    ["mix"] = bind(remap, 1.0),
+    ["remap_mix_to_inputs"] = false,
+    ["mix_interpolation"] = 2, -- nearest
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+    ["material3"] = mtl3,
+    ["material4"] = mtl4,
+    ["material5"] = mtl5,
+}
+
+-- test hold interpolation
+mixMtl4 = DwaMixMaterial("mixMtl4") {
+    ["mix"] = bind(grad, 1.0),
+    ["mix_interpolation"] = 1, -- hold 
+    ["material0"] = mtl0,
+    ["material1"] = mtl1,
+    ["material2"] = mtl2,
+    ["material3"] = mtl3,
+    ["material4"] = mtl4,
+    ["material5"] = mtl5,
+}
+
+---------------------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    cylinder1Geom,
+    cylinder2Geom,
+    cylinder3Geom,
+    cylinder4Geom,
+    sphere0Geom,
+    sphere1Geom,
+    sphere2Geom,
+    sphere3Geom,
+    sphere4Geom,
+    sphere5Geom,
+}
+
+Layer("/Scene/layer") {
+    {cylinder1Geom, "", mixMtl1, lightSet},
+    {cylinder2Geom, "", mixMtl2, lightSet},
+    {cylinder3Geom, "", mixMtl3, lightSet},
+    {cylinder4Geom, "", mixMtl4, lightSet},
+    {sphere0Geom, "", mtl0, lightSet},
+    {sphere1Geom, "", mtl1, lightSet},
+    {sphere2Geom, "", mtl2, lightSet},
+    {sphere3Geom, "", mtl3, lightSet},
+    {sphere4Geom, "", mtl4, lightSet},
+    {sphere5Geom, "", mtl5, lightSet},
+}

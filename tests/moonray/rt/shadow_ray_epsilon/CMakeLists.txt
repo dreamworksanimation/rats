@@ -6,7 +6,7 @@
 # ray epsilon value that truncates the shadows.
 
 add_rats_test(moonray_rt_shadow_ray_epsilon
-    INPUTS shadow_ray_epsilon.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

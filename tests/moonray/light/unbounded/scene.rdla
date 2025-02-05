@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["lights_visible_in_camera"] = true,
     ["image_width" ] = 256,

@@ -5,7 +5,7 @@
 # Tests that objects with zero presence are completely invisible.
 
 add_rats_test(moonray_rt_presence_zero
-    INPUTS presence_zero.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

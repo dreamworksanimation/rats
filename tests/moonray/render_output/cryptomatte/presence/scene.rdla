@@ -1,18 +1,20 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 sceneVars = SceneVariables {
-    ["pixel samples"] = 2,
-    ["max depth"] = 4,
-    ["max diffuse depth"] = 10,
-    ["max mirror depth"] = 10,
-    ["light samples"] = 2,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 4,
+    ["max_diffuse_depth"] = 10,
+    ["max_mirror_depth"] = 10,
+    ["light_samples"] = 2,
 }
 
-local id0 = UserData("id0") {
-    ["float values"] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6},
+id0 = UserData("id0") {
+    ["float_values"] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6},
 }
 
-local cube = RdlMeshGeometry("/Scene/geometry/cube2") {
-    ["node xform"] = scale(1, 1, 1),
-    ["vertex_list_0"]  = { 
+cube = RdlMeshGeometry("/Scene/geometry/cube2") {
+    ["node_xform"] = scale(1, 1, 1),
+    ["vertex_list_0"] = { 
                             Vec3(-1,-1,-1), 
                             Vec3( 1,-1,-1), 
                             Vec3(-1, 1,-1), 
@@ -22,31 +24,33 @@ local cube = RdlMeshGeometry("/Scene/geometry/cube2") {
                             Vec3(-1, 1, 1), 
                             Vec3( 1, 1, 1) 
                          },
-    ["vertices by index"] = { 0,1,3,2,  4,5,7,6,  0,1,5,4,  3,2,6,7,  0,2,6,4,  1,3,7,5 },
-    ["face vertex count"] = {4, 4, 4, 4, 4, 4},
-    ["part list"] = {"faceR", "faceC", "faceG", "faceM", "faceB", "faceY"},
-    ["part face count list"] = {1, 1, 1, 1, 1, 1},
-    ["part face indices"] = {0, 1, 2, 3, 4, 5},
-    ["is subd"] = false,
-    ["primitive attributes"] = {id0},
+    ["vertices_by_index"] = { 0,1,3,2,  4,5,7,6,  0,1,5,4,  3,2,6,7,  0,2,6,4,  1,3,7,5 },
+    ["face_vertex_count"] = {4, 4, 4, 4, 4, 4},
+    ["part_list"] = {"faceR", "faceC", "faceG", "faceM", "faceB", "faceY"},
+    ["part_face_count_list"] = {1, 1, 1, 1, 1, 1},
+    ["part_face_indices"] = {0, 1, 2, 3, 4, 5},
+    ["is_subd"] = false,
+    ["primitive_attributes"] = {id0},
 }
-table.insert(geoms, cube)
+
+GeometrySet("geometrySet") {
+    cube,
+}
 
 overallpresence = 0.5
 
-local mtlR = DwaBaseMaterial("mtlR") { ["albedo"] = Rgb(1, 0, 0), ["presence"] = overallpresence }
-local mtlC = DwaBaseMaterial("mtlC") { ["albedo"] = Rgb(0, 1, 1), ["presence"] = overallpresence }
-local mtlG = DwaBaseMaterial("mtlG") { ["albedo"] = Rgb(0, 1, 0), ["presence"] = overallpresence }
-local mtlM = DwaBaseMaterial("mtlM") { ["albedo"] = Rgb(1, 0, 1), ["presence"] = overallpresence }
-local mtlB = DwaBaseMaterial("mtlB") { ["albedo"] = Rgb(0, 0, 1), ["presence"] = overallpresence }
-local mtlY = DwaBaseMaterial("mtlY") { ["albedo"] = Rgb(1, 1, 0), ["presence"] = overallpresence }
+mtlR = DwaBaseMaterial("mtlR") { ["albedo"] = Rgb(1, 0, 0), ["presence"] = overallpresence }
+mtlC = DwaBaseMaterial("mtlC") { ["albedo"] = Rgb(0, 1, 1), ["presence"] = overallpresence }
+mtlG = DwaBaseMaterial("mtlG") { ["albedo"] = Rgb(0, 1, 0), ["presence"] = overallpresence }
+mtlM = DwaBaseMaterial("mtlM") { ["albedo"] = Rgb(1, 0, 1), ["presence"] = overallpresence }
+mtlB = DwaBaseMaterial("mtlB") { ["albedo"] = Rgb(0, 0, 1), ["presence"] = overallpresence }
+mtlY = DwaBaseMaterial("mtlY") { ["albedo"] = Rgb(1, 1, 0), ["presence"] = overallpresence }
 
-table.insert(assignments, {cube, "faceR", mtlR, lightSet})
-table.insert(assignments, {cube, "faceC", mtlC, lightSet})
-table.insert(assignments, {cube, "faceG", mtlG, lightSet})
-table.insert(assignments, {cube, "faceM", mtlM, lightSet})
-table.insert(assignments, {cube, "faceB", mtlB, lightSet})
-table.insert(assignments, {cube, "faceY", mtlY, lightSet})
-
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("Scene/layer")(assignments)
+Layer("layer") {
+    { cube, "faceR", mtlR, lightSet },
+    { cube, "faceC", mtlC, lightSet },
+    { cube, "faceG", mtlG, lightSet },
+    { cube, "faceM", mtlM, lightSet },
+    { cube, "faceB", mtlB, lightSet },
+    { cube, "faceY", mtlY, lightSet },
+}

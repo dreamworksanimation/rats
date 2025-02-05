@@ -1,0 +1,245 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 1,
+    ["image_width"] = 420,
+    ["image_height"] = 280,
+}
+
+Camera("camera") {
+    ["node_xform"] = translate(0, 0, 9),
+}
+
+------------------------- Lights --------------------------------
+
+envLight = EnvLight("envLight") {
+    ["node_xform"] = rotate(70, 0, 1, 0),
+    ["sample_upper_hemisphere_only"] = false,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+ltSet = LightSet("ltSet") {
+    envLight
+}
+
+--------------------------- Geometry ----------------------------
+
+sphereTopLeft = SphereGeometry("sphereTopLeft") {
+    ["node_xform"] = translate(-2.5, 1.2, 0),
+}
+
+sphereBottomLeft = SphereGeometry("sphereBottomLeft") {
+    ["node_xform"] = translate(-2.5, -1.2, 0),
+}
+
+sphereTopCenter = SphereGeometry("sphereTopCenter") {
+    ["node_xform"] = translate(0.0, 1.2, 0),
+}
+
+sphereBottomCenter = SphereGeometry("sphereBottomCenter") {
+    ["node_xform"] = translate(0.0, -1.2, 0),
+}
+
+sphereTopRight = SphereGeometry("sphereTopRight") {
+    ["node_xform"] = translate(2.5, 1.2, 0),
+}
+
+sphereBottomRight = SphereGeometry("sphereBottomRight") {
+    ["node_xform"] = translate(2.5, -1.2, 0),
+}
+
+GeometrySet("geometryset") {
+    sphereTopLeft, sphereTopCenter, sphereTopRight,
+    sphereBottomLeft, sphereBottomCenter, sphereBottomRight
+}
+
+--------------------------- Material ----------------------------
+
+mainColor = Rgb(1.0, 0.0, 0.0)
+secondaryColor = Rgb(1.0, 0.1, 0.1)
+flakeColor = Rgb(0.5, 0.5, 0.5)
+glitterIntensity = 0.35
+flakeSize = 0.015
+flakeDensity = 40.0
+flakeRandomness = 0.5
+flakeRoughnessA = 0.25
+
+glitterBaseMtl = DwaBaseMaterial("glitterBaseMtl") {
+    ["show_clearcoat"] = true,
+    ["clearcoat"] = 1.0,
+    ["clearcoat_model"] = "Beckmann", -- "GGX"
+    ["clearcoat_roughness"] = 0.0,
+    ["clearcoat_thickness"] = 0.0,
+    ["clearcoat_refractive_index"] = 1.5,
+    ["clearcoat_bending"] = true,
+    ["clearcoat_attenuation_color"] = Rgb(0.5, 0.5, 0.5),
+
+    ["show_glitter"] = true,
+    ["glitter"] = glitterIntensity,
+    ["glitter_space"] = "object",
+    ["glitter_density"] = flakeDensity,
+    ["glitter_randomness"] = flakeRandomness,
+    ["glitter_roughness_A"] = flakeRoughnessA,
+    ["glitter_color_A"] = flakeColor,
+    ["glitter_size_A"] = flakeSize,
+
+    ["albedo"] = mainColor,
+    ["specular_model"] = 0,
+}
+
+glitterMetalMtl = DwaMetalMaterial("glitterMetalMtl") {
+    ["show_clearcoat"] = true,
+    ["clearcoat"] = 1.0,
+    ["clearcoat_roughness"] = 0.0,
+    ["clearcoat_thickness"] = 0.0,
+    ["clearcoat_refractive_index"] = 1.5,
+    ["clearcoat_bending"] = true,
+    ["clearcoat_attenuation_color"] = Rgb(0.5, 0.5, 0.5),
+
+    ["show_glitter"] = true,
+    ["glitter"] = glitterIntensity,
+    ["glitter_space"] = "object",
+    ["glitter_density"] = flakeDensity,
+    ["glitter_randomness"] = flakeRandomness,
+    ["glitter_roughness_A"] = flakeRoughnessA,
+    ["glitter_color_A"] = flakeColor,
+    ["glitter_size_A"] = flakeSize,
+
+    ["metallic_color"] = mainColor,
+    ["metallic_edge_color"] = Rgb(1, 1, 1),
+    ["roughness"] = 0.5,
+    ["specular_model"] = 0,
+}
+
+glitterSdMtl = DwaSolidDielectricMaterial("glitterSdMtl") {
+    ["show_clearcoat"] = true,
+    ["clearcoat"] = 1.0,
+    ["clearcoat_roughness"] = 0.0,
+    ["clearcoat_thickness"] = 0.0,
+    ["clearcoat_refractive_index"] = 1.5,
+    ["clearcoat_bending"] = true,
+    ["clearcoat_attenuation_color"] = flakeColor,
+
+    ["show_glitter"] = true,
+    ["glitter"] = glitterIntensity,
+    ["glitter_space"] = "object",
+    ["glitter_density"] = flakeDensity,
+    ["glitter_randomness"] = flakeRandomness,
+    ["glitter_roughness_A"] = flakeRoughnessA,
+    ["glitter_color_A"] = flakeColor,
+    ["glitter_size_A"] = flakeSize,
+
+    ["roughness"] = 0.5,
+    ["albedo"] = mainColor,
+    ["specular_model"] = 0,
+}
+
+glitterSkinMtl = DwaSkinMaterial("glitterSkinMtl") {
+    ["show_glitter"] = true,
+    ["glitter"] = glitterIntensity,
+    ["glitter_space"] = "object",
+    ["glitter_density"] = flakeDensity,
+    ["glitter_randomness"] = flakeRandomness,
+    ["glitter_roughness_A"] = flakeRoughnessA,
+    ["glitter_color_A"] = flakeColor,
+    ["glitter_size_A"] = flakeSize,
+
+    ["roughness"] = 0.5,
+    ["albedo"] = mainColor,
+    ["specular_model"] = 0,
+}
+
+glitterFabricMtl = DwaFabricMaterial("glitterFabricMtl") {
+    ["show_glitter"] = true,
+    ["glitter"] = glitterIntensity,
+    ["glitter_space"] = "object",
+    ["glitter_density"] = flakeDensity,
+    ["glitter_randomness"] = flakeRandomness,
+    ["glitter_roughness_A"] = flakeRoughnessA,
+    ["glitter_color_A"] = flakeColor,
+    ["glitter_size_A"] = flakeSize,
+
+    ["albedo"] = secondaryColor,
+    ["warp_color"] = mainColor,
+    ["weft_color"] = mainColor,
+}
+
+glitterVelvetMtl = DwaVelvetMaterial_v2("glitterVelvetMtl") {
+    ["show_glitter"] = true,
+    ["glitter"] = glitterIntensity,
+    ["glitter_space"] = "object",
+    ["glitter_density"] = flakeDensity,
+    ["glitter_randomness"] = flakeRandomness,
+    ["glitter_roughness_A"] = flakeRoughnessA,
+    ["glitter_color_A"] = flakeColor,
+    ["glitter_size_A"] = flakeSize,
+
+    ["albedo"] = secondaryColor,
+    ["fuzz_albedo"] = mainColor,
+}
+
+underMtl = DwaMetalMaterial("underMtl") {
+    ["roughness"] = 0.25,
+    ["anisotropy"] = 1,
+    ["specular_model"] = 0,
+}
+
+noiseMap = NoiseMap_v2("noiseMap") {
+    ["space"] = "world",
+    ["amplitude"] = 1.0,
+    ["gain"] = 0.5,
+    ["bias"] = 0.5,
+    ["frequency_multiplier"] = 5.0,
+    ["max_level"] = 10,
+    ["lacunarity"] = 2,
+    ["smoothstep"] = Vec2(0.3, 0.4),
+    ["use_smoothstep"] = true,
+}
+
+layerTopLeftMtl = DwaLayerMaterial("layerTopLeftMtl") {
+    ["material_A"] = glitterBaseMtl,
+    ["material_B"] = underMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+}
+
+layerTopCenterMtl = DwaLayerMaterial("layerTopCenterMtl") {
+    ["material_A"] = glitterMetalMtl,
+    ["material_B"] = underMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+}
+
+layerTopRightMtl = DwaLayerMaterial("layerTopRightMtl") {
+    ["material_A"] = glitterSdMtl,
+    ["material_B"] = underMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+}
+
+layerBottomLeftMtl = DwaLayerMaterial("layerBottomLeftMtl") {
+    ["material_A"] = glitterSkinMtl,
+    ["material_B"] = underMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+}
+
+layerBottomCenterMtl = DwaLayerMaterial("layerBottomCenterMtl") {
+    ["material_A"] = glitterFabricMtl,
+    ["material_B"] = underMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+}
+
+layerBottomRightMtl = DwaLayerMaterial("layerBottomRightMtl") {
+    ["material_A"] = glitterVelvetMtl,
+    ["material_B"] = underMtl,
+    ["mask"] = bind(noiseMap, 1.0),
+}
+
+--------------------------------------------------------------------
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {sphereTopLeft,         "", layerTopLeftMtl,       ltSet},
+    {sphereTopCenter,       "", layerTopCenterMtl,     ltSet},
+    {sphereTopRight,        "", layerTopRightMtl,      ltSet},
+    {sphereBottomLeft,      "", layerBottomLeftMtl,    ltSet},
+    {sphereBottomCenter,    "", layerBottomCenterMtl,  ltSet},
+    {sphereBottomRight,     "", layerBottomRightMtl,   ltSet},
+}

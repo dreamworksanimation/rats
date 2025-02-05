@@ -4,7 +4,7 @@
 # Tests volume transmittance.
 
 add_rats_test(moonray_volume_transmittance
-    INPUTS transmittance.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

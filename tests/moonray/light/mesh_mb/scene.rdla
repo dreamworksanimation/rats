@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["image_width"] = 200,
     ["image_height"] = 200,
@@ -11,7 +13,7 @@ cam = PerspectiveCamera("cam") {
 }
 
 cube = RdlMeshGeometry("cube") {
-    ["vertex_list_0"]  = {
+    ["vertex_list_0"] = {
         Vec3(-1,-1,-1),
         Vec3( 1,-1,-1),
         Vec3(-1, 1,-1),
@@ -21,7 +23,7 @@ cube = RdlMeshGeometry("cube") {
         Vec3(-1, 1, 1),
         Vec3( 1, 1, 1)
     },
-    ["vertex_list_1"]  = {
+    ["vertex_list_1"] = {
         Vec3( 3,-1,-1),
         Vec3( 5,-1,-1),
         Vec3( 3, 1,-1),

@@ -14,7 +14,7 @@
 # since both the sphere and the water box have an IOR of 1.33.
 
 add_rats_test(moonray_camera_medium
-    INPUTS medium.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

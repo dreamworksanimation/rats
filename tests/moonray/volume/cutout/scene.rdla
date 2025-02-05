@@ -1,0 +1,91 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["max_volume_depth"] = 5,
+}
+
+PerspectiveCamera("/interactive/camera") {
+    ["node_xform"] = translate(-0.5, 0, 6)
+}
+
+SphereLight("/sceneflow_gaffer3/volume_cutout_light") {
+    ["exposure"] = 2.0,
+    ["node_xform"] = translate(10, 7, 20),
+    ["radius"] = 3.0,
+}
+
+LightSet("/Scene/lightset/1") {
+    SphereLight("/sceneflow_gaffer3/volume_cutout_light"),
+}
+
+-- The plane
+
+plane = UsdGeometry("/Scene/geometry/plane") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(10, 10, 10),
+}
+
+planeMaterial = DwaSolidDielectricMaterial("/obj/SceneFlow/plane_material") {
+    ["albedo"] = Rgb(0.0, 0.37, 0.74),
+}
+
+RaySwitchMaterial("/obj/SceneFlow/cutoutmaterial") {
+    ["cutout_camera_rays"] = true,
+    ["indirect_diffuse_ray_material"] = planeMaterial,
+    ["indirect_glossy_ray_material"] = planeMaterial,
+    ["indirect_mirror_ray_material"] = planeMaterial,
+}
+
+-- Volume #1
+
+cloudvolumegeom1 = VdbGeometry("/obj/volumegeom1") {
+    ["model"] = rats_assets_dir.."/models/torus.vdb",
+    ["node_xform"] = scale(0.004, 0.004, 0.004) * rotate(90, 1, 0, 0) * translate(0, 0, 1)
+}
+
+cloudvolume1 = VdbVolume("/obj/volume1") {
+    ["opacity_gain_mult"] = Rgb(4.0, 4.0, 4.0),
+}
+
+cutout1 = CutoutVolume("/obj/volume/cutout") {
+    ["indirect_volume"] = cloudvolume1,
+}
+
+-- Volume #2
+
+cloudvolumegeom2 = VdbGeometry("/obj/volumegeom2") {
+    ["model"] = rats_assets_dir.."/models/torus.vdb",
+    ["node_xform"] = scale(0.003, 0.003, 0.003) * rotate(90, 1, 0, 0) * translate(-1, 0, 2)
+}
+
+cloudvolume2 = VdbVolume("/obj/volume2") {
+    ["opacity_gain_mult"] = Rgb(8.0, 8.0, 8.0),
+}
+
+cutout2 = CutoutVolume("/obj/volume/cutout2") {
+    ["indirect_volume"] = cloudvolume2,
+}
+
+
+GeometrySet("/Scene/geoset") {
+    cloudvolumegeom1,
+    cloudvolumegeom2,
+    plane,
+}
+
+-- You can swap the commented lines to cutout any combination of the three objects
+
+Layer("/Scene/layer") {
+    {cloudvolumegeom1, "", LightSet("/Scene/lightset/1"), cloudvolume1},
+--    {cloudvolumegeom1, "", LightSet("/Scene/lightset/1"), cutout1},
+
+--    {cloudvolumegeom2, "", LightSet("/Scene/lightset/1"), cloudvolume2},
+    {cloudvolumegeom2, "", LightSet("/Scene/lightset/1"), cutout2},
+
+    {plane, "", planeMaterial, LightSet("/Scene/lightset/1")},
+--   {plane, "", RaySwitchMaterial("/obj/SceneFlow/cutoutmaterial"), LightSet("/Scene/lightset/1")},
+}
+

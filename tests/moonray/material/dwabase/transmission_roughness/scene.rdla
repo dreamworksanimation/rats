@@ -1,0 +1,133 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+frame = 101
+
+-- Spin test: 101..300
+modelRot = 360.0 * (math.min(frame, 201) - 101) / 100
+lightRot = 360.0 * (math.max(frame, 201) - 201) / 100
+
+casts_caustics = true;
+
+SceneVariables {
+    ["pixel_samples"] = 2, --8,
+    ["light_samples"] = 1,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 5, --10,
+    ["max_diffuse_depth"] = 10,
+    ["max_glossy_depth"] = 10,
+    ["max_mirror_depth"] = 10,
+    ["image_width"] = 580,
+    ["image_height"] = 320,
+    ["sample_clamping_value"] = 10,
+    ["sample_clamping_depth"] = 1,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0.0, 120) 
+                   * rotate(-23, 1, 0, 0)
+                   * translate(0.0, 28, 0.0),
+}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["node_xform"] = rotate(160 + lightRot, 0, 1, 0),
+    ["exposure"] = 0.0,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+    ["visible_in_camera"] = 1,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+
+checkerMap = CheckerboardMap("/checkerMap") {
+    ["num_u_tiles"] = 5,
+    ["num_v_tiles"] = 5,
+}
+
+local remapRgh = RemapMap("/Scene/surfacing/remapRgh") {
+    ["input"] = bind(checkerMap),
+    ["input_min"] = 0,
+    ["input_max"] = 1,
+    ["output_min"] = 0.1,
+    ["output_max"] = 0.6,
+}
+
+local remapTrm = RemapMap("/Scene/surfacing/remapTrm") {
+    ["input"] = bind(checkerMap),
+    ["input_min"] = 0,
+    ["input_max"] = 1,
+    ["output_min"] = 0.9,
+    ["output_max"] = 1.8,
+    ["clamp"] = false,
+}
+
+local sphereGeom = UsdGeometry("/Scene/geometry/geomSphere2") {
+    ["node_xform"] = scale(18, 18, 18) * rotate(80 + modelRot, 0, 1, 0)
+                   * translate(-28, 18, 0),
+    ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
+    ["prim_path"] = "/sphere",
+}
+
+local sphereMtl = DwaBaseMaterial("/Scene/surfacing/mtlSphere2") {
+    ["albedo"] = bind(remapRgh),
+    ["roughness"] = bind(remapRgh, 1.0),
+    ["specular_model"] = 0,
+    ["transmission_color"] = bind(remapTrm),
+    ["transmission"] = 1.0,
+    ["casts_caustics"] = casts_caustics;
+}
+
+-------------------------------------------------------
+
+local widgetGeom = UsdGeometry("/Scene/geometry/geomWidget") {
+    ["node_xform"] = scale(6, 6, 6) * rotate(35 + modelRot, 0, 1, 0) * translate(20, 0, -20),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget"
+}
+
+local widgetMtl = DwaBaseMaterial("/Scene/surfacing/mtlWidget") {
+    ["roughness"] = 0.3,
+    ["specular_model"] = 0,
+    ["transmission"] = 1.0,
+    ["casts_caustics"] = casts_caustics;
+}
+
+-------------------------------------------------------
+
+local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(200, 1, 250),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+local planeMap = ImageMap("/Scene/surfacing/planeMap") {
+    ["texture"] = rats_assets_dir .. "/textures/color_grid.tx",
+    ["scale"] = Vec2(12, 12),
+    ["offset"] = Vec2(0, .25),
+    ["wrap_around"] = true,
+    ["saturation_enabled"] = true,
+    ["saturation"] = Rgb(2, 2, 2)
+}
+
+local planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = bind(planeMap),
+    ["show_specular"] = false,
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") {
+    widgetGeom,
+    sphereGeom,
+    planeGeom
+}
+
+Layer("/Scene/layer") {
+    {widgetGeom, "", widgetMtl, lightSet},
+    {sphereGeom, "", sphereMtl, lightSet},
+    {planeGeom, "", planeMtl, lightSet}
+}

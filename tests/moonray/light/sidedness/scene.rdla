@@ -1,0 +1,219 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["lights_visible_in_camera"] = true,
+    ["pixel_samples"] = 2,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["max_depth"] = 1,
+    ["russian_roulette_threshold"] = 0.0001,
+    ["image_width"] = 960,
+    ["image_height"] = 540,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = Mat4(0.95767, -1.8662e-07, 0.287868, 0, 0.107476, 0.927691, -0.357546, 0, -0.267053, 0.373349, 0.888422, 0, -4.67081, 7.5562, 7.58083, 1),
+}
+
+
+-- Geometry --
+
+
+UsdGeometry("/Scene/geometry/torus") {
+    ["node_xform"] = scale(1.5, 1.5, 1.5) * translate(-4, 1, -7),
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+}
+
+UsdGeometry("/Scene/geometry/torusL") {
+    ["node_xform"] = scale(1.5, 1.5, 1.5) * translate(0, 1, -7),
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+}
+
+UsdGeometry("/Scene/geometry/torusR") {
+    ["node_xform"] = scale(1.5, 1.5, 1.5) * translate(4, 1, -7),
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+}
+
+UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = Mat4(200, 0, 0, 0, 0, 20, 0, 0, 0, 0, 200, 0, 0, 0, 0, 1),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+UsdGeometry("/Scene/geometry/wall") {
+    ["node_xform"] = Mat4(40, 0, 0, 0,   0, 0, 1, 0,   0, -40, 0, 0,   0, 0, -10, 1),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometryset") {
+    UsdGeometry("/Scene/geometry/torus"),
+    UsdGeometry("/Scene/geometry/torusL"),
+    UsdGeometry("/Scene/geometry/torusR"),
+    UsdGeometry("/Scene/geometry/floor"),
+    UsdGeometry("/Scene/geometry/wall"),
+}
+
+
+-- Materials --
+
+
+DwaSolidDielectricMaterial("/Scene/surfacing/floor") {
+    ["albedo"] = Rgb(1, 1, 1),
+    ["show_specular"] = false,
+}
+
+
+DwaSolidDielectricMaterial("/Scene/surfacing/object_torus") {
+    ["albedo"] = Rgb(0.2, 0.2, 0.2),
+    ["roughness"] = 0.14,
+}
+
+
+-- Lights --
+
+
+RectLight("/Scene/lighting/rect0") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * rotate(-90, 1, 0, 0) * translate(0, 4, -8),
+    ["color"] = Rgb(1, 0, 0),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["width"] = 1,
+    ["height"] = 1,
+    ["sidedness"] = 0,
+}
+
+RectLight("/Scene/lighting/rect1") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * rotate(-90, 1, 0, 0) * translate(-2, 4, -8),
+    ["color"] = Rgb(0, 1, 0),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["width"] = 1,
+    ["height"] = 1,
+    ["sidedness"] = 1,
+}
+
+RectLight("/Scene/lighting/rect2") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * rotate(-90, 1, 0, 0) * translate(-4, 4, -8),
+    ["color"] = Rgb(0, 0, 1),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["width"] = 1,
+    ["height"] = 1,
+    ["sidedness"] = 2,
+}
+
+DiskLight("/Scene/lighting/disk0") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * rotate(-90, 1, 0, 0) * translate(0, 4, -6),
+    ["color"] = Rgb(0, 1, 1),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["radius"] = 0.5,
+    ["sidedness"] = 0,
+}
+
+DiskLight("/Scene/lighting/disk1") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * rotate(-90, 1, 0, 0) * translate(-2, 4, -6),
+    ["color"] = Rgb(1, 0, 1),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["radius"] = 0.5,
+    ["sidedness"] = 1,
+}
+
+DiskLight("/Scene/lighting/disk2") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * rotate(-90, 1, 0, 0) * translate(-4, 4, -6),
+    ["color"] = Rgb(1, 1, 0),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["radius"] = 0.5,
+    ["sidedness"] = 2,
+}
+
+SphereLight("/Scene/lighting/sphere0") {
+    ["node_xform"] = translate(4, 4, -8),
+    ["color"] = Rgb(1, 0, 0),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["radius"] = 0.25,
+    ["sidedness"] = 0,
+}
+
+SphereLight("/Scene/lighting/sphere1") {
+    ["node_xform"] = translate(2, 4, -8),
+    ["color"] = Rgb(0, 1, 0),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["radius"] = 0.25,
+    ["sidedness"] = 1,
+}
+
+CylinderLight("/Scene/lighting/cylinder0") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * translate(4, 4, -6),
+    ["color"] = Rgb(0, 0, 1),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["radius"] = 0.25,
+    ["height"] = 1,
+    ["sidedness"] = 0,
+}
+
+CylinderLight("/Scene/lighting/cylinder1") {
+    ["node_xform"] = rotate(90, 0, 0, 1) * translate(2, 4, -6),
+    ["color"] = Rgb(1, 1, 1),
+    ["intensity"] = 10,
+    ["normalized"] = false,
+    ["radius"] = 0.25,
+    ["height"] = 1,
+    ["sidedness"] = 1,
+}
+
+SphereLight("/Scene/lighting/sphereL") {
+    ["node_xform"] = translate(-4, 1, -7),
+    ["color"] = Rgb(1, 1, 1),
+    ["intensity"] = 0.5,
+    ["normalized"] = false,
+    ["radius"] = 2.15,
+    ["sidedness"] = 1,
+    ["texture"] = rats_assets_dir.."/hdri/parkinglot_dusk.exr",
+}
+
+CylinderLight("/Scene/lighting/cylinderR") {
+    ["node_xform"] = translate(4, 1, -7),
+    ["intensity"] = 0.5,
+    ["normalized"] = false,
+    ["radius"] = 2.15,
+    ["height"] = 2,
+    ["sidedness"] = 1,
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+LightSet("LightSetA") {
+    RectLight("/Scene/lighting/rect0"),
+    RectLight("/Scene/lighting/rect1"),
+    RectLight("/Scene/lighting/rect2"),
+    DiskLight("/Scene/lighting/disk0"),
+    DiskLight("/Scene/lighting/disk1"),
+    DiskLight("/Scene/lighting/disk2"),
+    SphereLight("/Scene/lighting/sphere0"),
+    SphereLight("/Scene/lighting/sphere1"),
+    CylinderLight("/Scene/lighting/cylinder0"),
+    CylinderLight("/Scene/lighting/cylinder1"),
+    SphereLight("/Scene/lighting/sphereL"),
+    CylinderLight("/Scene/lighting/cylinderR"),
+}
+
+
+-- Layer --
+
+
+Layer("/Scene/rendering/organizer/perPartitionAssignments") {
+    {UsdGeometry("/Scene/geometry/torus"), "", DwaSolidDielectricMaterial("/Scene/surfacing/object_torus"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/torusL"), "", DwaSolidDielectricMaterial("/Scene/surfacing/object_torus"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/torusR"), "", DwaSolidDielectricMaterial("/Scene/surfacing/object_torus"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/floor"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+    {UsdGeometry("/Scene/geometry/wall"), "", DwaSolidDielectricMaterial("/Scene/surfacing/floor"), LightSet("LightSetA")},
+}

@@ -1,0 +1,134 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 500,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 9,
+    ["lights_visible_in_camera"] = true,
+    ["russian_roulette_threshold"] = 0,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, -2, 20),
+}
+
+geoms = {}
+assignments = {}
+
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.22,
+    ["visible_in_camera"] = 1,  -- Int, enumerable (use default)
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+}
+
+-------------------------------------------------------
+---- make 16 speheres, 4 by 4
+local i = 1
+for y =  6,-10,-4 do -- 4 rows, 4 units apart
+for x = -6, 6, 4 do -- 4 columns, 4 units apart
+    local geom = SphereGeometry("geom"..i) {
+        ["node_xform"] = translate(x, y, 0),
+    }
+    table.insert(geoms, geom)
+    i = i +1
+    -- print(i, x, y)
+end
+end
+
+local doCaustics = false
+
+local metal = DwaMetalMaterial("metal") {
+    ["roughness"] = 0.000,
+    ["casts_caustics"] = doCaustics,
+}
+
+local plastic = DwaSolidDielectricMaterial("plastic") {
+    ["roughness"] = 0.0,
+}
+
+local sd_clearcoat = DwaSolidDielectricMaterial("sd_clearcoat") {
+    ["roughness"] = 0.001,
+    ["specular_model"] = 0,
+    ["show_clearcoat"] = true,
+    ["clearcoat_roughness"] = 0.001,
+    ["casts_caustics"] = doCaustics,
+}
+
+local refractive = DwaRefractiveMaterial("refractive") {
+    ["roughness"] = 0.001,
+    ["specular_model"] = 0,
+    ["casts_caustics"] = doCaustics,
+}
+
+local skin = DwaSkinMaterial("skin") {
+    ["scattering_radius"] = 1.0,
+    ["roughness"] = 0.001,
+    ["specular_model"] = 0,
+    ["show_moisture"] = true,
+    ["moisture_roughness"] = 0.001,
+    ["moisture_model"] = 0,
+    ["casts_caustics"] = doCaustics,
+}
+
+local fabric = DwaFabricMaterial("fabric") {
+    ["fabric_diffuse_scattering"] = 0.5,
+    ["casts_caustics"] = doCaustics,
+}
+
+local velvet = DwaVelvetMaterial_v2("velvet") {
+    ["diffuse_roughness"] = 0.001,
+    ["casts_caustics"] = doCaustics,
+}
+
+local toon = DwaToonMaterial("toon") {
+    ["diffuse_flatness"] = 1.0,
+    ["terminator_shift"] = 0.0,
+    ["specular_model"] = 0,
+}
+
+local toonspec = DwaToonMaterial("toonspec") {
+    ["show_specular"] = true,
+    ["specular_model"] = "Toon",
+    ["toon_specular_intensity"] = 1.0,
+    ["toon_specular_fresnel_blend"] = 0.5,
+    ["toon_specular_interpolations"] = {0, 0, 0, 0},
+    ["toon_specular_positions"] = {0.0, 0.33, 0.66, 1.0},
+    ["toon_specular_values"] = {1.0, 0.75, 0.25, 0.0},
+    ["toon_specular_ramp_input_scale"] = 0.5,
+}
+
+local lyr1 = DwaLayerMaterial("layer1") { ["material_A"] = metal,           ["material_B"] = sd_clearcoat,      ["mask"] = 0.5, }
+local lyr2 = DwaLayerMaterial("layer2") { ["material_A"] = refractive,      ["material_B"] = skin,              ["mask"] = 0.5, }
+local lyr3 = DwaLayerMaterial("layer3") { ["material_A"] = fabric,          ["material_B"] = velvet,            ["mask"] = 0.5, }
+local lyr4 = DwaLayerMaterial("layer4") { ["material_A"] = velvet,          ["material_B"] = skin,              ["mask"] = 0.5, }
+local lyr5 = DwaLayerMaterial("layer5") { ["material_A"] = sd_clearcoat,    ["material_B"] = refractive,        ["mask"] = 0.5, }
+local lyr6 = DwaLayerMaterial("layer6") { ["material_A"] = metal,           ["material_B"] = plastic,           ["mask"] = 0.5, }
+local lyr7 = DwaLayerMaterial("layer7") { ["material_A"] = toon,            ["material_B"] = plastic,           ["mask"] = 0.5, }
+local lyr8 = DwaLayerMaterial("layer8") { ["material_A"] = toon,            ["material_B"] = velvet,            ["mask"] = 0.5, }
+local lyr9 = DwaLayerMaterial("layer9") { ["material_A"] = toon,            ["material_B"] = metal,             ["mask"] = 0.5, }
+local lyr10= DwaLayerMaterial("layer7") { ["material_A"] = toonspec,        ["material_B"] = plastic,           ["mask"] = 0.5, }
+local lyr11= DwaLayerMaterial("layer8") { ["material_A"] = toonspec,        ["material_B"] = velvet,            ["mask"] = 0.5, }
+local lyr12= DwaLayerMaterial("layer9") { ["material_A"] = toonspec,        ["material_B"] = metal,             ["mask"] = 0.5, }
+
+local mtls = {
+    metal,      sd_clearcoat,       refractive,     skin,
+    fabric,     velvet,             toon,           lyr1,
+    lyr2,       lyr3,               lyr4,           lyr5,
+    lyr6,       lyr7,               lyr8,           lyr9,
+    lyr10,      lyr11,              lyr12,
+}
+
+for i,v in ipairs(mtls) do
+    table.insert(assignments, {SphereGeometry("geom"..i), "",  mtls[i], lightSet})
+end
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("/Scene/layer")(assignments)

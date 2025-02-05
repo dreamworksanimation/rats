@@ -4,7 +4,7 @@
 # Tests defaults for DwaFabricMaterial
 
 add_rats_test(moonray_material_dwafabric_defaults
-    INPUTS dwafabric_defaults.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

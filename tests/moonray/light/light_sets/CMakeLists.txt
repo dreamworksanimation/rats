@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(moonray_light_light_sets
-    INPUTS light_sets.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

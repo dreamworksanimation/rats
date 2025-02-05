@@ -4,7 +4,7 @@
 # Tests a number of dwaadjustmaterial parameters using attributes
 
 add_rats_test(moonray_material_dwaadjustmaterial
-    INPUTS dwaadjustmaterial.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

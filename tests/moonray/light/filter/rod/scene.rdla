@@ -1,12 +1,14 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["pixel samples"] = 3,
-    ["max depth"] = 1,
+    ["pixel_samples"] = 3,
+    ["max_depth"] = 1,
     ["motion_steps"] = {0, 1},
     ["region_window"] = {-25, 415, 1430, 665},
 }
 
 Camera("/Scene/rendering/camera") {
-    ["node xform"] = rotate(-90, 1, 0, 0)*translate(0.1,10,-4),
+    ["node_xform"] = rotate(-90, 1, 0, 0)*translate(0.1,10,-4),
     ["mb_shutter_open"] = 0,
     ["mb_shutter_close"] = 1,
 }
@@ -180,91 +182,91 @@ end
 
 lightY = 4
 cylLight = CylinderLight("/Scene/Lighting/cyl") {
-    ["node xform"] = scale(1,1,1)*rotate(90,0,0,1)*translate(-2.5, lightY, -5),
+    ["node_xform"] = scale(1,1,1)*rotate(90,0,0,1)*translate(-2.5, lightY, -5),
     ["intensity"] = 0.02,
     ["radius"] = 0.05,
     ["color"] = Rgb(0,0,1),
-    ["light filters"] = filterList,
+    ["light_filters"] = filterList,
 }
 
 diskLight = DiskLight("/Scene/Lighting/disk") {
-    ["node xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(-1.5, lightY, -5),
+    ["node_xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(-1.5, lightY, -5),
     ["intensity"] = 0.005,
     ["radius"] = 0.5,
     ["color"] = Rgb(0,1,0),
-    ["light filters"] = filterList,
+    ["light_filters"] = filterList,
 }
 
 distantLight = DistantLight("/Scene/Lighting/distant") {
-    ["node xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(0, lightY, -5),
+    ["node_xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(0, lightY, -5),
     ["intensity"] = 0.02,
     ["color"] = Rgb(0,1,1),
-    ["light filters"] = filterList,
+    ["light_filters"] = filterList,
 }
 
 envLight = EnvLight("/Scene/lighting/env") {
-    ["light filters"] = filterList,
+    ["light_filters"] = filterList,
     ["intensity"] = 0.02,
     ["color"] = Rgb(1,0,0),
 }
 
 meshLight = MeshLight("/Scene/lighting/mesh") {
-    ["node xform"] = translate(-0.5, lightY, -5),
+    ["node_xform"] = translate(-0.5, lightY, -5),
     ["color"] = Rgb(1,0,0),
     ["intensity"] = 0.01,
     ["geometry"] = widget,
-    ["light filters"] = filterList,
+    ["light_filters"] = filterList,
 }
 
 rectLight = RectLight("/Scene/lighting/rect") {
-    ["node xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(0.5, lightY, -5),
+    ["node_xform"] = scale(1,1,1)*rotate(-90,1,0,0)*translate(0.5, lightY, -5),
     ["color"] = Rgb(1,0,1),
     ["intensity"] = 0.005,
-    ["light filters"] = filterList,
+    ["light_filters"] = filterList,
 }
 
 sphereLight = SphereLight("/Scene/lighting/sphere") {
-    ["node xform"] = scale(1,1,1)*rotate(90,0,0,1)*translate(1.5, lightY, -5),
+    ["node_xform"] = scale(1,1,1)*rotate(90,0,0,1)*translate(1.5, lightY, -5),
     ["color"] = Rgb(1,1,0),
     ["intensity"] = 0.01,
     ["radius"] = 0.5,
-    ["light filters"] = filterList,
+    ["light_filters"] = filterList,
 }
 
 spotLight1 = SpotLight("/Scene/lighting/spot1") {
-    ["node xform"] = rotate(-90,1,0,0)*translate(-3.5, lightY, -5),
+    ["node_xform"] = rotate(-90,1,0,0)*translate(-3.5, lightY, -5),
     ["on"] = true,
     ["color"] = Rgb(1, 1, 1),
     ["intensity"] = 0.005,
-    ["lens radius"] = 0.5,
-    ["inner cone angle"] = 0,
-    ["outer cone angle"] = 60,
-    ["angle falloff type"] = "linear",
-    ["light filters"] = filterList,
+    ["lens_radius"] = 0.5,
+    ["inner_cone_angle"] = 0,
+    ["outer_cone_angle"] = 60,
+    ["angle_falloff_type"] = "linear",
+    ["light_filters"] = filterList,
 }
 
 spotLight2 = SpotLight("/Scene/lighting/spot2") {
-    ["node xform"] = rotate(-90,1,0,0)*translate(2.5, lightY, -5),
+    ["node_xform"] = rotate(-90,1,0,0)*translate(2.5, lightY, -5),
     ["on"] = true,
     ["color"] = Rgb(1, 1, 1),
     ["intensity"] = 0.005,
-    ["lens radius"] = 0.5,
-    ["inner cone angle"] = 0,
-    ["outer cone angle"] = 60,
-    ["angle falloff type"] = "linear",
-    ["light filters"] = filterList,
+    ["lens_radius"] = 0.5,
+    ["inner_cone_angle"] = 0,
+    ["outer_cone_angle"] = 60,
+    ["angle_falloff_type"] = "linear",
+    ["light_filters"] = filterList,
 }
 
 spotLightInvert = SpotLight("/Scene/lighting/spotInvert") {
-    ["node xform"] = rotate(-90,1,0,0)*translate(0.5, lightY, -4),
+    ["node_xform"] = rotate(-90,1,0,0)*translate(0.5, lightY, -4),
     ["on"] = true,
     ["color"] = Rgb(0, 1, 0),
     ["intensity"] = 0.005,
-    ["lens radius"] = 0.5,
-    ["inner cone angle"] = 0,
-    ["outer cone angle"] = 30,
-    ["angle falloff type"] = "linear",
-    ["light filters"] = { filterInvert },
+    ["lens_radius"] = 0.5,
+    ["inner_cone_angle"] = 0,
+    ["outer_cone_angle"] = 30,
+    ["angle_falloff_type"] = "linear",
+    ["light_filters"] = { filterInvert },
 }
 
 LightSet("LightSetA") {

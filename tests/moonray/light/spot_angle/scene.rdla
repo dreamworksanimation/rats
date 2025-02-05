@@ -1,0 +1,64 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 4,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 0,
+    ["russian_roulette_threshold"] = 0.0,
+    ["image_width"] = 400,
+    ["image_height"] = 400,
+}
+
+OrthographicCamera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 10),
+    ["film_width_aperture"] = 1,
+    ["near"] = 8,
+}
+
+l0 = SpotLight("/Scene/lighting/l0") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(1.0/4.0, -3.0/8.0, 0.0),
+    ["intensity"] = 0.0005,
+    ["outer_cone_angle"] = 90,
+    ["inner_cone_angle"] = 90,
+    ["lens_radius"] = 1.0/8.0,
+}
+
+l1 = SpotLight("/Scene/lighting/l1") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * translate(-3.0/2.0 * 1.0/8.0, -3.0/8.0, 0.0),
+    ["intensity"] = 0.0005,
+    ["outer_cone_angle"] = 90,
+    ["inner_cone_angle"] = 90,
+    ["lens_radius"] = 1.0/16.0,
+}
+
+lightSet = LightSet("LightSet") {
+    l0,
+    l1,
+}
+
+floorGeom = UsdGeometry("/Scene/geometry/floor") {
+    ["node_xform"] = rotate(90, 1, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometrySet") {
+    floorGeom,
+}
+
+floorMap = ImageMap("/Scene/surfacing/text") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+    ["gamma"] = 1,
+    ["wrap_around"] = false,
+}
+
+floorMtl = DwaSolidDielectricMaterial("/Scene/surfacing/floor") {
+    ["albedo"] = bind(floorMap),
+    ["show_specular"] = false,
+}
+
+Layer("layer") {
+    { floorGeom, "", floorMtl, lightSet },
+}

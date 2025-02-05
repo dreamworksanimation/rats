@@ -1,0 +1,73 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 450,
+    ["image_height"] = 150,
+    ["max_depth"] = 0,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0.0, 0.0, 12.0),
+}
+
+-----------------------------------------------------
+
+key = DistantLight("/Scene/lighting/key") {
+    ["node_xform"] = rotate(-90, 1, 0, 0),
+    ["normalized"] = true,
+    ["angular_extent"] = 5,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+-----------------------------------------------------
+
+sphere0 = SphereGeometry("/Scene/geometry/sphere0") {  
+    ["node_xform"] = translate(-3, 0, 0),
+}
+
+sphere1 = SphereGeometry("/Scene/geometry/sphere1") {  
+    ["node_xform"] = translate(0, 0, 0),
+}
+
+sphere2 = SphereGeometry("/Scene/geometry/sphere2") {  
+    ["node_xform"] = translate(3, 0, 0),
+}
+
+GeometrySet("Scene/geometrySet") {
+    sphere0,
+    sphere1,
+    sphere2,
+}
+
+-----------------------------------------------------
+
+toonMtl = DwaToonMaterial("toonMtl") {
+    ["diffuse_model"] = "oren-nayar",
+    ["diffuse_flatness"] = 1.0,
+    ["albedo"] = Rgb(0.2, 0.2, 0.2),
+    ["roughness"] = 0.15,
+    ["specular_model"] = 0,
+}
+
+baseMtl = DwaBaseMaterial("baseMtl") {
+    ["albedo"] = Rgb(0.2, 0.2, 0.2),
+    ["roughness"] = 0.15,
+    ["specular_model"] = 0,
+}
+
+blendedMtl = DwaLayerMaterial("blendedMtl") {
+    ["material_A"] = toonMtl,
+    ["material_B"] = baseMtl,
+    ["mask"] = 0.25,
+}
+
+-----------------------------------------------------
+
+Layer("/Scene/rendering/all") {
+    {sphere0, "", toonMtl, lightSet},
+    {sphere1, "", blendedMtl, lightSet},
+    {sphere2, "", baseMtl, lightSet},
+}

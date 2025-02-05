@@ -5,7 +5,7 @@
 # correct shadows are cast by that map.
 
 add_rats_test(moonray_rt_presence_map
-    INPUTS presence_map.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

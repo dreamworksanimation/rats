@@ -4,7 +4,7 @@
 # Tests transparency on objects with and without refraction.
 
 add_rats_test(moonray_rt_transparency
-    INPUTS transparency.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
         transparency.exr

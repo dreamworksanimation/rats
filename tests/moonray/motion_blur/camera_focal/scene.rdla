@@ -1,0 +1,19 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+Camera("/Scene/rendering/camera") {
+    ["focal"] = blur(50, 40),
+}
+
+torus = UsdGeometry("/Scene/geometry/torusMm") {
+    ["node_xform"] = scale(1.5, 1.5, 1.5) * rotate(90, 1, 0, 0) * translate(0, 1.5, 0),
+    ["stage"] = rats_assets_dir .. "/models/torus.usdc",
+    ["prim_path"] = "/torus",
+}
+
+GeometrySet("geometrySet") {
+    torus,
+}
+
+Layer("layer") {
+    { torus, "", torusMtl, lightSet },
+}

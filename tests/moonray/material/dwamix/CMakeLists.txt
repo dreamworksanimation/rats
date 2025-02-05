@@ -4,7 +4,7 @@
 # This tests the DwaMixMaterial
 
 add_rats_test(moonray_material_dwamix
-    INPUTS dwamix.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

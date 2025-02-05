@@ -4,7 +4,7 @@
 # Description: Tests the tangent space filter, a tool used with the baking camera to make engine-ready normal maps
 
 add_rats_test(moonray_displayfilter_tangentspace
-    INPUTS displayfilter_tangentspace.rdla
+    INPUTS scene.rdla
     CANONICALS
         tangents.exr
 )

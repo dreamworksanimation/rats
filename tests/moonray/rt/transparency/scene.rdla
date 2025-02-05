@@ -1,0 +1,82 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables{
+    ["image_width"] = 480,
+    ["image_height"] = 270,
+    ["res"] = 1,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 3,
+}
+
+Camera("camera") {
+    ["node_xform"] = rotate(-15, 1, 0, 0) * translate(-0.5, 3, 10)
+}
+
+UsdGeometry("floorB") {
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+    ["node_xform"] = scale(12, 1, 3) * translate(0, 0, 2),
+}
+
+UsdGeometry("torusL") {
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(0.8, 0.8, 0.8) * translate(-1.5, 0.6, 2.0),
+}
+
+UsdGeometry("torusR") {
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(0.8, 0.8, 0.8) * translate(0.5, 0.6, 2.0),
+}
+
+GeometrySet("geomset") {
+    UsdGeometry("floorB"),
+    UsdGeometry("torusL"),
+    UsdGeometry("torusR"),
+}
+
+DwaSolidDielectricMaterial("floorMtl") {
+    ["albedo"] = Rgb(0.9, 0.9, 0.9),
+}
+
+DwaRefractiveMaterial("torusMtlTransmissionIor") {
+    ["refractive_index"] = 1.5,
+    ["roughness"] = 0.01,
+    ["transmission_color"] = Rgb(0.8, 0.5, 0.6),
+}
+
+DwaRefractiveMaterial("torusMtlTransmission") {
+    ["refractive_index"] = 1.0,
+    ["roughness"] = 0.01,
+    ["transmission_color"] = Rgb(0.8, 0.5, 0.6),
+}
+
+RectLight("rectlight") {
+    ["node_xform"] = Mat4(-1.03527617, 0, 3.86370325, 0,
+                          1.93185163, 3.46410155, 0.517638087, 0,
+                          -3.34606528, 2, -0.896575451, 0,
+                          -68, 40, -21, 1),
+    ["intensity"] = 8,
+    ["exposure"] = 0,
+    ["normalized"] = true,
+    ["width"] = 2,
+    ["height"] = 2,
+}
+
+LightSet("rig") {
+    RectLight("rectlight"),
+}
+
+Layer("layer") {
+    {UsdGeometry("floorB"), "", DwaSolidDielectricMaterial("floorMtl"), LightSet("rig")},
+    {UsdGeometry("torusL"), "", DwaRefractiveMaterial("torusMtlTransmissionIor"), LightSet("rig")},
+    {UsdGeometry("torusR"), "", DwaRefractiveMaterial("torusMtlTransmission"), LightSet("rig")},
+}
+
+RenderOutput("transparency_aov")
+{
+   ["file_name"] = "transparency.exr",
+   ["result"] = "light aov",
+   ["light_aov"] = "C[sT]+'U:bg_white'"
+}

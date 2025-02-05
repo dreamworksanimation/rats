@@ -4,7 +4,7 @@
 # This tests DwaLayer with respect to layering clearcoat
 
 add_rats_test(moonray_material_dwalayer_clearcoat
-    INPUTS dwalayer_clearcoat.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

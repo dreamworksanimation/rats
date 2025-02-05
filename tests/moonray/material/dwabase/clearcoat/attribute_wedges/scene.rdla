@@ -1,0 +1,203 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+cast_caustics = false
+
+SceneVariables {
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["max_depth"] = 1,
+    ["image_width"] = 480,
+    ["image_height"] = 270,
+    ["sample_clamping_value"] = 0.0,
+}
+
+camera = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(-3.5, -0.5, 45) * rotate(-50, 1, 0, 0),
+    ["focal"] = 45,
+}
+env = EnvLight("/Scene/lighting/env") {
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(75, 0, 50) *
+                     rotate(-50, 1, 0, 0) *
+                     rotate(-5, 0, 1, 0),
+    ["intensity"] = 12,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 100,
+    ["height"] = 100,
+}
+
+lightSet = LightSet("Scene/lighting/lightSet"){
+	env,
+	key,
+}
+
+--------------------------------------------------------
+
+geoms = {}
+assignments = {}
+
+local posMin = -13
+local posMax = 5
+
+local roughnessMin = 1.0
+local roughnessMax = 0.0
+
+local wedgeMin = 0.0
+local wedgeMax = 1.0
+
+local numCol = 7
+
+for col = 1, numCol do
+
+    local ratio = (col - 1) / (numCol - 1)
+
+    -- Linear wedge of position
+    local posX = posMin + (posMax - posMin) * ratio
+
+    -- Linear wedge of roughness
+    local roughness = roughnessMin + (roughnessMax - roughnessMin) * ratio
+
+    local wedge = wedgeMin + (wedgeMax - wedgeMin) * ratio
+
+    -- Compute exponent and width in degrees
+    local factor = 55 * math.pi / 180.0
+    local exponent = 2.0 / (roughness * roughness)
+    local width = factor * math.pow(exponent, -0.8)
+    width = width * 180.0 / math.pi;
+
+    -- print("wedge = " .. wedge )
+    --"  -  Exponent = " .. exponent ..
+    --"  -  Width = " .. width)
+
+    local spec_factor = 0.5
+
+    ---yellow - clearcoat refractive index
+
+    local geom = UsdGeometry("/Scene/geometry/geom0-" .. col) {
+        ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(posX+1, 0, 6),
+        ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+        ["prim_path"] = "/widget"    
+    }
+
+    local mtl = DwaBaseMaterial("/Scene/surfacing/mtl0-" .. col) {
+        ["albedo"] = Rgb(0.5,0.5,0.0),
+        ["specular_model"] = 0,
+        ["show_clearcoat"] = true,
+        ["clearcoat_roughness"] = 0,
+        ["clearcoat_refractive_index"] = 1.0 + wedge * 9.0,
+    }
+    table.insert(geoms, geom)
+    table.insert(assignments, {geom, "", mtl, lightSet})
+
+    ---red - clearcoat thickness
+
+    local geom = UsdGeometry("/Scene/geometry/geom1-" .. col) {
+        ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(posX, 0, 3),
+        ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+        ["prim_path"] = "/widget"    
+    }
+
+    local mtl = DwaBaseMaterial("/Scene/surfacing/mtl1-" .. col) {
+        ["albedo"] = Rgb(0.5,0,0),
+        ["specular_model"] = 0,
+        ["show_clearcoat"] = true,
+        ["clearcoat_roughness"] = 0,
+        ["clearcoat_thickness"] = wedge*5,
+    }
+
+    table.insert(geoms, geom)
+    table.insert(assignments, {geom, "", mtl, lightSet})
+
+    ---green - attenuation color
+
+    local geom = UsdGeometry("/Scene/geometry/geom2-" .. col) {
+        ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(posX-1, 0, 0),
+        ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+        ["prim_path"] = "/widget"    
+    }
+
+    local mtl = DwaBaseMaterial("/Scene/surfacing/mtl2-" .. col) {
+        ["albedo"] = Rgb(0,0.5,0),
+        ["specular_model"] = 0,
+        ["show_clearcoat"] = true,
+        ["clearcoat_roughness"] = 0,
+        ["clearcoat_thickness"] = 1,
+        ["clearcoat_attenuation_color"] = Rgb(wedge,wedge,wedge)
+    }
+
+    table.insert(geoms, geom)
+    table.insert(assignments, {geom, "", mtl, lightSet})
+
+    ---teal - normal
+
+    local geom = UsdGeometry("/Scene/geometry/geom3-" .. col) {
+        ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(posX-1, 0, -3),
+        ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+        ["prim_path"] = "/widget"    
+    }
+
+    local normalMap = ImageNormalMap("normalMap") {
+        ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/metal_anti_slip.tx",
+    }
+
+    local mtl = DwaBaseMaterial("/Scene/surfacing/mtl3-" .. col) {
+        ["albedo"] = Rgb(0, 0.5, 0.5),
+        ["specular_model"] = 0,
+        ["show_clearcoat"] = true,
+        ["clearcoat_roughness"] = 0,
+        ["clearcoat_thickness"] = 3,
+        ["use_independent_clearcoat_normal"] = true,
+        ["independent_clearcoat_normal"] = normalMap,
+        ["clearcoat_normal_dial"] = wedge,
+    }
+
+    table.insert(geoms, geom)
+    table.insert(assignments, {geom, "", mtl, lightSet})
+
+    ---purple - weight 
+
+    local geom = UsdGeometry("/Scene/geometry/geom4-" .. col) {
+        ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(posX-1, 0, -6),
+        ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+        ["prim_path"] = "/widget"    
+    }
+
+    local mtl = DwaBaseMaterial("/Scene/surfacing/mtl4-" .. col) {
+        ["albedo"] = Rgb(0.5, 0.0, 0.5),
+        ["specular_model"] = 0,
+        ["show_clearcoat"] = true,
+        ["clearcoat"] = wedge,
+        ["clearcoat_thickness"] = 1.5,
+        ["clearcoat_roughness"] = 0,
+    }
+
+    table.insert(geoms, geom)
+    table.insert(assignments, {geom, "", mtl, lightSet})
+end
+
+---------------------------------------------------------------------------
+
+local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
+    ["node_xform"] = scale(35, 1, 35) * translate(-4, 0, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+table.insert(geoms, planeGeom)
+
+local planeMtl = DwaBaseMaterial("/Scene/surfacing/planeMtl") {
+    ["specular"] = 1,
+    ["metallic"] = 1.0,
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+    ["roughness"] = .3,
+    ["specular_model"] = 0,
+}
+
+table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
+
+---------------------------------------------------------------------------
+
+GeometrySet("Scene/geometrySet")(geoms)
+Layer("Scene/layer")(assignments)

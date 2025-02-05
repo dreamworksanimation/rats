@@ -4,7 +4,7 @@
 # This tests self-intersecting dielectric materials with priority.
 
 add_rats_test(moonray_material_self_intersecting_dielectric
-    INPUTS self_intersecting_dielectric.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

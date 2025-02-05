@@ -1,4 +1,6 @@
-local md = 6
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+md = 6
 SceneVariables {
     ["image_width"] = 128,
     ["image_height"] = 128,
@@ -26,13 +28,8 @@ Camera("/Scene/rendering/camera") {
     ["film_width_aperture"] = 24,
 }
 
-geoms = {}
-assignments = {}
-
--------------------------------------------------------
-
-local key = SphereLight("/Scene/lighting/key") {
-    ["node xform"] = translate(-15, 30, -25),
+key = SphereLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(-15, 30, -25),
     ["color"] = Rgb(0.855, 0.77, 0.535),
     ["exposure"] = 4,
 }
@@ -41,59 +38,46 @@ lightSet = LightSet("/Scene/lighting/lightSet") {
     key,
 }
 
------------------------------------------------------
-
-local planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
+planeGeom = RdlMeshGeometry("/Scene/geometry/planeGeom") {
     ["node_xform"] = scale(1000, 1, 1000),
     ["vertex_list"] = {Vec3(-0.5, 0.0, 0.5), Vec3(0.5, 0.0, 0.5), Vec3(0.5, 0.0, -0.5), Vec3(-0.5, 0.0, -0.5)},
     ["vertices_by_index"] = {0, 1, 2, 3},
     ["face_vertex_count"] = {4},
     ["is_subd"] = false
 }
-table.insert(geoms, planeGeom)
 
-local planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
-    ["albedo"] = Rgb(0.5, 0.5, 0.5),
-    ["roughness"] = 0.03,
-}
-table.insert(assignments, {planeGeom, "", planeMtl, lightSet})
-
--------------------------------------------------------
-
-local boxGeom = BoxGeometry("/Scene/geometry/box") {
+boxGeom = BoxGeometry("/Scene/geometry/box") {
     ["node_xform"] = scale(8, 8, 8) * translate(0, 4, 0),
 }
-table.insert(geoms, boxGeom)
 
-local boxMtl = DwaRefractiveMaterial("Scene/surfacing/boxMtl") {
-    ["casts_caustics"] = true,
-    ["roughness"] = 0,
-}
-table.insert(assignments, {boxGeom, "", boxMtl, lightSet})
-
--------------------------------------------------------
-
-local torusGeom = UsdGeometry("/Scene/geometry/torus") {
+torusGeom = UsdGeometry("/Scene/geometry/torus") {
     ["node_xform"] = scale(3, 3, 3) * rotate(90, 0, 0, 1) * translate(0, 4, 0),
     ["stage"] = rats_assets_dir.."/models/torus.usdc",
     ["prim_path"] = "/torus",
 }
-table.insert(geoms, torusGeom)
 
-local torusMtl = DwaSolidDielectricMaterial("Scene/surfacing/torusMtl") {
+GeometrySet("geometrySet") {
+    planeGeom,
+    boxGeom,
+    torusGeom,
+}
+
+planeMtl = DwaSolidDielectricMaterial("/Scene/surfacing/planeMtl") {
+    ["albedo"] = Rgb(0.5, 0.5, 0.5),
+    ["roughness"] = 0.03,
+}
+
+boxMtl = DwaRefractiveMaterial("Scene/surfacing/boxMtl") {
+    ["casts_caustics"] = true,
+    ["roughness"] = 0,
+}
+
+torusMtl = DwaSolidDielectricMaterial("Scene/surfacing/torusMtl") {
     ["albedo"] = Rgb(0.8, 0.8, 0.4),
 }
-table.insert(assignments, {torusGeom, "", torusMtl, lightSet})
 
-
--- table.insert(assignments, {geom, "base",        base_mtl, lightSet})
--- table.insert(assignments, {geom, "stand",       stand_mtl, lightSet})
--- table.insert(assignments, {geom, "shell_front", base_mtl, lightSet})
--- table.insert(assignments, {geom, "shell_back",  base_mtl, lightSet})
--- table.insert(assignments, {geom, "collar",      base_mtl, lightSet})
--- table.insert(assignments, {geom, "core",        core_mtl, lightSet})
-
--------------------------------------------------------
-
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("/Scene/layer")(assignments)
+Layer("layer") {
+    { torusGeom, "", torusMtl, lightSet },
+    { boxGeom, "", boxMtl, lightSet },
+    { planeGeom, "", planeMtl, lightSet },
+}

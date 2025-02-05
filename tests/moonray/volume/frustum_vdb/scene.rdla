@@ -1,0 +1,36 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 1,
+}
+
+PerspectiveCamera("/obj/shot_cam") {
+    ["node_xform"] = translate(0, 0, 1239),
+}
+
+VdbGeometry("/obj/vdb_geo") {
+    ["model"] = rats_assets_dir.."/models/non_uniform_voxels.vdb",
+}
+
+SphereLight("/obj/lgt") {
+    ["node_xform"] = translate(0, 1500, 100),
+    ["intensity"] = 10000,
+    ["radius"] = 1000,
+}
+
+LightSet("/Scene/lightset") {
+    SphereLight("/obj/lgt"),
+}
+
+GeometrySet("/Scene/geoset") {
+    VdbGeometry("/obj/vdb_geo"),
+}
+
+VdbVolume("/mat/VdbVolume") {
+}
+
+Layer("/Scene/layer") {
+    {VdbGeometry("/obj/vdb_geo"), {""}, LightSet("/Scene/lightset"), VdbVolume("/mat/VdbVolume")},
+}

@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["pixel_samples"] = 2,
     ["max_depth"] = 0,
@@ -31,8 +33,8 @@ UsdGeometry("/Scene/geometry/sphere") {
 
 BaseVolume("/Scene/surfacing/baseVol10") {
     ["anisotropy"] = 0,
-    ["attenuation color"] = Rgb(0.01, 0.01, 0.01),
-    ["diffuse color"] = Rgb(1.0, 1.0, 1.0),
+    ["attenuation_color"] = Rgb(0.01, 0.01, 0.01),
+    ["diffuse_color"] = Rgb(1.0, 1.0, 1.0),
 }
 
 GeometrySet("geometryset") {

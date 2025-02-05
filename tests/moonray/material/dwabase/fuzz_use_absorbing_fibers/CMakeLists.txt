@@ -4,7 +4,7 @@
 # This tests the 'use-absorbing-fibers' code path in fuzz model
 
 add_rats_test(moonray_material_dwabase_fuzz_use_absorbing_fibers
-    INPUTS dwabase_fuzz_use_absorbing_fibers.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

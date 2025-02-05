@@ -1,5 +1,0 @@
-
-SceneVariables {
-    ["pixel_filter_width"] = 3,
-    ["pixel_filter"] = 1,
-}

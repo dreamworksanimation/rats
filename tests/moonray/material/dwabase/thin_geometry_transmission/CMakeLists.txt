@@ -4,7 +4,7 @@
 # This tests the thin geometry parameter with transmission
 
 add_rats_test(moonray_material_dwabase_thin_geometry_transmission
-    INPUTS dwabase_thin_geometry_transmission.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

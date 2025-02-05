@@ -1,6 +1,8 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["image width"] = 500,
-    ["image height"] = 300,
+    ["image_width"] = 500,
+    ["image_height"] = 300,
     ["pixel_samples"] = 4,
     ["max_depth"] = 1,
 }
@@ -111,7 +113,7 @@ earImageMap = ImageMap("earImageMap") {
 
 vectorEarDisp = VectorDisplacement("vectorEarDisp") {
     ["vector"] = bind(earImageMap),
-    ["source space"] = "object",
+    ["source_space"] = "object",
 }
 
 switchDisp = SwitchDisplacement("switchDisp") {

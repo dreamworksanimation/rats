@@ -1,13 +1,15 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["lights visible in camera"] = true,
-    ["pixel samples"] = 2,
-    ["max depth"] = 1,
-    ["image width"] = 360,
-    ["image height"] = 200,
+    ["lights_visible_in_camera"] = true,
+    ["pixel_samples"] = 2,
+    ["max_depth"] = 1,
+    ["image_width"] = 360,
+    ["image_height"] = 200,
 }
 
 Camera("/Scene/rendering/camera") {
-    ["node xform"] = Mat4(1, 0, 0, 0,
+    ["node_xform"] = Mat4(1, 0, 0, 0,
                           0, 1, 0, 0,
                           0, 0, 1, 0,
                           0, 1.5, 6, 1),
@@ -75,13 +77,13 @@ filter = VdbLightFilter("/Scene/lighting/vdb") {
 }
 
 sun = DistantLight("/Scene/lighting/sun") {
-    ["node xform"] = Mat4(0.786774, 0.019432, -0.616936, 0, -0.525164, 0.546265, -0.652531, 0, 0.324331, 0.837387, 0.439992, 0, 13.7238, 7, 2.81431, 1),
+    ["node_xform"] = Mat4(0.786774, 0.019432, -0.616936, 0, -0.525164, 0.546265, -0.652531, 0, 0.324331, 0.837387, 0.439992, 0, 13.7238, 7, 2.81431, 1),
     ["on"] = true,
     ["intensity"] = 1,
     ["normalized"] = true,
     ["color"] = Rgb(0.749, 0.748, 0.678),
-    ["angular extent"] = 5,
-    ["light filters"] = {filter},
+    ["angular_extent"] = 5,
+    ["light_filters"] = {filter},
 }
 
 lightSet = LightSet("LightSetA") {

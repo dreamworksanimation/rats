@@ -4,7 +4,7 @@
 # Test glitter density, color (with variation), and randomness
 
 add_rats_test(moonray_material_glitter_den_col_rand
-    INPUTS glitter_den_col_rand.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

@@ -4,8 +4,8 @@
 # This test checks the DOF sampling
 
 add_rats_test(moonray_differentials_dof_ortho
-    INPUTS dof_ortho.rdla
-           ../differentials_common.rdla
+    INPUTS scene.rdla
+           ../common.rdla
     CANONICALS scene.exr
 )
 

@@ -1,6 +1,8 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
-    ["image width"] = 256,
-    ["image height"] = 128,
+    ["image_width"] = 256,
+    ["image_height"] = 128,
 }
 
 Camera("/Scene/rendering/camera") {
@@ -28,7 +30,7 @@ for k = 0, 14 do
     y = math.floor(k / 5)
     x = math.fmod(k, 5)
     sphere = SphereGeometry("/Scene/geometry/sphere" .. k) {
-        ["node xform"] = translate(x - 2, 1 - y, -8),
+        ["node_xform"] = translate(x - 2, 1 - y, -8),
         ["radius"] = 0.4,
     }
     table.insert(geoms, sphere)

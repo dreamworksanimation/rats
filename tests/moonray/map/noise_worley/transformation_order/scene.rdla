@@ -1,0 +1,67 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+planeMap1 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap1") {
+   ["space"] = 4,
+   ["seed"] = 0,
+   ["frequency"] = 1,
+   ["output_mode"] = 2,
+   ["rotation"] = Vec3(0.0, 0.0, 90.0),
+   ["translation"] = Vec3(1.0, 0.0, 0.0),
+   ["scale"] = Vec3(2.0, 1.0, 1.0),
+   ["transformation_order"] = 0, -- SRT
+}
+
+planeMap2 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap2") {
+   ["space"] = 4,
+   ["seed"] = 0,
+   ["frequency"] = 1,
+   ["output_mode"] = 2,
+   ["rotation"] = Vec3(0.0, 0.0, 90.0),
+   ["translation"] = Vec3(1.0, 0.0, 0.0),
+   ["scale"] = Vec3(2.0, 1.0, 1.0),
+   ["transformation_order"] = 1, -- STR
+}
+
+planeMap3 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap3") {
+   ["space"] = 4,
+   ["seed"] = 0,
+   ["frequency"] = 1,
+   ["output_mode"] = 2,
+   ["rotation"] = Vec3(0.0, 0.0, 90.0),
+   ["translation"] = Vec3(1.0, 0.0, 0.0),
+   ["scale"] = Vec3(2.0, 1.0, 1.0),
+   ["transformation_order"] = 2, -- RST
+}
+
+planeMap4 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap4") {
+   ["space"] = 4,
+   ["seed"] = 0,
+   ["frequency"] = 1,
+   ["output_mode"] = 2,
+   ["rotation"] = Vec3(0.0, 0.0, 90.0),
+   ["translation"] = Vec3(1.0, 0.0, 0.0),
+   ["scale"] = Vec3(2.0, 1.0, 1.0),
+   ["transformation_order"] = 3, -- RTS
+}
+
+planeMap5 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap5") {
+   ["space"] = 4,
+   ["seed"] = 0,
+   ["frequency"] = 1,
+   ["output_mode"] = 2,
+   ["rotation"] = Vec3(0.0, 0.0, 90.0),
+   ["translation"] = Vec3(1.0, 0.0, 0.0),
+   ["scale"] = Vec3(2.0, 1.0, 1.0),
+   ["transformation_order"] = 4, -- TSR
+}
+
+planeMap6 = NoiseWorleyMap_v2("/Scene/surfacing/planeMap6") {
+   ["space"] = 4,
+   ["seed"] = 0,
+   ["frequency"] = 1,
+   ["output_mode"] = 2,
+   ["rotation"] = Vec3(0.0, 0.0, 90.0),
+   ["translation"] = Vec3(1.0, 0.0, 0.0),
+   ["scale"] = Vec3(2.0, 1.0, 1.0),
+   ["transformation_order"] = 5, -- TRS
+}

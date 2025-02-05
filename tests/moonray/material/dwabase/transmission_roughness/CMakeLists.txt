@@ -4,7 +4,7 @@
 # This tests transmission roughness
 
 add_rats_test(moonray_material_dwabase_transmission_roughness
-    INPUTS dwabase_transmission_roughness.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

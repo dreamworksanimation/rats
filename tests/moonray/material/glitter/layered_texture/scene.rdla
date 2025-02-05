@@ -1,3 +1,5 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["pixel_samples"] = 3,
     ["image_width"] = 300,
@@ -36,7 +38,7 @@ glitterMetalMtl = DwaMetalMaterial("glitterMetalMtl") {
     ["roughness"] = 0.1,
 
     ["show_glitter"] = true,
-    ["glitter"] =  1.0,
+    ["glitter"] = 1.0,
     ["glitter_density"] = 10.0,
     ["glitter_randomness"] = 0.5,
     ["glitter_space"] = "object",
@@ -51,7 +53,7 @@ glitterSkinMtl = DwaSkinMaterial("glitterSkinMtl") {
     ["albedo"] = Rgb(1.0, 0.5, 0.5),
 
     ["show_glitter"] = true,
-    ["glitter"] =  1.0,
+    ["glitter"] = 1.0,
     ["glitter_density"] = 10.0,
     ["glitter_randomness"] = 0.5,
     ["glitter_space"] = "object",

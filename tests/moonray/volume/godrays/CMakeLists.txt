@@ -4,7 +4,7 @@
 # Tests "god rays" scattering passing through a torus.
 
 add_rats_test(moonray_volume_godrays
-    INPUTS godrays.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

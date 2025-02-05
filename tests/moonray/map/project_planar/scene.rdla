@@ -1,61 +1,52 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
 SceneVariables {
     ["pixel_samples"] = 8,
     ["image_width"] = 256,
     ["image_height"] = 256,
 }
 
-local shotCam = Camera("/Scene/rendering/camera") {
-    ["node xform"] = translate(0, 0, 5),
+shotCam = Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0, 5),
 }
 
--------------------------------------------------------
 
 lightSet = LightSet("/Scene/lighting/lightSet") {
 }
 
--------------------------------------------------------
+geom = UsdGeometry("geom") {
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+    ["node_xform"] = rotate(45, 1, 0, 0) * translate(0, -2, -13),
+}
 
-geoms = {}
-assignments = {}
+GeometrySet("geometrySet") {
+    geom,
+}
 
--------------------------------------------------------
-
-local projGeom = BoxGeometry("projGeom") {
+projGeom = BoxGeometry("projGeom") {
     ["node_xform"] = rotate(0, 1, 0, 0),
 }
 
-local projMap = ProjectPlanarMap("/Scene/surfacing/projMap") {
+projMap = ProjectPlanarMap("/Scene/surfacing/projMap") {
    ["projector"] = projGeom,
-   ["use reference space"] = false
+   ["use_reference_space"] = false
 }
 
-local checkerMap = CheckerboardMap("/Scene/surfacing/checkerMap") {
-    ["color A"] = Rgb(0, 0, 1),
-    ["color B"] = Rgb(0.5, 0.5, 0),
-    ["texture coordinates"] = 1,
-    ["input texture coordinates"] = bind(projMap)
+checkerMap = CheckerboardMap("/Scene/surfacing/checkerMap") {
+    ["color_A"] = Rgb(0, 0, 1),
+    ["color_B"] = Rgb(0.5, 0.5, 0),
+    ["texture_coordinates"] = 1,
+    ["input_texture_coordinates"] = bind(projMap)
 }
 
-local mtl = DwaSolidDielectricMaterial("mtl") {
+mtl = DwaSolidDielectricMaterial("mtl") {
     ["show_diffuse"] = false,
     ["show_specular"] = false,
     ["show_emission"] = true,
     ["emission"] = bind(checkerMap, Rgb(1,1,1)),
 }
 
--------------------------------------------------------
-
-local geom = UsdGeometry("geom") {
-    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
-    ["prim_path"] = "/widget",
-    ["node_xform"] = rotate(45, 1, 0, 0) * translate(0, -2, -13),
+Layer("layer") {
+    { geom, "", mtl, lightSet },
 }
-
-table.insert(geoms, geom)
-
-table.insert(assignments, {geom, "", mtl, lightSet})
-
--------------------------------------------------------
-
-GeometrySet("Scene/geometrySet")(geoms)
-Layer("/Scene/layer")(assignments)

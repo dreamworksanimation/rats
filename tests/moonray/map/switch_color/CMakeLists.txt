@@ -4,7 +4,7 @@
 # This tests the switch color map shader
 
 add_rats_test(moonray_map_switch_color
-    INPUTS switch_color.rdla
+    INPUTS scene.rdla
     CANONICALS scene.exr
 )
 

@@ -1,0 +1,144 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 2,
+    ["bsdf_samples"] = 3,
+    ["max_depth"] = 5,
+    ["sample_clamping_value"] = 0,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 3.3, 14) * rotate(-10, 1, 0, 0),
+}
+
+assignments = {}
+-------------------------------------------------------
+
+env = EnvLight("/Scene/lighting/env") {
+    ["intensity"] = 0.8,
+    ["exposure"] = 0.0,
+    ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
+}
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-60, 1, 0, 0) *
+                     rotate(-60, 0, 1, 0),
+    ["intensity"] = 16,
+    ["exposure"] = 0.0,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    env,
+    key,
+}
+
+-------------------------------------------------------
+
+local geom = UsdGeometry("/Scene/geometry/geom") {
+    ["node_xform"] = translate(0, -0.28, 0) * rotate(-35, 0, 1, 0),
+    ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
+    ["prim_path"] = "/widget",
+}
+
+local mtlA = DwaMetalMaterial("/Scene/surfacing/mtlA") {
+    ["metallic_color"] = Rgb(0.5, 0.48, 0.49),
+    ["roughness"] = 0.1,
+    ["specular_model"] = 0,
+}
+local mtlB = DwaSolidDielectricMaterial("/Scene/surfacing/mtlB") {
+    ["albedo"] = Rgb(0.5, 0.02, 0.02),
+    ["roughness"] = 0.6,
+    ["specular_model"] = 0,
+}
+local mtlC = DwaRefractiveMaterial("/Scene/surfacing/mtlC") {
+    ["roughness"] = 0.0,
+}
+
+local mtlD = DwaSkinMaterial("/Scene/surfacing/mtlD") {
+    ["albedo"] = Rgb(0.6, 0.3, 0.22),
+    ["refractive_index"] = 1.4,
+    ["scattering_color"] = Rgb(1.0, 0.04, 0.04),
+    ["scattering_radius"] = 1.0,
+    ["specular_model"] = 0,
+}
+
+local mtlE = DwaFabricMaterial("/Scene/surfacing/mtlE") {
+    ["warp_color"] = Rgb(0.4, 0.02, 0.02),
+    ["albedo"] = Rgb(0.4, 0.02, 0.02),
+    ["fabric_diffuse_scattering"] = 0,
+}
+
+local mtlF = DwaVelvetMaterial_v2("/Scene/surfacing/mtlF") {
+    ["fuzz_albedo"] = Rgb(0.2, 0.02, 0.4),
+    ["albedo"] = Rgb(0.2, 0.02, 0.4),
+}
+
+local mask = ImageMap("/Scene/surfacing/mask") {
+    ["texture"] = rats_assets_dir .. "/textures/splat.tx",
+    ["scale"] = Vec2(2, 1),
+}
+
+local checker = CheckerboardMap("Map") {
+    ["color_A"] = Rgb(0, 0, 0),
+    ["color_B"] = Rgb(1, 1, 1),
+    ["num_u_tiles"] = 16,
+    ["num_v_tiles"] = 16,
+}
+
+local checker2 = CheckerboardMap("Map2") {
+    ["color_A"] = Rgb(0, 0, 0),
+    ["color_B"] = Rgb(1, 1, 1),
+    ["num_u_tiles"] = 32,
+    ["num_v_tiles"] = 32,
+}
+
+local mtlLayer = DwaLayerMaterial("/Scene/surfacing/layer") {
+    ["material_A"] = mtlA,
+    ["material_B"] = mtlB,
+    ["mask"] = bind(mask, 1.0),
+}
+
+local mtlLayer2 = DwaLayerMaterial("/Scene/surfacing/layer2") {
+    ["material_A"] = mtlC,
+    ["material_B"] = mtlLayer,
+    ["mask"] = bind(checker, 1.0),
+}
+
+local mtlLayer3 = DwaLayerMaterial("/Scene/surfacing/layer3") {
+    ["material_A"] = mtlD,
+    ["material_B"] = mtlLayer2,
+    ["mask"] = bind(checker2, 1.0),
+}
+
+------------------------------------------------------------
+
+local mtlLayer4 = DwaLayerMaterial("/Scene/surfacing/layer4") {
+    ["material_A"] = mtlE,
+    ["material_B"] = mtlLayer2,
+    ["mask"] = bind(checker, 1.0),
+}
+
+local mtlLayer5 = DwaLayerMaterial("/Scene/surfacing/layer5") {
+    ["material_A"] = mtlF,
+    ["material_B"] = mtlLayer4,
+    ["mask"] = bind(checker2, 1.0),
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") { geom }
+
+Layer("/Scene/layer") {
+    {geom, "shell_front", mtlLayer3, lightSet},
+    {geom, "shell_back", mtlLayer3, lightSet},
+    {geom, "collar", mtlLayer5, lightSet},
+    {geom, "stand", mtlLayer3, lightSet},
+    {geom, "core", mtlLayer3, lightSet},
+}
+

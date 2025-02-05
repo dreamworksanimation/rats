@@ -1,0 +1,177 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 400,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(0, 0.0, 13),
+    ["focal"] = 50,
+}
+
+-------------------------------------------------------
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+}
+
+-------------------------------------------------------
+
+local imgA = ImageMap("/Scene/surfacing/imgA") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+local c2fR = RgbToFloatMap("/Scene/surfacing/c2fR") {
+    ["input"] = bind(imgA),
+    ["mode"] = 0, -- R
+}
+
+local c2fG = RgbToFloatMap("/Scene/surfacing/c2fG") {
+    ["input"] = bind(imgA),
+    ["mode"] = 1, -- G
+}
+
+local c2fB = RgbToFloatMap("/Scene/surfacing/c2fB") {
+    ["input"] = bind(imgA),
+    ["mode"] = 2, -- B
+}
+
+local c2fMin = RgbToFloatMap("/Scene/surfacing/c2fMin") {
+    ["input"] = bind(imgA),
+    ["mode"] = 3, -- min
+}
+
+local c2fMax = RgbToFloatMap("/Scene/surfacing/c2fMax") {
+    ["input"] = bind(imgA),
+    ["mode"] = 4, -- max
+}
+
+local c2fAvg = RgbToFloatMap("/Scene/surfacing/c2fAvg") {
+    ["input"] = bind(imgA),
+    ["mode"] = 5, -- average
+}
+
+local c2fSum = RgbToFloatMap("/Scene/surfacing/c2fSum") {
+    ["input"] = bind(imgA),
+    ["mode"] = 6, -- sum
+}
+
+local c2fLum = RgbToFloatMap("/Scene/surfacing/c2fLum") {
+    ["input"] = bind(imgA),
+    ["mode"] = 7, -- luminance
+}
+
+-------------------------------------------------------
+
+local planeMtlR = DwaEmissiveMaterial("/Scene/surfacing/planeMtlR") {
+    ["emission"] = bind(c2fR),
+}
+
+local planeMtlG = DwaEmissiveMaterial("/Scene/surfacing/planeMtlG") {
+    ["emission"] = bind(c2fG),
+}
+
+local planeMtlB = DwaEmissiveMaterial("/Scene/surfacing/planeMtlB") {
+    ["emission"] = bind(c2fB),
+}
+
+local planeMtlMin = DwaEmissiveMaterial("/Scene/surfacing/planeMtlMin") {
+    ["emission"] = bind(c2fMin),
+}
+
+local planeMtlImg = DwaEmissiveMaterial("/Scene/surfacing/planeMtlImg") {
+    ["emission"] = bind(imgA),
+}
+
+local planeMtlMax = DwaEmissiveMaterial("/Scene/surfacing/planeMtlMax") {
+    ["emission"] = bind(c2fMax),
+}
+
+local planeMtlAvg = DwaEmissiveMaterial("/Scene/surfacing/planeMtlAvg") {
+    ["emission"] = bind(c2fAvg),
+}
+
+local planeMtlSum = DwaEmissiveMaterial("/Scene/surfacing/planeMtlSum") {
+    ["emission"] = bind(c2fSum),
+}
+
+local planeMtlLum = DwaEmissiveMaterial("/Scene/surfacing/planeMtlLum") {
+    ["emission"] = bind(c2fLum),
+}
+
+-------------------------------------------------------
+
+local size = 1.9
+
+local planeGeom1 = UsdGeometry("/Scene/geometry/planeGeom1") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(-2, 2, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+local planeGeom2 = UsdGeometry("/Scene/geometry/planeGeom2") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(0, 2, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+local planeGeom3 = UsdGeometry("/Scene/geometry/planeGeom3") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(2, 2, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+local planeGeom4 = UsdGeometry("/Scene/geometry/planeGeom4") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(-2, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+local planeGeom5 = UsdGeometry("/Scene/geometry/planeGeom5") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(0, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+local planeGeom6 = UsdGeometry("/Scene/geometry/planeGeom6") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(2, 0, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+local planeGeom7 = UsdGeometry("/Scene/geometry/planeGeom7") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(-2, -2, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+local planeGeom8 = UsdGeometry("/Scene/geometry/planeGeom8") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(0, -2, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+local planeGeom9 = UsdGeometry("/Scene/geometry/planeGeom9") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(2, -2, 0),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+GeometrySet("Scene/geometrySet") {
+    planeGeom1,
+    planeGeom2,
+    planeGeom3,
+    planeGeom4,
+    planeGeom5,
+    planeGeom6,
+    planeGeom7,
+    planeGeom8,
+    planeGeom9,
+}
+
+-------------------------------------------------------
+
+Layer("/Scene/layer") {
+    {planeGeom1, "", planeMtlR, lightSet},
+    {planeGeom2, "", planeMtlG, lightSet},
+    {planeGeom3, "", planeMtlB, lightSet},
+    {planeGeom4, "", planeMtlMin, lightSet},
+    {planeGeom5, "", planeMtlImg, lightSet},
+    {planeGeom6, "", planeMtlMax, lightSet},
+    {planeGeom7, "", planeMtlAvg, lightSet},
+    {planeGeom8, "", planeMtlSum, lightSet},
+    {planeGeom9, "", planeMtlLum, lightSet},
+}
+

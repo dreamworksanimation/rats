@@ -1,0 +1,163 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["pixel_samples"] = 1,
+    ["light_samples"] = 1,
+    ["bsdf_samples"] = 1,
+    ["bssrdf_samples"] = 0,
+    ["max_depth"] = 0,
+    ["image_width"] = 371,
+    ["image_height"] = 256,
+    ["texture_blur"] = 0,
+}
+
+Camera("/Scene/rendering/camera") {
+    ["node_xform"] = translate(1, 0.0, 8.75),
+}
+
+-------------------------------------------------------
+
+key = RectLight("/Scene/lighting/key") {
+    ["node_xform"] = translate(0, 0, 100) *
+                     rotate(-10, 1, 0, 0) *
+                     rotate(-10, 0, 1, 0),
+    ["intensity"] = 12,
+    ["width"] = 50,
+    ["height"] = 50,
+}
+
+lightSet = LightSet("/Scene/lighting/lightSet") {
+    key,
+}
+
+-------------------------------------------------------
+
+texture = rats_assets_dir.."/textures/color_grid.tx"
+
+local planeMap1 = ImageMap("/Scene/surfacing/planeMap1") {
+    ["texture"] = texture,
+    ["scale"] = Vec2(1, 1),
+    ["offset"] = Vec2(0, 0),
+    ["wrap_around"] = false,
+}
+
+local planeMap2 = ImageMap("/Scene/surfacing/planeMap2") {
+    ["texture"] = texture,
+    ["scale"] = Vec2(1.2, 1.4),
+    ["offset"] = Vec2(0, 0),
+    ["wrap_around"] = false,
+}
+
+local planeMap3 = ImageMap("/Scene/surfacing/planeMap3") {
+    ["texture"] = texture,
+    ["scale"] = Vec2(1.2, 1.4),
+    ["offset"] = Vec2(-0.1, -0.2),
+    ["wrap_around"] = false,
+}
+
+local planeMap4 = ImageMap("/Scene/surfacing/planeMap4") {
+    ["texture"] = texture,
+    ["scale"] = Vec2(2, 2),
+    ["offset"] = Vec2(0, 0),
+    ["wrap_around"] = true,
+}
+
+local planeMap5 = ImageMap("/Scene/surfacing/planeMap5") {
+    ["texture"] = texture,
+    ["wrap_around"] = true,
+    ["rotation_angle"] = -8,
+    ["rotation_center"] = Vec2(0, 0),
+}
+
+local planeMap6 = ImageMap("/Scene/surfacing/planeMap6") {
+    ["texture"] = texture,
+    ["wrap_around"] = true,
+    ["scale"] = Vec2(1.2, 1.4),
+    ["offset"] = Vec2(-0.1, -0.2),
+    ["rotation_angle"] = 368,
+    ["rotation_center"] = Vec2(0.5, 0.5),
+}
+
+-------------------------------------------------------
+
+local planeMtl1 = DwaBaseMaterial("/Scene/surfacing/planeMtl1") {
+    ["albedo"] = bind(planeMap1),
+}
+
+local planeMtl2 = DwaBaseMaterial("/Scene/surfacing/planeMtl2") {
+    ["albedo"] = bind(planeMap2),
+}
+
+local planeMtl3 = DwaBaseMaterial("/Scene/surfacing/planeMtl3") {
+    ["albedo"] = bind(planeMap3)
+}
+
+local planeMtl4 = DwaBaseMaterial("/Scene/surfacing/planeMtl4") {
+    ["albedo"] = bind(planeMap4)
+}
+
+local planeMtl5 = DwaBaseMaterial("/Scene/surfacing/planeMtl5") {
+    ["albedo"] = bind(planeMap5)
+}
+
+local planeMtl6 = DwaBaseMaterial("/Scene/surfacing/planeMtl6") {
+    ["albedo"] = bind(planeMap6)    
+}
+
+-------------------------------------------------------
+
+local size = 1.8
+
+planeGeomPath = rats_assets_dir.."/models/plane.usdc"
+primPath = "/plane"
+
+local planeGeom1 = UsdGeometry("/Scene/geometry/planeGeom1") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(-1, 1, 0),
+    ["stage"] = planeGeomPath,
+    ["prim_path"] = primPath
+}
+local planeGeom2 = UsdGeometry("/Scene/geometry/planeGeom2") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(1, 1, 0),
+    ["stage"] = planeGeomPath,
+    ["prim_path"] = primPath
+}
+local planeGeom3 = UsdGeometry("/Scene/geometry/planeGeom3") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(-1, -1, 0),
+    ["stage"] = planeGeomPath,
+    ["prim_path"] = primPath
+}
+local planeGeom4 = UsdGeometry("/Scene/geometry/planeGeom4") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(1, -1, 0),
+    ["stage"] = planeGeomPath,
+    ["prim_path"] = primPath
+}
+local planeGeom5 = UsdGeometry("/Scene/geometry/planeGeom5") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(3, 1, 0),
+    ["stage"] = planeGeomPath,
+    ["prim_path"] = primPath
+}
+local planeGeom6 = UsdGeometry("/Scene/geometry/planeGeom6") {
+    ["node_xform"] = rotate(90, 1, 0, 0) * scale(size, size, 1) * translate(3, -1, 0),
+    ["stage"] = planeGeomPath,
+    ["prim_path"] = primPath
+}
+
+-------------------------------------------------------
+
+GeometrySet("Scene/geometrySet") { 
+    planeGeom1,
+    planeGeom2,
+    planeGeom3,
+    planeGeom4,
+    planeGeom5,
+    planeGeom6,
+}
+Layer("/Scene/layer") {
+    {planeGeom1, "", planeMtl1, lightSet},
+    {planeGeom2, "", planeMtl2, lightSet},
+    {planeGeom3, "", planeMtl3, lightSet},
+    {planeGeom4, "", planeMtl4, lightSet},
+    {planeGeom5, "", planeMtl5, lightSet},
+    {planeGeom6, "", planeMtl6, lightSet},
+}
+

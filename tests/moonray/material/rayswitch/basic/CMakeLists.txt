@@ -4,7 +4,7 @@
 # This tests the ray switch material
 
 add_rats_test(moonray_material_rayswitch_basic
-    INPUTS rayswitch_basic.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

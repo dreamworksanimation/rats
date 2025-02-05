@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 add_rats_test(moonray_render_output_aov_child_labels
-    INPUTS aov_child_labels.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
         lpe_diffuse.exr
