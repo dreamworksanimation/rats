@@ -3,7 +3,7 @@
 
 # Test the HairDiffuseMaterial Features.
 
-add_rats_test(moonray_material_hair_diffuse
+add_rats_test(BASENAME moonray_material_hair_diffuse
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

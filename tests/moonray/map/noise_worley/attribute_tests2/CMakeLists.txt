@@ -3,7 +3,7 @@
 
 # This tests more of the worley noise map shader attributes
 
-add_rats_test(moonray_map_noise_worley_attribute_tests2
+add_rats_test(BASENAME moonray_map_noise_worley_attribute_tests2
     INPUTS scene.rdla
            ../common.rdla
     CANONICALS scene.exr

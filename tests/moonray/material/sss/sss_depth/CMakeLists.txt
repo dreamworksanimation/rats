@@ -3,7 +3,7 @@
 
 # This tests the "max_subsurface_per_path" depth-based scene variable.
 
-add_rats_test(moonray_material_sss_sss_depth
+add_rats_test(BASENAME moonray_material_sss_sss_depth
     INPUTS scene.rdla
     CANONICALS
         scene.exr

@@ -3,7 +3,7 @@
 
 # This tests the transform space map shader
 
-add_rats_test(moonray_map_transform_space_basic
+add_rats_test(BASENAME moonray_map_transform_space_basic
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

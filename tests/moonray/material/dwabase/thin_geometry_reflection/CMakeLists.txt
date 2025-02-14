@@ -3,7 +3,7 @@
 
 # This tests the thin geometry parameter with reflection
 
-add_rats_test(moonray_material_dwabase_thin_geometry_reflection
+add_rats_test(BASENAME moonray_material_dwabase_thin_geometry_reflection
     INPUTS scene.rdla
     CANONICALS
         scene.exr

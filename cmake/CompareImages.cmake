@@ -1,4 +1,4 @@
-# Copyright 2023 DreamWorks Animation LLC
+# Copyright 2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 # =====================================================================================
@@ -12,14 +12,12 @@
 #   EXEC_MODE           : used to determine which defaults to use (scalar|vector|xpu)
 #   CANONICAL           : path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
 #   RESULT              : name of the image to be compared with the canonical image, eg. beauty.exr
-#   IDIFF               : full path to the openimageio 'idiff' cmd
-#
-# Optional definitions:
-#   IDIFF_ARGS          : list of user-specified arguments to the idiff tool,
-#                           which will override the execution mode defaults
+#   IDIFF_TOOL          : full path to the openimageio 'idiff' cmd
+#   DIFF_JSON           : full path to diff.json file, which contains the args to be passed to the diff cmd
+#   DIFF_DEFAULTS_JSON  : full path to diff_defaults.json file, which contains the default args to be passed to the diff cmd
 # -------------------------------------------------------------------------------------
 # Validate script inputs, these are required to be defined by the calling code
-foreach(required_def EXEC_MODE CANONICAL RESULT IDIFF)
+foreach(required_def EXEC_MODE CANONICAL RESULT IDIFF_TOOL DIFF_JSON DIFF_DEFAULTS_JSON)
     if(NOT DEFINED ${required_def})
         message(FATAL_ERROR "${required_def} is undefined")
     endif()
@@ -30,109 +28,7 @@ if(NOT DEFINED ENV{RATS_CANONICAL_DIR})
     message(FATAL_ERROR "RATS_CANONICAL_DIR is undefined")
 endif()
 
-# Build list of arguments for the idiff cmd.  Each execution mode has a
-# set of defaults, and any user-specifed arguments are parsed here and
-# override the defaults.
-function(override_idiff_args out_var)
-    set(options -p -q -a -abs -v)
-    set(oneValueArgs EXEC_MODE -fail -failrelative -failpercent -hardfail -allowfailures -warn -warnrelative -warnpercent -hardwarn -scale)
-    set(multiValueArgs "") # currently unused
-
-    # parse and validate function arguments
-    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-    if(DEFINED ARG_KEYWORDS_MISSING_VALUES)
-        message(FATAL_ERROR "Keywords missing values: ${ARG_KEYWORDS_MISSING_VALUES}")
-    endif()
-    if(DEFINED ARG_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR "Unrecognized arguments: ${ARG_UNPARSED_ARGUMENTS}")
-    endif()
-    if(NOT DEFINED ARG_EXEC_MODE)
-        message(FATAL_ERROR "You must specify EXEC_MODE.")
-    endif()
-
-    # DEFAULT IDIFF ARGUMENTS
-
-    # Commented default arguments below are not set by this function
-    # unless overridden by user but are left in place for future use.
-    if(${ARG_EXEC_MODE} STREQUAL "scalar")
-        set(default_fail            0.004)
-        # set(default_failrelative    0)
-        set(default_failpercent     0.01)
-        set(default_hardfail        0.02)
-        # set(default_allowfailures   0)
-        set(default_warn            0.004)
-        # set(default_warnrelative    0)
-        set(default_warnpercent     0.01)
-        # set(default_hardwarn        inf)
-        # set(default_scale           1)
-        # set(default_p               FALSE)
-        # set(default_q               FALSE)
-        set(default_a               TRUE)   # always set
-        set(default_abs             TRUE)   # always set
-        set(default_v               TRUE)   # always set
-    elseif(${ARG_EXEC_MODE} STREQUAL "vector" OR ${ARG_EXEC_MODE} STREQUAL "xpu")
-        set(default_fail            0.007)
-        # set(default_failrelative    0)
-        set(default_failpercent     0.02)
-        set(default_hardfail        0.02)
-        # set(default_allowfailures   0)
-        set(default_warn            0.007)
-        # set(default_warnrelative    0)
-        set(default_warnpercent     0.02)
-        # set(default_hardwarn        inf)
-        # set(default_scale           1)
-        # set(default_p               FALSE)
-        # set(default_q               FALSE)
-        set(default_a               TRUE)   # always set
-        set(default_abs             TRUE)   # always set
-        set(default_v               TRUE)   # always set
-    elseif(${ARG_EXEC_MODE} STREQUAL "default")
-        set(default_fail            0.007)
-        # set(default_failrelative    0)
-        set(default_failpercent     0.02)
-        set(default_hardfail        0.02)
-        # set(default_allowfailures   0)
-        set(default_warn            0.007)
-        # set(default_warnrelative    0)
-        set(default_warnpercent     0.02)
-        # set(default_hardwarn        inf)
-        # set(default_scale           1)
-        # set(default_p               FALSE)
-        # set(default_q               FALSE)
-        set(default_a               TRUE)   # always set
-        set(default_abs             TRUE)   # always set
-        set(default_v               TRUE)   # always set
-    else()
-        message(FATAL_ERROR "Unrecognized EXEC_MODE: ${ARG_EXEC_MODE}")
-    endif()
-
-    # append any single-value options
-    foreach(arg fail failrelative failpercent hardfail allowfailures warn warnrelative warnpercent hardwarn scale)
-        set(override ARG_-${arg})
-        set(default default_${arg})
-        if(DEFINED ${override})
-            list(APPEND args -${arg} ${${override}})
-        elseif(DEFINED ${default})
-            list(APPEND args -${arg} ${${default}})
-        endif()
-    endforeach()
-
-    # append any flags
-    foreach(arg p;q;a;abs;v)
-        set(override ARG_-${arg})
-        set(default default_${arg})
-        if(${override})
-            list(APPEND args -${arg})
-        elseif(${default})
-            list(APPEND args -${arg})
-        endif()
-    endforeach()
-
-    set(${out_var} ${args} PARENT_SCOPE)
-endfunction()
-
 function(diff_images args canonical_image result_image)
-    # cmake_path(GET canonical_image PARENT_PATH canonical_dir)
     cmake_path(GET result_image STEM stem)
     cmake_path(GET result_image EXTENSION extension)
     set(diff_image "${stem}_diff${extension}")
@@ -145,7 +41,7 @@ function(diff_images args canonical_image result_image)
     endif()
 
     execute_process(
-        COMMAND ${IDIFF} ${args} -o ${diff_image} ${canonical_image} ${result_image}
+        COMMAND ${IDIFF_TOOL} ${args} -o ${diff_image} ${canonical_image} ${result_image}
         COMMAND_ECHO STDOUT
         RESULT_VARIABLE result
     )
@@ -177,8 +73,60 @@ function(diff_images args canonical_image result_image)
     endif()
 endfunction()
 
-file(TO_NATIVE_PATH "$ENV{RATS_CANONICAL_DIR}/${CANONICAL}" full_canonical_path)
+# Compose a new JSON object to hold our final diff args.
+set(data "{}")
 
-override_idiff_args(args EXEC_MODE ${EXEC_MODE} ${IDIFF_ARGS})
+# Read default diff args from json file into tmp_json string.
+file(TO_NATIVE_PATH ${DIFF_DEFAULTS_JSON} diff_defaults_json_file)
+if(NOT EXISTS ${diff_defaults_json_file})
+    message(FATAL_ERROR "Default diff args file not found: ${diff_defaults_json_file}")
+endif()
+file(READ ${diff_defaults_json_file} tmp_json)
+string(JSON num_entries LENGTH ${tmp_json} ${EXEC_MODE})
+math(EXPR count "${num_entries}-1")
+foreach(index RANGE ${count})
+    string(JSON member MEMBER ${tmp_json} ${EXEC_MODE} ${index})
+    string(JSON value GET ${tmp_json} ${EXEC_MODE} ${member})
+    string(JSON data SET ${data} ${member} ${value})
+endforeach()
+
+# Read test-specific diff args from local diff.json, replacing any default values.
+file(TO_NATIVE_PATH ${DIFF_JSON} diff_args_json_file)
+if(EXISTS ${diff_args_json_file})
+    file(READ ${diff_args_json_file} tmp_json)
+    string(JSON object ERROR_VARIABLE err GET ${tmp_json} ${RESULT})
+    if(${err} STREQUAL "NOTFOUND")
+        string(JSON num_entries ERROR_VARIABLE err LENGTH ${tmp_json} ${RESULT} ${EXEC_MODE})
+        if(${err} STREQUAL "NOTFOUND")
+            math(EXPR count "${num_entries}-1")
+            foreach(index RANGE ${count})
+                string(JSON member MEMBER ${tmp_json} ${RESULT} ${EXEC_MODE} ${index})
+                string(JSON value GET ${tmp_json} ${RESULT} ${EXEC_MODE} ${member})
+                string(JSON data SET ${data} ${member} ${value})
+            endforeach()
+        endif()
+    endif()
+endif()
+
+# Transform JSON data into flat list of args (key;value;key;value;flag;flag;etc.) for idiff.
+set(args "")
+string(JSON num_entries LENGTH ${data})
+math(EXPR count "${num_entries}-1")
+foreach(index RANGE ${count})
+    string(JSON member MEMBER ${data} ${index})
+    string(JSON value GET ${data} ${member})
+    if(${member} STREQUAL "flags")
+        string(JSON num_flags LENGTH ${data} ${member})
+        math(EXPR flags_count "${num_flags}-1")
+        foreach(flag_index RANGE ${flags_count})
+            string(JSON flag GET ${data} ${member} ${flag_index})
+            list(APPEND args ${flag})
+        endforeach()
+    else()
+        list(APPEND args ${member} ${value})
+    endif()
+endforeach()
+
+file(TO_NATIVE_PATH "$ENV{RATS_CANONICAL_DIR}/${CANONICAL}" full_canonical_path)
 diff_images("${args}" ${full_canonical_path} ${RESULT})
 

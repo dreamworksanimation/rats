@@ -3,7 +3,7 @@
 
 # This test bakes a map on a subd mesh using a non-default uv.
 
-add_rats_test(moonray_camera_bake_subd
+add_rats_test(BASENAME moonray_camera_bake_subd
     INPUTS subd.rdla
     CANONICALS
         scene.exr

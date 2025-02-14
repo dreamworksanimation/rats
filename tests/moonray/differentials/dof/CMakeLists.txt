@@ -3,7 +3,7 @@
 
 # This test checks the DOF sampling
 
-add_rats_test(moonray_differentials_dof
+add_rats_test(BASENAME moonray_differentials_dof
     INPUTS scene.rdla
            ../common.rdla
     CANONICALS scene.exr

@@ -3,7 +3,7 @@
 
 # This tests the OpenVdbMap sampling of a vector grid
 
-add_rats_test(moonray_map_openvdb_vector
+add_rats_test(BASENAME moonray_map_openvdb_vector
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

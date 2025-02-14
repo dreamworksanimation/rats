@@ -3,7 +3,7 @@
 
 # This tests the ability of the RenderOutput objects to output extra aovs.
 
-add_rats_test(moonray_render_output_aov_extra_aovs
+add_rats_test(BASENAME moonray_render_output_aov_extra_aovs
     INPUTS scene.rdla
     CANONICALS
         scene.exr

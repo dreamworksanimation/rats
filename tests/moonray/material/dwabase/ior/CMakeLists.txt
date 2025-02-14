@@ -3,7 +3,7 @@
 
 # This tests index of refraction of the specular lobe.
 
-add_rats_test(moonray_material_dwabase_ior
+add_rats_test(BASENAME moonray_material_dwabase_ior
     INPUTS scene.rdla
     CANONICALS
         scene.exr

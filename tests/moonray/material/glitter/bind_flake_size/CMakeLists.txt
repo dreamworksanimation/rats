@@ -3,7 +3,7 @@
 
 # Test binding a map to glitter size
 
-add_rats_test(moonray_material_glitter_bind_flake_size
+add_rats_test(BASENAME moonray_material_glitter_bind_flake_size
     INPUTS scene.rdla
     CANONICALS
         scene.exr

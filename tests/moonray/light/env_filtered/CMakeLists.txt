@@ -3,7 +3,7 @@
 
 # This test exercises a bilinearly filtered env light with ray footprint based mip level selection
 
-add_rats_test(moonray_light_env_filtered
+add_rats_test(BASENAME moonray_light_env_filtered
     INPUTS scene.rdla
     CANONICALS
         scene.exr

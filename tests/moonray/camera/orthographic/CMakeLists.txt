@@ -3,7 +3,7 @@
 
 # This test exercises OrthographicCamera
 
-add_rats_test(moonray_camera_orthographic
+add_rats_test(BASENAME moonray_camera_orthographic
     INPUTS scene.rdla
     CANONICALS
         scene.exr

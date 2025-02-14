@@ -3,7 +3,7 @@
 
 # This tests DwaLayer with respect to layering emission
 
-add_rats_test(moonray_material_dwalayer_emission
+add_rats_test(BASENAME moonray_material_dwalayer_emission
     INPUTS scene.rdla
     CANONICALS
         scene.exr

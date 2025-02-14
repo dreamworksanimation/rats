@@ -139,53 +139,53 @@ Layer("/layer") {
 -- empty materials should show up in both cases.
 
 RenderOutput("/output/result/vid") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "vid.exr",
    ["result"] = "primitive attribute",
    ["primitive_attribute"] = "vid",
    ["primitive_attribute_type"] = "FLOAT",
 }
 
 RenderOutput("/output/result/mataov_vid") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "mataov_vid.exr",
    ["result"] = "material aov",
    ["material_aov"] = "float:vid",
 }
 
 RenderOutput("/output/result/st") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "st.exr",
    ["result"] = 4, -- primitive attribute
    ["primitive_attribute"] = "st",
    ["primitive_attribute_type"] = 1 -- Vec2f
 }
 
 RenderOutput("/output/result/mataov_st") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "mataov_st.exr",
    ["result"] = "material aov",
    ["material_aov"] = "vec2:st",
 }
 
 RenderOutput("/output/result/ref_P") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "ref_P.exr",
    ["result"] = 4, -- primitive attribute
    ["primitive_attribute"] = "ref_P",
    ["primitive_attribute_type"] = 2 -- Vec3f
 }
 
 RenderOutput("/output/result/mataov_ref_P") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "mataov_ref_P.exr",
    ["result"] = "material aov",
    ["material_aov"] = "vec3:ref_P",
 }
 
 RenderOutput("/output/result/cd") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "cd.exr",
    ["result"] = "primitive attribute",
    ["primitive_attribute"] = "cd",
    ["primitive_attribute_type"] = "RGB",
 }
 
 RenderOutput("/output/result/mataov_cd") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "mataov_cd.exr",
    ["result"] = "material aov",
    ["material_aov"] = "rgb:cd",
 }

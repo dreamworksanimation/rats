@@ -3,7 +3,7 @@
 
 # Furnace Test for HairMaterial.
 
-add_rats_test(moonray_material_hair_furnace
+add_rats_test(BASENAME moonray_material_hair_furnace
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

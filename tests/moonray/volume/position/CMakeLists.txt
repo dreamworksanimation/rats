@@ -3,7 +3,7 @@
 
 # Tests the volume position AOV.
 
-add_rats_test(moonray_volume_position
+add_rats_test(BASENAME moonray_volume_position
     INPUTS scene.rdla
     CANONICALS scene.exr position.exr
 )

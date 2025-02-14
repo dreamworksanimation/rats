@@ -3,7 +3,7 @@
 
 # This test exercises transform and deformation motion blur in the mesh light.
 
-add_rats_test(moonray_light_mesh_mb
+add_rats_test(BASENAME moonray_light_mesh_mb
     INPUTS scene.rdla
     CANONICALS
         scene.exr

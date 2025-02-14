@@ -3,7 +3,7 @@
 
 # This tests roughnesses on the GGX metallic lobe.
 
-add_rats_test(moonray_material_dwametal_roughness_ggx
+add_rats_test(BASENAME moonray_material_dwametal_roughness_ggx
     INPUTS scene.rdla
     CANONICALS
         scene.exr

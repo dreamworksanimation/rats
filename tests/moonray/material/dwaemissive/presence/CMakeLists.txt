@@ -3,7 +3,7 @@
 
 # This tests the presence property of the dwaemissive material
 
-add_rats_test(moonray_material_dwaemissive_presence
+add_rats_test(BASENAME moonray_material_dwaemissive_presence
     INPUTS scene.rdla
     CANONICALS
         scene.exr

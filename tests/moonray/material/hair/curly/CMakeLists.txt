@@ -5,7 +5,7 @@
 # It's settings are roughly default, unimportant values.  This test is meant to 
 # prevent unitended look changes or any break in its functionality.
 
-add_rats_test(moonray_material_hair_curly
+add_rats_test(BASENAME moonray_material_hair_curly
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This test exercises the sidedness property for RectLight, DiskLight, SphereLight and CylinderLight.
 
-add_rats_test(moonray_light_sidedness
+add_rats_test(BASENAME moonray_light_sidedness
     INPUTS scene.rdla
     CANONICALS
         scene.exr

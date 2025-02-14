@@ -3,7 +3,7 @@
 
 # This test exercises the 'cookie_v2' light filter.
 
-add_rats_test(moonray_light_filter_cookie_v2
+add_rats_test(BASENAME moonray_light_filter_cookie_v2
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

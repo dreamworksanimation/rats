@@ -4,6 +4,7 @@ SceneVariables {
     ["image_width"] = 256,
     ["image_height"] = 213,
     ["sampling_mode"] = 0,
+    ["resumable_output"] = true,
 }
 
 Camera("/Scene/rendering/camera") {

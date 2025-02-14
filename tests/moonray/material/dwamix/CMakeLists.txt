@@ -3,7 +3,7 @@
 
 # This tests the DwaMixMaterial
 
-add_rats_test(moonray_material_dwamix
+add_rats_test(BASENAME moonray_material_dwamix
     INPUTS scene.rdla
     CANONICALS
         scene.exr

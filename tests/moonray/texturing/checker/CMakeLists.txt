@@ -3,7 +3,7 @@
 
 # This tests the texture filter scale with a checker texture
 
-add_rats_test(moonray_texturing_checker
+add_rats_test(BASENAME moonray_texturing_checker
     INPUTS scene.rdla
     CANONICALS
         scene.exr

@@ -3,7 +3,7 @@
 
 # Tests the transparency threshold on a stack of objects.
 
-add_rats_test(moonray_rt_transparency_threshold
+add_rats_test(BASENAME moonray_rt_transparency_threshold
     INPUTS scene.rdla
     CANONICALS
         scene.exr

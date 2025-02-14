@@ -3,7 +3,7 @@
 
 # This test verifies shading with explicit attributes on various geometry types
 
-add_rats_test(moonray_geometry_explicit_attributes
+add_rats_test(BASENAME moonray_geometry_explicit_attributes
     INPUTS scene.rdla
     CANONICALS
         scene.exr

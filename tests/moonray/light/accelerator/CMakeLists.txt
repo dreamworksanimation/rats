@@ -3,7 +3,7 @@
 
 # This test the light accelerator
 
-add_rats_test(moonray_light_accelerator
+add_rats_test(BASENAME moonray_light_accelerator
     INPUTS scene.rdla
     CANONICALS
         scene.exr

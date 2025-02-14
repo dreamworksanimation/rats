@@ -3,7 +3,7 @@
 
 # This tests the use of trace sets for subsurface scattering
 
-add_rats_test(moonray_sampling_sss_traceset
+add_rats_test(BASENAME moonray_sampling_sss_traceset
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

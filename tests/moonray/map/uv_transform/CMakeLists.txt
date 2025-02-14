@@ -3,7 +3,7 @@
 
 # This test verifies attributes of UVTransform map.
 
-add_rats_test(moonray_map_uv_transform
+add_rats_test(BASENAME moonray_map_uv_transform
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

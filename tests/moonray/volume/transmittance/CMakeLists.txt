@@ -3,7 +3,7 @@
 
 # Tests volume transmittance.
 
-add_rats_test(moonray_volume_transmittance
+add_rats_test(BASENAME moonray_volume_transmittance
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

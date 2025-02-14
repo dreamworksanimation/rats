@@ -3,7 +3,7 @@
 
 # This tests the ProjectTriplanarUdimMap
 
-add_rats_test(moonray_map_project_triplanar_udim
+add_rats_test(BASENAME moonray_map_project_triplanar_udim
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

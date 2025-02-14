@@ -1,4 +1,4 @@
-# Copyright 2023 DreamWorks Animation LLC
+# Copyright 2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 # =====================================================================================
@@ -11,10 +11,10 @@
 # Required definitions:
 #   CANONICAL           : path to the canonical image, .eg /some/path/to/canonicals/beauty.exr
 #   RESULT              : name of the result image, eg. beauty.exr
-#   OIIOTOOL            : full path to the openimageio 'oiitool' cmd
+#   OIIO_TOOL           : full path to the openimageio 'oiiotool' cmd
 # -------------------------------------------------------------------------------------
 # Validate script inputs, these are required to be defined by the calling code
-foreach(required_def CANONICAL RESULT OIIOTOOL)
+foreach(required_def CANONICAL RESULT OIIO_TOOL)
     if(NOT DEFINED ${required_def})
         message(FATAL_ERROR "${required_def} is undefined")
     endif()
@@ -28,7 +28,7 @@ endif()
 # Run 'oiiotool' and try to retrieve resumeHistory metadata from header
 function(get_resume_history file output_var)
     execute_process(
-        COMMAND ${OIIOTOOL} -n --info -v --metamatch "resumeHistory" -i ${file}
+        COMMAND ${OIIO_TOOL} -n --info -v --metamatch "resumeHistory" -i ${file}
         RESULT_VARIABLE result
         OUTPUT_VARIABLE out
     )
@@ -69,7 +69,7 @@ endfunction()
 # Run 'oiiotool' and filter out filename, resumeHistory and DateTime metadata from header
 function(get_header file output_var)
     execute_process(
-        COMMAND ${OIIOTOOL} -n --info -v --no-metamatch "resumeHistory|DateTime" -i ${file}
+        COMMAND ${OIIO_TOOL} -n --info -v --no-metamatch "resumeHistory|DateTime" -i ${file}
         RESULT_VARIABLE result
         OUTPUT_VARIABLE out
         ECHO_ERROR_VARIABLE
@@ -116,7 +116,7 @@ if(DEFINED canonical_history OR DEFINED result_history)
 endif()
 
 # next, compare the remaining header information
-get_header(${canonical_expanded} canonical_header)
+get_header(${full_canonical_path} canonical_header)
 get_header(${RESULT} result_header)
 
 if(NOT ${canonical_header} STREQUAL ${result_header})

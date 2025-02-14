@@ -3,9 +3,18 @@
 
 # This tests the ability of the RenderOutput objects to output bsdf lobe attributes as material aovs.
 
-add_rats_test(moonray_render_output_aov_material_properties
+add_rats_test(BASENAME moonray_render_output_aov_material_properties
     INPUTS ../common.rdla
-           scene.rdla
-    CANONICALS result0.exr
+        scene.rdla
+    CANONICALS 
+        normal.exr
+        normal_closest.exr
+        roughness.exr
+        radius.exr
+        matte.exr
+        subsurface_normal.exr
+        subsurface_radius.exr
+        rt_subsurface_normal.exr
+        depth.exr
 )
 

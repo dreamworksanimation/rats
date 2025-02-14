@@ -3,7 +3,7 @@
 
 # Tests using a volume as a map binding via instancing.
 
-add_rats_test(moonray_volume_instancing_map_binding
+add_rats_test(BASENAME moonray_volume_instancing_map_binding
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

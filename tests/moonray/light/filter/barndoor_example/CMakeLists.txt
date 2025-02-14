@@ -3,7 +3,7 @@
 
 # This test exercises the barndoor light filter with a basic example scene.
 
-add_rats_test(moonray_light_filter_barndoor_example
+add_rats_test(BASENAME moonray_light_filter_barndoor_example
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

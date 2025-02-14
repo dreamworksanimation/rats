@@ -3,7 +3,7 @@
 
 # Test layering of glitter over another material at various densities and masking as well as physical vs additive modes
 
-add_rats_test(moonray_material_glitter_layering_mask
+add_rats_test(BASENAME moonray_material_glitter_layering_mask
     INPUTS scene.rdla
     CANONICALS
         scene.exr

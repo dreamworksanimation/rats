@@ -3,7 +3,7 @@
 
 # This tests fuzz on metal
 
-add_rats_test(moonray_material_dwametal_fuzz
+add_rats_test(BASENAME moonray_material_dwametal_fuzz
     INPUTS scene.rdla
     CANONICALS
         scene.exr

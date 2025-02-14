@@ -3,7 +3,7 @@
 
 # Test Velvet_v2 Shader
 
-add_rats_test(moonray_material_dwavelvet_beauty
+add_rats_test(BASENAME moonray_material_dwavelvet_beauty
     INPUTS scene.rdla
     CANONICALS
         scene.exr

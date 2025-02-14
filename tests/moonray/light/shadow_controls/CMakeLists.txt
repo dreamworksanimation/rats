@@ -14,7 +14,7 @@
 # The shadow cast by the green spotlight off of the center sphere is suppressed
 # because the green spotlight is part of the center sphere's shadow set.
 
-add_rats_test(moonray_light_shadow_controls
+add_rats_test(BASENAME moonray_light_shadow_controls
     INPUTS scene.rdla
     CANONICALS
         scene.exr

@@ -3,7 +3,7 @@
 
 # This tests layer blending the presence property of the dwabase material
 
-add_rats_test(moonray_material_dwabase_presence_layered
+add_rats_test(BASENAME moonray_material_dwabase_presence_layered
     INPUTS scene.rdla
     CANONICALS
         scene.exr

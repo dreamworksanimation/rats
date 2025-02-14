@@ -3,7 +3,7 @@
 
 # This test verifies that the color correction attributes of the ImageMap are working.
 
-add_rats_test(moonray_map_image_color_correction
+add_rats_test(BASENAME moonray_map_image_color_correction
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests total internal reflection
 
-add_rats_test(moonray_material_dwabase_tir_cup
+add_rats_test(BASENAME moonray_material_dwabase_tir_cup
     INPUTS scene.rdla
     CANONICALS
         scene.exr

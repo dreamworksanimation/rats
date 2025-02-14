@@ -3,7 +3,7 @@
 
 # Tests non-uniform voxels "frustum" vdb.
 
-add_rats_test(moonray_volume_frustum_vdb
+add_rats_test(BASENAME moonray_volume_frustum_vdb
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

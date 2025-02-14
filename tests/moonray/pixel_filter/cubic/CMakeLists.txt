@@ -3,7 +3,7 @@
 
 # This tests the cubic-spline pixel filtering over high frequency geometry and texture
 
-add_rats_test(moonray_pixel_filter_cubic
+add_rats_test(BASENAME moonray_pixel_filter_cubic
     INPUTS ../common.rdla
            scene.rdla
     CANONICALS scene.exr

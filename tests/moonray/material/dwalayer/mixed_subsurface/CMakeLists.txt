@@ -3,7 +3,7 @@
 
 # This tests DwaLayer with respect to mixing bssrdf types
 
-add_rats_test(moonray_material_dwalayer_mixed_subsurface
+add_rats_test(BASENAME moonray_material_dwalayer_mixed_subsurface
     INPUTS scene.rdla
     CANONICALS
         scene.exr

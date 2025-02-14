@@ -3,7 +3,7 @@
 
 # This tests the ColorCorrectHsvMap
 
-add_rats_test(moonray_map_color_correct_hsv
+add_rats_test(BASENAME moonray_map_color_correct_hsv
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

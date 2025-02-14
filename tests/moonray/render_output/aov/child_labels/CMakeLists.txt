@@ -1,7 +1,7 @@
 # Copyright 2024 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_rats_test(moonray_render_output_aov_child_labels
+add_rats_test(BASENAME moonray_render_output_aov_child_labels
     INPUTS scene.rdla
     CANONICALS
         scene.exr

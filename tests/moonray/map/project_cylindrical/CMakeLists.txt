@@ -3,7 +3,7 @@
 
 # This tests the ProjectCylindricalMap
 
-add_rats_test(moonray_map_project_cylindrical
+add_rats_test(BASENAME moonray_map_project_cylindrical
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

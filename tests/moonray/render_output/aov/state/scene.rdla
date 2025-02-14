@@ -52,14 +52,14 @@ Layer("/layer") {
 
 -- test built-in state variables
 RenderOutput("/output/result/pos") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "pos.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 0, -- "P"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/material_pos") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "material_pos.exr",
    ["result"] = "material aov",
    ["material_aov"] = "P",
    ["channel_name"] = "mat_P",
@@ -67,14 +67,14 @@ RenderOutput("/output/result/material_pos") {
 }
 
 RenderOutput("/output/result/geometricNormal") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "geometricNormal.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 1, -- "Ng"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/normal") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "normal.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 2, -- "N"
    ["channel_format"] = 0,
@@ -82,7 +82,7 @@ RenderOutput("/output/result/normal") {
 }
 
 RenderOutput("/output/result/st") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "st.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 3, -- "ST"
    ["channel_format"] = 0,
@@ -90,56 +90,56 @@ RenderOutput("/output/result/st") {
 }
 
 RenderOutput("/output/result/dpds") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "dpds.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 4, -- "DPDS"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/dpdt") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "dpdt.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 5, -- "DPDT"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/dsdx") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "dsdx.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 6, -- "DSDX"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/dsdy") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "dsdy.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 7, -- "DSDY"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/dtdx") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "dtdx.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 8, -- "DTDX"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/dtdy") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "dtdy.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 9, -- "DTDY"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/worldPos") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "worldPos.exr",
    ["result"] = 3, -- state variable
    ["state_variable"] = 10, -- "WP"
    ["channel_format"] = 0
 }
 
 RenderOutput("/output/result/depth") {
-   ["file_name"] = "result0.exr",
+   ["file_name"] = "depth.exr",
    ["result"] = "state variable",
    ["state_variable"] = "depth",
    ["math_filter"] = "min",

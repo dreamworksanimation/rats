@@ -3,7 +3,7 @@
 
 # This test exercises overlapping lights
 
-add_rats_test(moonray_light_overlapping_lights
+add_rats_test(BASENAME moonray_light_overlapping_lights
     INPUTS scene.rdla
     CANONICALS
         scene.exr

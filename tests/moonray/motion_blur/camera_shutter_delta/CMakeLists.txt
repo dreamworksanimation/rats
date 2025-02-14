@@ -3,7 +3,7 @@
 
 # Tests motion-blur camera shutter settings with deltas
 
-add_rats_test(moonray_motion_blur_camera_shutter_delta
+add_rats_test(BASENAME moonray_motion_blur_camera_shutter_delta
     INPUTS ../common.rdla
            scene.rdla
     DELTAS deltas.rdla

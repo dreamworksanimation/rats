@@ -99,7 +99,7 @@ RenderOutput("/output/alpha") {
 }
 RenderOutput("/output/depth") {
     ["result"] = "depth",
-    ["file_name"] = "result.exr"
+    ["file_name"] = "depth.exr"
 }
 RenderOutput("/output/material_albedo") {
     ["result"] = "material aov",

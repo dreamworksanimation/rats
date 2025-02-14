@@ -1,7 +1,6 @@
 rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
 
 SceneVariables {
-    ["resumable_output"] = true,
     ["checkpoint_active"] = true,
     ["checkpoint_interval"] = 0.1,
     ["checkpoint_sample_cap"] = 8,

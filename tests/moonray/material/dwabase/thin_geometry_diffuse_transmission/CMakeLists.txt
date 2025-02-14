@@ -3,7 +3,7 @@
 
 # This tests the thin geometry parameter with diffuse transmission
 
-add_rats_test(moonray_material_dwabase_thin_geometry_diffuse_transmission
+add_rats_test(BASENAME moonray_material_dwabase_thin_geometry_diffuse_transmission
     INPUTS scene.rdla
     CANONICALS
         scene.exr

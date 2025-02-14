@@ -3,7 +3,7 @@
 
 # Tests motion blur specified with a velocity field.
 
-add_rats_test(moonray_volume_velocity_motionblur
+add_rats_test(BASENAME moonray_volume_velocity_motionblur
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

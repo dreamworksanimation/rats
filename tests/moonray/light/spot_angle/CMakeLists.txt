@@ -3,7 +3,7 @@
 
 # This tests the cone angle in relation to the spot area.
 
-add_rats_test(moonray_light_spot_angle
+add_rats_test(BASENAME moonray_light_spot_angle
     INPUTS scene.rdla
     CANONICALS
         scene.exr

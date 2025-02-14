@@ -3,7 +3,7 @@
 
 # This tests the LODMap
 
-add_rats_test(moonray_map_lod
+add_rats_test(BASENAME moonray_map_lod
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

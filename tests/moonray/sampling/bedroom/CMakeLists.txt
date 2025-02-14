@@ -3,7 +3,7 @@
 
 # This test verifies bounce lighting in a room with an open door
 
-add_rats_test(moonray_sampling_bedroom
+add_rats_test(BASENAME moonray_sampling_bedroom
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

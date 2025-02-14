@@ -4,7 +4,7 @@
 # A rect light reflected in a mirror with 0.5 presence.
 # Tests that reflective objects with presence render correcty.
 
-add_rats_test(moonray_rt_presence_mirror
+add_rats_test(BASENAME moonray_rt_presence_mirror
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

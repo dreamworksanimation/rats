@@ -1,4 +1,4 @@
-# Copyright 2023-2025 DreamWorks Animation LLC
+# Copyright 2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 # ==================================================================================
@@ -16,8 +16,8 @@
 #   DIFF_ARGS                   : list of arguments to pass to the diff tool (from your test's IDIFF_ARGS_* )
 #   DIFF_IMAGE                  : filename for writing a diff output image
 #   EXEC_MODE                   : scalar|vector|xpu
-#   IDIFFTOOL                   : location of idiff executable as found by CMake
-#   OIIOTOOL                    : location of oiiotool executable as found by CMake
+#   IDIFF_TOOL                  : location of idiff executable as found by CMake
+#   OIIO_TOOL                   : location of oiiotool executable as found by CMake
 #   RESULT                      : filename of the test image to be compared with the canonical
 #
 # To pass this diff test, simply let this script exit.
@@ -27,8 +27,8 @@
 # message("DIFF_ARGS      : ${DIFF_ARGS}")
 # message("DIFF_IMAGE     : ${DIFF_IMAGE}")
 # message("EXEC_MODE      : ${EXEC_MODE}")
-# message("IDIFFTOOL      : ${IDIFFTOOL}")
-# message("OIIOTOOL       : ${OIIOTOOL}")
+# message("IDIFF_TOOL     : ${IDIFF_TOOL}")
+# message("OIIO_TOOL      : ${OIIO_TOOL}")
 # message("RESULT         : ${RESULT}")
 
 if(NOT DEFINED ENV{RATS_CANONICAL_DIR})
@@ -38,7 +38,7 @@ endif()
 file(TO_NATIVE_PATH "$ENV{RATS_CANONICAL_DIR}/${CANONICAL}" full_canonical_path)
 
 execute_process(
-    COMMAND ${IDIFFTOOL} ${DIFF_ARGS} -o ${DIFF_IMAGE} ${full_canonical_path} ${RESULT}
+    COMMAND ${IDIFF_TOOL} ${DIFF_ARGS} -o ${DIFF_IMAGE} ${full_canonical_path} ${RESULT}
     COMMAND_ECHO STDOUT
     RESULT_VARIABLE exit_code
 )

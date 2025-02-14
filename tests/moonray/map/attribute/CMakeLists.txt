@@ -3,7 +3,7 @@
 
 # This tests the AttributeMap
 
-add_rats_test(moonray_map_attribute
+add_rats_test(BASENAME moonray_map_attribute
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

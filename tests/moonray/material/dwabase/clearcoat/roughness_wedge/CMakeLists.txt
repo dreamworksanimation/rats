@@ -3,7 +3,7 @@
 
 # This tests roughness properties of the clearcoat lobe.
 
-add_rats_test(moonray_material_dwabase_clearcoat_roughness_wedge
+add_rats_test(BASENAME moonray_material_dwabase_clearcoat_roughness_wedge
     INPUTS scene.rdla
     CANONICALS
         scene.exr

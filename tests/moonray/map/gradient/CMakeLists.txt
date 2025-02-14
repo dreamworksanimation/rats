@@ -3,7 +3,7 @@
 
 # This test verifies that all the GradientMap common attributes are working. 
 
-add_rats_test(moonray_map_gradient
+add_rats_test(BASENAME moonray_map_gradient
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests adaptive tessellation with resolution uniform tessellation can't handle
 
-add_rats_test(moonray_geometry_adaptive_tessellation
+add_rats_test(BASENAME moonray_geometry_adaptive_tessellation
     INPUTS scene.rdla
     CANONICALS
         scene.exr

@@ -3,7 +3,7 @@
 
 # This tests self-intersecting dielectric materials with priority.
 
-add_rats_test(moonray_material_self_intersecting_dielectric
+add_rats_test(BASENAME moonray_material_self_intersecting_dielectric
     INPUTS scene.rdla
     CANONICALS
         scene.exr

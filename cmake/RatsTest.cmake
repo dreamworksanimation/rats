@@ -1,4 +1,4 @@
-# Copyright 2023-2025 DreamWorks Animation LLC
+# Copyright 2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 set(supported_renderers moonray hd_render)
@@ -13,7 +13,7 @@ set(supported_renderers moonray hd_render)
 #
 # TEST NAMES:
 # Each test will be named according to the following convention:
-#   rats_<exec_mode>_<stage>_<test_basename>[_output]
+#   rats_<exec_mode>_<stage>_<basename>[_output]
 #
 #   * the <exec_mode> token will be one of sca|vec|xpu
 #   * the <stage> token will be canonical|render|diff|header
@@ -38,8 +38,7 @@ set(supported_renderers moonray hd_render)
 #       * Or... compare the header of an output image with previously rendered canonical image of the same name.
 #
 # ---------------------
-function(add_rats_test test_basename)
-    # test_basename:            # basename of tests. By convention includes relative folder structure, example: moonray_geometry_spheres
+function(add_rats_test)
 
     # The following KEYWORD arguments are supported:
     set(options
@@ -55,6 +54,7 @@ function(add_rats_test test_basename)
     )
 
     set(oneValueArgs
+            BASENAME            # Basename of tests. By convention includes relative folder structure, example: moonray_geometry_spheres
             OUTPUT              # Name of output image file, will be added to render args as -out <OUTPUT>
             RENDERER            # moonray|hd_render (defaults to moonray)
     )
@@ -72,10 +72,6 @@ function(add_rats_test test_basename)
                                 # (Note that CTests are always run in the order they are added when -j is omitted,
                                 # but specifying an explicit dependency here allows such tests to run in the correct
                                 # order when multiple jobs are used via the -J option to the ctest command).
-
-            IDIFF_ARGS_SCALAR   # | List of idiff args to set/override for a particular execution mode. Example:
-            IDIFF_ARGS_VECTOR   # | IDIFF_ARGS_VECTOR -failpercent 0.025 -hardfail 0.035
-            IDIFF_ARGS_XPU      # |
 
             INPUTS              # (required) Ordered list of input files the test requires.
                                 # example: INPUTS scene.rdla scene.rdlb
@@ -99,6 +95,9 @@ function(add_rats_test test_basename)
     endif()
     if(DEFINED ARG_UNPARSED_ARGUMENTS)
         message(FATAL_ERROR "Unrecognized arguments: ${ARG_UNPARSED_ARGUMENTS}")
+    endif()
+    if(NOT DEFINED ARG_BASENAME)
+        message(FATAL_ERROR "You must specify a BASENAME for the test")
     endif()
     if(NOT DEFINED ARG_INPUTS)
         message(FATAL_ERROR "You must specify INPUTS")
@@ -150,8 +149,9 @@ function(add_rats_test test_basename)
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         string(TOUPPER ${exec_mode} exec_mode_upper)
         string(SUBSTRING ${exec_mode} 0 3 exec_mode_short)
-        set(canonical_test_name "rats_${exec_mode_short}_canonical_${test_basename}")
-        set(render_test_name "rats_${exec_mode_short}_render_${test_basename}")
+        set(canonical_test_name "rats_${exec_mode_short}_canonical_${ARG_BASENAME}")
+        set(super_test_name "rats_${exec_mode_short}_super_${ARG_BASENAME}")
+        set(render_test_name "rats_${exec_mode_short}_render_${ARG_BASENAME}")
         file(MAKE_DIRECTORY ${render_dir})
 
         if(ARG_DEPENDS)
@@ -176,10 +176,6 @@ function(add_rats_test test_basename)
         endforeach()
         if(${renderer} STREQUAL "moonray")
             list(APPEND render_cmd -exec_mode ${exec_mode})
-            # TODO: Remove this and update all RDLA files to retrieve this
-            # path from the runtime environment using LUA:
-            #       rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
-            list(APPEND render_cmd -rdla_set "rats_assets_dir" "[[${assets_dir}]]")
         endif()
         if(DEFINED ARG_OUTPUT)
             list(APPEND render_cmd -out ${ARG_OUTPUT})
@@ -192,6 +188,28 @@ function(add_rats_test test_basename)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_VECTOR})
         elseif (${exec_mode} STREQUAL xpu)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_XPU})
+        endif()
+
+        if (NOT ${exec_mode} STREQUAL "xpu")
+            # Add CTest to generate super canonicals
+            add_test(NAME ${super_test_name}
+                WORKING_DIRECTORY ${render_dir}
+                COMMAND ${CMAKE_COMMAND}
+                        "-DRENDER_CMD=${render_cmd}"
+                        "-DTEST_REL_PATH=${test_rel_path}/${exec_mode}"
+                        "-DCANONICALS=${ARG_CANONICALS}"
+                        "-DEXEC_MODE=${exec_mode}"
+                        "-DIDIFF_TOOL=${IDIFF}"
+                        "-DDIFF_JSON=${CMAKE_CURRENT_SOURCE_DIR}/diff.json"
+                        "-DDIFF_DEFAULTS_JSON=${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff_defaults.json"
+                        -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/MakeCanonicals.cmake
+            )
+            set_tests_properties(${super_test_name} PROPERTIES
+                LABELS "super"
+                DEPENDS "${canonical_dependencies}"
+                DISABLED ${ARG_DISABLED}
+                ENVIRONMENT "${runtime_env_vars}"
+            )
         endif()
 
         # Add CTest to generate canonicals
@@ -228,15 +246,21 @@ function(add_rats_test test_basename)
                 cmake_path(GET canonical STEM stem)
                 cmake_path(GET canonical EXTENSION extension)
 
+                set(canonical_exec_mode ${exec_mode})
+                if (${exec_mode} STREQUAL "xpu")
+                    # xpu and vector modes share the vector canonical
+                    set(canonical_exec_mode "vector")
+                endif()
+
                 # diff image header?
                 if(ARG_DIFF_HEADERS)
-                    set(header_test_name "rats_${exec_mode_short}_header_${test_basename}_${stem}${extension}")
+                    set(header_test_name "rats_${exec_mode_short}_header_${ARG_BASENAME}_${stem}${extension}")
 
                     add_test(NAME ${header_test_name}
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
-                                "-DOIIOTOOL=${OIIOTOOL}"
-                                "-DCANONICAL=${test_rel_path}/${exec_mode}/${canonical}"
+                                "-DOIIO_TOOL=${OIIOTOOL}"
+                                "-DCANONICAL=${test_rel_path}/${canonical_exec_mode}/${canonical}"
                                 "-DRESULT=${canonical}"
                                 -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/CompareImageHeaders.cmake
                     )
@@ -248,19 +272,20 @@ function(add_rats_test test_basename)
                 endif()
 
                 # diff canonical images
-                set(diff_test_name "rats_${exec_mode_short}_diff_${test_basename}_${stem}${extension}")
+                set(diff_test_name "rats_${exec_mode_short}_diff_${ARG_BASENAME}_${stem}${extension}")
                 set(diff_image_name "${stem}_diff${extension}")
                 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/diff.cmake)
                     # use custom diff tool
                     add_test(NAME ${diff_test_name}
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
-                                "-DCANONICAL=${test_rel_path}/${exec_mode}/${canonical}"
-                                "-DDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
+                                "-DCANONICAL=${test_rel_path}/${canonical_exec_mode}/${canonical}"
                                 "-DDIFF_IMAGE=${diff_image_name}"
                                 "-DEXEC_MODE=${exec_mode}"
-                                "-DIDIFFTOOL=${IDIFF}"
-                                "-DOIIOTOOL=${OIIOTOOL}"
+                                "-DIDIFF_TOOL=${IDIFF}"
+                                "-DOIIO_TOOL=${OIIOTOOL}"
+                                "-DDIFF_JSON=${CMAKE_CURRENT_SOURCE_DIR}/diff.json"
+                                "-DDIFF_DEFAULTS_JSON=${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff_defaults.json"
                                 "-DRESULT=${canonical}"
                                 -P ${CMAKE_CURRENT_SOURCE_DIR}/diff.cmake
                     )
@@ -269,11 +294,12 @@ function(add_rats_test test_basename)
                     add_test(NAME ${diff_test_name}
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
-                                "-DCANONICAL=${test_rel_path}/${exec_mode}/${canonical}"
+                                "-DCANONICAL=${test_rel_path}/${canonical_exec_mode}/${canonical}"
                                 "-DDIFF_IMAGE=${diff_image_name}"
                                 "-DEXEC_MODE=${exec_mode}"
-                                "-DIDIFF=${IDIFF}"
-                                "-DIDIFF_ARGS=${ARG_IDIFF_ARGS_${exec_mode_upper}}"
+                                "-DIDIFF_TOOL=${IDIFF}"
+                                "-DDIFF_JSON=${CMAKE_CURRENT_SOURCE_DIR}/diff.json"
+                                "-DDIFF_DEFAULTS_JSON=${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff_defaults.json"
                                 "-DRESULT=${canonical}"
                                 -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/CompareImages.cmake
                     )

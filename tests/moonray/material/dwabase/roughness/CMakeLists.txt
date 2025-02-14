@@ -3,7 +3,7 @@
 
 # This tests roughness properties of the specular lobe.
 
-add_rats_test(moonray_material_dwabase_roughness
+add_rats_test(BASENAME moonray_material_dwabase_roughness
     INPUTS scene.rdla
     CANONICALS
         scene.exr

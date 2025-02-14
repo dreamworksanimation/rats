@@ -5,7 +5,7 @@
 # shadows cast by solid/presence/volume objects with a shadow
 # ray epsilon value that truncates the shadows.
 
-add_rats_test(moonray_rt_shadow_ray_epsilon
+add_rats_test(BASENAME moonray_rt_shadow_ray_epsilon
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

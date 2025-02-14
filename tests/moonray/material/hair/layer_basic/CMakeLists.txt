@@ -3,7 +3,7 @@
 
 # This test tests layering with the HairLayerMaterial
 
-add_rats_test(moonray_material_hair_layer_basic
+add_rats_test(BASENAME moonray_material_hair_layer_basic
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

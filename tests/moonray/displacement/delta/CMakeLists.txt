@@ -3,7 +3,7 @@
 
 # This tests a delta file's effect on displacement
 
-add_rats_test(moonray_displacement_delta
+add_rats_test(BASENAME moonray_displacement_delta
     INPUTS scene.rdla
     DELTAS deltas.rdla
     CANONICALS scene.exr

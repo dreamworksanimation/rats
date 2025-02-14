@@ -3,7 +3,7 @@
 
 # This tests the transforms and their order
 
-add_rats_test(moonray_map_noise_transformation_order
+add_rats_test(BASENAME moonray_map_noise_transformation_order
     INPUTS scene.rdla
            ../common.rdla
     CANONICALS scene.exr

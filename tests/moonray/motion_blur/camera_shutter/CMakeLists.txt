@@ -3,7 +3,7 @@
 
 # Tests motion-blur camera shutter settings
 
-add_rats_test(moonray_motion_blur_camera_shutter
+add_rats_test(BASENAME moonray_motion_blur_camera_shutter
     INPUTS ../common.rdla
            scene.rdla
     CANONICALS scene.exr

@@ -10,7 +10,7 @@
 # EnvLight is tested in both texture and non-textured versions - the textured one shows the sky and mountains, and the
 # non-textured one is the green lower hemisphere.
 
-add_rats_test(moonray_light_unbounded
+add_rats_test(BASENAME moonray_light_unbounded
     INPUTS scene.rdla
     CANONICALS
         scene.exr

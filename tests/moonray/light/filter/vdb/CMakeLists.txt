@@ -3,7 +3,7 @@
 
 # This test exercises the VDB light filter. 
 
-add_rats_test(moonray_light_filter_vdb
+add_rats_test(BASENAME moonray_light_filter_vdb
     INPUTS scene.rdla
     CANONICALS
         scene.exr

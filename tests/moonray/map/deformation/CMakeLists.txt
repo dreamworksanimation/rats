@@ -3,7 +3,7 @@
 
 # This tests the DeformationMap
 
-add_rats_test(moonray_map_deformation
+add_rats_test(BASENAME moonray_map_deformation
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests DwaTwoSidedMaterial's basic functionality
 
-add_rats_test(moonray_material_dwatwosided
+add_rats_test(BASENAME moonray_material_dwatwosided
     INPUTS scene.rdla
     CANONICALS
         scene.exr

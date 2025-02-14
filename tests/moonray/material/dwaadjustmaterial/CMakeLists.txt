@@ -3,7 +3,7 @@
 
 # Tests a number of dwaadjustmaterial parameters using attributes
 
-add_rats_test(moonray_material_dwaadjustmaterial
+add_rats_test(BASENAME moonray_material_dwaadjustmaterial
     INPUTS scene.rdla
     CANONICALS
         scene.exr

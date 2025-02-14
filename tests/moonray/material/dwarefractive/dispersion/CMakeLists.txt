@@ -3,7 +3,7 @@
 
 # This tests dispersion in the DwaRefractive material
 
-add_rats_test(moonray_material_dwarefractive_dispersion
+add_rats_test(BASENAME moonray_material_dwarefractive_dispersion
     INPUTS scene.rdla
     CANONICALS
         scene.exr

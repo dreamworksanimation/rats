@@ -3,7 +3,7 @@
 
 # This tests that the hair material shader default behavior is not changing
 
-add_rats_test(moonray_material_hair_defaults
+add_rats_test(BASENAME moonray_material_hair_defaults
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

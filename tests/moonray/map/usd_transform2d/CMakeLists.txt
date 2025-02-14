@@ -3,7 +3,7 @@
 
 # This tests the UsdTransform2d map
 
-add_rats_test(moonray_map_usd_transform2d
+add_rats_test(BASENAME moonray_map_usd_transform2d
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

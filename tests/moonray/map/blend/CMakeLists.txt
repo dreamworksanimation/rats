@@ -3,7 +3,7 @@
 
 # This tests the BlendMap
 
-add_rats_test(moonray_map_blend
+add_rats_test(BASENAME moonray_map_blend
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests disabling of light culling on the DwaToonMaterial
 
-add_rats_test(moonray_material_dwatoon_prevent_light_culling
+add_rats_test(BASENAME moonray_material_dwatoon_prevent_light_culling
     INPUTS scene.rdla
     CANONICALS
         scene.exr

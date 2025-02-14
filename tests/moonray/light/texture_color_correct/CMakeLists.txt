@@ -3,7 +3,7 @@
 
 # Tests light texture color correction
 
-add_rats_test(moonray_light_texture_color_correction
+add_rats_test(BASENAME moonray_light_texture_color_correction
     INPUTS scene.rdla
     CANONICALS
         scene.exr

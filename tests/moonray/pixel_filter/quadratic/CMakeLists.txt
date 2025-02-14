@@ -3,7 +3,7 @@
 
 # This tests the quadratic-spline pixel filtering over high frequency geometry and texture
 
-add_rats_test(moonray_pixel_filter_quadratic
+add_rats_test(BASENAME moonray_pixel_filter_quadratic
     INPUTS ../common.rdla
            scene.rdla
     CANONICALS scene.exr

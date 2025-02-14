@@ -3,7 +3,7 @@
 
 # Tests the wireframe output.
 
-add_rats_test(moonray_render_output_wireframe
+add_rats_test(BASENAME moonray_render_output_wireframe
     INPUTS scene.rdla
     CANONICALS
         scene.exr

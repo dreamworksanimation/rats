@@ -3,7 +3,7 @@
 
 # This test checks the motion blur sampling with a delta that turns it off
 
-add_rats_test(moonray_motion_blur_simple_delta_off
+add_rats_test(BASENAME moonray_motion_blur_simple_delta_off
     INPUTS ../common.rdla
     DELTAS deltas.rdla
     CANONICALS scene.exr

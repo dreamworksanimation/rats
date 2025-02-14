@@ -1,7 +1,7 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_rats_test(hd_render_geometry_skel
+add_rats_test(BASENAME shd_render_geometry_skel
     RENDERER hd_render
     INPUTS skel.usd
     OUTPUT  scene.exr

@@ -3,8 +3,16 @@
 
 # This tests the ability of the RenderOutput objects to output primitive attributes as aovs.
 
-add_rats_test(moonray_render_output_aov_prim_attr
+add_rats_test(BASENAME moonray_render_output_aov_prim_attr
     INPUTS scene.rdla
-    CANONICALS result0.exr
+    CANONICALS
+        vid.exr
+        mataov_vid.exr
+        st.exr
+        mataov_st.exr
+        ref_P.exr
+        mataov_ref_P.exr
+        cd.exr
+        mataov_cd.exr
 )
 

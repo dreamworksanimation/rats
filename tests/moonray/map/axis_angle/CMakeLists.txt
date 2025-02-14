@@ -4,7 +4,7 @@
 # This test verifies that the AxisAngleMap is working. This tests rotation of the shading normals 
 # about a world space and object space axis.
 
-add_rats_test(moonray_map_axis_angle
+add_rats_test(BASENAME moonray_map_axis_angle
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

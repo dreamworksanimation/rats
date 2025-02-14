@@ -3,7 +3,7 @@
 
 # Tests emission from a VDB volume.
 
-add_rats_test(moonray_volume_emission_vdb
+add_rats_test(BASENAME moonray_volume_emission_vdb
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

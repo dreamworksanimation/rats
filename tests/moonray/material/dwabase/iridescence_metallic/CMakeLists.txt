@@ -3,7 +3,7 @@
 
 # This tests iridescence properties of the metallic specular lobe
 
-add_rats_test(moonray_material_dwabase_iridescence_metallic
+add_rats_test(BASENAME moonray_material_dwabase_iridescence_metallic
     INPUTS scene.rdla
     CANONICALS
         scene.exr

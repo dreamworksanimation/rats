@@ -3,7 +3,7 @@
 
 # Tests motion-blur due to camera translation around the z axis
 
-add_rats_test(moonray_motion_blur_camera_tz
+add_rats_test(BASENAME moonray_motion_blur_camera_tz
     INPUTS ../common.rdla
            scene.rdla
     CANONICALS scene.exr

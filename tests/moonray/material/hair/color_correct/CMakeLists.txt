@@ -3,7 +3,7 @@
 
 # This tests the ColorCorrect material for hair.
 
-add_rats_test(moonray_material_hair_color_correct
+add_rats_test(BASENAME moonray_material_hair_color_correct
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

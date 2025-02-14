@@ -3,7 +3,7 @@
 
 # Description: Tests basic cryptomatte functionality with presence. 
 
-add_rats_test(moonray_render_output_cryptomatte_presence
+add_rats_test(BASENAME moonray_render_output_cryptomatte_presence
     INPUTS 
         ../common.rdla
         scene.rdla

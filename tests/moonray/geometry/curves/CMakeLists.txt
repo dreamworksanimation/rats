@@ -14,7 +14,7 @@
 # Also skipped are bspline and bezier motion blur for normal oriented curves which crash.
 
 
-add_rats_test(moonray_geometry_normal_oriented_curves
+add_rats_test(BASENAME moonray_geometry_normal_oriented_curves
     INPUTS scene.rdla
     CANONICALS
         scene.exr

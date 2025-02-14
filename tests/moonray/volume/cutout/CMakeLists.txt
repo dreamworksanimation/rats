@@ -4,7 +4,7 @@
 # A scene with two overlapping volumes in front of a plane.
 # One of the volumes is cutout.
 
-add_rats_test(moonray_volume_cutout
+add_rats_test(BASENAME moonray_volume_cutout
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

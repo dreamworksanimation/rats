@@ -5,7 +5,7 @@
 # featuring a widget sitting on a grid-patterned plane. For readability, each display filter 
 # is contained in its own sidecar rdla file. 
 
-add_rats_test(moonray_displayfilter_basic
+add_rats_test(BASENAME moonray_displayfilter_basic
     INPUTS scene.rdla
            fragments/BlendDisplayFilter.rdla
            fragments/ClampDisplayFilter.rdla

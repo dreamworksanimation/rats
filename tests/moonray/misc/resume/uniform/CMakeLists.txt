@@ -8,20 +8,16 @@
 # idiff arguments difficult.
 
 # create the checkpoint file
-add_rats_test(moonray_misc_resume_uniform_checkpoint
+add_rats_test(BASENAME moonray_misc_resume_uniform_checkpoint
     DIFF_HEADERS
     INPUTS scene.rdla checkpoint.rdla
     CANONICALS checkpoint_result.exr checkpoint_result0.exr
-    IDIFF_ARGS_VECTOR -fail 0.035 -hardfail inf -failpercent 2
-    IDIFF_ARGS_XPU    -fail 0.035 -hardfail inf -failpercent 2
 )
 
 # do a final (resume) render from checkpoint
-add_rats_test(moonray_misc_resume_uniform_final
+add_rats_test(BASENAME moonray_misc_resume_uniform_final
     DEPENDS moonray_misc_resume_uniform_checkpoint
     INPUTS scene.rdla resume.rdla
     CANONICALS resume_result.exr resume_result0.exr
-    IDIFF_ARGS_VECTOR -fail 0.035 -hardfail inf -failpercent 2
-    IDIFF_ARGS_XPU    -fail 0.035 -hardfail inf -failpercent 2
 )
 

@@ -3,7 +3,7 @@
 
 # This test verifies that the camera can be changed with a delta.
 
-add_rats_test(moonray_camera_deltas
+add_rats_test(BASENAME moonray_camera_deltas
     INPUTS deltas.rdla
     DELTAS scene.rdla
     CANONICALS

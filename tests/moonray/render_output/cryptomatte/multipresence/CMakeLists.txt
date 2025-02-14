@@ -7,7 +7,7 @@
 #                   * crypto normals
 #                   * crypto positions
 
-add_rats_test(moonray_render_output_cryptomatte_multipresence
+add_rats_test(BASENAME moonray_render_output_cryptomatte_multipresence
     INPUTS
         ../common.rdla
         scene.rdla

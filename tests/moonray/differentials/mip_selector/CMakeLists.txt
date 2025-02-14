@@ -6,7 +6,7 @@
 # each mip level.  This allows us to see how mip levels are determined
 # by the mip selector (or even the differential) algorithms.
 
-add_rats_test(moonray_differentials_mip_selector
+add_rats_test(BASENAME moonray_differentials_mip_selector
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

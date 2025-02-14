@@ -4,7 +4,7 @@
 # Tests that a map can be used for the presence value, and that
 # correct shadows are cast by that map.
 
-add_rats_test(moonray_rt_presence_map
+add_rats_test(BASENAME moonray_rt_presence_map
     INPUTS scene.rdla
     CANONICALS scene.exr
 )
