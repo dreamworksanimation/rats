@@ -1,7 +1,17 @@
 # Copyright 2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
+find_program(IDIFF idiff REQUIRED)
+find_program(OIIOTOOL oiiotool REQUIRED)
+find_package(Python REQUIRED COMPONENTS Interpreter)
+
 set(supported_renderers moonray hd_render)
+
+function(check_test_name test_name)
+    if (TEST ${test_name})
+        message(FATAL_ERROR "Test ${test_name} already exists.")
+    endif()
+endfunction()
 
 # Add a new RaTS test.
 # ---------------------
@@ -42,50 +52,50 @@ function(add_rats_test)
 
     # The following KEYWORD arguments are supported:
     set(options
-            DIFF_HEADERS        # Adds an extra CTest with the 'diff' label to compare the canonical
-                                # and result image headers.
+        DIFF_HEADERS        # Adds an extra CTest with the 'diff' label to compare the canonical
+                            # and result image headers.
 
-            DISABLED            # Disables this test, for whatever reason.
+        DISABLED            # Disables this test, for whatever reason.
 
-            NO_SCALAR           # | Execution modes to skip for this test. For example, path guiding is
-            NO_VECTOR           # | currently only supported in scalar mode, so tests using path guiding may want
-            NO_XPU              # | to pass: NO_VECTOR NO_XPU.
-            SKIP_IMAGE_DIFF     # Do not generate canonical/diff/header stages for this test.
+        NO_SCALAR           # | Execution modes to skip for this test. For example, path guiding is
+        NO_VECTOR           # | currently only supported in scalar mode, so tests using path guiding may want
+        NO_XPU              # | to pass: NO_VECTOR NO_XPU.
+        SKIP_IMAGE_DIFF     # Do not generate canonical/diff/header stages for this test.
     )
 
     set(oneValueArgs
-            BASENAME            # Basename of tests. By convention includes relative folder structure, example: moonray_geometry_spheres
-            OUTPUT              # Name of output image file, will be added to render args as -out <OUTPUT>
-            RENDERER            # moonray|hd_render (defaults to moonray)
+        BASENAME            # Basename of tests. By convention includes relative folder structure, example: moonray_geometry_spheres
+        OUTPUT              # Name of output image file, will be added to render args as -out <OUTPUT>
+        RENDERER            # moonray|hd_render (defaults to moonray)
     )
 
     set(multiValueArgs
-            CANONICALS          # List of output files the test produces (aka. results/canonicals).
-                                # if empty, no canonical/diff/header stages are created for this test.
-                                # example: CANONICALS scene.exr aovs.exr more_aovs.exr
+        CANONICALS          # List of output files the test produces (aka. results/canonicals).
+                            # if empty, no canonical/diff/header stages are created for this test.
+                            # example: CANONICALS scene.exr aovs.exr more_aovs.exr
 
-            DEPENDS             # List of tests that should be run before this test (for canonical and
-                                # render stages) when running ctest with multiple jobs (eg. -j N). For example,
-                                # for a test that uses checkpoint/resume rendering the resume test should run _after_
-                                # the checkpoint test, and should therefore specify the checkpoint test's basename
-                                # in its DEPENDS list.
-                                # (Note that CTests are always run in the order they are added when -j is omitted,
-                                # but specifying an explicit dependency here allows such tests to run in the correct
-                                # order when multiple jobs are used via the -J option to the ctest command).
+        DEPENDS             # List of tests that should be run before this test (for canonical and
+                            # render stages) when running ctest with multiple jobs (eg. -j N). For example,
+                            # for a test that uses checkpoint/resume rendering the resume test should run _after_
+                            # the checkpoint test, and should therefore specify the checkpoint test's basename
+                            # in its DEPENDS list.
+                            # (Note that CTests are always run in the order they are added when -j is omitted,
+                            # but specifying an explicit dependency here allows such tests to run in the correct
+                            # order when multiple jobs are used via the -J option to the ctest command).
 
-            INPUTS              # (required) Ordered list of input files the test requires.
-                                # example: INPUTS scene.rdla scene.rdlb
+        INPUTS              # (required) Ordered list of input files the test requires.
+                            # example: INPUTS scene.rdla scene.rdlb
 
-            DELTAS              # Ordered list of optional delta files for the test.
-                                # example: DELTAS deltas.rdla
+        DELTAS              # Ordered list of optional delta files for the test.
+                            # example: DELTAS deltas.rdla
 
-            ENVIRONMENT         # List of definitions to be available as env vars during test runtime, for example:
-                                # ENVIRONMENT TEST_ASSETS_DIR=/some/path ANOTHER_VAR="another value"
+        ENVIRONMENT         # List of definitions to be available as env vars during test runtime, for example:
+                            # ENVIRONMENT TEST_ASSETS_DIR=/some/path ANOTHER_VAR="another value"
 
-            RENDER_ARGS         # List of renderer args to set/override.
-            RENDER_ARGS_SCALAR  # | List of renderer args to set/override per execution mode.
-            RENDER_ARGS_VECTOR  # | Example: RENDER_ARGS_XPU -scene_var pixel_samples 1 -texture_cache_size 8192
-            RENDER_ARGS_XPU     # |
+        RENDER_ARGS         # List of renderer args to set/override.
+        RENDER_ARGS_SCALAR  # | List of renderer args to set/override per execution mode.
+        RENDER_ARGS_VECTOR  # | Example: RENDER_ARGS_XPU -scene_var pixel_samples 1 -texture_cache_size 8192
+        RENDER_ARGS_XPU     # |
     )
 
     # parse and validate arguments
@@ -134,7 +144,8 @@ function(add_rats_test)
     # construct list of env vars to be made available at test runtime
     set(assets_dir "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../assets")
     cmake_path(NATIVE_PATH assets_dir NORMALIZE assets_dir)
-    set(runtime_env_vars "RATS_ASSETS_DIR=${assets_dir}")
+    list(APPEND runtime_env_vars "RATS_ASSETS_DIR=${assets_dir}")
+    list(APPEND runtime_env_vars "PYTHONPATH=$ENV{PYTHONPATH}")
     list(APPEND runtime_env_vars "${ARG_ENVIRONMENT}")
 
     # add CTests
@@ -150,7 +161,7 @@ function(add_rats_test)
         string(TOUPPER ${exec_mode} exec_mode_upper)
         string(SUBSTRING ${exec_mode} 0 3 exec_mode_short)
         set(canonical_test_name "rats_${exec_mode_short}_canonical_${ARG_BASENAME}")
-        set(super_test_name "rats_${exec_mode_short}_super_${ARG_BASENAME}")
+        set(update_test_name "rats_${exec_mode_short}_update_${ARG_BASENAME}")
         set(render_test_name "rats_${exec_mode_short}_render_${ARG_BASENAME}")
         file(MAKE_DIRECTORY ${render_dir})
 
@@ -190,36 +201,36 @@ function(add_rats_test)
             list(APPEND render_cmd ${ARG_RENDER_ARGS_XPU})
         endif()
 
-        if (NOT ${exec_mode} STREQUAL "xpu")
-            # Add CTest to generate super canonicals
-            add_test(NAME ${super_test_name}
-                WORKING_DIRECTORY ${render_dir}
-                COMMAND ${CMAKE_COMMAND}
-                        "-DRENDER_CMD=${render_cmd}"
-                        "-DTEST_REL_PATH=${test_rel_path}/${exec_mode}"
-                        "-DCANONICALS=${ARG_CANONICALS}"
-                        "-DEXEC_MODE=${exec_mode}"
-                        "-DIDIFF_TOOL=${IDIFF}"
-                        "-DDIFF_JSON=${CMAKE_CURRENT_SOURCE_DIR}/diff.json"
-                        "-DDIFF_DEFAULTS_JSON=${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff_defaults.json"
-                        -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/MakeCanonicals.cmake
-            )
-            set_tests_properties(${super_test_name} PROPERTIES
-                LABELS "super"
-                DEPENDS "${canonical_dependencies}"
-                DISABLED ${ARG_DISABLED}
-                ENVIRONMENT "${runtime_env_vars}"
-            )
-        endif()
+        # Add CTest to generate canonicals and compute idiff fail threshold
+        check_test_name(${update_test_name})
+        add_test(NAME ${update_test_name}
+            WORKING_DIRECTORY ${render_dir}
+            COMMAND ${CMAKE_COMMAND}
+                    "-DRENDER_CMD=${render_cmd}"
+                    "-DTEST_REL_PATH=${test_rel_path}"
+                    "-DCANONICALS=${ARG_CANONICALS}"
+                    "-DEXEC_MODE=${exec_mode}"
+                    "-DIDIFF=${IDIFF}"
+                    "-DDIFF_JSON=${test_rel_path}/diff.json"
+                    "-DPYTHON_EXECUTABLE=${Python_EXECUTABLE}"
+                    -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/update_canonicals.cmake
+        )
+        set_tests_properties(${update_test_name} PROPERTIES
+            LABELS "update"
+            DEPENDS "${canonical_dependencies}"
+            DISABLED ${ARG_DISABLED}
+            ENVIRONMENT "${runtime_env_vars}"
+        )
 
         # Add CTest to generate canonicals
+        check_test_name(${canonical_test_name})
         add_test(NAME ${canonical_test_name}
             WORKING_DIRECTORY ${render_dir}
             COMMAND ${CMAKE_COMMAND}
                     "-DRENDER_CMD=${render_cmd}"
                     "-DTEST_REL_PATH=${test_rel_path}/${exec_mode}"
                     "-DCANONICALS=${ARG_CANONICALS}"
-                    -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/RenderCanonicals.cmake
+                    -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/render_canonicals.cmake
         )
         set_tests_properties(${canonical_test_name} PROPERTIES
             LABELS "canonical"
@@ -229,6 +240,7 @@ function(add_rats_test)
         )
 
         # Add CTest to render result
+        check_test_name(${render_test_name})
         add_test(NAME ${render_test_name}
             WORKING_DIRECTORY ${render_dir}
             COMMAND ${render_cmd}
@@ -246,23 +258,19 @@ function(add_rats_test)
                 cmake_path(GET canonical STEM stem)
                 cmake_path(GET canonical EXTENSION extension)
 
-                set(canonical_exec_mode ${exec_mode})
-                if (${exec_mode} STREQUAL "xpu")
-                    # xpu and vector modes share the vector canonical
-                    set(canonical_exec_mode "vector")
-                endif()
 
                 # diff image header?
                 if(ARG_DIFF_HEADERS)
                     set(header_test_name "rats_${exec_mode_short}_header_${ARG_BASENAME}_${stem}${extension}")
 
+                    check_test_name(${header_test_name})
                     add_test(NAME ${header_test_name}
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
                                 "-DOIIO_TOOL=${OIIOTOOL}"
-                                "-DCANONICAL=${test_rel_path}/${canonical_exec_mode}/${canonical}"
+                                "-DCANONICAL=${test_rel_path}/${exec_mode}/${canonical}"
                                 "-DRESULT=${canonical}"
-                                -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/CompareImageHeaders.cmake
+                                -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff_headers.cmake
                     )
                     set_tests_properties(${header_test_name} PROPERTIES
                         LABELS "diff"
@@ -273,20 +281,19 @@ function(add_rats_test)
 
                 # diff canonical images
                 set(diff_test_name "rats_${exec_mode_short}_diff_${ARG_BASENAME}_${stem}${extension}")
-                set(diff_image_name "${stem}_diff${extension}")
+                check_test_name(${diff_test_name})
+                set(diff_image_name "${stem}.diff${extension}")
                 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/diff.cmake)
                     # use custom diff tool
                     add_test(NAME ${diff_test_name}
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
-                                "-DCANONICAL=${test_rel_path}/${canonical_exec_mode}/${canonical}"
-                                "-DDIFF_IMAGE=${diff_image_name}"
+                                "-DDIFF_IMAGE_FILENAME=${diff_image_name}"
                                 "-DEXEC_MODE=${exec_mode}"
                                 "-DIDIFF_TOOL=${IDIFF}"
                                 "-DOIIO_TOOL=${OIIOTOOL}"
-                                "-DDIFF_JSON=${CMAKE_CURRENT_SOURCE_DIR}/diff.json"
-                                "-DDIFF_DEFAULTS_JSON=${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff_defaults.json"
-                                "-DRESULT=${canonical}"
+                                "-DIMAGE_FILENAME=${canonical}"
+                                "-DTEST_REL_PATH=${test_rel_path}"
                                 -P ${CMAKE_CURRENT_SOURCE_DIR}/diff.cmake
                     )
                 else()
@@ -294,14 +301,12 @@ function(add_rats_test)
                     add_test(NAME ${diff_test_name}
                         WORKING_DIRECTORY ${render_dir}
                         COMMAND ${CMAKE_COMMAND}
-                                "-DCANONICAL=${test_rel_path}/${canonical_exec_mode}/${canonical}"
-                                "-DDIFF_IMAGE=${diff_image_name}"
+                                "-DDIFF_IMAGE_FILENAME=${diff_image_name}"
                                 "-DEXEC_MODE=${exec_mode}"
                                 "-DIDIFF_TOOL=${IDIFF}"
-                                "-DDIFF_JSON=${CMAKE_CURRENT_SOURCE_DIR}/diff.json"
-                                "-DDIFF_DEFAULTS_JSON=${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff_defaults.json"
-                                "-DRESULT=${canonical}"
-                                -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/CompareImages.cmake
+                                "-DIMAGE_FILENAME=${canonical}"
+                                "-DTEST_REL_PATH=${test_rel_path}"
+                                -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff.cmake
                     )
                 endif() # custom diff
                 set_tests_properties(${diff_test_name} PROPERTIES

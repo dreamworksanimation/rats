@@ -176,7 +176,8 @@ hairMtl = HairMaterial_v3("/hairMaterial") {
     ["hair_color"] = Rgb(0.087, 0.047, 0.03),
     ["primary_specular_roughness"] = 0.5,
     ["primary_specular_offset"] = -3.0,
-    ["label"] = "hair1"
+    ["label"] = "hair1",
+    ["use_optimized_sampling"] = false,
 }
 
 ------------------------------------------------------------------------

@@ -37,8 +37,8 @@ local sharpen_filter = ConvolutionDisplayFilter("/display/sharpen") {
          0.0, -1.0, 0.0}
 }
 
-RenderOutput("/output/guassian") {
-    ["file_name"] = "guassian.exr",
+RenderOutput("/output/gaussian") {
+    ["file_name"] = "gaussian.exr",
     ["result"] = "display filter",
     ["display_filter"] = gaussian_filter,
     ["channel_name"] = "gaussian"

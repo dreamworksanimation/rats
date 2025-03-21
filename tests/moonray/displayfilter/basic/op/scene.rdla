@@ -180,21 +180,21 @@ local xor = OpDisplayFilter("/display/xor") {
 }
 
 RenderOutput("/output/add") {
-    ["file_name"] = "add.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = add,
     ["channel_name"] = "add"
 }
 
 RenderOutput("/output/subtract") {
-    ["file_name"] = "subtract.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = subtract,
     ["channel_name"] = "subtract"
 }
 
 RenderOutput("/output/multiply") {
-    ["file_name"] = "multiply.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = multiply,
     ["channel_name"] = "multiply",
@@ -208,14 +208,14 @@ RenderOutput("/output/divide") {
 }
 
 RenderOutput("/output/min") {
-    ["file_name"] = "min.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = min,
     ["channel_name"] = "min"
 }
 
 RenderOutput("/output/max") {
-    ["file_name"] = "max.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = max,
     ["channel_name"] = "max"
@@ -229,21 +229,21 @@ RenderOutput("/output/power") {
 }
 
 RenderOutput("/output/cross") {
-    ["file_name"] = "cross.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = cross,
     ["channel_name"] = "cross"
 }
 
 RenderOutput("/output/dot") {
-    ["file_name"] = "dot.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = dot,
     ["channel_name"] = "dot"
 }
 
 RenderOutput("/output/invert") {
-    ["file_name"] = "invert.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = invert,
     ["channel_name"] = "invert"
@@ -257,59 +257,52 @@ RenderOutput("/output/normalize") {
 }
 
 RenderOutput("/output/abs") {
-    ["file_name"] = "abs.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = abs,
     ["channel_name"] = "abs"
 }
 
 RenderOutput("/output/ceil") {
-    ["file_name"] = "ceil.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = ceil,
     ["channel_name"] = "ceil"
 }
 
 RenderOutput("/output/floor") {
-    ["file_name"] = "floor.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = floor,
     ["channel_name"] = "floor"
 }
 
 RenderOutput("/output/modulo") {
-    ["file_name"] = "modulo.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = modulo,
     ["channel_name"] = "modulo"
 }
 
 RenderOutput("/output/length") {
-    ["file_name"] = "length.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = length,
     ["channel_name"] = "length"
 }
 
 RenderOutput("/output/sine") {
-    ["file_name"] = "sine.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = sine,
     ["channel_name"] = "sine"
 }
 
 RenderOutput("/output/cosine") {
-    ["file_name"] = "cosine.exr",
+    ["file_name"] = "math_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = cosine,
     ["channel_name"] = "cosine"
-}
-
-RenderOutput("/output/round") {
-    ["file_name"] = "round.exr",
-    ["result"] = "display filter",
-    ["display_filter"] = round,
-    ["channel_name"] = "round"
 }
 
 RenderOutput("/output/acos") {
@@ -319,71 +312,78 @@ RenderOutput("/output/acos") {
     ["channel_name"] = "acos"
 }
 
+RenderOutput("/output/round") {
+    ["file_name"] = "binary_ops.exr",
+    ["result"] = "display filter",
+    ["display_filter"] = round,
+    ["channel_name"] = "round"
+}
+
 RenderOutput("/output/greater_than") {
-    ["file_name"] = "greater_than.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = greater_than,
     ["channel_name"] = "greater_than"
 }
 
 RenderOutput("/output/greater_than_or_equal") {
-    ["file_name"] = "greater_than_or_equal.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = greater_than_or_equal,
     ["channel_name"] = "greater_than_or_equal"
 }
 
 RenderOutput("/output/less_than") {
-    ["file_name"] = "less_than.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = less_than,
     ["channel_name"] = "less_than"
 }
 
 RenderOutput("/output/less_than_or_equal") {
-    ["file_name"] = "less_than_or_equal.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = less_than_or_equal,
     ["channel_name"] = "less_than_or_equal"
 }
 
 RenderOutput("/output/equal") {
-    ["file_name"] = "equal.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = equal,
     ["channel_name"] = "equal"
 }
 
 RenderOutput("/output/not_equal") {
-    ["file_name"] = "not_equal.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = not_equal,
     ["channel_name"] = "not_equal"
 }
 
 RenderOutput("/output/logic_and") {
-    ["file_name"] = "logic_and.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = logic_and,
     ["channel_name"] = "logic_and"
 }
 
 RenderOutput("/output/logic_or") {
-    ["file_name"] = "logic_or.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = logic_or,
     ["channel_name"] = "logic_or"
 }
 
 RenderOutput("/output/logic_not") {
-    ["file_name"] = "logic_not.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = logic_not,
     ["channel_name"] = "logic_not"
 }
 
 RenderOutput("/output/xor") {
-    ["file_name"] = "xor.exr",
+    ["file_name"] = "binary_ops.exr",
     ["result"] = "display filter",
     ["display_filter"] = xor,
     ["channel_name"] = "xor"

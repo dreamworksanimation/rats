@@ -5,7 +5,7 @@
 # dicing camera's frustum.
 
 add_rats_test(BASENAME moonray_camera_dicing
-    DISABLED    # moonray crashes, needs investigation
+    DISABLED    # MOONRAY-5617 this test crashes on render, needs investigation
     INPUTS scene.rdla
     CANONICALS
         wireframe.exr

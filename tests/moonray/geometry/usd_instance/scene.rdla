@@ -1,9 +1,9 @@
 rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
 
 SceneVariables {
-    ["image_width"] = 250,
-    ["image_height"] = 250,
-    ["pixel_samples"] = 3,
+    ["image_width"] = 256,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 4,
     ["enable_motion_blur"] = true,
     ["frame"] = 20,
 }

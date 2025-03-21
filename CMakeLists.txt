@@ -8,17 +8,5 @@ project(rats)
 list(APPEND CMAKE_MESSAGE_CONTEXT ${PROJECT_NAME})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-find_program(IDIFF
-    idiff
-    DOC "path to the openimageio 'idiff' command-line tool"
-    REQUIRED
-)
-
-find_program(OIIOTOOL
-    oiiotool
-    DOC "path to the openimageio 'oiiotool' command-line tool"
-    REQUIRED
-)
-
 include(RatsTest)
 add_subdirectory(tests)

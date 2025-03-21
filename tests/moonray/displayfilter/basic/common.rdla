@@ -1,9 +1,7 @@
 rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
 
 SceneVariables {
-    ["pixel_samples"] = 2,
-    ["light_samples"] = 1,
-    ["bsdf_samples"] = 1,
+    ["pixel_samples"] = 4,
     ["image_width"] = 400,
     ["image_height"] = 400,
     ["max_depth"] = 1,
@@ -36,9 +34,13 @@ key_glossy = RectLight("/Scene/lighting/key_glossy") {
     ["height"] = 100,
     ["visible_diffuse_reflection"] = false,
 }
+env_light = EnvLight("/Scene/lighting/env_light") {
+    ["exposure"] = -3,
+}
 lightSet = LightSet("/Scene/lighting/lightSet") {
     key_diffuse,
     key_glossy,
+    env_light,
 }
 
 geom = UsdGeometry("/Scene/geometry/geom/widget_DWA") {

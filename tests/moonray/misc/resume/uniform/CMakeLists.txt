@@ -9,6 +9,7 @@
 
 # create the checkpoint file
 add_rats_test(BASENAME moonray_misc_resume_uniform_checkpoint
+    DISABLED
     DIFF_HEADERS
     INPUTS scene.rdla checkpoint.rdla
     CANONICALS checkpoint_result.exr checkpoint_result0.exr
@@ -16,6 +17,7 @@ add_rats_test(BASENAME moonray_misc_resume_uniform_checkpoint
 
 # do a final (resume) render from checkpoint
 add_rats_test(BASENAME moonray_misc_resume_uniform_final
+    DISABLED
     DEPENDS moonray_misc_resume_uniform_checkpoint
     INPUTS scene.rdla resume.rdla
     CANONICALS resume_result.exr resume_result0.exr

@@ -10,6 +10,9 @@ local depthRO = RenderOutput("/output/depth") {}
 local dofFilter = DofDisplayFilter("/Filter/dof") {
     ["input"] = ro,
     ["depth"] = depthRO,
+    ["focal_length"] = 24,
+    ["focus_distance"] = 19,
+    ["use_camera_attributes"] = false,
 }
 
 RenderOutput("/Output/dof") {
