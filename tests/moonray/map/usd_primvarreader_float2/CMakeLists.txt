@@ -3,7 +3,7 @@
 
 # This tests the UsePrimvarReader_float2 map
 
-add_rats_test(BASENAME moonray_map_usd_primvarreader_float2
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

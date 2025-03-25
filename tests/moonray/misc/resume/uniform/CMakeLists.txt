@@ -7,8 +7,11 @@
 # pixels with extremely large values. This makes finding reasonable
 # idiff arguments difficult.
 
+file(RELATIVE_PATH test_basename ${PROJECT_SOURCE_DIR}/tests/ ${CMAKE_CURRENT_SOURCE_DIR})
+
 # create the checkpoint file
-add_rats_test(BASENAME moonray_misc_resume_uniform_checkpoint
+add_rats_test(
+    NAME_SUFFIX -checkpoint
     DISABLED
     DIFF_HEADERS
     INPUTS scene.rdla checkpoint.rdla
@@ -16,9 +19,10 @@ add_rats_test(BASENAME moonray_misc_resume_uniform_checkpoint
 )
 
 # do a final (resume) render from checkpoint
-add_rats_test(BASENAME moonray_misc_resume_uniform_final
+add_rats_test(
+    NAME_SUFFIX -final
     DISABLED
-    DEPENDS moonray_misc_resume_uniform_checkpoint
+    DEPENDS ${test_basename}-checkpoint
     INPUTS scene.rdla resume.rdla
     CANONICALS resume_result.exr resume_result0.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests the checkerboard map shader
 
-add_rats_test(BASENAME moonray_map_checkerboard
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

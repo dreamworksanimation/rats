@@ -3,7 +3,7 @@
 
 # This tests the noise map features
 
-add_rats_test(BASENAME moonray_map_noise_features
+add_rats_test(
     INPUTS scene.rdla
            ../common.rdla
     CANONICALS scene.exr

@@ -3,7 +3,7 @@
 
 # This test exercises the 'rod' light filter.
 
-add_rats_test(BASENAME moonray_light_filter_rod
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

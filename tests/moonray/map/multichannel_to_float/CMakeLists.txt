@@ -3,7 +3,7 @@
 
 # This tests the MultiChannelToFloatMap
 
-add_rats_test(BASENAME moonray_map_multichannel_to_float
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

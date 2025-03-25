@@ -3,7 +3,7 @@
 
 # Tests the visibility flags of a light.
 
-add_rats_test(BASENAME moonray_light_visibility_flags
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

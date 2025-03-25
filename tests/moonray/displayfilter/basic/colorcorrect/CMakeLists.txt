@@ -3,7 +3,7 @@
 
 # This tests the ColorCorrectDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_colorcorrect
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

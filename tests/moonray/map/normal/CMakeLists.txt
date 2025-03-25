@@ -3,7 +3,7 @@
 
 # This tests normal-mapping
 
-add_rats_test(BASENAME moonray_map_normal
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

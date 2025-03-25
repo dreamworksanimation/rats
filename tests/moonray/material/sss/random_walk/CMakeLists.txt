@@ -3,7 +3,7 @@
 
 # This tests random_walk Path Traced SSS.
 
-add_rats_test(BASENAME moonray_material_sss_random_walk
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

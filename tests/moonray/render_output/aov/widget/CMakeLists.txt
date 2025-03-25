@@ -1,7 +1,7 @@
 # Copyright 2023 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
-add_rats_test(BASENAME moonray_render_output_aov_widget
+add_rats_test(
     DIFF_HEADERS
     INPUTS scene.rdla
     CANONICALS

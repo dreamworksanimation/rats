@@ -3,7 +3,7 @@
 
 # This test verifies reflective properties of materials.
 
-add_rats_test(BASENAME moonray_material_dwabase_spheres
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

@@ -3,7 +3,7 @@
 
 # This test bakes the lighting on the plane mesh geometry.
 
-add_rats_test(BASENAME moonray_camera_bake_basic
+add_rats_test(
     INPUTS basic.rdla
     CANONICALS
         scene.exr

@@ -3,7 +3,7 @@
 
 # This tests fuzz on all possible Dwa* materials for Energy Conservation
 
-add_rats_test(BASENAME moonray_material_dwabase_fuzz_furnace
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

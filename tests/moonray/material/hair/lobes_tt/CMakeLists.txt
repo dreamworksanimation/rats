@@ -5,7 +5,7 @@
 # It's settings are roughly default, unimportant values.  This test is meant to 
 # prevent unintended look changes or any break in its functionality.
 
-add_rats_test(BASENAME moonray_material_hair_lobes_tt
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

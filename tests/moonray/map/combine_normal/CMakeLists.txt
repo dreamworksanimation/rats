@@ -3,7 +3,7 @@
 
 # This tests the CombineNormalMap
 
-add_rats_test(BASENAME moonray_map_combine_normal
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

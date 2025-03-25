@@ -3,7 +3,7 @@
 
 # This tests blending interactions between toon and base diffuse
 
-add_rats_test(BASENAME moonray_material_dwatoon_toon_blending
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

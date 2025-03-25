@@ -3,7 +3,7 @@
 
 # Tests transparency on objects specified via a map.
 
-add_rats_test(BASENAME moonray_rt_transparency_map
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

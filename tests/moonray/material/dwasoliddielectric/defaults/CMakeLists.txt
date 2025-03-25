@@ -3,7 +3,7 @@
 
 # This tests default properties of the DwaSolidDelectric material
 
-add_rats_test(BASENAME moonray_material_dwasoliddielectric_defaults
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

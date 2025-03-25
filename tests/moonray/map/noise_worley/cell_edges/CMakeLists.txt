@@ -3,7 +3,7 @@
 
 # This tests the worley noise cell_edges mode
 
-add_rats_test(BASENAME moonray_map_noise_worley_cell_edges
+add_rats_test(
     INPUTS scene.rdla
            ../common.rdla
     CANONICALS scene.exr

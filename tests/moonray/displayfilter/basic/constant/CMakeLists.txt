@@ -3,7 +3,7 @@
 
 # This tests the ConstantDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_constant
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

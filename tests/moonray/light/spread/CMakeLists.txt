@@ -3,7 +3,7 @@
 
 # This test exercises the spread parameter on the rect and disk light.
 
-add_rats_test(BASENAME moonray_light_spread
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

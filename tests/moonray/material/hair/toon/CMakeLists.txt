@@ -3,7 +3,7 @@
 
 # This tests the HairToonMaterial
 
-add_rats_test(BASENAME moonray_material_hair_toon
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

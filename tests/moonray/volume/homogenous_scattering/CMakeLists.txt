@@ -3,7 +3,7 @@
 
 # Tests volume homogenous scattering.
 
-add_rats_test(BASENAME moonray_volume_homogenous_scattering
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

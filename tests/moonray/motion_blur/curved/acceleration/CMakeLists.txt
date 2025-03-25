@@ -3,7 +3,7 @@
 
 # This test exercises the quadratic 'acceleration' type of curved motion blur
 
-add_rats_test(BASENAME moonray_motion_blur_curved_acceleration
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

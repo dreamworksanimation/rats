@@ -3,7 +3,7 @@
 
 # Test layering glitter on top of the dwa materials
 
-add_rats_test(BASENAME moonray_material_glitter_layered
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

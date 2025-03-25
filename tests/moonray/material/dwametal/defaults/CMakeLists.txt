@@ -3,7 +3,7 @@
 
 # This tests default properties of the DwaMetal material
 
-add_rats_test(BASENAME moonray_material_dwametal_defaults
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

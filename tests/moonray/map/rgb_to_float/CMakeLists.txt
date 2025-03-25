@@ -3,7 +3,7 @@
 
 # This test verifies RgbToFloat map conversion functionality (R, G, B, Min, Max, Average, Sum, Luminance)
 
-add_rats_test(BASENAME moonray_map_rgb_to_float
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

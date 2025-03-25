@@ -3,7 +3,7 @@
 
 # This tests the image map shader attributes 
 
-add_rats_test(BASENAME moonray_map_image_placement
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

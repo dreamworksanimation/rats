@@ -3,7 +3,7 @@
 
 # Test glitter deformation compensation
 
-add_rats_test(BASENAME moonray_material_glitter_deformation_compensation
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests the ColorCorrectMap
 
-add_rats_test(BASENAME moonray_map_color_correct
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests the RgbToHsvDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_rgbtohsv
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

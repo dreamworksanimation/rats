@@ -4,7 +4,7 @@
 # A Cornell Box containing two (invisible) planes with presence = 0.
 # Tests that objects with zero presence are completely invisible.
 
-add_rats_test(BASENAME moonray_rt_presence_zero
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

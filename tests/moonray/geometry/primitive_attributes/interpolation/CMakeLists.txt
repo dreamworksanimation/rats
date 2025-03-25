@@ -3,7 +3,7 @@
 
 # This tests interpolation of UserData primitive attributes
 
-add_rats_test(BASENAME moonray_geometry_primitive_attributes_interpolation
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

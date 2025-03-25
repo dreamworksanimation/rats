@@ -3,7 +3,7 @@
 
 # Test the blending algorithm of glitter material
 
-add_rats_test(BASENAME moonray_material_glitter_blend
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

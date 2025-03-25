@@ -3,7 +3,7 @@
 
 # This test bakes the base line mesh scene, using udim.
 
-add_rats_test(BASENAME moonray_camera_bake_udim
+add_rats_test(
     INPUTS udim.rdla
     CANONICALS
         scene.exr

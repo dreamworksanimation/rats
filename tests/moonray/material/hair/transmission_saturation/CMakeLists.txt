@@ -3,7 +3,7 @@
 
 # Tests a control to saturation/desaturate transmission highlights.
 
-add_rats_test(BASENAME moonray_material_hair_transmission_saturation
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

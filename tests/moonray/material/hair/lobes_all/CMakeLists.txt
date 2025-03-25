@@ -4,7 +4,7 @@
 # This test verifies that all the lobes in the hair material shader turned
 # on simultanesouly are *functional*.
 
-add_rats_test(BASENAME moonray_material_hair_lobes_all
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

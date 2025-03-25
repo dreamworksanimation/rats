@@ -3,7 +3,7 @@
 
 # This tests Fuzz on DwaSolidDielectric material
 
-add_rats_test(BASENAME moonray_material_dwasoliddielectric_fuzz
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

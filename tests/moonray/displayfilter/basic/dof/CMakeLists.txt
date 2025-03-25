@@ -3,7 +3,7 @@
 
 # This tests the DofDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_dof
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

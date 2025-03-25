@@ -3,7 +3,7 @@
 
 # This tests DwaColorCorrectMaterial
 
-add_rats_test(BASENAME moonray_material_dwacolorcorrect
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

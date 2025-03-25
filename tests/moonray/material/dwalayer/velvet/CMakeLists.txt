@@ -3,7 +3,7 @@
 
 # This tests DwaLayer with respect to layering velvet
 
-add_rats_test(BASENAME moonray_material_dwalayer_velvet
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

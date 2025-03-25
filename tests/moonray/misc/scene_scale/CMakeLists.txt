@@ -3,7 +3,7 @@
 
 # This test verifies invariance when changing scene scale.
 
-add_rats_test(BASENAME moonray_misc_scene_scale
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

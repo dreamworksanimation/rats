@@ -3,7 +3,7 @@
 
 # This tests the RampDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_ramp
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

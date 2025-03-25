@@ -3,7 +3,7 @@
 
 # Tests equiangular MIS sampling with two spherical light sources inside a cloud.
 
-add_rats_test(BASENAME moonray_volume_equiangular_mis
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

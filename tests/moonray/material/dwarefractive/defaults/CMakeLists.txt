@@ -3,7 +3,7 @@
 
 # This tests default properties of the DwaRefractive material
 
-add_rats_test(BASENAME moonray_material_dwarefractive_defaults
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

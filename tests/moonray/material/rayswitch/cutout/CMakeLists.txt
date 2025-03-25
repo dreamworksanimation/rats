@@ -3,7 +3,7 @@
 
 # This tests the cutout behavior on the ray switch material
 
-add_rats_test(BASENAME moonray_material_rayswitch_cutout
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

@@ -16,7 +16,7 @@
 # generate a canonical with a known-good moonray version, then run rats using the branched moonray version under
 # test. Then repeat for all light types.
 
-add_rats_test(BASENAME moonray_light_combined
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

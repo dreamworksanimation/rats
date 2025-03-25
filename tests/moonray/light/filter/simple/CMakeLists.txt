@@ -3,7 +3,7 @@
 
 # This test exercises the 'simple' light filters: combine, decay, intensity, and ramp.
 
-add_rats_test(BASENAME moonray_light_filter_simple
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

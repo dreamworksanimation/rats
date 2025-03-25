@@ -3,7 +3,7 @@
 
 # This tests the ProjectCameraMap_v2 with various projectors and options
 
-add_rats_test(BASENAME moonray_map_project_camera_projectors
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

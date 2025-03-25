@@ -23,10 +23,10 @@ endfunction()
 #
 # TEST NAMES:
 # Each test will be named according to the following convention:
-#   rats_<exec_mode>_<stage>_<basename>[_output]
+#   <stage>_<exec_mode>_<basename>[-output]
 #
-#   * the <exec_mode> token will be one of sca|vec|xpu
 #   * the <stage> token will be canonical|render|diff|header
+#   * the <exec_mode> token will be one of sca|vec|xpu
 #   * the [_output] token appears on diff & header stages and will be the name of the image, eg. _scene.exr
 #
 # ---------------------
@@ -64,7 +64,7 @@ function(add_rats_test)
     )
 
     set(oneValueArgs
-        BASENAME            # Basename of tests. By convention includes relative folder structure, example: moonray_geometry_spheres
+        NAME_SUFFIX         # Suffix to be appended to test base name. This allows adding multiple tests from the same CMakeLists.txt
         OUTPUT              # Name of output image file, will be added to render args as -out <OUTPUT>
         RENDERER            # moonray|hd_render (defaults to moonray)
     )
@@ -106,9 +106,6 @@ function(add_rats_test)
     if(DEFINED ARG_UNPARSED_ARGUMENTS)
         message(FATAL_ERROR "Unrecognized arguments: ${ARG_UNPARSED_ARGUMENTS}")
     endif()
-    if(NOT DEFINED ARG_BASENAME)
-        message(FATAL_ERROR "You must specify a BASENAME for the test")
-    endif()
     if(NOT DEFINED ARG_INPUTS)
         message(FATAL_ERROR "You must specify INPUTS")
     endif()
@@ -124,6 +121,10 @@ function(add_rats_test)
 
     # configure some paths
     file(RELATIVE_PATH test_rel_path ${PROJECT_SOURCE_DIR}/tests/ ${CMAKE_CURRENT_SOURCE_DIR})
+    set(test_basename ${test_rel_path})
+    if(DEFINED ARG_NAME_SUFFIX)
+        set(test_basename ${test_rel_path}${ARG_NAME_SUFFIX})
+    endif()
 
     # determine which execution modes are needed
     if(${renderer} STREQUAL "moonray")
@@ -160,15 +161,15 @@ function(add_rats_test)
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         string(TOUPPER ${exec_mode} exec_mode_upper)
         string(SUBSTRING ${exec_mode} 0 3 exec_mode_short)
-        set(canonical_test_name "rats_${exec_mode_short}_canonical_${ARG_BASENAME}")
-        set(update_test_name "rats_${exec_mode_short}_update_${ARG_BASENAME}")
-        set(render_test_name "rats_${exec_mode_short}_render_${ARG_BASENAME}")
+        set(canonical_test_name "canonical-${exec_mode_short}-${test_basename}")
+        set(update_test_name "update-${exec_mode_short}-${test_basename}")
+        set(render_test_name "render-${exec_mode_short}-${test_basename}")
         file(MAKE_DIRECTORY ${render_dir})
 
         if(ARG_DEPENDS)
             # compute full name of dependency tests with prefix
-            list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode_short}_canonical_" OUTPUT_VARIABLE canonical_dependencies)
-            list(TRANSFORM ARG_DEPENDS PREPEND "rats_${exec_mode_short}_render_"    OUTPUT_VARIABLE render_dependencies)
+            list(TRANSFORM ARG_DEPENDS PREPEND "canonical-${exec_mode_short}-" OUTPUT_VARIABLE canonical_dependencies)
+            list(TRANSFORM ARG_DEPENDS PREPEND "render-${exec_mode_short}-"    OUTPUT_VARIABLE render_dependencies)
             # join them into one big list and verify that each CTest exists
             string(JOIN % dependencies ${canonical_dependencies})
             string(JOIN % dependencies ${render_dependencies})
@@ -216,7 +217,7 @@ function(add_rats_test)
                     -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/update_canonicals.cmake
         )
         set_tests_properties(${update_test_name} PROPERTIES
-            LABELS "update"
+            LABELS "rats;update;${exec_mode}"
             DEPENDS "${canonical_dependencies}"
             DISABLED ${ARG_DISABLED}
             ENVIRONMENT "${runtime_env_vars}"
@@ -233,7 +234,7 @@ function(add_rats_test)
                     -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/render_canonicals.cmake
         )
         set_tests_properties(${canonical_test_name} PROPERTIES
-            LABELS "canonical"
+            LABELS "rats;canonical;${exec_mode}"
             DEPENDS "${canonical_dependencies}"
             DISABLED ${ARG_DISABLED}
             ENVIRONMENT "${runtime_env_vars}"
@@ -246,7 +247,7 @@ function(add_rats_test)
             COMMAND ${render_cmd}
         )
         set_tests_properties(${render_test_name} PROPERTIES
-            LABELS "render"
+            LABELS "rats;render;${exec_mode}"
             DEPENDS "${render_dependencies}"
             DISABLED ${ARG_DISABLED}
             ENVIRONMENT "${runtime_env_vars}"
@@ -261,7 +262,7 @@ function(add_rats_test)
 
                 # diff image header?
                 if(ARG_DIFF_HEADERS)
-                    set(header_test_name "rats_${exec_mode_short}_header_${ARG_BASENAME}_${stem}${extension}")
+                    set(header_test_name "header-${exec_mode_short}-${test_basename}-${stem}${extension}")
 
                     check_test_name(${header_test_name})
                     add_test(NAME ${header_test_name}
@@ -273,14 +274,14 @@ function(add_rats_test)
                                 -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/diff_headers.cmake
                     )
                     set_tests_properties(${header_test_name} PROPERTIES
-                        LABELS "diff"
+                        LABELS "rats;diff;header;${exec_mode}"
                         DEPENDS "${render_test_name}"
                         DISABLED ${ARG_DISABLED}
                     )
                 endif()
 
                 # diff canonical images
-                set(diff_test_name "rats_${exec_mode_short}_diff_${ARG_BASENAME}_${stem}${extension}")
+                set(diff_test_name "diff-${exec_mode_short}-${test_basename}-${stem}${extension}")
                 check_test_name(${diff_test_name})
                 set(diff_image_name "${stem}.diff${extension}")
                 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/diff.cmake)
@@ -310,7 +311,7 @@ function(add_rats_test)
                     )
                 endif() # custom diff
                 set_tests_properties(${diff_test_name} PROPERTIES
-                    LABELS "diff"
+                    LABELS "rats;diff;${exec_mode}"
                     DEPENDS ${render_test_name}
                     DISABLED ${ARG_DISABLED}
                 )

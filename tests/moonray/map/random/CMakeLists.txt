@@ -3,7 +3,7 @@
 
 # Tests random maps
 
-add_rats_test(BASENAME moonray_map_random
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

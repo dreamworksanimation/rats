@@ -3,7 +3,7 @@
 
 # Tests the volume shadow set functionality.
 
-add_rats_test(BASENAME moonray_volume_shadowset
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests the ToonMap
 
-add_rats_test(BASENAME moonray_map_toon
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

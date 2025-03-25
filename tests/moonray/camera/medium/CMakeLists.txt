@@ -13,7 +13,7 @@
 # and when they encounter the sphere, the rays should go right through it,
 # since both the sphere and the water box have an IOR of 1.33.
 
-add_rats_test(BASENAME moonray_camera_medium
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

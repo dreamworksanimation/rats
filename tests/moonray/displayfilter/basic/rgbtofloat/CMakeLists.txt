@@ -3,7 +3,7 @@
 
 # This tests the RgbToFloatDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_rgbtofloat
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

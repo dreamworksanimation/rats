@@ -3,7 +3,7 @@
 
 # This test bakes a sphere along its normals.
 
-add_rats_test(BASENAME moonray_camera_bake_normal
+add_rats_test(
     INPUTS normal.rdla
     CANONICALS
         scene.exr

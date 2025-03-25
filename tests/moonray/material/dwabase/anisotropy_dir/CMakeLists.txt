@@ -3,7 +3,7 @@
 
 # This tests mapped anisotropic direction
 
-add_rats_test(BASENAME moonray_material_dwabase_anisotropy_dir
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

@@ -3,7 +3,7 @@
 
 # This tests iridescence properties of the dielectric specular lobe
 
-add_rats_test(BASENAME moonray_material_dwabase_iridescence_dielectric
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

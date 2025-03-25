@@ -3,7 +3,7 @@
 
 # This tests the HalftoneDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_halftone
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

@@ -3,7 +3,7 @@
 
 # This tests DwaLayer with respect to layering metallic specular
 
-add_rats_test(BASENAME moonray_material_dwalayer_metallic_specular
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

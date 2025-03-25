@@ -3,7 +3,7 @@
 
 # This tests the reverse_normals geometry parameter
 
-add_rats_test(BASENAME moonray_geometry_reverse_normals
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

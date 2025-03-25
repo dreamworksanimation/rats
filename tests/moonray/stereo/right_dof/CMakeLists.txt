@@ -3,7 +3,7 @@
 
 # Tests camera stereo right view with dof.
 
-add_rats_test(BASENAME moonray_stereo_right_dof
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

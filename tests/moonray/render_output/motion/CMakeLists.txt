@@ -3,7 +3,7 @@
 
 # This tests the ability of the RenderOutput objects to output motion vectors.
 
-add_rats_test(BASENAME moonray_render_output_motion
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

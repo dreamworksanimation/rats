@@ -3,7 +3,7 @@
 
 # This tests all the properties of the usd preview surface material
 
-add_rats_test(BASENAME moonray_material_usd_preview_surface
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

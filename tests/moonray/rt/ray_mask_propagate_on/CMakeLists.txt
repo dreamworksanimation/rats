@@ -4,7 +4,7 @@
 # Tests the propagate_visibility_bounce_type = true scene var.
 # Internally this is the ray mask.
 
-add_rats_test(BASENAME moonray_rt_ray_mask_propagate_on
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

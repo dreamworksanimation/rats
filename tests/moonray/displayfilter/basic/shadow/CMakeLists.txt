@@ -3,7 +3,7 @@
 
 # This tests the ShadowDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_shadow
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

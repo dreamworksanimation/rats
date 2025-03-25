@@ -3,7 +3,7 @@
 
 # This tests the RampMap
 
-add_rats_test(BASENAME moonray_map_ramp
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

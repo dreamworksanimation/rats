@@ -3,7 +3,7 @@
 
 # This tests the LayerMap
 
-add_rats_test(BASENAME moonray_map_layer
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

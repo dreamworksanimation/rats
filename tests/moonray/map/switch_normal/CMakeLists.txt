@@ -3,7 +3,7 @@
 
 # This tests the SwitchNormalMap
 
-add_rats_test(BASENAME moonray_map_switch_normal
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

@@ -3,7 +3,7 @@
 
 # This tests the DiscretizeDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_discretize
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

@@ -3,7 +3,7 @@
 
 # This test checks the motion blur sampling with a delta in frame number using an orthographic camera
 
-add_rats_test(BASENAME moonray_motion_blur_simple_delta_ortho
+add_rats_test(
     INPUTS ../common.rdla
     DELTAS deltas.rdla
     CANONICALS scene.exr

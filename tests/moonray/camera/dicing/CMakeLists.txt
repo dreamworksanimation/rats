@@ -4,7 +4,7 @@
 # This test exercises the dicing camera by showing the increased mesh resolution in the
 # dicing camera's frustum.
 
-add_rats_test(BASENAME moonray_camera_dicing
+add_rats_test(
     DISABLED    # MOONRAY-5617 this test crashes on render, needs investigation
     INPUTS scene.rdla
     CANONICALS

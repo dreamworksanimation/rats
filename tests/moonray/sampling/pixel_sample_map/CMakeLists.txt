@@ -3,7 +3,7 @@
 
 # Tests scaling the pixel samples per pixel by a grayscale image
 
-add_rats_test(BASENAME moonray_sampling_pixel_sample_map
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

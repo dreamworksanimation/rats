@@ -3,7 +3,7 @@
 
 # This tests the BlendDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_blend
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

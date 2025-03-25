@@ -3,7 +3,7 @@
 
 # This tests the operations and op factors of the OpMap
 
-add_rats_test(BASENAME moonray_map_op
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

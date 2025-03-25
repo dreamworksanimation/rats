@@ -7,7 +7,7 @@
 # Third  row left - with motion blur
 # Third  row right - with uv coordinates and texture mapping
 
-add_rats_test(BASENAME moonray_geometry_points
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

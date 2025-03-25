@@ -3,7 +3,7 @@
 
 # This tests the udim funtionality of the ImageMap
 
-add_rats_test(BASENAME moonray_map_udim
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

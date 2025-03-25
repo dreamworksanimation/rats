@@ -3,7 +3,7 @@
 
 # This test tests all three modes of hair fresnel - simple, dielectric and layered.
 
-add_rats_test(BASENAME moonray_material_hair_fresnel
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

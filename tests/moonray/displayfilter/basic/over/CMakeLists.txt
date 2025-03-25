@@ -3,7 +3,7 @@
 
 # This tests the OverDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_over
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

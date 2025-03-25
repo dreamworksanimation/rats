@@ -3,7 +3,7 @@
 
 # This tests Ray Termination Lights applied on a per-object basis, and the associated light aov
 
-add_rats_test(BASENAME moonray_light_ray_termination
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

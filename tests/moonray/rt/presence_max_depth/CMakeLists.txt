@@ -6,7 +6,7 @@
 # Box is removed to better show the effect.
 # Tests that once we have reached max presence depth, the presence is always 1.
 
-add_rats_test(BASENAME moonray_rt_presence_max_depth
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

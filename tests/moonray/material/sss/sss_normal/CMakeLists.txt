@@ -3,7 +3,7 @@
 
 # This tests normal mapping subsurface materials.
 
-add_rats_test(BASENAME moonray_material_sss_sss_normal
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

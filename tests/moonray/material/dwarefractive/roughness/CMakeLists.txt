@@ -3,7 +3,7 @@
 
 # This tests roughnesses on the refractive lobe.
 
-add_rats_test(BASENAME moonray_material_dwarefractive_roughness
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

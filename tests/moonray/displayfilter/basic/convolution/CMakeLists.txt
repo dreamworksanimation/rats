@@ -3,7 +3,7 @@
 
 # This tests the ConvolutionDisplayFilter.
 
-add_rats_test(BASENAME moonray_displayfilter_basic_convolution
+add_rats_test(
     INPUTS
         ../common.rdla
         scene.rdla

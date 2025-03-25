@@ -3,7 +3,7 @@
 
 # Furnace Test for HairDiffuse.
 
-add_rats_test(BASENAME moonray_material_hair_diffuse_furnace
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

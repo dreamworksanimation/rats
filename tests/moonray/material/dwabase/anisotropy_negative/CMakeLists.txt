@@ -4,7 +4,7 @@
 # This tests anisotropy properties of the specular lobe using Cook-Torrance
 # with Beckmann distribution using negative values
 
-add_rats_test(BASENAME moonray_material_dwabase_anisotropy_negative
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

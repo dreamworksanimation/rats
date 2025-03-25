@@ -3,7 +3,7 @@
 
 # This tests basic normal mapping
 
-add_rats_test(BASENAME moonray_material_dwabase_normal
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

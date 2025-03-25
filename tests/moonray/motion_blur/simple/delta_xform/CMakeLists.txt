@@ -3,7 +3,7 @@
 
 # This test checks the motion blur sampling with a camera-transform delta
 
-add_rats_test(BASENAME moonray_motion_blur_simple_delta_xform
+add_rats_test(
     INPUTS ../common.rdla
     DELTAS deltas.rdla
     CANONICALS scene.exr

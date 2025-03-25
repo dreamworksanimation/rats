@@ -3,7 +3,7 @@
 
 # This tests DwaLayer with respect to layering mixed models
 
-add_rats_test(BASENAME moonray_material_dwalayer_mixed_models
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

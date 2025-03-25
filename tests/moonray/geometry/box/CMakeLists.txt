@@ -3,7 +3,7 @@
 
 # This test verifies basic functionality of box geometry
 
-add_rats_test(BASENAME moonray_geometry_box
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

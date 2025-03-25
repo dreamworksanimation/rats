@@ -3,7 +3,7 @@
 
 # This tests the rotational motion blur
 
-add_rats_test(BASENAME moonray_geometry_rotational_motion_blur
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

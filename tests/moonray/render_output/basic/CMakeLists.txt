@@ -8,7 +8,7 @@
 # It could be that the diff thresholds are not particularly tight in order
 # to pass with a variety of data types.
 
-add_rats_test(BASENAME moonray_render_output_basic
+add_rats_test(
     DIFF_HEADERS
     INPUTS scene.rdla
     CANONICALS result0.exr

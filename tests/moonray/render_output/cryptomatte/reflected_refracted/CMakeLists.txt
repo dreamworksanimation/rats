@@ -3,7 +3,7 @@
 
 # Description: Tests reflected/refracted cryptomatte functionality.
 
-add_rats_test(BASENAME moonray_render_output_cryptomatte_reflected_refracted
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         beauty.exr

@@ -3,7 +3,7 @@
 
 # This tests independent transmission ior
 
-add_rats_test(BASENAME moonray_material_dwabase_transmission_ior
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

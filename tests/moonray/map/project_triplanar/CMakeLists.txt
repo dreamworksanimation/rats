@@ -3,7 +3,7 @@
 
 # This tests the ProjectTriplanarMap
 
-add_rats_test(BASENAME moonray_map_project_triplanar
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

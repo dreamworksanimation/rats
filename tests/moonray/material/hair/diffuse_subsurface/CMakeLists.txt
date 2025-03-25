@@ -3,7 +3,7 @@
 
 # This test checks SSS settings on the hair diffuse material.
 
-add_rats_test(BASENAME moonray_material_hair_diffuse_subsurface
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

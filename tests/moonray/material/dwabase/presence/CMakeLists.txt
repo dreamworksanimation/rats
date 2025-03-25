@@ -3,7 +3,7 @@
 
 # This tests the presence property of the dwabase material
 
-add_rats_test(BASENAME moonray_material_dwabase_presence
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

@@ -3,7 +3,7 @@
 
 # This test verifies that the emission lobe in the hair material shader
 
-add_rats_test(BASENAME moonray_material_hair_emission
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

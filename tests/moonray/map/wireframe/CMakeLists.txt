@@ -3,7 +3,7 @@
 
 # This tests the WireframeMap
 
-add_rats_test(BASENAME moonray_map_wireframe
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

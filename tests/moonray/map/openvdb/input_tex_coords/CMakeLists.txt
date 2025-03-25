@@ -3,7 +3,7 @@
 
 # This tests the OpenVdbMap input texture coordinates
 
-add_rats_test(BASENAME moonray_map_openvdb_input_tex_coords
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS scene.exr
 )

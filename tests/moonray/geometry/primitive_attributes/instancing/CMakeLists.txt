@@ -3,7 +3,7 @@
 
 # This tests primitive attribute behavior with multi-level instancing
 
-add_rats_test(BASENAME moonray_geometry_primitive_attributes_instancing
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr

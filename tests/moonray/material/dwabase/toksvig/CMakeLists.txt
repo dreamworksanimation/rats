@@ -3,7 +3,7 @@
 
 # This tests the Toksvig normal AA strategy
 
-add_rats_test(BASENAME moonray_material_dwabase_toksvig
+add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr
