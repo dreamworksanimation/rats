@@ -232,7 +232,7 @@ if(generate_new_canonical)
         message("[RATS] ${num_copies} copies performed.")
         message("[RATS] ${num_empties} diffs skipped (self-comparisons).\n")
 
-        math(EXPR actual "${num_diffs} + ${num_copies} + ${num_skips}")
+        math(EXPR actual "${num_diffs} + ${num_copies} + ${num_empties}")
         math(EXPR expected "${N} * ${N}")
         if (NOT actual EQUAL expected)
             message(FATAL_ERROR "${actual} != ${expected}")
