@@ -23,7 +23,7 @@ authors = [
 ]
 
 requires = [
-    'openimageio-2.3.20.0.x',
+    'openimageio-2',
     'cmake-3.23',
 ]
 
