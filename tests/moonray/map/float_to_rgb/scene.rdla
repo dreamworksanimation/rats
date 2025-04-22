@@ -48,7 +48,7 @@ GeometrySet("geomset") {
     geom1, geom2, geom3, geom4, geom5,
 }
 
-texture = rats_assets_dir .. "/textures/fancy_A.tx"
+texture = rats_assets_dir .. "/textures/M.tx"
 
 imgA = ImageMap("imgA") {
     ["texture"] = texture,

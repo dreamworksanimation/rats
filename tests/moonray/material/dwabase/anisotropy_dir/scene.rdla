@@ -56,7 +56,7 @@ local geom = UsdGeometry("/Scene/geometry/geom") {
 }
 
 local dirMap = ImageMap("/Scene/surfacing/dirMap") {
-    ["texture"] = rats_assets_dir .. "/textures/disk_pattern.tx",
+    ["texture"] = rats_assets_dir .. "/textures/shading_tangent.tx",
     ["scale"] = Vec2(10, 10),
 }
 

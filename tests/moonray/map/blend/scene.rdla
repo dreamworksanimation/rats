@@ -54,53 +54,46 @@ GeometrySet("geomset") {
     geom1, geom2, geom3, geom4, geom5, geom6,
 }
 
-immap = ImageMap("immap") {
-    ["texture"] = rats_assets_dir .. "/textures/fancy_A.tx",
+M_tex = ImageMap("M_tex") {
+    ["texture"] = rats_assets_dir .. "/textures/M.tx",
 }
 
-chmap = CheckerboardMap("chmap") { }
-
-nmap = NoiseWorleyMap_v2("nmap") {
-    ["space"] = 2,
-    ["frequency"] = 8,
-    ["bias"] = 0.7,
-    ["gain"] = 0.95,
+R_tex = ImageMap("R_tex") {
+    ["texture"] = rats_assets_dir .. "/textures/R.tx",
 }
 
 blendDefaults = BlendMap("blendDefaults") {
-    ["color_A"] = bind(immap), 
-    ["color_B"] = bind(chmap),
+    ["color_A"] = bind(M_tex),
+    ["color_B"] = bind(R_tex),
 }
 
 blendCubic = BlendMap("blendCubic") {
-    ["color_A"] = bind(immap), 
-    ["color_B"] = bind(chmap),
+    ["color_A"] = bind(M_tex),
+    ["color_B"] = bind(R_tex),
     ["blend_type"] = 1,
-    ["blend_amount"] = bind(nmap), --0.8,
 }
 
 blendAmount = BlendMap("blendAmount") {
-    ["color_A"] = bind(immap), 
-    ["color_B"] = bind(chmap),
-    ["blend_amount"] = bind(nmap), --0.8,
+    ["color_A"] = bind(M_tex),
+    ["color_B"] = bind(R_tex),
 }
 
 blendThreshold = BlendMap("blendThreshold") {
-    ["color_A"] = bind(immap), 
-    ["color_B"] = bind(chmap),
+    ["color_A"] = bind(M_tex),
+    ["color_B"] = bind(R_tex),
     ["blend_amount"] = 0.1,
     ["threshold_max"] = 0.5,
 }
 
 blendIn = BlendMap("blendIn") {
-    ["color_A"] = bind(immap), 
-    ["color_B"] = bind(chmap),
+    ["color_A"] = bind(M_tex),
+    ["color_B"] = bind(R_tex),
     ["blend_amount"] = 0.8,
 }
 
 blendBad = BlendMap("blendBad") {
-    ["color_A"] = bind(immap), 
-    ["color_B"] = bind(chmap),
+    ["color_A"] = bind(M_tex),
+    ["color_B"] = bind(R_tex),
     ["blend_amount"] = -0.5,
     ["threshold_min"] = -0.8,
 }

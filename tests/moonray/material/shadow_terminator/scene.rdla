@@ -35,7 +35,7 @@ GeometrySet("/Scene/geoset") {
 ---------------------------------------------------------
 
 nmlMap = ImageNormalMap("/mat/ImageNormalMap1") {
-    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/snow1_nml.tx",
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/plaster_normal.tx",
     ["rotation_angle"] = 270.0,
     ["scale"] = Vec2(3, 3),
 }

@@ -8,7 +8,7 @@ SceneVariables {
 }
 
 PerspectiveCamera("/Scene/rendering/camera") {
-    ["node_xform"] = translate(0, -4, 26) * rotate(-15, 1, 0, 0) ,
+    ["node_xform"] = translate(0, -4, 30) * rotate(-18, 1, 0, 0) * rotate(-45, 0, 1, 0),
 }
 
 key = RectLight("/Scene/lighting/key") {
@@ -22,44 +22,44 @@ key = RectLight("/Scene/lighting/key") {
 lightSet = LightSet("LightSet") { key, }
 
 sphereGeom1 = UsdGeometry("sphereGeom1") {
-    ["node_xform"] = scale(0.5, 0.5, 0.5) * rotate(180, 0, 1, 0) * translate(0.0, 0.5, 19),
+    ["node_xform"] = translate(-14, 0.5, 14),
     ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
     ["prim_path"] = "/sphere",
     ["mesh_resolution"] = 20,
 }
 
 sphereGeom2 = UsdGeometry("sphereGeom2") {
-    ["node_xform"] = scale(0.7, 0.7, 0.7) * rotate(180, 0, 1, 0) * translate(-5.0, 0.4, 10.923),
+    ["node_xform"] = translate(-12, 0.4, 5),
     ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
     ["prim_path"] = "/sphere",
 }
 
 sphereGeom3 = UsdGeometry("sphereGeom3") {
-    ["node_xform"] = scale(0.7, 0.7, 0.7) * rotate(180, 0, 1, 0) * translate(-2.5, 0.4, 10.923),
+    ["node_xform"] = translate(-8, 0.4, 5),
     ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
     ["prim_path"] = "/sphere",
 }
 
 sphereGeom4 = UsdGeometry("sphereGeom4") {
-    ["node_xform"] = scale(0.7, 0.7, 0.7) * rotate(180, 0, 1, 0) * translate(0.0, 0.4, 10.923),
+    ["node_xform"] = translate(-4, 0.4, 5),
     ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
     ["prim_path"] = "/sphere",
 }
 
 sphereGeom5 = UsdGeometry("sphereGeom5") {
-    ["node_xform"] = scale(0.7, 0.7, 0.7) * rotate(180, 0, 1, 0) * translate(2.5, 0.4, 10.923),
+    ["node_xform"] = translate(0, 0.4, 5),
     ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
     ["prim_path"] = "/sphere",
 }
 
 sphereGeom6 = UsdGeometry("sphereGeom6") {
-    ["node_xform"] = scale(0.7, 0.7, 0.7) * rotate(180, 0, 1, 0) * translate(5.0, 0.4, 10.923),
+    ["node_xform"] = translate(4, 0.4, 5),
     ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
     ["prim_path"] = "/sphere",
 }
 
 floorGeom = UsdGeometry("floorGeom") {
-    ["node_xform"] = scale(30, 1.0, 30) * rotate(-45, 0, 1, 0),
+    ["node_xform"] = scale(30, 1.0, 30),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
 }
@@ -75,38 +75,33 @@ GeometrySet("geometrySet") {
 }
 
 mipSelectorMap = ImageMap("mipSelectorMap") {
-    ["texture"] = rats_assets_dir .. "/textures/mip_debug.exr",
-    ["wrap_around"] = false,
-    ["mip_bias"] = -0.35,
+    ["texture"] = rats_assets_dir .. "/textures/miptest.4096.tx",
+    ["scale"] = Vec2(1,-1),
 }
 
 sphereMtl1 = DwaSolidDielectricMaterial("sphereMtl1") {
     ["albedo"] = bind(mipSelectorMap),
-    ["show_specular"] = false,
-}
-
-sphereMtl2 = DwaSolidDielectricMaterial("sphereMtl2") {
-    ["show_diffuse"] = false,
     ["roughness"] = 0.0,
 }
 
-sphereMtl3 = DwaSolidDielectricMaterial("sphereMtl3") {
-    ["show_diffuse"] = false,
+sphereMtl2 = DwaMetalMaterial("sphereMtl2") {
+    ["roughness"] = 0.0,
+}
+
+sphereMtl3 = DwaMetalMaterial("sphereMtl3") {
     ["roughness"] = 0.1,
 }
 
-sphereMtl4 = DwaSolidDielectricMaterial("sphereMtl4") {
-    ["show_diffuse"] = false,
+sphereMtl4 = DwaMetalMaterial("sphereMtl4") {
+    ["roughness"] = 0.2,
+}
+
+sphereMtl5 = DwaMetalMaterial("sphereMtl5") {
     ["roughness"] = 0.3,
 }
 
-sphereMtl5 = DwaSolidDielectricMaterial("sphereMtl5") {
-    ["show_diffuse"] = false,
-    ["roughness"] = 0.5,
-}
-
-sphereMtl6 = DwaSolidDielectricMaterial("sphereMtl6") {
-    ["show_specular"] = false,
+sphereMtl6 = DwaMetalMaterial("sphereMtl6") {
+    ["roughness"] = 0.4,
 }
 
 floorMtl = DwaSolidDielectricMaterial("floorMtl") {

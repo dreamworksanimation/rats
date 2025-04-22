@@ -43,11 +43,11 @@ GeometrySet("geomset") {
 }
 
 immap = ImageMap("immap") {
-    ["texture"] = rats_assets_dir .. "/textures/fancy_A.tx",
+    ["texture"] = rats_assets_dir .. "/textures/M.tx",
 }
 
 ccmapon = ColorCorrectLegacyMap("ccmapon") {
-    ["input"] = bind(immap), 
+    ["input"] = bind(immap),
     ["mask"] = bind(immap),
     ["brightness"] = 70,
     ["contrast"] = 50,
@@ -58,16 +58,16 @@ ccmapon = ColorCorrectLegacyMap("ccmapon") {
 }
 
 ccmapdefaults = ColorCorrectLegacyMap("ccmapdefaults") {
-    ["input"] = bind(immap), 
+    ["input"] = bind(immap),
 }
 
 ccmapgray = ColorCorrectLegacyMap("ccmapgray") {
-    ["input"] = bind(immap), 
+    ["input"] = bind(immap),
     ["monochrome"] = 1, -- Luminance
 }
 
 ccmapinvert = ColorCorrectLegacyMap("ccmapinvert") {
-    ["input"] = bind(immap), 
+    ["input"] = bind(immap),
     ["invert"] = true,
 }
 

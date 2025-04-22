@@ -62,7 +62,7 @@ local mtlB = DwaSolidDielectricMaterial("/Scene/surfacing/mtlB") {
     ["shading_tangent"] = Vec2(0.70710678118, 0.70710678118),
 }
 local mask = ImageMap("/Scene/surfacing/mask") {
-    ["texture"] = rats_assets_dir .. "/textures/splat.tx",
+    ["texture"] = rats_assets_dir .. "/textures/X.tx",
     ["scale"] = Vec2(2, 2),
 }
 

@@ -3,4 +3,3 @@
 
 add_subdirectory(random_walk)
 add_subdirectory(sss_depth)
-add_subdirectory(sss_normal)

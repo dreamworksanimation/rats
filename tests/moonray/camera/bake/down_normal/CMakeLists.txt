@@ -4,7 +4,7 @@
 # This test bakes a result, looking down the normal.
 
 add_rats_test(
-    INPUTS down_normal.rdla
+    INPUTS scene.rdla
     CANONICALS
         scene.exr
 )

@@ -47,7 +47,7 @@ GeometrySet("geoset") {
 
 nmlMap = ImageNormalMap("nmlMap") {
     ["scale"] = Vec2(4.0, 4.0),
-    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/normal_high_freq.tx",
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/plaster_normal.tx",
 }
 
 mtl1 = DwaSolidDielectricMaterial("mtl1") {

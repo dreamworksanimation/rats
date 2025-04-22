@@ -3,8 +3,8 @@ rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
 SceneVariables {
     ["pixel_samples"] = 4,
     ["max_depth"] = 3,
-    ["image_width"] = 540,
-    ["image_height"] = 260,
+    ["image_width"] = 256,
+    ["image_height"] = 128,
     ["sample_clamping_value"] = 0.5,
 }
 
@@ -33,16 +33,16 @@ lightSet = LightSet("/Scene/lighting/lightSet") {
 -------------------------------------------------------
 
 sphere1 = SphereGeometry("/Scene/geometry/sphere1") {
-    ["node_xform"] = rotate(120, 1, 0, 0) * 
-                     rotate(10, 0, 0, 1) * 
-                     scale(4, 4, 4) * 
+    ["node_xform"] = rotate(120, 1, 0, 0) *
+                     rotate(10, 0, 0, 1) *
+                     scale(4, 4, 4) *
                      translate(7, 4, 6),
 }
 
 sphere2 = SphereGeometry("/Scene/geometry/sphere2") {
-    ["node_xform"] = rotate(260, 1, 0, 0) * 
-                     rotate(20, 0, 0, 1) * 
-                     scale(4, 4, 4) * 
+    ["node_xform"] = rotate(260, 1, 0, 0) *
+                     rotate(20, 0, 0, 1) *
+                     scale(4, 4, 4) *
                      translate(-1, 4, 6),
 }
 

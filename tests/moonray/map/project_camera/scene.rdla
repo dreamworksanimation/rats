@@ -89,13 +89,13 @@ projMap2 = ProjectCameraMap_v2("projMap2") {
 
 projMap3 = ProjectCameraMap_v2("projMap3") {
     ["projector"] = projCam3,
-    ["texture"] = rats_assets_dir .. "/textures/wood_splat.tx",
+    ["texture"] = rats_assets_dir .. "/textures/wood_X.tx",
     ["unpremultiply"] = true,
 }
 
 projMap3_alpha = ProjectCameraMap_v2("projMap3_alpha") {
     ["projector"] = projCam3,
-    ["texture"] = rats_assets_dir .. "/textures/wood_splat.tx",
+    ["texture"] = rats_assets_dir .. "/textures/wood_X.tx",
     ["alpha_only"] = true,
 }
 

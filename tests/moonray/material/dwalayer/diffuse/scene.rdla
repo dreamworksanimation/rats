@@ -56,7 +56,7 @@ local mtlB = DwaSolidDielectricMaterial("/Scene/surfacing/mtlB") {
     ["specular_model"] = 0,
 }
 local mask = ImageMap("/Scene/surfacing/mask") {
-    ["texture"] = rats_assets_dir .. "/textures/splat.tx",
+    ["texture"] = rats_assets_dir .. "/textures/X.tx",
     ["scale"] = Vec2(2, 2),
 }
 

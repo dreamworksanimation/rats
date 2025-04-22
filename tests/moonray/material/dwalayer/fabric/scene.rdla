@@ -59,7 +59,7 @@ local mtlB = DwaFabricMaterial("/Scene/surfacing/mtlB") {
     ["weft_color"] = Rgb(0.2, 0.1, 0.5),
 }
 local mask = ImageMap("/Scene/surfacing/mask") {
-    ["texture"] = rats_assets_dir .. "/textures/splat.tx",
+    ["texture"] = rats_assets_dir .. "/textures/X.tx",
     ["scale"] = Vec2(2, 2),
 }
 

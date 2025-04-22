@@ -30,7 +30,7 @@ local geom = UsdGeometry("/Scene/geometry/geom/widget_DWA") {
 }
 
 local tx1 = ImageMap("/Scene/surfacing/map/tx1") {
-    ["texture"] = rats_assets_dir .. "/textures/splat.tx",
+    ["texture"] = rats_assets_dir .. "/textures/X.tx",
     ["scale"] = Vec2(3, 3),
     ["gamma"] = 0,
 }

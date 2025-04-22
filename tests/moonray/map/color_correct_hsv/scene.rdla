@@ -43,28 +43,28 @@ GeometrySet("geomset") {
 }
 
 immap = ImageMap("immap") {
-    ["texture"] = rats_assets_dir .. "/textures/fancy_A.tx",
+    ["texture"] = rats_assets_dir .. "/textures/M.tx",
 }
 
 ccmapdefaults = ColorCorrectHsvMap("ccmapdefaults") {
-    ["input"] = bind(immap), 
+    ["input"] = bind(immap),
 }
 
 testHueMap = ColorCorrectHsvMap("testHueMap") {
-    ["input"] = bind(immap), 
+    ["input"] = bind(immap),
     ["on"] = true,
     ["hue_shift"] = -120,
 }
 
 testSaturationMap = ColorCorrectHsvMap("testSaturationMap") {
-    ["input"] = bind(immap), 
+    ["input"] = bind(immap),
     ["saturation_contrast"] = 0.7,
     ["saturation_factor"] = 1.5,
     ["saturation_shift"] = 0.5,
 }
 
 testValueMap = ColorCorrectHsvMap("testValueMap") {
-    ["input"] = bind(immap), 
+    ["input"] = bind(immap),
     ["value_shift"] = 0.2,
     ["value_factor"] = 0.5,
     ["value_contrast"] = -0.2,

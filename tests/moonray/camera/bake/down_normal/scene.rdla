@@ -6,8 +6,7 @@ SceneVariables {
 }
 
 key = EnvLight("/Scene/lighting/key") {
-    ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
-    ["visible_in_camera"] = 1
+   ["texture"] = rats_assets_dir.."/hdri/parkinglot.exr",
 }
 
 lightSet = LightSet("/Scene/lighting/lightSet") {
@@ -15,7 +14,7 @@ lightSet = LightSet("/Scene/lighting/lightSet") {
 }
 
 normalMap = ImageNormalMap("/normalMap") {
-    ["tangent_space_normal_texture"] = rats_assets_dir.."/textures/normal_high_freq.tx",
+    ["tangent_space_normal_texture"] = rats_assets_dir.."/textures/plaster_normal.tx",
 }
 
 sphereMtl = DwaSolidDielectricMaterial("/Scene/surfacing/sphereMtl") {
@@ -31,16 +30,11 @@ sphereGeom = UsdGeometry("/Scene/geometry/sphere") {
 BakeCamera("/Scene/rendering/camera") {
     ["node_xform"] = translate(0, .75, 3),
     ["geometry"] = sphereGeom,
-    ["mode"] = 1, -- normal
-    ["bias"] = .001,
-    ["near"] = .0001,
-    ["far"] = 1,
-    ["normal_map"] = rats_assets_dir.."/textures/normal_high_freq.tx",
-    ["normal_map_space"] = 1 -- tangent space
+    ["mode"] = 3, -- -N
 }
 
 GeometrySet("Scene/geometrySet") {
-    sphereGeom,
+    sphereGeom
 }
 
 Layer("/Scene/layer") {

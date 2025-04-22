@@ -83,7 +83,7 @@ local solidDielectric2 = DwaSolidDielectricMaterial("/Scene/surfacing/mtl/sd2") 
     ["show_specular"] = false,
     ["albedo"] = Rgb(0.6, 0.4, 0.3),
     ["roughness"] = 0.55,
-    ["specular_model"] = 0,
+    ["specular_model"] = "GGX",
     ["refractive_index"] = 1.4,
     ["scattering_radius"] = 0.1,
     ["scattering_color"] = Rgb(1.0, 0.4, 0.4),
@@ -115,7 +115,7 @@ local skin = DwaSkinMaterial("/Scene/surfacing/mtl") {
 }
 
 local mask = ImageMap("/Scene/surfacing/mask") {
-    ["texture"] = rats_assets_dir .. "/textures/splat.tx",
+    ["texture"] = rats_assets_dir .. "/textures/X.tx",
     ["scale"] = Vec2(2, 2),
 }
 
@@ -123,14 +123,14 @@ local mtlLayer = DwaLayerMaterial("/Scene/surfacing/layer") {
     ["material_A"] = skin,
     ["material_B"] = solidDielectric,
     ["mask"] = bind(mask, 1.0),
-    ["fallback_bssrdf"] = 2,
+    ["fallback_bssrdf"] = "random walk",
 }
 
 local mtlLayer2 = DwaLayerMaterial("/Scene/surfacing/layer2") {
     ["material_A"] = mtlLayer,
     ["material_B"] = refractive,
     ["mask"] = 0.5,
-    ["fallback_specular_model"] = 0,
+    ["fallback_specular_model"] = "GGX",
 }
 
 -----------------------------------------------------------------

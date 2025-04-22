@@ -28,17 +28,17 @@ GeometrySet("geomset") {
     geom
 }
 
-snow1 = ImageNormalMap("snow1") {
-    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/snow1_nml.tx",
+wood = ImageNormalMap("wood") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/wood_normal.tx",
 }
 
-snow2 = ImageNormalMap("snow2") {
-    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/snow2_nml.tx",
+skin = ImageNormalMap("skin") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/skin_normal.tx",
 }
 
 combineNormalMap = CombineNormalMap("combineNormalMap") {
-    ["input_1"] = snow2,
-    ["input_2"] = snow1,
+    ["input_1"] = skin,
+    ["input_2"] = wood,
     ["normal_map_1_dial"] = 0.1,
     ["normal_map_2_dial"] = 0.2,
 }

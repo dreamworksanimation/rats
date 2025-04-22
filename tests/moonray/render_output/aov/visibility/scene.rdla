@@ -157,7 +157,7 @@ mtlCCB = DwaSolidDielectricMaterial("/Scene/surfacing/mtlCCB") {
     ["clearcoat_model"] = 0,
 }
 mask = ImageMap("/Scene/surfacing/mask") {
-    ["texture"] = rats_assets_dir.."/textures/splat.tx",
+    ["texture"] = rats_assets_dir.."/textures/X.tx",
     ["scale"] = Vec2(2, 1),
 }
 
@@ -180,7 +180,7 @@ mtlDifB = DwaSolidDielectricMaterial("/Scene/surfacing/mtlDifB") {
 }
 
 mask = ImageMap("/Scene/surfacing/mask") {
-    ["texture"] = rats_assets_dir.."/textures/splat.tx",
+    ["texture"] = rats_assets_dir.."/textures/X.tx",
     ["scale"] = Vec2(2, 1),
 }
 

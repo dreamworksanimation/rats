@@ -28,12 +28,12 @@ GeometrySet("geomset") {
     geom
 }
 
-snow1 = ImageNormalMap("snow1") {
-    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/snow1_nml.tx",
+skin = ImageNormalMap("skin") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/skin_normal.tx",
 }
 
-snow2 = ImageNormalMap("snow2") {
-    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/snow2_nml.tx",
+wood = ImageNormalMap("wood") {
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/wood_normal.tx",
 }
 
 checkMap = CheckerboardMap("checkMap") {
@@ -41,8 +41,8 @@ checkMap = CheckerboardMap("checkMap") {
 
 switchNormalMap = SwitchNormalMap("switchNormalMap") {
     ["choice"] = bind(checkMap, 1.0),
-    ["input0"] = snow2,
-    ["input1"] = snow1,
+    ["input0"] = wood,
+    ["input1"] = skin,
 }
 
 mtl = DwaSolidDielectricMaterial("mtl1") {
@@ -50,8 +50,6 @@ mtl = DwaSolidDielectricMaterial("mtl1") {
     ["show_specular"] = true,
     ["roughness"] = 0.3,
     ["input_normal"] = switchNormalMap,
-    --["show_emission"] = true,
-    --["emission_color"] = bind(checkMap),
 }
 
 Layer("/Scene/layer") {

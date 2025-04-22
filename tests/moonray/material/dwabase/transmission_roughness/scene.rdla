@@ -1,11 +1,5 @@
 rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
 
-frame = 101
-
--- Spin test: 101..300
-modelRot = 360.0 * (math.min(frame, 201) - 101) / 100
-lightRot = 360.0 * (math.max(frame, 201) - 201) / 100
-
 casts_caustics = true;
 
 SceneVariables {
@@ -23,15 +17,15 @@ SceneVariables {
 }
 
 Camera("/Scene/rendering/camera") {
-    ["node_xform"] = translate(0, 0.0, 120) 
+    ["node_xform"] = translate(0, 0.0, 140)
                    * rotate(-23, 1, 0, 0)
-                   * translate(0.0, 28, 0.0),
+                   * translate(0.0, 22, 0.0),
 }
 
 -------------------------------------------------------
 
 env = EnvLight("/Scene/lighting/env") {
-    ["node_xform"] = rotate(160 + lightRot, 0, 1, 0),
+    ["node_xform"] = rotate(160, 0, 1, 0),
     ["exposure"] = 0.0,
     ["texture"] = rats_assets_dir .. "/hdri/parkinglot_dusk.exr",
     ["visible_in_camera"] = 1,
@@ -44,16 +38,24 @@ lightSet = LightSet("/Scene/lighting/lightSet") {
 -------------------------------------------------------
 
 checkerMap = CheckerboardMap("/checkerMap") {
-    ["num_u_tiles"] = 5,
-    ["num_v_tiles"] = 5,
+    ["num_u_tiles"] = 16,
+    ["num_v_tiles"] = 8,
 }
 
-local remapRgh = RemapMap("/Scene/surfacing/remapRgh") {
+local remapRgh1 = RemapMap("/Scene/surfacing/remapRgh1") {
     ["input"] = bind(checkerMap),
     ["input_min"] = 0,
     ["input_max"] = 1,
     ["output_min"] = 0.1,
-    ["output_max"] = 0.6,
+    ["output_max"] = 0.4,
+}
+
+local remapRgh2 = RemapMap("/Scene/surfacing/remapRgh2") {
+    ["input"] = bind(checkerMap),
+    ["input_min"] = 0,
+    ["input_max"] = 1,
+    ["output_min"] = 0.01,
+    ["output_max"] = 0.3,
 }
 
 local remapTrm = RemapMap("/Scene/surfacing/remapTrm") {
@@ -66,40 +68,34 @@ local remapTrm = RemapMap("/Scene/surfacing/remapTrm") {
 }
 
 local sphereGeom = UsdGeometry("/Scene/geometry/geomSphere2") {
-    ["node_xform"] = scale(18, 18, 18) * rotate(80 + modelRot, 0, 1, 0)
+    ["node_xform"] = scale(18, 18, 18) * rotate(80, 0, 1, 0)
                    * translate(-28, 18, 0),
     ["stage"] = rats_assets_dir .. "/models/sphere.usdc",
     ["prim_path"] = "/sphere",
 }
 
-local sphereMtl = DwaBaseMaterial("/Scene/surfacing/mtlSphere2") {
-    ["albedo"] = bind(remapRgh),
-    ["roughness"] = bind(remapRgh, 1.0),
-    ["specular_model"] = 0,
-    ["transmission_color"] = bind(remapTrm),
-    ["transmission"] = 1.0,
+local sphereMtl = DwaRefractiveMaterial("/Scene/surfacing/mtlSphere2") {
+    ["roughness"] = bind(remapRgh1, 1.0),
     ["casts_caustics"] = casts_caustics;
 }
 
 -------------------------------------------------------
 
 local widgetGeom = UsdGeometry("/Scene/geometry/geomWidget") {
-    ["node_xform"] = scale(6, 6, 6) * rotate(35 + modelRot, 0, 1, 0) * translate(20, 0, -20),
+    ["node_xform"] = scale(6, 6, 6) * rotate(35, 0, 1, 0) * translate(20, 0, -20),
     ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
     ["prim_path"] = "/widget"
 }
 
-local widgetMtl = DwaBaseMaterial("/Scene/surfacing/mtlWidget") {
-    ["roughness"] = 0.3,
-    ["specular_model"] = 0,
-    ["transmission"] = 1.0,
+local widgetMtl = DwaRefractiveMaterial("/Scene/surfacing/mtlWidget") {
+    ["roughness"] = bind(remapRgh2, 1.0),
     ["casts_caustics"] = casts_caustics;
 }
 
 -------------------------------------------------------
 
 local planeGeom = UsdGeometry("/Scene/geometry/planeGeom") {
-    ["node_xform"] = scale(200, 1, 250),
+    ["node_xform"] = scale(1000, 1, 1000),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane"
 }

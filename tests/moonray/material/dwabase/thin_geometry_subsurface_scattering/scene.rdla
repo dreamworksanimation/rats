@@ -17,12 +17,12 @@ shotCam = Camera("/Scene/rendering/camera") {
 -- Lights
 
 key2 = RectLight("key2") {
-    ["node_xform"] = rotate(-90, 0,1,0) * translate(-50, 10, 0) * rotate(-18, 0, 0, 1) * rotate(-35, 0, 1, 0),
-    ["exposure"] = 5,
+    ["node_xform"] = rotate(-90, 0,1,0) * translate(-50, 10, 0) * rotate(-18, 0, 0, 1) * rotate(120, 0, 1, 0),
+    ["exposure"] = 21,
     ["normalized"] = false,
     ["color"] = Rgb(1, 0.7, 0.4),
-    ["width"] = 20,
-    ["height"] = 20,
+    ["width"] = 0.1,
+    ["height"] = 0.1,
     ["visible_in_camera"] = 1,
 }
 
@@ -30,53 +30,17 @@ lightSet = LightSet("MyLightSet") {
     key2,
 }
 
--------------------------------------------------------
--- Background
-
-checkerMap = CheckerboardMap("checkerMap") {
-    ["color_A"] = Rgb(0.3, 0.4, 0.8),
-    ["color_B"] = Rgb(1.0, 1.0, 1.0),
-    ["num_u_tiles"] = 40,
-    ["num_v_tiles"] = 40,
+skin = ImageMap("skin") {
+    ["texture"] = rats_assets_dir .. "/textures/skin.tx"
 }
-
-bgMtl = DwaBaseMaterial("bgMtl") {
-    ["show_specular"] = false,
-    ["show_diffuse"] = false,
-    ["show_emission"] = true,
-    ["emission"] = bind(checkerMap, Rgb(1,1,1)),
-}
-
-bgPlaneGeom = UsdGeometry("bgPlaneGeom") {
-    ["node_xform"] = rotate(90, 1, 0, 0) * scale(5, 5, 5),
-    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
-    ["prim_path"] = "/plane",
-
-    ["visible_in_camera"] = true,
-    ["visible_shadow"] = false,
-    ["visible_diffuse_reflection"] = false,
-    ["visible_diffuse_transmission"] = false,
-    ["visible_glossy_reflection"] = false,
-    ["visible_glossy_transmission"] = false,
-    ["visible_mirror_reflection"] = false,
-    ["visible_mirror_transmission"] = true,
-}
-
+--
 -------------------------------------------------------
 -- Plane facing away from camera
 planeGeomFacingAway = UsdGeometry("planeGeomFacingAway") {
     ["node_xform"] = rotate(90, 1, 0, 0) * rotate(225, 0, 1, 0) * translate(-1, 0, 1),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
-
-    ["visible_in_camera"] = true,
-    ["visible_shadow"] = false,
-    ["visible_diffuse_reflection"] = true,
-    ["visible_diffuse_transmission"] = false,
-    ["visible_glossy_reflection"] = false,
-    ["visible_glossy_transmission"] = false,
-    ["visible_mirror_reflection"] = false,
-    ["visible_mirror_transmission"] = false,
+    ["side_type"] = "force two-sided",
 }
 
 -------------------------------------------------------
@@ -85,82 +49,62 @@ planeGeomFacingFront = UsdGeometry("planeGeomFacingFront") {
     ["node_xform"] = rotate(90, 1, 0, 0) * rotate(45, 0, 1, 0) * translate(0, 0, 1),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
-
-    ["visible_in_camera"] = true,
-    ["visible_shadow"] = false,
-    ["visible_diffuse_reflection"] = true,
-    ["visible_diffuse_transmission"] = false,
-    ["visible_glossy_reflection"] = false,
-    ["visible_glossy_transmission"] = false,
-    ["visible_mirror_reflection"] = false,
-    ["visible_mirror_transmission"] = false,
+    ["side_type"] = "force single-sided",
 }
 
 -------------------------------------------------------
 -- Box with thickness
 boxGeom = BoxGeometry("boxGeom") {
-    ["node_xform"] = scale(1, 1, 0.0001) * rotate(45, 0, 1, 0) * translate(1, 0, 1),
+    ["node_xform"] = scale(1, 1, 0.01) * rotate(45, 0, 1, 0) * translate(1, 0, 1),
+}
 
-    ["visible_in_camera"] = true,
-    ["visible_shadow"] = false,
-    ["visible_diffuse_reflection"] = true,
-    ["visible_diffuse_transmission"] = false,
-    ["visible_glossy_reflection"] = false,
-    ["visible_glossy_transmission"] = false,
-    ["visible_mirror_reflection"] = false,
-    ["visible_mirror_transmission"] = false,
+-------------------------------------------------------
+-- shadow casters
+shadowGeom1 = BoxGeometry("shadowGeom1") {
+    ["node_xform"] = scale(10, 0.2, 0.01) * rotate(45, 0, 1, 0) * translate(0.4, 2, 5.7),
 }
 
 -------------------------------------------------------
 -- Materials
-showDiffuse = true
-showSpecular = false
-showTransmission = false
+scatteringRadius = 0.5
+scatteringColor = Rgb(0.5, 0.025, 0.02)
 
-scatteringRadius = 0.1
-roughness = 0.0
-transmission = 1.0
-transmissionColor = Rgb(1.0, 0.0, 1.0)
-translucentDiffuse = Rgb(0.0, 0.0, 0.0)
-
-thinGeometryMtl = DwaBaseMaterial("thinGeometryMtl") {
-    ["show_diffuse"] = showDiffuse,
-    ["show_specular"] = showSpecular,
-    ["show_transmission"] = showTransmission,
+thinGeometryMtl = DwaSkinMaterial("thinGeometryMtl") {
+    ["albedo"] = bind(skin),
+    ["show_specular"] = false,
     ["scattering_radius"] = scatteringRadius,
-    ["roughness"] = roughness,
-    ["transmission"] = transmission,
-    ["transmission_color"] = transmissionColor,
-    ["translucent_diffuse"] = translucentDiffuse,
-
-    ["thin_geometry"] = true,
+    ["scattering_color"] = scatteringColor,
+    ["thin_geometry"] = false,
 }
 
-thickGeometryMtl = DwaBaseMaterial("thickGeometryMtl") {
-    ["show_diffuse"] = showDiffuse,
-    ["show_specular"] = showSpecular,
-    ["show_transmission"] = showTransmission,
+thickGeometryMtl = DwaSkinMaterial("thickGeometryMtl") {
+    ["albedo"] = bind(skin),
+    ["show_specular"] = false,
     ["scattering_radius"] = scatteringRadius,
-    ["roughness"] = roughness,
-    ["transmission"] = transmission,
-    ["transmission_color"] = transmissionColor,
-    ["translucent_diffuse"] = translucentDiffuse,
-
+    ["scattering_color"] = scatteringColor,
     ["thin_geometry"] = false,
+}
+
+shadowy = DwaEmissiveMaterial("shadowy") {
+    ["emissive"] = Rgb(0,1,0),
 }
 
 -------------------------------------------------------
 -- Assignments
 
 GeometrySet("Scene/geometrySet") {
-    bgPlaneGeom,
     planeGeomFacingAway,
     planeGeomFacingFront,
     boxGeom,
+    shadowGeom1,
 }
 Layer("/Scene/layer") {
-    {bgPlaneGeom, "", bgMtl, lightSet},
     {planeGeomFacingAway, "", thinGeometryMtl, lightSet},
     {planeGeomFacingFront, "", thinGeometryMtl, lightSet},
     {boxGeom, "", thickGeometryMtl, lightSet},
+    {shadowGeom1, "", shadowy, lightSet},
+}
+
+RenderOutput("RO_wireframe") {
+    ["result"] = "wireframe",
 }

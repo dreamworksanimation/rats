@@ -14,27 +14,24 @@ SceneVariables {
 }
 
 Camera("/Scene/rendering/camera") {
-    ["node_xform"] = Mat4(0.776239,  4.97066e-05, -0.630439,  0,
-                         -0.0781026, 0.992304,    -0.0960869, 0,
-                          0.625583,  0.123825,     0.770268,  0,
-                         16.1788,    2.55414,     19.8414,    1),
+    ["node_xform"] = translate(0, 0, 28) * rotate(-45, 0, 1, 0)
 }
 
 imageMap = ImageMap("/Scene/surfacing/immap") {
-    ["texture"] = rats_assets_dir .. "/textures/fancy_A.tx",
+    ["texture"] = rats_assets_dir .. "/textures/M.tx",
 }
 
 lightSet = LightSet("lightSet") {}
 geoms = {}
 assignments = {}
 
-numCol = 10 
-numRow = 9 
+numCol = 10
+numRow = 9
 numDeep = 5
 spacingX = 1.5
 spacingY = 1.5
 spacingZ = 3.0
-scl = 1.4
+scl = 1.0
 posXMin = -((numCol - 1) * spacingX) / 2.0
 posYMin = -((numRow - 1)* spacingY) / 2.0
 posZMin = -((numDeep - 1)* spacingZ) / 2.0
@@ -93,7 +90,7 @@ for depth = 0, (numDeep - 1) do
             of = 0.0
 
             ccMap = ColorCorrectMap("ccMap" .. row .. "-" .. col .. "-" .. depth) {
-                ["input"] = bind(imageMap), 
+                ["input"] = bind(imageMap),
                 ["on"] = true,
                 ["mix"] = linstep(0.0, 1.0, mixMin, mixMax, depthT, 1.0),
 
@@ -121,15 +118,12 @@ for depth = 0, (numDeep - 1) do
                 ),
             }
 
-            mtl = DwaSolidDielectricMaterial("mtl" .. row .. "-" .. col .. "-" .. depth) {
-                ["show_diffuse"] = false,
-                ["show_specular"] = false,
-                ["show_emission"] = true,
+            mtl = DwaEmissiveMaterial("mtl" .. row .. "-" .. col .. "-" .. depth) {
                 ["emission"] = bind(ccMap, Rgb(1,1,1)),
             }
             table.insert(assignments, {geom, "", mtl, lightSet})
 
-            posX = posX + spacingX 
+            posX = posX + spacingX
         end
         posY = posY + spacingY
     end

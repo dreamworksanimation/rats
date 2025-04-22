@@ -31,7 +31,7 @@ sphere = SphereGeometry("sphere") {
 GeometrySet("geometrySet") { sphere }
 
 normalMap = ImageNormalMap("normalMap") {
-    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/wood_planks_nml.tx",
+    ["tangent_space_normal_texture"] = rats_assets_dir .. "/textures/wood_normal.tx",
     ["scale"] = Vec2(2, 2),
 }
 

@@ -1,164 +1,84 @@
 rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
 
 SceneVariables {
-    ["pixel_samples"] = 3,
     ["image_width"] = 512,
     ["image_height"] = 256,
-    ["lights_visible_in_camera"] = true,
 }
 
-shotCam = Camera("/Scene/rendering/camera") {
-    ["node_xform"] = translate(0, 0, 6),
-}
-
--------------------------------------------------------
--- Lights
-
-key1 = RectLight("/Scene/lighting/D3_deakins_neutral_hard/key1") {
-    ["node_xform"] = rotate(90, 0, 1, 0) * translate(50, 25, 10) * rotate(25, 0, 1, 0),
+EnvLight("/lights/env") {
+    ["color"] = Rgb(0.4, 0.75, 1.0),
     ["exposure"] = -2,
-    ["normalized"] = false,
-    ["width"] = 40,
-    ["height"] = 80,
     ["visible_in_camera"] = 1,
 }
 
-lightSet = LightSet("MyLightSet") {
-    key1,
+RectLight("/lights/rect") {
+    ["width"] = 50,
+    ["height"] = 100,
+    ["normalized"] = false,
+    ["exposure"] = 2.3,
+    ["node_xform"] = rotate(-90, 1, 0, 0) * translate(-38, 70, -60),
+    ["visible_in_camera"] = 1,
 }
 
--------------------------------------------------------
--- Background
-
-checkerMap = CheckerboardMap("checkerMap") {
-    ["color_A"] = Rgb(0.3, 0.4, 0.8),
-    ["color_B"] = Rgb(1.0, 1.0, 1.0),
-    ["num_u_tiles"] = 40,
-    ["num_v_tiles"] = 40,
+LightSet("/light_sets/lights") {
+    EnvLight("/lights/env"),
+    RectLight("/lights/rect"),
 }
 
-bgMtl = DwaBaseMaterial("bgMtl") {
-    ["show_specular"] = false,
-    ["show_diffuse"] = false,
-    ["show_emission"] = true,
-    ["emission"] = bind(checkerMap, Rgb(1,1,1)),
+PerspectiveCamera("/cameras/persp") {
+    ["node_xform"] = rotate(-34, 1, 0, 0) * rotate(18, 0, 1, 0)* translate(10, 23, 28),
 }
 
-bgPlaneGeom = UsdGeometry("bgPlaneGeom") {
-    ["node_xform"] = rotate(90, 1, 0, 0) * scale(5, 5, 5),
+UsdGeometry("/geometry/ground_plane") {
+    ["node_xform"] = scale(200, 1, 200),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
-
-    ["visible_in_camera"] = true,
-    ["visible_shadow"] = false,
-    ["visible_diffuse_reflection"] = false,
-    ["visible_diffuse_transmission"] = false,
-    ["visible_glossy_reflection"] = false,
-    ["visible_glossy_transmission"] = false,
-    ["visible_mirror_reflection"] = false,
-    ["visible_mirror_transmission"] = true,
 }
 
--------------------------------------------------------
--- Plane facing away from camera
-planeGeomFacingAway = UsdGeometry("planeGeomFacingAway") {
-    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(225, 0, 1, 0) * translate(-1, 0, 1),
+UsdGeometry("/geometry/plane1") {
+    ["node_xform"] = scale(10, 1.0, 10) * translate(-6, 5, 0),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
-
-    ["visible_in_camera"] = true,
-    ["visible_shadow"] = false,
-    ["visible_diffuse_reflection"] = false,
-    ["visible_diffuse_transmission"] = false,
-    ["visible_glossy_reflection"] = false,
-    ["visible_glossy_transmission"] = false,
-    ["visible_mirror_reflection"] = false,
-    ["visible_mirror_transmission"] = false,
 }
 
--------------------------------------------------------
--- Plane facing camera
-planeGeomFacingFront = UsdGeometry("planeGeomFacingFront") {
-    ["node_xform"] = rotate(90, 1, 0, 0) * rotate(45, 0, 1, 0) * translate(0,0,1),
+UsdGeometry("/geometry/plane2") {
+    ["node_xform"] = scale(10, 1.0, 10) * translate(6, 5, 0),
     ["stage"] = rats_assets_dir .. "/models/plane.usdc",
     ["prim_path"] = "/plane",
-
-    ["visible_in_camera"] = true,
-    ["visible_shadow"] = false,
-    ["visible_diffuse_reflection"] = false,
-    ["visible_diffuse_transmission"] = false,
-    ["visible_glossy_reflection"] = false,
-    ["visible_glossy_transmission"] = false,
-    ["visible_mirror_reflection"] = false,
-    ["visible_mirror_transmission"] = false,
 }
 
--------------------------------------------------------
--- Box with thickness
-boxGeom = BoxGeometry("boxGeom") {
-    ["node_xform"] = scale(1, 1, 0.00001) * rotate(45, 0, 1, 0) * translate(1, 0, 1),
-
-    ["visible_in_camera"] = true,
-    ["visible_shadow"] = false,
-    ["visible_diffuse_reflection"] = false,
-    ["visible_diffuse_transmission"] = false,
-    ["visible_glossy_reflection"] = false,
-    ["visible_glossy_transmission"] = false,
-    ["visible_mirror_reflection"] = false,
-    ["visible_mirror_transmission"] = false,
+GeometrySet("/geometry_sets/geometry") {
+    UsdGeometry("/geometry/ground_plane"),
+    UsdGeometry("/geometry/plane1"),
+    UsdGeometry("/geometry/plane2"),
 }
 
--------------------------------------------------------
--- Materials
+local graph_scale = 64
 
-showDiffuse = false
-showSpecular = false
-showTransmission = true
+ImageMap("/maps/graph_paper") {
+    ["texture"] = rats_assets_dir .. "/textures/graphpaper.tx",
+    ["scale"] = Vec2(graph_scale, graph_scale),
+}
+DwaSolidDielectricMaterial("/materials/graph_paper") {
+    ["albedo"] = bind(ImageMap("/maps/graph_paper")),
+}
 
-scatteringRadius = 0.1
-roughness = 0.0
-transmission = 1.0
-transmissionColor = Rgb(1.0, 0.5, 0.5)
-translucentDiffuse = Rgb(0.0, 0.0, 0.0)
+DwaRefractiveMaterial("/materials/glass_thick") {
+    ["transmission_color"] = Rgb(1.0, 0.25, 0.25),
+    ["roughness"] = 0.01,
+    ["casts_caustics"] = true,
+}
 
-thinGeometryMtl = DwaBaseMaterial("thinGeometryMtl") {
-    ["show_diffuse"] = showDiffuse,
-    ["show_specular"] = showSpecular,
-    ["show_transmission"] = showTransmission,
-    ["scattering_radius"] = scatteringRadius,
-    ["roughness"] = roughness,
-    ["transmission"] = transmission,
-    ["transmission_color"] = transmissionColor,
-    ["translucent_diffuse"] = translucentDiffuse,
-
+DwaRefractiveMaterial("/materials/glass_thin") {
+    ["transmission_color"] = Rgb(1.0, 0.125, 0.125),
+    ["roughness"] = 0.01,
+    ["casts_caustics"] = true,
     ["thin_geometry"] = true,
 }
 
-thickGeometryMtl = DwaBaseMaterial("thickGeometryMtl") {
-    ["show_diffuse"] = showDiffuse,
-    ["show_specular"] = showSpecular,
-    ["show_transmission"] = showTransmission,
-    ["scattering_radius"] = scatteringRadius,
-    ["roughness"] = roughness,
-    ["transmission"] = transmission,
-    ["transmission_color"] = transmissionColor,
-    ["translucent_diffuse"] = translucentDiffuse,
-
-    ["thin_geometry"] = false,
+Layer("/layers/Layer") {
+    {UsdGeometry("/geometry/ground_plane"), "", DwaSolidDielectricMaterial("/materials/graph_paper"), LightSet("/light_sets/lights")},
+    {UsdGeometry("/geometry/plane1"), "", DwaRefractiveMaterial("/materials/glass_thick"), LightSet("/light_sets/lights")},
+    {UsdGeometry("/geometry/plane2"), "", DwaRefractiveMaterial("/materials/glass_thin"), LightSet("/light_sets/lights")},
 }
 
--------------------------------------------------------
--- Assignments
-
-GeometrySet("Scene/geometrySet") {
-    bgPlaneGeom,
-    planeGeomFacingAway,
-    planeGeomFacingFront,
-    boxGeom,
-}
-Layer("/Scene/layer") {
-    {bgPlaneGeom, "", bgMtl, lightSet},
-    {planeGeomFacingAway, "", thinGeometryMtl, lightSet},
-    {planeGeomFacingFront, "", thinGeometryMtl, lightSet},
-    {boxGeom, "", thickGeometryMtl, lightSet},
-}

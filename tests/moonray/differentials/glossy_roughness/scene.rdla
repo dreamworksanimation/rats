@@ -6,8 +6,8 @@ SceneVariables {
     ["bssrdf_samples"] = 0,
     ["max_depth"] = 3,
     ["russian_roulette_threshold"] = 0.0001,
-    ["image_width"] = 1920,
-    ["image_height"] = 250,
+    ["image_width"] = 1024,
+    ["image_height"] = 128,
 }
 
 Camera("/Scene/rendering/camera") {
