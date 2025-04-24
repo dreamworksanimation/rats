@@ -1,0 +1,82 @@
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"] = 512,
+    ["image_height"] = 256,
+    ["pixel_samples"] = 1,
+}
+
+PerspectiveCamera("/camera") {
+    ["node_xform"] = rotate(-5, 1, 0, 0) * rotate(-5, 0, 1, 0) * translate(-1.1, 3.2, 20),
+}
+
+local vdbGeom0 = VdbGeometry("VdbGeometry0") {
+    ["model"] = rats_assets_dir.."/models/four_density_grids_w_four_clr_grids.vdb",
+    ["density_grid"] = "density[0]",
+    ["emission_grid"] = "clr[0]"
+}
+
+local vdbGeom1 = VdbGeometry("VdbGeometry1") {
+    ["model"] = rats_assets_dir.."/models/four_density_grids_w_four_clr_grids.vdb",
+    ["density_grid"] = "density[1]",
+    ["emission_grid"] = "clr[1]"
+}
+
+local vdbGeom2 = VdbGeometry("VdbGeometry2") {
+    ["model"] = rats_assets_dir.."/models/four_density_grids_w_four_clr_grids.vdb",
+    ["density_grid"] = "density[2]",
+    ["emission_grid"] = "clr[2]"
+}
+
+local vdbGeom3 = VdbGeometry("VdbGeometry3") {
+    ["model"] = rats_assets_dir.."/models/four_density_grids_w_four_clr_grids.vdb",
+    ["density_grid"] = "density[3]",
+    ["emission_grid"] = "clr[3]"
+}
+
+local planeGeom = UsdGeometry("/planeGeom") {
+    ["node_xform"] = scale(200, 1, 200) * translate(0, -4, 0),
+    ["stage"] = rats_assets_dir .. "/models/plane.usdc",
+    ["prim_path"] = "/plane"
+}
+
+GeometrySet("/GeomSet") {
+    vdbGeom0,
+    vdbGeom1,
+    vdbGeom2,
+    vdbGeom3,
+    planeGeom,
+}
+
+local planeMap = ImageMap("/planeMap") {
+    ["texture"] = rats_assets_dir.."/textures/graphpaper.tx",
+    ["scale"] = Vec2(40, 40),
+    ["offset"] = Vec2(0, .25),
+    ["wrap_around"] = true,
+}
+
+local planeMtl = DwaSolidDielectricMaterial("/planeMtl") {
+    ["albedo"] = bind(planeMap),
+}
+
+local rectLight = RectLight("rectLight") {
+    ["node_xform"] = translate(0, 10, 50) * rotate(-30, 1, 0, 0) * rotate(-30, 0, 1, 0),
+    ["exposure"] = 2,
+    ["color"] = Rgb(0.855, 0.77, 0.535),
+}
+
+local lightSet = LightSet("/LightSet") {
+    rectLight,
+}
+
+local vdbVol = VdbVolume("/VdbVolume1") { }
+local baseVol = BaseVolume("/BaseVolume") { }
+
+Layer("/Scene/layer") {
+    {vdbGeom0, {""}, lightSet, vdbVol},
+    {vdbGeom1, {""}, lightSet, vdbVol},
+    {vdbGeom2, {""}, lightSet, vdbVol},
+    {vdbGeom3, {""}, lightSet, baseVol},
+    {planeGeom, {""}, lightSet, planeMtl},
+}
+

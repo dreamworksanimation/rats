@@ -13,4 +13,5 @@ add_subdirectory(rotational_motion_blur)
 add_subdirectory(sphere)
 add_subdirectory(subdiv_creases)
 add_subdirectory(usd_instance)
+add_subdirectory(vdbgeometry)
 
