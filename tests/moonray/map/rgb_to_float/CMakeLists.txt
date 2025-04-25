@@ -1,4 +1,4 @@
-# Copyright 2024 DreamWorks Animation LLC
+# Copyright 2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 # This test verifies RgbToFloat map conversion functionality (R, G, B, Min, Max, Average, Sum, Luminance)

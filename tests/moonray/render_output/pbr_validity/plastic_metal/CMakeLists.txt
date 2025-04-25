@@ -1,4 +1,4 @@
-# Copyright 2024 DreamWorks Animation LLC
+# Copyright 2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 # This tests the correctness of the RenderOutput objects output of material aovs pbr validity property for plastic and metals setup.

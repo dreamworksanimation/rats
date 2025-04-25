@@ -1,4 +1,4 @@
-# Copyright 2024 DreamWorks Animation LLC
+# Copyright 2025 DreamWorks Animation LLC
 # SPDX-License-Identifier: Apache-2.0
 
 # Test layering of glitter over another material at various densities and masking as well as physical vs additive modes
