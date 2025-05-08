@@ -146,7 +146,7 @@ function(add_rats_test)
     set(assets_dir "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../assets")
     cmake_path(NATIVE_PATH assets_dir NORMALIZE assets_dir)
     list(APPEND runtime_env_vars "RATS_ASSETS_DIR=${assets_dir}")
-    list(APPEND runtime_env_vars "PYTHONPATH=$ENV{PYTHONPATH}")
+    list(APPEND runtime_env_vars "PYTHONPATH=$ENV{PYTHONPATH}:$ENV{OIIO_PYTHON}")
     list(APPEND runtime_env_vars "${ARG_ENVIRONMENT}")
 
     # add CTests

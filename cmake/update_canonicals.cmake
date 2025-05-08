@@ -198,7 +198,7 @@ if(generate_new_canonical)
                     # Print openimageio stats on diff image
                     set(oiio_stats_cmd ${CMAKE_CURRENT_LIST_DIR}/oiio_stats.py ${diff_image})
                     execute_process(
-                        COMMAND python ${oiio_stats_cmd}
+                        COMMAND ${PYTHON_EXECUTABLE} ${oiio_stats_cmd}
                         RESULT_VARIABLE result
                         COMMAND_ECHO STDOUT
                         OUTPUT_VARIABLE out2

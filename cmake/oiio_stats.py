@@ -1,4 +1,4 @@
-#! /bin/env python
+#! /bin/env python3
 
 # This script reports the OIIO stats from an image, in the same way as
 # 'iinfo --stats' and 'oiiotool --stats'.  However, the output of both
