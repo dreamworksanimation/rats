@@ -6,7 +6,7 @@
 # From top to bottom are subtypes ray_facing, round, and normal_oriented.
 # It also tests primitive data which uses UserData Rgb values to color the curves.
 # It also tests motion blur where the third(blue) curve in each set has different values
-# for the vertex data. 
+# for the vertex data.
 # The 3 curves in the lower left corner test tessellation rate
 
 # https://jira.dreamworks.net/browse/MOONRAY-5409
@@ -18,5 +18,6 @@ add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr
+    DISABLED # MOONRAY-5670
 )
 

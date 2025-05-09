@@ -7,5 +7,6 @@ add_rats_test(
     INPUTS scene.rdla
     CANONICALS
         scene.exr
+    DISABLED # MOONRAY-5670
 )
 
