@@ -4,6 +4,7 @@ SceneVariables {
     ["lights_visible_in_camera"] = true,
     ["image_width" ] = 256,
     ["image_height"] = 256,
+    ["pixel_samples"] = 2,
 }
 
 Camera("/scene/camera") {
@@ -69,20 +70,20 @@ cylinderlight = CylinderLight("scene/lights/cylinderlight") {
     ["node_xform"] = translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+0*dr, 0, 0, 1) * translate(0, ty, tz),
     ["radius"] = 0.3,
     ["color"] = Rgb(1, 0, 0),
-    ["intensity"] = 0.03,
+    ["exposure"] = -6,
 }
 
 spherelight = SphereLight("scene/lights/spherelight") {
     ["node_xform"] = translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+1*dr, 0, 0, 1) * translate(0, ty, tz),
     ["radius"] = 0.5,
     ["color"] = Rgb(1, 1, 0),
-    ["intensity"] = 0.02,
+    ["exposure"] = -6,
 }
 
 disklight = DiskLight("scene/lights/disklight") {
     ["node_xform"] = rotate(90, 0, 1, 0) * translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+2*dr, 0, 0, 1) * translate(0, ty, tz),
     ["color"] = Rgb(0, 1, 0),
-    ["intensity"] = 0.02,
+    ["exposure"] = -6,
     ["radius"] = 0.5,
     ["sidedness"] = 2,
 }
@@ -90,14 +91,14 @@ disklight = DiskLight("scene/lights/disklight") {
 rectlight = RectLight("scene/lights/rectlight") {
     ["node_xform"] = rotate(90, 0, 1, 0) * translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+3*dr, 0, 0, 1) * translate(0, ty, tz),
     ["color"] = Rgb(0, 1, 1),
-    ["intensity"] = 0.02,
+    ["exposure"] = -6,
     ["sidedness"] = 2,
 }
 
 spotlight = SpotLight("scene/lights/spotlight") {
     ["node_xform"] = rotate(90, 0, 1, 0) * translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+4*dr, 0, 0, 1) * translate(0, ty, tz),
     ["color"] = Rgb(0, 0.001, 1),
-    ["intensity"] = 0.02,
+    ["exposure"] = -6,
     ["black_level"] = 0.1,
     ["lens_radius"] = 0.5,
 }
@@ -106,7 +107,7 @@ meshlight = MeshLight("scene/lights/meshlight") {
     ["node_xform"] = rotate(90, 0, 1, 0) * translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+5*dr, 0, 0, 1) * translate(0, ty, tz),
     ["geometry"] = torus,
     ["color"] = Rgb(1, 0, 1),
-    ["intensity"] = 0.02,
+    ["exposure"] = -6,
 }
 
 lightset = LightSet("scene/lightset") {

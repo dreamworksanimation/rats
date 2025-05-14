@@ -8,19 +8,17 @@ local rz = 20   -- z-rotation of first light
 local dr = 22.5 -- incremental z-rotation stepping from one light to the next
 
 cylinderlight = CylinderLight("scene/lights/cylinderlight") {
-    ["node_xform"] = translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+0*dr, 0, 0, 1) * translate(0, ty, tz),
     ["color"] = Rgb(0, 1, 0),
 }
 
 spherelight = SphereLight("scene/lights/spherelight") {
-    ["node_xform"] = translate(tx, 0, 0) * rotate(ry, 0, 1, 0) * rotate(rz+1*dr, 0, 0, 1) * translate(0, ty, tz),
     ["color"] = Rgb(1, 0, 0),
-    ["intensity"] = 0.05,
+    ["exposure"] = -7,
 }
 
 disklight = DiskLight("scene/lights/disklight") {
     ["color"] = Rgb(1, 0, 1),
-    ["radius"] = 0.1,
+    ["radius"] = 1.0,
 }
 
 rectlight = RectLight("scene/lights/rectlight") {
