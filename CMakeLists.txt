@@ -8,5 +8,7 @@ project(rats)
 list(APPEND CMAKE_MESSAGE_CONTEXT ${PROJECT_NAME})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+include(OMR_Platform)
 include(RatsTest)
+
 add_subdirectory(tests)

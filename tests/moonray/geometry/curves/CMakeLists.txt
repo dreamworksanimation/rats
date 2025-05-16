@@ -13,11 +13,16 @@
 # Skipped are linear normal_oriented curves which are unsupported and crash the renderer.
 # Also skipped are bspline and bezier motion blur for normal oriented curves which crash.
 
-
-add_rats_test(
-    INPUTS scene.rdla
-    CANONICALS
-        scene.exr
-    DISABLED # MOONRAY-5670
-)
+if(IsDarwinPlatform) # macOS
+    add_rats_test(
+        INPUTS scene.rdla
+        CANONICALS scene.exr
+        DISABLED_XPU # MOONRAY-5670
+    )
+else()
+    add_rats_test(
+        INPUTS scene.rdla
+        CANONICALS scene.exr
+    )
+endif()
 

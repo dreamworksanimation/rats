@@ -55,12 +55,16 @@ function(add_rats_test)
         DIFF_HEADERS        # Adds an extra CTest with the 'diff' label to compare the canonical
                             # and result image headers.
 
-        DISABLED            # Disables this test, for whatever reason.
+        DISABLED            # Disables this test for all execution modes
+        DISABLED_SCALAR     # Disables this test for scalar execution mode
+        DISABLED_VECTOR     # Disables this test for vector execution mode
+        DISABLED_XPU        # Disables this test for xpu execution mode
 
         NO_SCALAR           # | Execution modes to skip for this test. For example, path guiding is
         NO_VECTOR           # | currently only supported in scalar mode, so tests using path guiding may want
         NO_XPU              # | to pass: NO_VECTOR NO_XPU.
-        SKIP_IMAGE_DIFF     # Do not generate canonical/diff/header stages for this test.
+
+        NO_IMAGE_DIFF       # Do not generate canonical/diff/header stages for this test.
     )
 
     set(oneValueArgs
@@ -151,6 +155,16 @@ function(add_rats_test)
 
     # add CTests
     foreach(exec_mode ${exec_modes})
+        # Determine if the tests for this execution mode should be disabled
+        set(exec_mode_disabled ARG_DISABLED)
+        if (${exec_mode} STREQUAL "scalar" AND ARG_DISABLED_SCALAR)
+            set(exec_mode_disabled TRUE)
+        elseif(${exec_mode} STREQUAL "vector" AND ARG_DISABLED_VECTOR)
+            set(exec_mode_disabled TRUE)
+        elseif(${exec_mode} STREQUAL "xpu" AND ARG_DISABLED_XPU)
+            set(exec_mode_disabled TRUE)
+        endif()
+
         # Build render command
         if(${renderer} STREQUAL "moonray")
             set(render_cmd moonray -info)
@@ -219,7 +233,7 @@ function(add_rats_test)
         set_tests_properties(${update_test_name} PROPERTIES
             LABELS "rats;update;${exec_mode}"
             DEPENDS "${canonical_dependencies}"
-            DISABLED ${ARG_DISABLED}
+            DISABLED ${exec_mode_disabled}
             ENVIRONMENT "${runtime_env_vars}"
         )
 
@@ -236,7 +250,7 @@ function(add_rats_test)
         set_tests_properties(${canonical_test_name} PROPERTIES
             LABELS "rats;canonical;${exec_mode}"
             DEPENDS "${canonical_dependencies}"
-            DISABLED ${ARG_DISABLED}
+            DISABLED ${exec_mode_disabled}
             ENVIRONMENT "${runtime_env_vars}"
         )
 
@@ -249,12 +263,12 @@ function(add_rats_test)
         set_tests_properties(${render_test_name} PROPERTIES
             LABELS "rats;render;${exec_mode}"
             DEPENDS "${render_dependencies}"
-            DISABLED ${ARG_DISABLED}
+            DISABLED ${exec_mode_disabled}
             ENVIRONMENT "${runtime_env_vars}"
         )
 
         # Add CTest to diff against the canonical images
-        if(NOT ARG_SKIP_IMAGE_DIFF)
+        if(NOT ARG_NO_IMAGE_DIFF)
             foreach(canonical ${ARG_CANONICALS})
                 cmake_path(GET canonical STEM stem)
                 cmake_path(GET canonical EXTENSION extension)
@@ -276,7 +290,7 @@ function(add_rats_test)
                     set_tests_properties(${header_test_name} PROPERTIES
                         LABELS "rats;diff;header;${exec_mode}"
                         DEPENDS "${render_test_name}"
-                        DISABLED ${ARG_DISABLED}
+                        DISABLED ${exec_mode_disabled}
                     )
                 endif()
 
@@ -313,7 +327,7 @@ function(add_rats_test)
                 set_tests_properties(${diff_test_name} PROPERTIES
                     LABELS "rats;diff;${exec_mode}"
                     DEPENDS ${render_test_name}
-                    DISABLED ${ARG_DISABLED}
+                    DISABLED ${exec_mode_disabled}
                 )
             endforeach() # canonical
         endif()

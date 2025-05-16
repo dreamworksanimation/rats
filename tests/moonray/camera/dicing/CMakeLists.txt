@@ -5,9 +5,9 @@
 # dicing camera's frustum.
 
 add_rats_test(
-    DISABLED    # MOONRAY-5617 this test crashes on render, needs investigation
     INPUTS scene.rdla
     CANONICALS
         wireframe.exr
+    DISABLED_VECTOR DISABLED_XPU # MOONRAY-5617 this test crashes in vector/xpu modes, needs investigation
 )
 
