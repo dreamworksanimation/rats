@@ -25,7 +25,7 @@ endfunction()
 # Each test will be named according to the following convention:
 #   <stage>_<exec_mode>_<basename>[-output]
 #
-#   * the <stage> token will be canonical|render|diff|header
+#   * the <stage> token will be update|render|diff|header
 #   * the <exec_mode> token will be one of sca|vec|xpu
 #   * the [_output] token appears on diff & header stages and will be the name of the image, eg. _scene.exr
 #
@@ -34,11 +34,12 @@ endfunction()
 # LABELS:
 # See https://cmake.org/cmake/help/latest/prop_test/LABELS.html
 # Each test will have its LABELS property set according to the CTest's stage, with the following convention:
-# 'canonical' labeled CTests will:
-#       * Render the scene to produce canonical images and copy each output image to the directory
-#         specified by the ${RATS_CANONICAL_DIR} cache variable.  The canonicals folder structure
-#         will be created matching the relative path to the ${CMAKE_CURRENT_SOURCE_DIR} from the
-#         ${PROJECT_SOURCE_DIR} and will include the execution mode.
+# 'update' labeled CTests will:
+#       * Render each test's RDLA scene file multiple times to produce candidate canonical images into a temp directory
+#       * Perform a large number of image comparisons between the resulting candidates for each test (using the openimageio idiff tool), gathering and analyzing statistics.
+#       * Choose a set of ideal images for each test to serve as canonicals for future runs of the test suite.
+#       * This set of canonicals are copied to a subdirectory of the directory specified by the ${RATS_CANONICAL_DIR} cache variable,
+#         as well as a file (diff.json) containing tolerances for future comparisons.
 #
 # 'render' labeled CTests will:
 #       * Render the scene to produce images into the build directory under the <execution_mode>/ dir.
@@ -64,7 +65,7 @@ function(add_rats_test)
         NO_VECTOR           # | currently only supported in scalar mode, so tests using path guiding may want
         NO_XPU              # | to pass: NO_VECTOR NO_XPU.
 
-        NO_IMAGE_DIFF       # Do not generate canonical/diff/header stages for this test.
+        NO_IMAGE_DIFF       # Do not generate update/diff/header stages for this test.
     )
 
     set(oneValueArgs
@@ -74,11 +75,11 @@ function(add_rats_test)
     )
 
     set(multiValueArgs
-        CANONICALS          # List of output files the test produces (aka. results/canonicals).
-                            # if empty, no canonical/diff/header stages are created for this test.
+        CANONICALS          # List of output files the test produces.
+                            # If empty, no canonical/diff/header stages are created for this test.
                             # example: CANONICALS scene.exr aovs.exr more_aovs.exr
 
-        DEPENDS             # List of tests that should be run before this test (for canonical and
+        DEPENDS             # List of tests that should be run before this test (for the update and
                             # render stages) when running ctest with multiple jobs (eg. -j N). For example,
                             # for a test that uses checkpoint/resume rendering the resume test should run _after_
                             # the checkpoint test, and should therefore specify the checkpoint test's basename
@@ -156,8 +157,10 @@ function(add_rats_test)
     # add CTests
     foreach(exec_mode ${exec_modes})
         # Determine if the tests for this execution mode should be disabled
-        set(exec_mode_disabled ARG_DISABLED)
-        if (${exec_mode} STREQUAL "scalar" AND ARG_DISABLED_SCALAR)
+        set(exec_mode_disabled FALSE)
+        if(ARG_DISABLED)
+            set(exec_mode_disabled TRUE)
+        elseif (${exec_mode} STREQUAL "scalar" AND ARG_DISABLED_SCALAR)
             set(exec_mode_disabled TRUE)
         elseif(${exec_mode} STREQUAL "vector" AND ARG_DISABLED_VECTOR)
             set(exec_mode_disabled TRUE)
@@ -175,17 +178,16 @@ function(add_rats_test)
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
         string(TOUPPER ${exec_mode} exec_mode_upper)
         string(SUBSTRING ${exec_mode} 0 3 exec_mode_short)
-        set(canonical_test_name "canonical-${exec_mode_short}-${test_basename}")
         set(update_test_name "update-${exec_mode_short}-${test_basename}")
         set(render_test_name "render-${exec_mode_short}-${test_basename}")
         file(MAKE_DIRECTORY ${render_dir})
 
         if(ARG_DEPENDS)
             # compute full name of dependency tests with prefix
-            list(TRANSFORM ARG_DEPENDS PREPEND "canonical-${exec_mode_short}-" OUTPUT_VARIABLE canonical_dependencies)
+            list(TRANSFORM ARG_DEPENDS PREPEND "update-${exec_mode_short}-" OUTPUT_VARIABLE update_dependencies)
             list(TRANSFORM ARG_DEPENDS PREPEND "render-${exec_mode_short}-"    OUTPUT_VARIABLE render_dependencies)
             # join them into one big list and verify that each CTest exists
-            string(JOIN % dependencies ${canonical_dependencies})
+            string(JOIN % dependencies ${update_dependencies})
             string(JOIN % dependencies ${render_dependencies})
             foreach(test ${dependencies})
                 if(NOT TEST ${test})
@@ -232,24 +234,7 @@ function(add_rats_test)
         )
         set_tests_properties(${update_test_name} PROPERTIES
             LABELS "rats;update;${exec_mode}"
-            DEPENDS "${canonical_dependencies}"
-            DISABLED ${exec_mode_disabled}
-            ENVIRONMENT "${runtime_env_vars}"
-        )
-
-        # Add CTest to generate canonicals
-        check_test_name(${canonical_test_name})
-        add_test(NAME ${canonical_test_name}
-            WORKING_DIRECTORY ${render_dir}
-            COMMAND ${CMAKE_COMMAND}
-                    "-DRENDER_CMD=${render_cmd}"
-                    "-DTEST_REL_PATH=${test_rel_path}/${exec_mode}"
-                    "-DCANONICALS=${ARG_CANONICALS}"
-                    -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/render_canonicals.cmake
-        )
-        set_tests_properties(${canonical_test_name} PROPERTIES
-            LABELS "rats;canonical;${exec_mode}"
-            DEPENDS "${canonical_dependencies}"
+            DEPENDS "${update_dependencies}"
             DISABLED ${exec_mode_disabled}
             ENVIRONMENT "${runtime_env_vars}"
         )
