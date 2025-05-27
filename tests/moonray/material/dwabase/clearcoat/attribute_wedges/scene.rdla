@@ -65,7 +65,7 @@ for col = 1, numCol do
     -- Compute exponent and width in degrees
     local factor = 55 * math.pi / 180.0
     local exponent = 2.0 / (roughness * roughness)
-    local width = factor * math.pow(exponent, -0.8)
+    local width = factor * exponent^-0.8
     width = width * 180.0 / math.pi;
 
     -- print("wedge = " .. wedge )
@@ -79,7 +79,7 @@ for col = 1, numCol do
     local geom = UsdGeometry("/Scene/geometry/geom0-" .. col) {
         ["node_xform"] = scale(0.3, 0.3, 0.3) * translate(posX+1, 0, 6),
         ["stage"] = rats_assets_dir .. "/models/MoonRayWidget.usdc",
-        ["prim_path"] = "/widget"    
+        ["prim_path"] = "/widget"
     }
 
     local mtl = DwaBaseMaterial("/Scene/surfacing/mtl0-" .. col) {

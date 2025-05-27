@@ -1,7 +1,7 @@
 rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
 
 function linstep(inmin, inmax, outmin, outmax, t, power)
-    t = math.pow((t - inmin) / (inmax - inmin), power)
+    t = ((t - inmin) / (inmax - inmin))^power
     if t<0 then t = 0 end
     if t>1 then t = 1 end
     return outmin + t * (outmax - outmin)
