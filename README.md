@@ -1,212 +1,126 @@
-# RATS ctest suite
-The purpose of the Render Acceptance Test Suite (RATS) :rat: is to catch visual regressions caused by changes to the codebase that may be intentional or unintentional
+# RATS CTest suite
+The purpose of the Render Acceptance Test Suite (RATS) is to catch visual regressions caused by changes to the codebase that may be intentional or unintentional
 before those changes are deployed into a production environment. It works by comparing canonical images rendered with a previously sanctioned version of the renderer
-to images rendered with a developmental version (eg. your bug/feature branch).
+to images rendered with a developmental version (i.e. built from your bug/feature branch).  RATS is built on the [CTest](https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html) framework.
 
-RATS is built on the CTest framework which provides many features for controlling how and which tests are run. Please refer to the
-[CTest Documentation](https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html) for more information.
+The test suite comprises several hundred mini-scenes, each designed to test some behavior of the renderer, cameras, materials, maps, lights, etc.
 
-## Stages
-RATS testing is performed in a series of stages, as follows:
-1. The _canonical_ generation stage is run using a recent sanctioned release of MoonRay (generally the most recent release). The resulting rendered images are referred to as the "canonical" images,
-and are copied to a location specified by the RATS_CANONICAL_DIR environment variable when the tests are executed.  This stage may be deprecated in the near future as it is superseded by the _update_
-stage.
-1. The _update_ stage is run using a recent sanctioned release of MoonRay (generally the most recent release). Because Moonray's sampling can be non-deterministic multiple renders are executed for
-each test, each producing a set of "candidate" canonicals. Once all of the candidates have been rendered, the images are then compared with each other (absolute difference per pixel) and the results
-are analyzed to find the set of candidate images that are closest to the center.  In other words, for each test and for each canonical filename we are looking for the candidate with that filename that
-has the lowest error on average when differenced with the other candidates for that test with the same filename.  These "best candidates" are then copied to their test's relative location to the directory
-specified by the RATS_CANONICAL_DIR.  Additionally, each test's image diff settings are updated with new pass/fail thresholds using the statistics collected during the above process.
-This stage supersedes the _canonical_ stage.
-1. The _render_ stage is run using a pre-release candidate version of MoonRay (ie. your bug or feature branch). The resulting rendered images are generated in the build directory under each test
-(ie. the ${CMAKE_CURRENT_BINARY_DIR}).
-1. The _image diff_ stage is responsible for comparing the resulting rendered images with the previously rendered canonical images.  The diff tests use OpenImageIO's
-[idiff](https://openimageio.readthedocs.io/en/latest/idiff.html) tool during execution. Each test can set the tolerances that are used to perform the comparison.
+The first step to using the RATS suite is to generate an initial set of canonical images and difference thresholds by running the subset of tests with the 'update' label.
+These images should be rendered using a trusted build of MoonRay (a non-development branch).
+You must specify a location to store the canonical images via the RATS_CANONICAL_DIR environment variable.
+```bash
+# generate canonical images and difference thresholds for all tests
+export RATS_CANONICAL_DIR=/path/to/my/rats_canonicals
+ctest -L update -j $(nproc)
+```
 
-Each stage is comprised of a set of CTest tests. You don't want to run all of the tests at once -- rather you run only the tests associated with each stage.
-The next section describes how this is achieved.
+Once an initial set of canonical images has been generated the test suite is typically run using a development build and specifying the 'render' and 'diff' labels in the ctest command, for example:
+```bash
+# Render each scene and compare the results with the canonical images
+export RATS_CANONICAL_DIR=/path/to/my/rats_canonicals
+ctest -L 'render|diff' -j $(nproc)
+```
 
-The Pass/Fail criteria for each type of test is as follows:
-|Stage                 | Pass Criteria |
-|----------------------|--------------------|
-| canonical            | a single set of canonical images are rendered and copied to the RATS_CANONICAL_DIR |
-| update               | multiple sets of canonical images are rendered, compared, analyzed. One set of images is chosen along with diff thresholds, and is copied to the RATS_CANONICAL_DIR |
-| render               | images are rendered to the CMAKE_CURRENT_BINARY_DIR |
-| diff                 | canonical and rendered images are compared using the idiff tool and the return code determines pass/fail |
-| header               | certain metadata key/value pairs in the canonical and rendered image headers are expected to exist and match |
+The examples above are not complete. See the "RATS runtime environment" section below for more information on running the tests.
 
-## Test names and labels
-To facilitate running the tests in the stages given above we leverage the [LABELS](https://cmake.org/cmake/help/latest/prop_test/LABELS.html) property of CTest tests as well as a naming convention
-for each of the tests. This allows the test runner to utilize the `-L`, `-LE`, `-R` and `-E` `ctest` command-line arguments to control which tests are run.
+## RATS runtime environment
+You must run the RATS tests from the build directory, after sourcing the moonray runtime environment script (`setup.sh`).
+You must also specify the location of the canonical images via the RATS_CANONICAL_DIR environment variable.
 
-The `-L` and `-LE` `ctest` command-line arguments allow for selecting which tests are included or excluded by performing regular expression matching against each test's _labels_, whereas
-the `-R` and `-E` `ctest` command-line arguments allow for selecting which tests are included or excluded by performing regular expression matching against the test _names_.
+For example:
+```bash
+cd build/openmoonray
+source ../installs/openmoonray/scripts/setup.sh
+export RATS_CANONICAL_DIR=/path/to/my/rats_canonicals
+ctest -L 'render|diff'
+```
 
-### Test labels
-Each RATS test is labeled according to the stage it is expected to run in:
-* canonical: Tests with the "canonical" label are used to render the canonical images and copy them to the directory specified by the RATS_CANONICAL_DIR environment variable.
-* update:    Tests with the "update" label are used to render the canonical images and copy them to the directory specified by the RATS_CANONICAL_DIR environment variable, as well as to update each test's diff thresholds.
-* render:    Tests with the "render" label are used to render the tests and output the images to the build directory for that test (CMAKE_CURRENT_BINARY_DIR)
-* diff:      Tests with the "diff" label execute the `idiff` tool to compare the previously rendered canonical image versus the current rendered image and optionally compare their headers.
+## Test labels
+To facilitate running the tests in subsets we leverage the [LABELS](https://cmake.org/cmake/help/latest/prop_test/LABELS.html) property of CTest tests as well as a naming convention (see below).  
+The `-L` and `-LE` `ctest` command-line arguments allow for selecting which tests are included or excluded by performing regular expression matching against each test's _labels_.
 
-As an example, to run all of the tests for the _update_ stage to generate and store the canonical images you might use `ctest -L update <options>`. Be sure to run these tests using
-a previously sanctioned release of MoonRay.
+The tests in the RATS suite are named and labeled according to their purpose.
+1. Tests with the _update_ label are for generating canonical images.  These tests should be run using a non-development build.
+1. Tests with the _render_ label are for rendering test images using a development build.
+1. Tests with the _diff_ label are for comparing the previously rendered test images with the previously rendered canonical images.
+1. Tests with the _header_ label are for comparing the previously rendered test image headers with the previously rendered canonical image headers. For convenience these tests also have the _diff_ label.
 
-Once the canonical images have been generated and it is time to test the results of images rendered with your local branch build you might use `ctest -L render <options>`. This will execute all of the tests
-associated with the _render_ stage and produce the rendered images into the build directory.
+The tests with the _render_ and _diff_ labels can be run together, e.g. `ctest -L 'render|diff'`.  An explicit dependency ensures that the _render_ test is executed prior to the associated _diff_ test.
 
-Following that, the _diff_ stage tests can be run with `ctest -L diff <options>` to compare the rendered images with the canonical counterparts.
+### _update_
+The tests with the _update_ label perform the following steps:
+- the test scene is rendered 25 times, resulting in 25 sets of candidate images
+- each of these images is compared with the other images via per-pixel absolute difference
+- the statistics from the comparisons are gathered and analyzed
+- one set of images is chosen and copied to the location specified by the RATS_CANONICAL_DIR env variable.
+- ideal difference thresholds are chosen and written to an accompanying file called diff.json alongside the new canonical images
 
-There is an automatic dependency relationship between the "render" and "diff" tests for each image, so you can use `ctest -L 'render|diff' -j 64` to execute both the render and diff tests using multiple
-jobs with confidence that the render test will execute before the associated diff tests.
+These tests should be run once to generate an initial set of canonical images and difference thresholds, and again anytime it is deemed necessary.  For example, updating some or all of the canonical
+images may be required when:
+- a change is made to any of MoonRay's code that causes an intentional look change (e.g. a bug fix)
+- a change is made to any of the test scenes or the assets it uses, for whatever reason
+- a change is made to the class of hardware/OS that the test suite runs on
 
-### Test names
-The tests are named using a convention of tokens separated by underscores in the form `<stage>-<execution_mode>-<testname>`.
+Note that running all of these tests may take several hours, even on a very fast machine. Storing the canonical images requires ~1.4GB at the time of this writing.
+It is likely that each class of machine that is intended to run the RATS suite will require its own set of canonical images.
 
-The first token is the RATS test stage and is one of ***canonical***|***update***|***render***|***diff***|***header***.
+These tests are considered passing if they successfully execute the steps outlined above.
 
-The second token is the MoonRay execution mode, abbreviated to 3 characters and is one of ***sca***|***vec***|***xpu***|***def*** for scalar, vector, xpu, and default execution modes respectively.
-The "default" execution mode is dependent on the value of the MOONRAY_DEFAULT_EXEC_MODE CMake cache variable when the openmoonray build is configured. "auto" execution mode is not currently tested.
+### _render_
+The tests with the _render_ label perform the following steps:
+- the test scene is rendered once, with the resulting test images written to the build directory for that test.
 
-The third token is the name of the test, which by convention should match the folder structure where the test is stored within the tests/ directory.
+These tests are considered passing if they successfully render the scene.
 
-For tests belonging to the _diff_ stage a fourth token is appended corresponding to the image filename being compared with its canonical counterpart, eg. ***-scene.exr***.
+### _diff_
+The tests with the _diff_ label are meant to be run with or just after the tests with the _render_ label, and perform the following steps:
+- the test images are compared with the associated canonical images using OpenImageIO's [idiff](https://openimageio.readthedocs.io/en/latest/idiff.html) tool with the difference thresholds found in the associated diff.json file.
 
-### Filtering which tests are run by name and label
-This test naming/labeling convention allows for reasonably fine control over running certain groups of tests using the `-R`, `-E`, `-L` and `-LE` command-line arguments that `ctest` accepts.
+These tests are considered passing if the differences between the test images and the canonical images are within the thresholds specified in the diff.json file.
 
-The regular expression syntax and overlapping behavior is poorly documented, but luckily ctest's `-N` command-line argument will print a list of the tests that match. This is quite handy for
-checking that your combination of `-R`, `-E`, `-L` and `-LE` arguments are matching the desired tests.   Multiple -L arguments are supported, and they form an AND behavior for matches.
+### _header_
+The tests with the _header_ label are meant to be run with or just after the tests with the _render_ label, and perform the following steps:
+- the metadata found in the test image headers is compared with that in the associated canonical image headers.
+
+These tests are considered passing if the metadata is considered the same.
+
+
+## Test names
+The tests are named using a convention of tokens separated by hyphens in the form `<stage>-<execution_mode>-<testname>`.
+- The first token is the RATS test stage and is one of ***update***|***render***|***diff***|***header***.
+- The second token is the MoonRay execution mode, abbreviated to 3 characters and is one of ***sca***|***vec***|***xpu*** for scalar, vector and xpu execution modes.
+- The third token is the name of the test, which by convention matches the relative directory structure of the test within the rats/tests/ directory.
+- For tests belonging to the _diff_ stage a fourth token is appended corresponding to the image filename being compared with its canonical counterpart, eg. ***-scene.exr***.
+
+## Filtering which tests are run by name and label
+This test naming/labeling convention allows for control over running certain groups of tests using the `-R`, `-E`, `-L` and `-LE` command-line arguments that `ctest` accepts.
+
+The regular expression syntax and overlapping behavior is poorly documented, but luckily ctest's `-N` command-line argument will print a list of the tests that match without actually executing the tests.
+This is handy for checking that your combination of `-R`, `-E`, `-L` and `-LE` arguments are matching the desired tests.   Multiple -L arguments are supported, and they form an AND behavior for matches.
 For example to select the 'update' tests that use xpu or vector execution modes use `-L update -L 'vector|xpu'`, i.e. has the update label AND the vector or xpu label
 
 Here are a few examples of how these can be used together:
-```
-# list all tests CTest can find
+```bash
+# list all tests CTest can find (including the unit tests which are not part of the RATS suite)
 ctest -N
 
-# list only tests that part of the rats suite
+# list all tests that are part of the RATS suite
 ctest -N -L rats
 
 # run the render tests for vector execution mode
 ctest -L render -L vector
 
-# run the tests that perform the canonical/diff settings updates for scalar execution mode
+# run the tests that perform the canonical/diff threshold updates for scalar execution mode
 ctest -L update -L scalar
 
-# render and diff tests that have "moonray/geometry" in the name
+# run the render and diff tests that have "moonray/geometry" in the name
 ctest -L 'render|diff' -R 'moonray/geometry'
 
-# render and diff all vector and xpu mode tests that have "moonray/geometry" in the name
+# run the render and diff stages for all vector and xpu mode tests that have "moonray/geometry" in the name
 ctest -L 'vector|xpu' -L 'render|diff' -R 'moonray/geometry'
 ```
 
-CTest has several other ways to choose which tests are run, such as by individual test numbers.  See CTest documentation for more info.
-
-## Building the RATS test suite
-The RATS tests are always built (at the time of this writing) when you build OpenMoonRay, but there are currently two configure/build-time CMake cache variables that control behavior of the tests:
-
-Note that different machine configurations can result in slightly different images (ie. noise patterns) so sharing canonical images can be challenging.  Additionally, different image difference
-thresholds may be required by different machine classes. Indeed the default image difference thresholds may not work well in certain environments and may need adjusting. The details
-surrounding these issues are not covered here, but this is recognized as a potential challenge for users and area of future work.
-
-## Running the RATS tests
-### Prerequisites
-You must run the RATS tests from the build directory, in the root of the variant you wish to test.
-
-For example:
-
-```bash
-# (may be different in your environment)
-cd build/os-rocky-9/opt_level-optdebug/refplat-vfx2023.1/gcc-11.x/amorphous-9/openvdb-10/imath-3/usd_core-0.22.5.x/zlib-1.2.11.x.1
-```
-
-You must also be in an environment where the installed openmoonray variant binaries from your build are in your $PATH.
-
-For example, using rez-env:
-```bash
-# (may be different in your environment)
-export REZ_PACKAGES_PATH=/path/to/openmoonray/install:$REZ_PACKAGES_PATH
-rez-env cmake-3.23 openmoonray refplat-vfx2023.1 gcc-11.x
-```
-
-Another example, using a container build:
-```bash
-# bash
-source <openmoonray install dir>/scripts/setup.sh
-```
-
-You must also have the cmake executable (version 3.23+) available in your $PATH. You can check your cmake version with `cmake --version`.
-
-Lastly, you must ensure the RATS_CANONICAL_DIR environment variable is set when you run the `ctest` command.  This directory
-is where the canonical images are written to during the _canonical_ and _update_ stages, and where they are read from during the _diff_ stage.
-```
-export RATS_CANONICAL_DIR=/path/to/canonicals
-```
-
-### Generating canonical images
-Canonicals should be generated using a previously sanctioned build of openmoonray, eg. a recent release, and updated as needed as new releases are adopted.
-
-example commands:
-```
-# generate all canonicals
-ctest -L update --output-on-failure
-```
-```
-# generate only vector canonicals
-ctest -L update -L vector --output-on-failure
-```
-```
-# generate only vector canonicals for the moonray/deep/cornell_box test
-ctest -L vector -R moonray/deep/cornell_box --output-on-failure
-```
-
-There are likely many strategies for updating and managing canonical images, but this is left as an exercise for the user.
-
-### Running the render tests only
-example commands:
-
-```
-# run all render tests
-ctest -L render --output-on-failure
-```
-
-```
-# run only scalar render tests
-ctest -L render -L scalar --output-on-failure
-```
-
-```
-# run only the scalar render tests whose names match moonray/geometry/sphere
-ctest -L scalar -L render -R moonray/geometry/sphere --output-on-failure
-```
-
-### Running the diff tests only
-example commands:
-
-```
-# run all diff tests
-ctest -L diff --output-on-failure
-```
-
-```
-# run only xpu diff tests
-ctest -L diff -L xpu --output-on-failure
-```
-
-```
-# run only the xpu diff tests whose names match moonray/camera/multi
-ctest -L diff -L xpu -R moonray/camera/multi
-```
-
-### Running the render and diff tests together
-example commands:
-```
-# render and diff all tests
-ctest -L 'render|diff' --output-on-failure
-```
-```
-# render and diff all tests using multiple concurrent jobs
-ctest -L 'render|diff' --output-on-failure -j 16
-```
+CTest has several other ways to choose which tests are run, such as by individual test numbers or by reading a list of tests from a file.  See the CTest documentation for more info.
 
 ## The Contents of the RATS test suite
 ### Assets
@@ -218,7 +132,7 @@ The assets/ directory uses [Git Large File Storage](https://git-lfs.com/) (LFS) 
 ### Tests
 The tests are split into two directories based on the executable used to render the images, and contain the scene files and CMakeLists.txt scripts for building the tests.
 * tests/moonray
-* tests/hd_render
+* tests/hd_render (currently only contains a single test)
 
 ### The CMake scripts for generating the tests
 The RATS test suite is implemented on top of CTest and this directory contains the source.
@@ -228,6 +142,6 @@ Tests are created via the `add_rats_test()` function found in the cmake/RatsTest
 
 The remaining scripts in the cmake/ directory are invoked at test run time.
 
-To provide a custom image diff tool for a test, simply place a CMake script named diff.cmake in your test directory and it will be
+It is possible to use a custom image diff tool in place of the default one. To do this, simply place a CMake script named diff.cmake in your test directory and it will be
 called instead of the default `cmake/diff.cmake` script. See cmake/diff.cmake for script inputs.
 
