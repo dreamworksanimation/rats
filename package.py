@@ -11,7 +11,7 @@ def version():
     Increment the build in the version.
     """
     from json import load
-    _version = '1.2'
+    _version = '1.3'
     from rezbuild import earlybind
     return earlybind.version(this, _version)
 
@@ -23,7 +23,7 @@ authors = [
 ]
 
 requires = [
-    'openimageio-2',
+    'openimageio',
     'cmake-3.23',
 ]
 
