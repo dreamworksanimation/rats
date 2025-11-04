@@ -12,3 +12,6 @@ _deps
 build
 tests/**/*.exr
 build/
+
+# gha created files
+.ci_githooks
