@@ -168,11 +168,11 @@ function(add_rats_test)
             set(exec_mode_disabled TRUE)
         endif()
 
-        # Build render command
+        # Build render command using Python wrapper that checks RATS_MOONRAY_THREADS at runtime
         if(${renderer} STREQUAL "moonray")
-            set(render_cmd moonray -info)
+            set(render_cmd ${Python_EXECUTABLE} ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/render.py moonray)
         elseif(${renderer} STREQUAL "hd_render")
-            set(render_cmd hd_render)
+            set(render_cmd ${Python_EXECUTABLE} ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/render.py hd_render)
         endif()
 
         set(render_dir ${CMAKE_CURRENT_BINARY_DIR}/${exec_mode})
@@ -219,18 +219,27 @@ function(add_rats_test)
         endif()
 
         # Add CTest to generate canonicals and compute idiff fail threshold
+        # Build canonicals args with --canonicals flag for each item
+        set(canonicals_args "")
+        foreach(canonical ${ARG_CANONICALS})
+            list(APPEND canonicals_args "--canonicals" "${canonical}")
+        endforeach()
+        
+        # Build render command as a single space-separated string
+        list(JOIN render_cmd " " render_cmd_string)
+        set(render_cmd_args "--render-cmd" "${render_cmd_string}")
+        
         check_test_name(${update_test_name})
         add_test(NAME ${update_test_name}
             WORKING_DIRECTORY ${render_dir}
-            COMMAND ${CMAKE_COMMAND}
-                    "-DRENDER_CMD=${render_cmd}"
-                    "-DTEST_REL_PATH=${test_rel_path}"
-                    "-DCANONICALS=${ARG_CANONICALS}"
-                    "-DEXEC_MODE=${exec_mode}"
-                    "-DIDIFF=${IDIFF}"
-                    "-DDIFF_JSON=${test_rel_path}/diff.json"
-                    "-DPYTHON_EXECUTABLE=${Python_EXECUTABLE}"
-                    -P ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/update_canonicals.cmake
+            COMMAND ${Python_EXECUTABLE}
+                    ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/update_canonicals.py
+                    --test-rel-path ${test_rel_path}
+                    ${canonicals_args}
+                    ${render_cmd_args}
+                    --exec-mode ${exec_mode}
+                    --idiff ${IDIFF}
+                    --diff-json ${test_rel_path}/diff.json
         )
         set_tests_properties(${update_test_name} PROPERTIES
             LABELS "rats;update;${exec_mode}"
