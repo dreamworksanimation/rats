@@ -459,7 +459,7 @@ class CanonicalUpdater:
             source = os.path.join(self.tmp_dir, str(candidate_idx), image_filename)
             dest = os.path.join(self.full_canonical_path, image_filename)
             
-            shutil.copy2(source, dest)
+            shutil.copyfile(source, dest)
             print(f"[RATS] Copied canonical from {source}")
 
     def update_diff_json(self, best_candidates: Dict[str, int]):
