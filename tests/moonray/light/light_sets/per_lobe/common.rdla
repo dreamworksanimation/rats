@@ -1,0 +1,179 @@
+
+--rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+rats_assets_dir = "/usr/pic1/alee1/projects/MOONRAY-5982/openmoonray_dwa/openmoonray/rats/assets"
+
+SceneVariables {
+    ["image_width"] = 400,
+    ["image_height"] = 280,
+    ["pixel_samples"] = 4,
+    ["bsdf_samples"] = 3,
+    ["light_samples"] = 2,
+    ["max_depth"] = 2,
+    ["lights_visible_in_camera"] = false,
+    ["camera"] = PerspectiveCamera("camera"),
+}
+
+PerspectiveCamera("camera") {
+    ["node_xform"] = rotate(-12, 1, 0, 0) * translate(0, 4.5, 15),
+}
+
+---- GEOM ----
+
+subject = UsdGeometry("subject") {
+    ["node_xform"] = scale(1.7, 1.7, 1.7) * translate(0, 1.0, 0),
+    ["stage"] = rats_assets_dir.."/models/torus.usdc",
+    ["prim_path"] = "/torus",
+}
+
+floor = UsdGeometry("floor") {
+    ["node_xform"] = scale(20, 20, 20),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+wall = UsdGeometry("wall") {
+    ["node_xform"] = Mat4(20, 0, 0, 0, 0, 0, 1, 0, 0, -10, 0, 0, 0, 5, -10, 1),
+    ["stage"] = rats_assets_dir.."/models/plane.usdc",
+    ["prim_path"] = "/plane",
+}
+
+GeometrySet("geometry") {
+    subject,
+    floor,
+    wall,
+}
+
+---- LIGHTS ----
+
+-- Adds 22 standard sphere lights and 2 isolated lights, 
+-- for a total of 24 lights (which falls right under the 
+-- scalar light acceleration threshold)
+
+allLights = {}
+lights1 = {}
+lights2 = {}
+
+local envLight = EnvLight("/Scene/lighting/envLight") {
+    ["color"] = Rgb(0.3, 0.65, 0.35),
+    ["intensity"] = 0.1,
+    ["exposure"] = 0.1,
+    ["label"] = "envLight",
+}
+
+local isolatedSpecularLight = SphereLight("specular_probe") {
+    ["node_xform"] = translate( 1.0, 4.5, -2.5 ),
+    ["color"] = Rgb(0.2, 0.7, 1.0),
+    ["intensity"] = 26,
+    ["exposure"] = 0.6,
+    ["normalized"] = false,
+    ["radius"] = 0.85,
+    ["label"] = "specular_probe",
+}
+
+table.insert(lights1, envLight)
+table.insert(allLights, envLight)
+table.insert(lights2, isolatedSpecularLight)
+table.insert(allLights, isolatedSpecularLight)
+
+-- 11 lights
+lightpositions1 = {
+    { -5.5, 4.5, -2.5 }, -- 1
+    { -4.0, 4.7,  0.0 }, -- 2
+    { -2.5, 4.9,  2.5 }, -- 3
+    { -1.0, 5.1, -2.5 }, -- 4
+    { -5.5, 6.0,  0.0 }, -- 5
+    { -4.0, 6.2,  2.5 }, -- 6
+    { -2.5, 6.4, -2.5 }, -- 7
+    { -1.0, 6.6,  0.0 }, -- 8
+    { -5.5, 7.5,  2.5 }, -- 9
+    { -4.0, 7.7, -2.5 }, -- 10
+    { -2.5, 7.9,  0.0 }, -- 11
+}
+
+-- 11 lights
+lightpositions2 = {
+    { 2.5, 4.7,  0.0 }, -- 1
+    { 4.0, 4.9,  2.5 }, -- 2
+    { 5.5, 5.1, -2.5 }, -- 3
+    { 1.0, 6.0,  0.0 }, -- 4
+    { 2.5, 6.2,  2.5 }, -- 5
+    { 4.0, 6.4, -2.5 }, -- 6
+    { 5.5, 6.6,  0.0 }, -- 7
+    { 1.0, 7.5,  2.5 }, -- 8
+    { 2.5, 7.7, -2.5 }, -- 9
+    { 4.0, 7.9,  0.0 }, -- 10
+    { 5.5, 8.1,  2.5 }, -- 11
+}
+
+local function addSphereLight(name, x, y, z, color, exposure)
+    local light = SphereLight(name) {
+        ["node_xform"] = translate(x, y, z),
+        ["color"] = color,
+        ["intensity"] = 20,
+        ["exposure"] = exposure,
+        ["normalized"] = false,
+        ["radius"] = 0.45,
+    }
+
+    table.insert(allLights, light)
+end
+
+for i = 1, #lightpositions1 do
+    local p = lightpositions1[i]
+    addSphereLight("/Scene/lighting/lightset1/"..i,
+                   p[1], p[2], p[3],
+                   Rgb(1.0, 0.45, 0.18),
+                   0.2)
+end
+
+for i = 1, #lightpositions2 do
+    local p = lightpositions2[i]
+    addSphereLight("/Scene/lighting/lightset2/"..i,
+                   p[1], p[2], p[3],
+                   Rgb(0.2, 0.7, 1.0),
+                   0.35)
+end
+
+allLightSet = LightSet("all_lights")(allLights)
+lightset1 = LightSet("lightset1")(lights1)
+lightset2 = LightSet("lightset2")(lights2)
+
+
+---- MATERIALS ----
+
+subjectMtl = DwaBaseMaterial("subject_mtl") {
+    ["albedo"] = Rgb(0.65, 0.65, 0.65),
+    ["roughness"] = 0.08,
+    ["diffuse_lightset"] = lightset2,
+    ["specular_lightset"] = lightset2,
+}
+
+floorMtl = DwaBaseMaterial("floor_mtl") {
+    ["albedo"] = Rgb(0.8, 0.8, 0.8),
+    ["roughness"] = 0.45,
+    ["diffuse_lightset"] = lightset1,
+    ["specular_lightset"] = lightset1,
+}
+
+wallMtl = DwaBaseMaterial("wall_mtl") {
+    ["albedo"] = Rgb(0.55, 0.55, 0.55),
+    ["roughness"] = 0.55,
+    ["diffuse_lightset"] = lightset1,
+    ["specular_lightset"] = lightset1,
+}
+
+----------------
+
+RenderOutput("/output/specular_probe") {
+    ["file_name"] = "result0.exr",
+    ["result"] = 8,
+    ["light_aov"] = "C.*<L.'specular_probe'>",
+    ["channel_format"] = 0,
+    ["channel_name"] = "specular_probe",
+}
+
+Layer("defaultLayer") {
+    { subject, "", subjectMtl, allLightSet },
+    { floor, "", floorMtl, allLightSet },
+    { wall, "", wallMtl, allLightSet },
+}
