@@ -1,6 +1,5 @@
 
---rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
-rats_assets_dir = "/usr/pic1/alee1/projects/MOONRAY-5982/openmoonray_dwa/openmoonray/rats/assets"
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
 
 SceneVariables {
     ["image_width"] = 400,
