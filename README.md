@@ -145,3 +145,5 @@ The remaining scripts in the cmake/ directory are invoked at test run time.
 It is possible to use a custom image diff tool in place of the default one. To do this, simply place a CMake script named diff.cmake in your test directory and it will be
 called instead of the default `cmake/diff.cmake` script. See cmake/diff.cmake for script inputs.
 
+
+Policies concerning [Governance](https://github.com/OpenMoonRay/openmoonray/blob/main/GOVERNANCE.md), [Code of Conduct](https://github.com/OpenMoonRay/openmoonray/blob/main/CODE_OF_CONDUCT.md), [Contribution](https://github.com/OpenMoonRay/openmoonray/blob/main/CONTRIBUTING.md), and the list of [Maintainers](https://github.com/OpenMoonRay/openmoonray/blob/main/MAINTAINERS.md) are available in the OpenMoonRay super project.
