@@ -4,6 +4,7 @@
 add_subdirectory(adaptive_tessellation)
 add_subdirectory(box)
 add_subdirectory(instance_level_transforms)
+add_subdirectory(local_motion_blur)
 add_subdirectory(curves)
 add_subdirectory(explicit_attributes)
 add_subdirectory(points)

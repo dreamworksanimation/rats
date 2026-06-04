@@ -1,0 +1,168 @@
+-- Copyright 2025 DreamWorks Animation LLC
+-- SPDX-License-Identifier: Apache-2.0
+--
+-- Tests local motion blur on RdlMeshGeometry, RdlCurveGeometry, and
+-- RdlPointGeometry.  Each uses the same vertex grid with frame-delta
+-- motion blur shifting vertices +0.5 in X.  The three primitives are stacked
+-- vertically via node_xform (curves top, mesh middle, points bottom).
+-- Each has its own LMB region centred on its world-space origin that
+-- suppresses blur in the centre, leaving the outer portion blurred.
+
+rats_assets_dir = os.getenv("RATS_ASSETS_DIR")
+
+SceneVariables {
+    ["image_width"]    = 300,
+    ["image_height"]   = 600,
+    ["pixel_samples"]  = 8,
+    ["motion_steps"]   = {0, 1},
+    ["camera"]         = PerspectiveCamera("cam"),
+}
+
+PerspectiveCamera("cam") {
+    ["node_xform"]       = translate(0, 0, 5),
+}
+
+
+-- ----------------------------------------------------------------
+-- Shared grid vertex data
+-- Local space: X in [-1, 1], Y in [-1, 1], Z = 0
+-- ----------------------------------------------------------------
+local nRes   = 50
+local nVerts = nRes + 1
+
+local verts0 = {}
+local verts1 = {}
+local uvs    = {}
+
+for j = 0, nRes do
+    for i = 0, nRes do
+        local x = -1.0 + (2.0 * i / nRes)
+        local y = -1.0 + (2.0 * j / nRes)
+        table.insert(verts0, Vec3(x,       y, 0))
+        table.insert(verts1, Vec3(x + 0.5, y, 0))
+        table.insert(uvs,    Vec2(i / nRes, j / nRes))
+    end
+end
+
+-- Mesh
+local meshIndices    = {}
+local meshFaceCounts = {}
+for j = 0, nRes - 1 do
+    for i = 0, nRes - 1 do
+        -- quad wound counter-clockwise (BL, BR, TR, TL)
+        table.insert(meshIndices,      j       * nVerts + i)
+        table.insert(meshIndices,      j       * nVerts + (i + 1))
+        table.insert(meshIndices, (j + 1) * nVerts + (i + 1))
+        table.insert(meshIndices, (j + 1) * nVerts + i)
+        table.insert(meshFaceCounts, 4)
+    end
+end
+
+-- Curves
+local curveVerts0      = {}
+local curveVerts1      = {}
+local curveVertexCount = {}
+for i = 0, nRes do
+    for j = 0, nRes do
+        local idx = j * nVerts + i + 1   -- 1-based Lua index into verts0/verts1
+        table.insert(curveVerts0, verts0[idx])
+        table.insert(curveVerts1, verts1[idx])
+    end
+    table.insert(curveVertexCount, nVerts)
+end
+
+-- ----------------------------------------------------------------
+-- Scene: three stacked grids, each 2 units tall with 0.5-unit gap.
+-- node_xform offsets each geometry; LMB region centres are in world space.
+-- ----------------------------------------------------------------
+
+local colorMap = ImageMap("colorMap") {
+    ["texture"] = rats_assets_dir.."/textures/color_grid.tx",
+}
+
+local mtl = DwaEmissiveMaterial("mtl") {
+    ["emission_color"] = bind(colorMap),
+}
+
+local lgts = LightSet("lgts") { }
+
+-- Y world-space centres for the three slots
+local meshY  =  0.0
+local curveY =  2.5
+local pointY = -2.5
+
+-- LMB region shape: ellipsoid scaled 3x in Y then rotated 45 degrees around Z,
+-- making it cut diagonally across each grid.
+-- Quaternion (i,j,k,r) for 45 deg around Z: cos/sin of half-angle (22.5 deg)
+local lmbOrient = Vec4(0, 0, -0.3827, 0.9239)  -- -45 deg around Z
+local lmbScale  = Vec3(0.75, 3, 1)                 -- 3x stretch in Y before rotation
+
+-- ----------------------------------------------------------------
+-- RdlMeshGeometry  (centre slot)
+-- ----------------------------------------------------------------
+local grid = RdlMeshGeometry("grid") {
+    ["node_xform"]         = translate(0, meshY, 0),
+    ["vertex_list_0"]      = verts0,
+    ["vertex_list_1"]      = verts1,
+    ["uv_list"]            = uvs,
+    ["vertices_by_index"]  = meshIndices,
+    ["face_vertex_count"]  = meshFaceCounts,
+    ["is_subd"]            = false,
+    ["use_local_motion_blur"]               = true,
+    ["local_motion_blur_position_list"]        = { Vec3(0.5, meshY,  0) },
+    ["local_motion_blur_orient_list"]       = { lmbOrient },
+    ["local_motion_blur_scale_list"]        = { lmbScale },
+    ["local_motion_blur_radius_list"]       = { 1.0 },
+    ["local_motion_blur_inner_radius_list"] = { 0.25 },
+    ["local_motion_blur_multiplier_list"]   = { 0.0 },
+}
+
+-- ----------------------------------------------------------------
+-- RdlCurveGeometry  (top slot): linear vertical strips
+-- ----------------------------------------------------------------
+local curves = RdlCurveGeometry("curves") {
+    ["node_xform"]          = translate(0, curveY, 0),
+    ["vertex_list_0"]       = curveVerts0,
+    ["vertex_list_1"]       = curveVerts1,
+    ["radius_list"]   = { 0.01, },
+    ["curves_vertex_count"] = curveVertexCount,
+    ["curve_type"]          = "linear",
+    ["use_local_motion_blur"]               = true,
+    ["local_motion_blur_position_list"]        = { Vec3(0.5, curveY, 0) },
+    ["local_motion_blur_orient_list"]       = { lmbOrient },
+    ["local_motion_blur_scale_list"]        = { lmbScale },
+    ["local_motion_blur_radius_list"]       = { 1.0 },
+    ["local_motion_blur_inner_radius_list"] = { 0.25 },
+    ["local_motion_blur_multiplier_list"]   = { 0.0 },
+}
+
+-- ----------------------------------------------------------------
+-- RdlPointGeometry  (bottom slot)
+-- ----------------------------------------------------------------
+local pts = RdlPointGeometry("pts") {
+    ["node_xform"]    = translate(0, pointY, 0),
+    ["vertex_list_0"] = verts0,
+    ["vertex_list_1"] = verts1,
+    ["radius_list"]   = { 0.01, },
+    ["use_local_motion_blur"]               = true,
+    ["local_motion_blur_position_list"]        = { Vec3(0.5, pointY, 0) },
+    ["local_motion_blur_orient_list"]       = { lmbOrient },
+    ["local_motion_blur_scale_list"]        = { lmbScale },
+    ["local_motion_blur_radius_list"]       = { 1.0 },
+    ["local_motion_blur_inner_radius_list"] = { 0.5 },
+    ["local_motion_blur_multiplier_list"]   = { 0.0 },
+}
+
+GeometrySet("geom") { grid, curves, pts }
+
+Layer("defaultLayer") {
+    { grid,   "", mtl, lgts },
+    { curves, "", mtl, lgts },
+    { pts,    "", mtl, lgts },
+}
+RenderOutput("lmb_mask") {
+    ["file_name"]                = "lmb_mask.exr",
+    ["result"]                   = "primitive attribute",
+    ["primitive_attribute"]      = "local_motion_blur",
+    ["primitive_attribute_type"] = "FLOAT",
+}
